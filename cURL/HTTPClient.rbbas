@@ -1,20 +1,25 @@
 #tag Class
-Protected Class Socket
-Inherits cURL.Base
+Protected Class HTTPClient
+Inherits cURL.cURLBase
 	#tag Method, Flags = &h0
-		Function Read(Count As Integer, encoding As TextEncoding = Nil) As String
-		  // Part of the Readable interface.
-		  Dim mb As New MemoryBlock(Count)
-		  Dim i As Integer
-		  mLastError = curl_easy_recv(Me.Handle, mb, mb.Size, i)
-		  If Me.LastError = 0 Then 
-		    Dim s As String
-		    If encoding <> Nil Then
-		      s = DefineEncoding(mb.StringValue(0, i), encoding)
-		    Else
-		      s = mb.StringValue(0, i)
-		    End If
-		    Return s
+		Sub Get(URL As String)
+		  Me.URL = URL
+		  Call Me.SetOption(OPT_HTTPGET, True)
+		  Call Me.Perform()
+		  
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function ResponseCode() As Integer
+		  //The URL libcURL is using, or it's most recently used
+		  Dim buffer As New MemoryBlock(4)
+		  Me.GetInfo(INFO_RESPONSE_CODE, buffer)
+		  If Me.LastError = 0 Then
+		    Return buffer.Int32Value(0)
+		  Else
+		    Raise New RuntimeException
 		  End If
 		End Function
 	#tag EndMethod
@@ -41,15 +46,6 @@ Inherits cURL.Base
 		      Raise New RuntimeException
 		    End If
 		  End If
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub Write(Text As String)
-		  Dim i As Integer
-		  Dim mb As MemoryBlock = Text
-		  mLastError = curl_easy_send(Me.Handle, mb, mb.Size, i)
-		  
 		End Sub
 	#tag EndMethod
 

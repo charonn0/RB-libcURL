@@ -24,7 +24,7 @@ Begin Window Window1
    Title           =   "Untitled"
    Visible         =   True
    Width           =   879
-   Begin cURL.Socket Object1
+   Begin cURL.HTTPClient Object1
       Height          =   32
       Index           =   -2147483648
       Left            =   964
@@ -237,7 +237,7 @@ End
 #tag Events Object1
 	#tag Event
 		Sub DebugMessage(info As cURL.curl_infotype, data As String)
-		  TextArea3.AppendText(data)
+		  TextArea3.AppendText(Str(info) + " " + data)
 		  TextArea3.ScrollPosition = TextArea3.Text.Len
 		End Sub
 	#tag EndEvent
@@ -255,16 +255,22 @@ End
 	#tag EndEvent
 	#tag Event
 		Function Progress(dlTotal As UInt64, dlnow As UInt64, ultotal As UInt64, ulnow As UInt64) As Integer
+		  #pragma Unused ultotal
+		  #pragma Unused ulnow
 		  ProgressBar1.Maximum = dlTotal
 		  ProgressBar1.Value = dlnow
 		End Function
+	#tag EndEvent
+	#tag Event
+		Sub Disconnected()
+		  MsgBox("Disconnect!")
+		End Sub
 	#tag EndEvent
 #tag EndEvents
 #tag Events PushButton1
 	#tag Event
 		Sub Action()
-		  Object1.URL = "http://www.boredomsoft.org/"
-		  Call Object1.Perform
+		  Object1.Get("http://www.boredomsoft.org/")
 		End Sub
 	#tag EndEvent
 #tag EndEvents
