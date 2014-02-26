@@ -1,0 +1,17 @@
+#Windows
+Thumbs.db
+Desktop.ini
+
+#Mac
+.DS_Store
+
+
+#RB 
+Builds*
+*.debug
+*.debug.app
+Debug*.exe
+Debug*/Debug*.exe
+Debug*/Debug*\ Libs
+*.rbuistate
+*.obsolete
