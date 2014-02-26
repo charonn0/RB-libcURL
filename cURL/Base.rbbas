@@ -26,23 +26,23 @@ Protected Class Base
 		    InstanceRef = mb
 		    Instances.Value(InstanceRef) = Me
 		    
-		    If Not SetOption(CURLOPT_WRITEDATA, InstanceRef) Then Raise cURLException(Me.LastError)
-		    If Not SetOption(CURLOPT_WRITEFUNCTION, AddressOf WriteCallback) Then Raise cURLException(Me.LastError)
+		    If Not SetOption(OPT_WRITEDATA, InstanceRef) Then Raise cURLException(Me.LastError)
+		    If Not SetOption(OPT_WRITEFUNCTION, AddressOf WriteCallback) Then Raise cURLException(Me.LastError)
 		    
-		    If Not SetOption(CURLOPT_READDATA, InstanceRef) Then Raise cURLException(Me.LastError)
-		    If Not SetOption(CURLOPT_READFUNCTION, AddressOf ReadCallback) Then Raise cURLException(Me.LastError)
+		    If Not SetOption(OPT_READDATA, InstanceRef) Then Raise cURLException(Me.LastError)
+		    If Not SetOption(OPT_READFUNCTION, AddressOf ReadCallback) Then Raise cURLException(Me.LastError)
 		    
-		    If Not SetOption(CURLOPT_NOPROGRESS, False) Then Raise cURLException(Me.LastError)
-		    If Not SetOption(CURLOPT_PROGRESSDATA, InstanceRef) Then Raise cURLException(Me.LastError)
-		    If Not SetOption(CURLOPT_PROGRESSFUNCTION, AddressOf ProgressCallback) Then Raise cURLException(Me.LastError)
+		    If Not SetOption(OPT_NOPROGRESS, False) Then Raise cURLException(Me.LastError)
+		    If Not SetOption(OPT_PROGRESSDATA, InstanceRef) Then Raise cURLException(Me.LastError)
+		    If Not SetOption(OPT_PROGRESSFUNCTION, AddressOf ProgressCallback) Then Raise cURLException(Me.LastError)
 		    
-		    If Not SetOption(CURLOPT_HEADERDATA, InstanceRef) Then Raise cURLException(Me.LastError)
-		    If Not SetOption(CURLOPT_HEADERFUNCTION, AddressOf HeaderCallback) Then Raise cURLException(Me.LastError)
+		    If Not SetOption(OPT_HEADERDATA, InstanceRef) Then Raise cURLException(Me.LastError)
+		    If Not SetOption(OPT_HEADERFUNCTION, AddressOf HeaderCallback) Then Raise cURLException(Me.LastError)
 		    
 		    #If DebugBuild Then
-		      If Not SetOption(CURLOPT_VERBOSE, True) Then Raise cURLException(Me.LastError)
-		      If Not SetOption(CURLOPT_DEBUGDATA, InstanceRef) Then Raise cURLException(Me.LastError)
-		      If Not SetOption(CURLOPT_DEBUGFUNCTION, AddressOf DebugCallback) Then Raise cURLException(Me.LastError)
+		      If Not SetOption(OPT_VERBOSE, True) Then Raise cURLException(Me.LastError)
+		      If Not SetOption(OPT_DEBUGDATA, InstanceRef) Then Raise cURLException(Me.LastError)
+		      If Not SetOption(OPT_DEBUGFUNCTION, AddressOf DebugCallback) Then Raise cURLException(Me.LastError)
 		    #endif
 		    
 		    
@@ -80,8 +80,12 @@ Protected Class Base
 		  Dim data As MemoryBlock = char
 		  Dim s As String = data.StringValue(0, sz)
 		  Dim n, v As String
-		  n = NthField(s, ":", 1)
-		  v = Replace(s, n + ":", "")
+		  If InStr(s, ":") > 1 Then
+		    n = NthField(s, ":", 1)
+		    v = Replace(s, n + ":", "")
+		  Else
+		    n = s.Trim
+		  End If
 		  If mHeaderBuffer = Nil Then mHeaderBuffer = New InternetHeaders
 		  mHeaderBuffer.AppendHeader(n, v)
 		  Return sz
@@ -158,6 +162,29 @@ Protected Class Base
 	#tag Method, Flags = &h0
 		Function LastError() As Integer
 		  Return mLastError
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Pause(PauseUpload As Boolean = True, PauseDownload As Boolean = True) As Boolean
+		  If Not cURL.IsAvailable Then Return False
+		  Dim pU, pD As Integer
+		  pU = ShiftLeft(1, 2)
+		  pD = ShiftLeft(0, 1)
+		  
+		  Dim mask As Integer
+		  If PauseUpload And PauseDownload Then
+		    mask = pU Or pD
+		  ElseIf PauseUpload Xor PauseDownload Then
+		    If PauseUpload Then
+		      mask = pU
+		    Else
+		      mask = pD
+		    End If
+		  End If
+		  
+		  mLastError = curl_easy_pause(Me.Handle, mask)
+		  Return Me.LastError = 0
 		End Function
 	#tag EndMethod
 
@@ -300,40 +327,91 @@ Protected Class Base
 	#tag EndProperty
 
 
-	#tag Constant, Name = CURLOPT_DEBUGDATA, Type = Double, Dynamic = False, Default = \"10095", Scope = Protected
+	#tag Constant, Name = INFO_EFFECTIVE_URL, Type = Double, Dynamic = False, Default = \"1048577", Scope = Protected
 	#tag EndConstant
 
-	#tag Constant, Name = CURLOPT_DEBUGFUNCTION, Type = Double, Dynamic = False, Default = \"20094", Scope = Protected
+	#tag Constant, Name = INFO_LOCAL_IP, Type = Double, Dynamic = False, Default = \"1048617", Scope = Protected
 	#tag EndConstant
 
-	#tag Constant, Name = CURLOPT_HEADERDATA, Type = Double, Dynamic = False, Default = \"10029", Scope = Protected
+	#tag Constant, Name = INFO_LOCAL_PORT, Type = Double, Dynamic = False, Default = \"2097194", Scope = Protected
 	#tag EndConstant
 
-	#tag Constant, Name = CURLOPT_HEADERFUNCTION, Type = Double, Dynamic = False, Default = \"20079", Scope = Protected
+	#tag Constant, Name = INFO_PRIMARY_IP, Type = Double, Dynamic = False, Default = \"1048608", Scope = Protected
 	#tag EndConstant
 
-	#tag Constant, Name = CURLOPT_NOPROGRESS, Type = Double, Dynamic = False, Default = \"43", Scope = Protected
+	#tag Constant, Name = INFO_PRIMARY_PORT, Type = Double, Dynamic = False, Default = \"2097192", Scope = Protected
 	#tag EndConstant
 
-	#tag Constant, Name = CURLOPT_PROGRESSDATA, Type = Double, Dynamic = False, Default = \"10057", Scope = Protected
+	#tag Constant, Name = INFO_REDIRECT_COUNT, Type = Double, Dynamic = False, Default = \"2097172", Scope = Protected
 	#tag EndConstant
 
-	#tag Constant, Name = CURLOPT_PROGRESSFUNCTION, Type = Double, Dynamic = False, Default = \"20056", Scope = Protected
+	#tag Constant, Name = INFO_RESPONSE_CODE, Type = Double, Dynamic = False, Default = \"2097154", Scope = Protected
 	#tag EndConstant
 
-	#tag Constant, Name = CURLOPT_READDATA, Type = Double, Dynamic = False, Default = \"10009", Scope = Protected
+	#tag Constant, Name = INFO_SIZE_DOWNLOAD, Type = Double, Dynamic = False, Default = \"3145736", Scope = Protected
 	#tag EndConstant
 
-	#tag Constant, Name = CURLOPT_READFUNCTION, Type = Double, Dynamic = False, Default = \"20012", Scope = Protected
+	#tag Constant, Name = INFO_SPEED_DOWNLOAD, Type = Double, Dynamic = False, Default = \"3145737", Scope = Protected
 	#tag EndConstant
 
-	#tag Constant, Name = CURLOPT_VERBOSE, Type = Double, Dynamic = False, Default = \"41", Scope = Protected
+	#tag Constant, Name = OPT_CONNECT_ONLY, Type = Double, Dynamic = False, Default = \"141", Scope = Protected
 	#tag EndConstant
 
-	#tag Constant, Name = CURLOPT_WRITEDATA, Type = Double, Dynamic = False, Default = \"10001", Scope = Protected
+	#tag Constant, Name = OPT_DEBUGDATA, Type = Double, Dynamic = False, Default = \"10095", Scope = Protected
 	#tag EndConstant
 
-	#tag Constant, Name = CURLOPT_WRITEFUNCTION, Type = Double, Dynamic = False, Default = \"20011", Scope = Protected
+	#tag Constant, Name = OPT_DEBUGFUNCTION, Type = Double, Dynamic = False, Default = \"20094", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = OPT_DIRLISTONLY, Type = Double, Dynamic = False, Default = \"48", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = OPT_HEADERDATA, Type = Double, Dynamic = False, Default = \"10029", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = OPT_HEADERFUNCTION, Type = Double, Dynamic = False, Default = \"20079", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = OPT_NOPROGRESS, Type = Double, Dynamic = False, Default = \"43", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = OPT_PASSWORD, Type = Double, Dynamic = False, Default = \"10174", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = OPT_PORT, Type = Double, Dynamic = False, Default = \"3", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = OPT_PROGRESSDATA, Type = Double, Dynamic = False, Default = \"10057", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = OPT_PROGRESSFUNCTION, Type = Double, Dynamic = False, Default = \"20056", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = OPT_READDATA, Type = Double, Dynamic = False, Default = \"10009", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = OPT_READFUNCTION, Type = Double, Dynamic = False, Default = \"20012", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = OPT_UPLOAD, Type = Double, Dynamic = False, Default = \"46", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = OPT_URL, Type = Double, Dynamic = False, Default = \"10002", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = OPT_USERAGENT, Type = Double, Dynamic = False, Default = \"10018", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = OPT_USERNAME, Type = Double, Dynamic = False, Default = \"10173", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = OPT_VERBOSE, Type = Double, Dynamic = False, Default = \"41", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = OPT_WRITEDATA, Type = Double, Dynamic = False, Default = \"10001", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = OPT_WRITEFUNCTION, Type = Double, Dynamic = False, Default = \"20011", Scope = Protected
 	#tag EndConstant
 
 

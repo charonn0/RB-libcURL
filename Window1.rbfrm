@@ -225,6 +225,13 @@ End
 #tag EndWindow
 
 #tag WindowCode
+	#tag Event
+		Sub Open()
+		  MsgBox(cURL.Version)
+		End Sub
+	#tag EndEvent
+
+
 #tag EndWindowCode
 
 #tag Events Object1
@@ -256,7 +263,7 @@ End
 #tag Events PushButton1
 	#tag Event
 		Sub Action()
-		  Object1.URL = "http://www.google.com/"
+		  Object1.URL = "http://www.boredomsoft.org/"
 		  Call Object1.Perform
 		End Sub
 	#tag EndEvent
