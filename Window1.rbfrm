@@ -226,17 +226,18 @@ End
 
 #tag WindowCode
 	#tag Event
-		Function CancelClose(appQuitting as Boolean) As Boolean
-		  #pragma Unused appQuitting
-		  curlget.Close
-		End Function
-	#tag EndEvent
-
-	#tag Event
 		Sub Open()
 		  Me.Title = cURL.Version
+		  Outstream = BinaryStream.Create(SpecialFolder.Desktop.Child("0.bin"), True)
+		  
+		  
 		End Sub
 	#tag EndEvent
+
+
+	#tag Property, Flags = &h0
+		Outstream As BinaryStream
+	#tag EndProperty
 
 
 #tag EndWindowCode
@@ -255,12 +256,6 @@ End
 		End Sub
 	#tag EndEvent
 	#tag Event
-		Sub DataAvailable(NewData As String)
-		  TextArea1.AppendText(NewData + EndOfLine)
-		  TextArea1.ScrollPosition = TextArea1.Text.Len
-		End Sub
-	#tag EndEvent
-	#tag Event
 		Function Progress(dlTotal As UInt64, dlnow As UInt64, ultotal As UInt64, ulnow As UInt64) As Integer
 		  #pragma Unused ultotal
 		  #pragma Unused ulnow
@@ -271,14 +266,22 @@ End
 	#tag Event
 		Sub Disconnected()
 		  MsgBox("Disconnect!")
+		  Outstream.Close
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Sub DataAvailable(NewData As String)
+		  'TextArea1.AppendText(NewData + EndOfLine)
+		  'TextArea1.ScrollPosition = TextArea1.Text.Len
+		  Outstream.Write(NewData)
 		End Sub
 	#tag EndEvent
 #tag EndEvents
 #tag Events PushButton1
 	#tag Event
 		Sub Action()
-		  
-		  curlget.Get("http://www.boredomsoft.org/")
+		  curlget.Get("http://androidnetworktester.googlecode.com/files/10mb.txt")
+		  curlget.Close
 		End Sub
 	#tag EndEvent
 #tag EndEvents

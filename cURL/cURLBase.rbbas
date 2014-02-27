@@ -3,7 +3,7 @@ Protected Class cURLBase
 	#tag Method, Flags = &h0
 		Sub Close()
 		  // This method cleans up the instance
-		  // This class will not automatically destruct! 
+		  // This class will not automatically destruct!
 		  // You MUST call this method to destroy the instance
 		  // If no more instances, cleans up libcurl completely
 		  
@@ -21,7 +21,7 @@ Protected Class cURLBase
 		Private Shared Function CloseCallback(UserData As Integer, Socket As Integer) As Integer
 		  #pragma Unused Socket ' socket is an OS socket reference
 		  Dim curl As Object = Instances.Lookup(UserData, Nil)
-		  If curl = Nil Then 
+		  If curl = Nil Then
 		    Break ' UserData does not refer to a valid instance!
 		    Return 1
 		  End If
@@ -46,6 +46,9 @@ Protected Class cURLBase
 		    
 		    'If Not SetOption(OPT_OPENSOCKETDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
 		    'If Not SetOption(OPT_OPENSOCKETFUNCTION, AddressOf OpenCallback) Then Raise cURLException(Me.LastError)
+		    
+		    If Not SetOption(OPT_CLOSESOCKETDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
+		    If Not SetOption(OPT_CLOSESOCKETFUNCTION, AddressOf CloseCallback) Then Raise cURLException(Me.LastError)
 		    
 		    If Not SetOption(OPT_WRITEDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
 		    If Not SetOption(OPT_WRITEFUNCTION, AddressOf WriteCallback) Then Raise cURLException(Me.LastError)
@@ -446,8 +449,6 @@ Protected Class cURLBase
 		When libcURL calls a callback function, the function will locate the proper instance and call the curl* instance method that corresponds
 		to the callback (e.g. WriteCallback calls cURLBase.curlWrite.) The instance method raises the appropriate event (e.g. cURLBase.curlWrite
 		raises the DataAvailable event.)
-		
-		
 	#tag EndNote
 
 	#tag Note, Name = Using this class
