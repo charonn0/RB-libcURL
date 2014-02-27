@@ -9,7 +9,7 @@ Protected Class cURLBase
 		  
 		  If Not cURL.IsAvailable Then Return
 		  cURL.curl_easy_cleanup(Me.Handle)
-		  Instances.Remove(InstanceRef)
+		  Instances.Remove(mHandle)
 		  If Instances.Count = 0 Then
 		    cURL.curl_global_cleanup()
 		    Instances = Nil
@@ -18,10 +18,13 @@ Protected Class cURLBase
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Shared Function CloseCallback(UserData As Ptr, Socket As Integer) As Integer
+		Private Shared Function CloseCallback(UserData As Integer, Socket As Integer) As Integer
 		  #pragma Unused Socket ' socket is an OS socket reference
 		  Dim curl As Object = Instances.Lookup(UserData, Nil)
-		  If curl = Nil Then Return 1
+		  If curl = Nil Then 
+		    Break ' UserData does not refer to a valid instance!
+		    Return 1
+		  End If
 		  cURLBase(curl).curlClose
 		  Return 0
 		End Function
@@ -30,7 +33,6 @@ Protected Class cURLBase
 	#tag Method, Flags = &h0
 		Sub Constructor()
 		  // Creates a new instance, sets up the callback functions
-		  
 		  If Not cURL.IsAvailable Then Raise cURLException(0)
 		  
 		  If Instances = Nil Then
@@ -40,30 +42,27 @@ Protected Class cURLBase
 		  
 		  mHandle = curl_easy_init()
 		  If mHandle > 0 Then
-		    Dim mb As New MemoryBlock(4)
-		    mb.Int32Value(0) = mHandle
-		    InstanceRef = mb
-		    Instances.Value(InstanceRef) = Me
+		    Instances.Value(mHandle) = Me
 		    
-		    'If Not SetOption(OPT_OPENSOCKETDATA, InstanceRef) Then Raise cURLException(Me.LastError)
+		    'If Not SetOption(OPT_OPENSOCKETDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
 		    'If Not SetOption(OPT_OPENSOCKETFUNCTION, AddressOf OpenCallback) Then Raise cURLException(Me.LastError)
 		    
-		    If Not SetOption(OPT_WRITEDATA, InstanceRef) Then Raise cURLException(Me.LastError)
+		    If Not SetOption(OPT_WRITEDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
 		    If Not SetOption(OPT_WRITEFUNCTION, AddressOf WriteCallback) Then Raise cURLException(Me.LastError)
 		    
-		    If Not SetOption(OPT_READDATA, InstanceRef) Then Raise cURLException(Me.LastError)
+		    If Not SetOption(OPT_READDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
 		    If Not SetOption(OPT_READFUNCTION, AddressOf ReadCallback) Then Raise cURLException(Me.LastError)
 		    
 		    If Not SetOption(OPT_NOPROGRESS, False) Then Raise cURLException(Me.LastError)
-		    If Not SetOption(OPT_PROGRESSDATA, InstanceRef) Then Raise cURLException(Me.LastError)
+		    If Not SetOption(OPT_PROGRESSDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
 		    If Not SetOption(OPT_PROGRESSFUNCTION, AddressOf ProgressCallback) Then Raise cURLException(Me.LastError)
 		    
-		    If Not SetOption(OPT_HEADERDATA, InstanceRef) Then Raise cURLException(Me.LastError)
+		    If Not SetOption(OPT_HEADERDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
 		    If Not SetOption(OPT_HEADERFUNCTION, AddressOf HeaderCallback) Then Raise cURLException(Me.LastError)
 		    
 		    #If DebugBuild Then
 		      If Not SetOption(OPT_VERBOSE, True) Then Raise cURLException(Me.LastError)
-		      If Not SetOption(OPT_DEBUGDATA, InstanceRef) Then Raise cURLException(Me.LastError)
+		      If Not SetOption(OPT_DEBUGDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
 		      If Not SetOption(OPT_DEBUGFUNCTION, AddressOf DebugCallback) Then Raise cURLException(Me.LastError)
 		    #endif
 		  End If
@@ -76,17 +75,14 @@ Protected Class cURLBase
 		  If Not cURL.IsAvailable Then Raise cURLException(0)
 		  If CopyOpts <> Nil And CopyOpts.Handle > 0 Then
 		    mHandle = curl_easy_duphandle(CopyOpts.Handle)
-		    Dim mb As New MemoryBlock(4)
-		    mb.Int32Value(0) = mHandle
-		    InstanceRef = mb
-		    Instances.Value(InstanceRef) = Me
+		    Instances.Value(mHandle) = Me
 		    
-		    If Not SetOption(OPT_WRITEDATA, InstanceRef) Then Raise cURLException(Me.LastError)
-		    If Not SetOption(OPT_READDATA, InstanceRef) Then Raise cURLException(Me.LastError)
-		    If Not SetOption(OPT_PROGRESSDATA, InstanceRef) Then Raise cURLException(Me.LastError)
-		    If Not SetOption(OPT_HEADERDATA, InstanceRef) Then Raise cURLException(Me.LastError)
+		    If Not SetOption(OPT_WRITEDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
+		    If Not SetOption(OPT_READDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
+		    If Not SetOption(OPT_PROGRESSDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
+		    If Not SetOption(OPT_HEADERDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
 		    #If DebugBuild Then
-		      If Not SetOption(OPT_DEBUGDATA, InstanceRef) Then Raise cURLException(Me.LastError)
+		      If Not SetOption(OPT_DEBUGDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
 		    #endif
 		  End If
 		End Sub
@@ -104,7 +100,7 @@ Protected Class cURLBase
 	#tag EndMethod
 
 	#tag DelegateDeclaration, Flags = &h21
-		Private Delegate Function cURLCloseCallback(UserData As Ptr, cURLSocket As Integer) As Integer
+		Private Delegate Function cURLCloseCallback(UserData As Integer, cURLSocket As Integer) As Integer
 	#tag EndDelegateDeclaration
 
 	#tag Method, Flags = &h21
@@ -112,7 +108,7 @@ Protected Class cURLBase
 		  // called by DebugCallback
 		  Dim mb As MemoryBlock = data
 		  Dim s As String = mb.StringValue(0, size)
-		  RaiseEvent DebugMessage(info, s)
+		  If info = curl_infotype.text Then RaiseEvent DebugMessage(s)
 		  Return size
 		End Function
 	#tag EndMethod
@@ -150,7 +146,7 @@ Protected Class cURLBase
 	#tag EndMethod
 
 	#tag DelegateDeclaration, Flags = &h21
-		Private Delegate Function cURLOpenCallback(UserData As Ptr, SocketType As Integer, Socket As Ptr) As Ptr
+		Private Delegate Function cURLOpenCallback(UserData As Integer, SocketType As Integer, Socket As Ptr) As Ptr
 	#tag EndDelegateDeclaration
 
 	#tag Method, Flags = &h21
@@ -161,7 +157,7 @@ Protected Class cURLBase
 	#tag EndMethod
 
 	#tag DelegateDeclaration, Flags = &h21
-		Private Delegate Function cURLProgressCallback(client As Ptr, dlTotal As UInt64, dlnow As UInt64, ultotal As UInt64, ulnow As UInt64) As Integer
+		Private Delegate Function cURLProgressCallback(UserData As Integer, dlTotal As UInt64, dlnow As UInt64, ultotal As UInt64, ulnow As UInt64) As Integer
 	#tag EndDelegateDeclaration
 
 	#tag Method, Flags = &h21
@@ -197,6 +193,8 @@ Protected Class cURLBase
 		  If curl <> Nil Then
 		    Return cURLBase(curl).curlDebug(info, data, size)
 		  End If
+		  
+		  Break ' UserData does not refer to a valid instance!
 		End Function
 	#tag EndMethod
 
@@ -220,7 +218,7 @@ Protected Class cURLBase
 		    Return cURLBase(curl).curlHeader(char, size, nmemb)
 		  End If
 		  
-		  Break
+		  Break ' UserData does not refer to a valid instance!
 		End Function
 	#tag EndMethod
 
@@ -235,6 +233,8 @@ Protected Class cURLBase
 		  Dim curl As Object = Instances.Lookup(UserData, Nil)
 		  If curl = Nil Then Return Nil
 		  Return cURLBase(curl).curlOpen(SocketType, Socket)
+		  
+		  Break ' UserData does not refer to a valid instance!
 		End Function
 	#tag EndMethod
 
@@ -270,14 +270,13 @@ Protected Class cURLBase
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Shared Function ProgressCallback(client As Ptr, dlTotal As UInt64, dlnow As UInt64, ultotal As UInt64, ulnow As UInt64) As Integer
-		  Dim data As Integer = client.Int32
-		  Dim curl As Object = Instances.Lookup(data, Nil)
+		Private Shared Function ProgressCallback(UserData As Integer, dlTotal As UInt64, dlnow As UInt64, ultotal As UInt64, ulnow As UInt64) As Integer
+		  Dim curl As Object = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil Then
 		    Return cURLBase(curl).curlProgress(dlTotal, dlnow, ultotal, ulnow)
 		  End If
 		  
-		  Break
+		  Break ' UserData does not refer to a valid instance!
 		End Function
 	#tag EndMethod
 
@@ -306,7 +305,7 @@ Protected Class cURLBase
 		    Return cURLBase(curl).curlRead(char, size, nmemb)
 		  End If
 		  
-		  Break
+		  Break ' UserData does not refer to a valid instance!
 		End Function
 	#tag EndMethod
 
@@ -319,63 +318,63 @@ Protected Class cURLBase
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function SetOption(OptionNumber As Integer, NewOption As Variant) As Boolean
-		  // This method marshals the NewOption into a Ptr then calls curl_easy-setopt
+		Function SetOption(OptionNumber As Integer, NewValue As Variant) As Boolean
+		  // This method marshals the NewValue into a Ptr then calls curl_easy-setopt
 		  
 		  If Not cURL.IsAvailable Then Return False
 		  Dim mb As MemoryBlock
-		  Dim i As Integer = VarType(NewOption)
-		  Select Case i
+		  Dim ValueType As Integer = VarType(NewValue)
+		  Select Case ValueType
+		  Case Variant.TypeNil
+		    Raise New NilObjectException
 		  Case Variant.TypeBoolean
 		    mb = New MemoryBlock(1)
-		    mb.BooleanValue(0) = NewOption.BooleanValue
+		    mb.BooleanValue(0) = NewValue.BooleanValue
 		  Case Variant.TypeInteger
 		    mb = New MemoryBlock(4)
-		    mb.Int32Value(0) = NewOption.Int32Value
+		    mb.Int32Value(0) = NewValue.Int32Value
 		  Case Variant.TypePtr
-		    mb = NewOption.PtrValue
+		    mb = NewValue.PtrValue
 		  Case Variant.TypeString
-		    mb = NewOption.StringValue + Chr(0)
+		    mb = NewValue.StringValue + Chr(0)
 		  Case Variant.TypeObject
 		    
-		    Select Case NewOption
+		    Select Case NewValue
 		    Case IsA cURLProgressCallback
-		      Dim p As cURLProgressCallback = NewOption
+		      Dim p As cURLProgressCallback = NewValue
 		      mb = p
 		      
 		    Case IsA cURLCallback
-		      Dim p As cURLCallback = NewOption
+		      Dim p As cURLCallback = NewValue
 		      mb = p
 		      
 		    Case IsA cURLDebugCallback
-		      Dim p As cURLDebugCallback = NewOption
+		      Dim p As cURLDebugCallback = NewValue
 		      mb = p
 		      
 		    Case IsA cURLCloseCallback
-		      Dim p As cURLCloseCallback = NewOption
+		      Dim p As cURLCloseCallback = NewValue
 		      mb = p
 		      
 		    Case IsA cURLOpenCallback
-		      Dim p As cURLOpenCallback = NewOption
+		      Dim p As cURLOpenCallback = NewValue
 		      mb = p
 		      
 		    Else
-		      Break
+		      Dim err As New TypeMismatchException
+		      err.Message = "NewValue is of unsupported type: " + Introspection.GetType(NewValue).Name
+		      Raise err
 		    End Select
 		    
 		  Else
-		    Raise New UnsupportedFormatException
+		    Dim err As New TypeMismatchException
+		    err.Message = "NewValue is of unsupported vartype: " + Str(ValueType)
+		    Raise err
 		  End Select
 		  
 		  mLastError = curl_easy_setopt(Me.Handle, OptionNumber, mb)
 		  Return mLastError = 0
 		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub UserAgent(Assigns AgentString As String)
-		  Call Me.SetOption(OPT_USERAGENT, AgentString)
-		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
@@ -396,7 +395,7 @@ Protected Class cURLBase
 		    Return cURLBase(curl).curlWrite(char, size, nmemb)
 		  End If
 		  
-		  Break
+		  Break ' UserData does not refer to a valid instance!
 		End Function
 	#tag EndMethod
 
@@ -414,7 +413,7 @@ Protected Class cURLBase
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
-		Event DebugMessage(info As cURL.curl_infotype, data As String)
+		Event DebugMessage(data As String)
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
@@ -430,9 +429,44 @@ Protected Class cURLBase
 	#tag EndHook
 
 
-	#tag Property, Flags = &h21
-		Private InstanceRef As Ptr
-	#tag EndProperty
+	#tag Note, Name = About the callback functions
+		libcURL uses callback functions to interact with and notify the calling process. Since callbacks must be non-relocatable and immutable,
+		they must be implemented as shared methods of the class rather than instance methods of the class.
+		
+		The callback functions are registered to the instance in cURLBase.Constructor(). For example, this registers the WriteCallback function
+		to handle newly downloaded data:
+		
+		    If Not SetOption(OPT_WRITEDATA, InstanceRef) Then Raise cURLException(Me.LastError)
+		    If Not SetOption(OPT_WRITEFUNCTION, AddressOf WriteCallback) Then Raise cURLException(Me.LastError)
+		
+		When cURLBase.Constructor() is called, the new instance stores a reference to itself in the cURLBase.Instances shared Dictionary. Each 
+		callback function (OPT_*FUNCTION) must have an associtated instance reference (OPT_*DATA). This instance reference is passed to the 
+		callback functions which use it as a key in the Instances dictionary. 
+		
+		When libcURL calls a callback function, the function will locate the proper instance and call the curl* instance method that corresponds
+		to the callback (e.g. WriteCallback calls cURLBase.curlWrite.) The instance method raises the appropriate event (e.g. cURLBase.curlWrite
+		raises the DataAvailable event.)
+		
+		
+	#tag EndNote
+
+	#tag Note, Name = Using this class
+		This class provides basic access to the curl_easy API.
+		
+		Create a new instance, then use the SetOption method to define what cURL will be doing.
+		
+		For example, setting the user-agent string:
+		
+		   Dim mcURL As New cURL.cURLBase
+		   If Not mcURL.SetOption(OPT_USERAGENT, "Bob's download manager/5.1") Then
+		      MsgBox("cURL error: " + Str(mcURL.LastError))
+		   End If
+		
+		SetOption accepts a Variant as the option value, but only Integers, Strings, and Booleans should be
+		used. SetOption will also accept the cURL delegates as new values but that is intended for internal use
+		only. Setting an option value to an unsupported type will raise a TypeMismatchException.
+	#tag EndNote
+
 
 	#tag Property, Flags = &h21
 		Private Shared Instances As Dictionary

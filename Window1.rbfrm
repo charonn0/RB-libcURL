@@ -24,7 +24,7 @@ Begin Window Window1
    Title           =   "Untitled"
    Visible         =   True
    Width           =   879
-   Begin cURL.HTTPClient Object1
+   Begin cURL.HTTPClient curlget
       Height          =   32
       Index           =   -2147483648
       Left            =   964
@@ -226,18 +226,25 @@ End
 
 #tag WindowCode
 	#tag Event
+		Function CancelClose(appQuitting as Boolean) As Boolean
+		  #pragma Unused appQuitting
+		  curlget.Close
+		End Function
+	#tag EndEvent
+
+	#tag Event
 		Sub Open()
-		  MsgBox(cURL.Version)
+		  Me.Title = cURL.Version
 		End Sub
 	#tag EndEvent
 
 
 #tag EndWindowCode
 
-#tag Events Object1
+#tag Events curlget
 	#tag Event
-		Sub DebugMessage(info As cURL.curl_infotype, data As String)
-		  TextArea3.AppendText(Str(info) + " " + data)
+		Sub DebugMessage(data As String)
+		  TextArea3.AppendText(data)
 		  TextArea3.ScrollPosition = TextArea3.Text.Len
 		End Sub
 	#tag EndEvent
@@ -270,7 +277,8 @@ End
 #tag Events PushButton1
 	#tag Event
 		Sub Action()
-		  Object1.Get("http://www.boredomsoft.org/")
+		  
+		  curlget.Get("http://www.boredomsoft.org/")
 		End Sub
 	#tag EndEvent
 #tag EndEvents
