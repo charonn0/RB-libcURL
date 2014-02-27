@@ -87,13 +87,6 @@ Protected Module cURL
 	#tag EndExternalMethod
 
 	#tag Method, Flags = &h1
-		Protected Function Features() As Integer
-		  Dim ve As CURLVersion = VersionStruct
-		  Return ve.Features
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
 		Protected Function FormatError(cURLError As Integer) As String
 		  //Translates libcurl error numbers to messages
 		  If cURL.IsAvailable Then
@@ -106,33 +99,6 @@ Protected Module cURL
 	#tag Method, Flags = &h1
 		Protected Function IsAvailable() As Boolean
 		  Return System.IsFunctionAvailable("curl_easy_init", "libcurl")
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Function Protocols() As String()
-		  Dim ve As CURLVersion = VersionStruct
-		  Dim l() As String' = ve.Protocols.Ptr(0)
-		  Dim mb As MemoryBlock = ve.Protocols.Ptr(0)
-		  Dim bs As New BinaryStream(mb)
-		  
-		  Do
-		    Dim word As String
-		    Dim null As Integer
-		    While Not bs.EOF
-		      Dim char As Byte = bs.ReadByte
-		      If char <> 0 Then
-		        word = word + Chr(char)
-		      Else
-		        Exit While
-		      End If
-		    Wend
-		    l.Append(word)
-		    null = 0
-		  Loop
-		  
-		  'Dim s As String = mb.CString(0)
-		  Break
 		End Function
 	#tag EndMethod
 
@@ -170,28 +136,6 @@ Protected Module cURL
 		        curl_easy_cleanup(mHandle)
 		        Return ret
 		      End If
-		    End If
-		  End If
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Function Version() As String
-		  If Not cURL.IsAvailable Then Return ""
-		  Dim p As MemoryBlock = curl_version()
-		  Return p.CString(0)
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Function VersionStruct() As CURLVersion
-		  If cURL.IsAvailable Then
-		    If curl_global_init(3) = 0 Then
-		      Dim ve As MemoryBlock
-		      ve = curl_version_info(CURLVERSION_FOURTH)
-		      Dim v As CURLVersion
-		      v.StringValue(TargetLittleEndian) = ve.StringValue(0, v.Size)
-		      Return v
 		    End If
 		  End If
 		End Function
@@ -444,25 +388,34 @@ Protected Module cURL
 	#tag Constant, Name = ERROR_WRITE, Type = Double, Dynamic = False, Default = \"23", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = INFO_EFFECTIVE_URL, Type = Double, Dynamic = False, Default = \"1048577", Scope = Protected
+	#tag EndConstant
 
-	#tag Structure, Name = CURLVersion, Flags = &h21
-		Age As Integer
-		  VersionString As Ptr
-		  VersionNumber As UInt32
-		  HostString As Ptr
-		  Features As Integer
-		  SSLVersionString As Ptr
-		  SSLVersionNumber As Integer
-		  libzVersion As Ptr
-		  Protocols As Ptr
-		  ares As Ptr
-		  aresnum As Integer
-		  libidn As Ptr
-		  iconvVersion as Integer
-		libSSHVersion As Ptr
-	#tag EndStructure
+	#tag Constant, Name = INFO_LOCAL_IP, Type = Double, Dynamic = False, Default = \"1048617", Scope = Protected
+	#tag EndConstant
 
+	#tag Constant, Name = INFO_LOCAL_PORT, Type = Double, Dynamic = False, Default = \"2097194", Scope = Protected
+	#tag EndConstant
 
+	#tag Constant, Name = INFO_PRIMARY_IP, Type = Double, Dynamic = False, Default = \"1048608", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = INFO_PRIMARY_PORT, Type = Double, Dynamic = False, Default = \"2097192", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = INFO_REDIRECT_COUNT, Type = Double, Dynamic = False, Default = \"2097172", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = INFO_RESPONSE_CODE, Type = Double, Dynamic = False, Default = \"2097154", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = INFO_SIZE_DOWNLOAD, Type = Double, Dynamic = False, Default = \"3145736", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = INFO_SPEED_DOWNLOAD, Type = Double, Dynamic = False, Default = \"3145737", Scope = Protected
+	#tag EndConstant
+
+	
 	#tag Enum, Name = curl_infotype, Flags = &h1
 		text
 		  header_in

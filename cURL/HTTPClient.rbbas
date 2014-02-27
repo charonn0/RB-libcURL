@@ -4,9 +4,19 @@ Inherits cURL.cURLBase
 	#tag Method, Flags = &h0
 		Sub Get(URL As String)
 		  Me.URL = URL
-		  Call Me.SetOption(OPT_HTTPGET, True)
+		  Call Me.SetOption(cURL.Opts.HTTPGET, True)
 		  Call Me.Perform()
 		  
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Post(URL As String, Form As Dictionary)
+		  'Me.URL = URL
+		  'Call Me.SetOption(cURL.Opts.HTTPPOST, True)
+		  'Call Me.Perform()
+		  '
 		  
 		End Sub
 	#tag EndMethod
@@ -42,7 +52,7 @@ Inherits cURL.cURLBase
 		  //The fully qualified absolute URL you are connecting to. MUST include the protocol, domain, path, AND the remote file name,
 		  // e.g: ftp://example.com/files/stuff/myFile.zip
 		  If NewURL <> "" Then
-		    If Not SetOption(OPT_URL, NewURL) Then
+		    If Not SetOption(cURL.Opts.URL, NewURL) Then
 		      Raise New RuntimeException
 		    End If
 		  End If

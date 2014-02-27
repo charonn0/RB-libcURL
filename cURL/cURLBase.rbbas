@@ -1,5 +1,6 @@
 #tag Class
 Protected Class cURLBase
+Implements Readable,Writeable
 	#tag Method, Flags = &h0
 		Sub Close()
 		  // This method cleans up the instance
@@ -44,29 +45,29 @@ Protected Class cURLBase
 		  If mHandle > 0 Then
 		    Instances.Value(mHandle) = Me
 		    
-		    'If Not SetOption(OPT_OPENSOCKETDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
-		    'If Not SetOption(OPT_OPENSOCKETFUNCTION, AddressOf OpenCallback) Then Raise cURLException(Me.LastError)
+		    'If Not SetOption(cURL.Opts.OPENSOCKETDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
+		    'If Not SetOption(cURL.Opts.OPENSOCKETFUNCTION, AddressOf OpenCallback) Then Raise cURLException(Me.LastError)
 		    
-		    If Not SetOption(OPT_CLOSESOCKETDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
-		    If Not SetOption(OPT_CLOSESOCKETFUNCTION, AddressOf CloseCallback) Then Raise cURLException(Me.LastError)
+		    If Not SetOption(cURL.Opts.CLOSESOCKETDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
+		    If Not SetOption(cURL.Opts.CLOSESOCKETFUNCTION, AddressOf CloseCallback) Then Raise cURLException(Me.LastError)
 		    
-		    If Not SetOption(OPT_WRITEDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
-		    If Not SetOption(OPT_WRITEFUNCTION, AddressOf WriteCallback) Then Raise cURLException(Me.LastError)
+		    If Not SetOption(cURL.Opts.WRITEDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
+		    If Not SetOption(cURL.Opts.WRITEFUNCTION, AddressOf WriteCallback) Then Raise cURLException(Me.LastError)
 		    
-		    If Not SetOption(OPT_READDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
-		    If Not SetOption(OPT_READFUNCTION, AddressOf ReadCallback) Then Raise cURLException(Me.LastError)
+		    If Not SetOption(cURL.Opts.READDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
+		    If Not SetOption(cURL.Opts.READFUNCTION, AddressOf ReadCallback) Then Raise cURLException(Me.LastError)
 		    
-		    If Not SetOption(OPT_NOPROGRESS, False) Then Raise cURLException(Me.LastError)
-		    If Not SetOption(OPT_PROGRESSDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
-		    If Not SetOption(OPT_PROGRESSFUNCTION, AddressOf ProgressCallback) Then Raise cURLException(Me.LastError)
+		    If Not SetOption(cURL.Opts.NOPROGRESS, False) Then Raise cURLException(Me.LastError)
+		    If Not SetOption(cURL.Opts.PROGRESSDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
+		    If Not SetOption(cURL.Opts.PROGRESSFUNCTION, AddressOf ProgressCallback) Then Raise cURLException(Me.LastError)
 		    
-		    If Not SetOption(OPT_HEADERDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
-		    If Not SetOption(OPT_HEADERFUNCTION, AddressOf HeaderCallback) Then Raise cURLException(Me.LastError)
+		    If Not SetOption(cURL.Opts.HEADERDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
+		    If Not SetOption(cURL.Opts.HEADERFUNCTION, AddressOf HeaderCallback) Then Raise cURLException(Me.LastError)
 		    
 		    #If DebugBuild Then
-		      If Not SetOption(OPT_VERBOSE, True) Then Raise cURLException(Me.LastError)
-		      If Not SetOption(OPT_DEBUGDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
-		      If Not SetOption(OPT_DEBUGFUNCTION, AddressOf DebugCallback) Then Raise cURLException(Me.LastError)
+		      If Not SetOption(cURL.Opts.VERBOSE, True) Then Raise cURLException(Me.LastError)
+		      If Not SetOption(cURL.Opts.DEBUGDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
+		      If Not SetOption(cURL.Opts.DEBUGFUNCTION, AddressOf DebugCallback) Then Raise cURLException(Me.LastError)
 		    #endif
 		  End If
 		End Sub
@@ -80,12 +81,12 @@ Protected Class cURLBase
 		    mHandle = curl_easy_duphandle(CopyOpts.Handle)
 		    Instances.Value(mHandle) = Me
 		    
-		    If Not SetOption(OPT_WRITEDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
-		    If Not SetOption(OPT_READDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
-		    If Not SetOption(OPT_PROGRESSDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
-		    If Not SetOption(OPT_HEADERDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
+		    If Not SetOption(cURL.Opts.WRITEDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
+		    If Not SetOption(cURL.Opts.READDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
+		    If Not SetOption(cURL.Opts.PROGRESSDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
+		    If Not SetOption(cURL.Opts.HEADERDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
 		    #If DebugBuild Then
-		      If Not SetOption(OPT_DEBUGDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
+		      If Not SetOption(cURL.Opts.DEBUGDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
 		    #endif
 		  End If
 		End Sub
@@ -201,6 +202,20 @@ Protected Class cURLBase
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function EOF() As Boolean
+		  // Part of the Readable interface.
+		  Return Me.LastError <> 0
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Flush()
+		  // Part of the Writeable interface.
+		  Return
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h1
 		Protected Sub GetInfo(InfoType As Integer, Buffer As Ptr)
 		  If Not cURL.IsAvailable Then Return
@@ -265,8 +280,11 @@ Protected Class cURLBase
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Perform() As Boolean
+		Function Perform(URL As String = "") As Boolean
 		  If Not cURL.IsAvailable Then Return False
+		  If URL <> "" Then
+		    If Not SetOption(cURL.cURL.Opts.URL, URL) Then Raise cURLException(Me.LastError)
+		  End If
 		  mLastError = curl_easy_perform(Me.Handle)
 		  Return Me.LastError = 0
 		End Function
@@ -309,6 +327,13 @@ Protected Class cURLBase
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function ReadError() As Boolean
+		  // Part of the Readable interface.
+		  Return Me.LastError <> 0
 		End Function
 	#tag EndMethod
 
@@ -381,13 +406,14 @@ Protected Class cURLBase
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function Write(Text As String) As Integer
+		Protected Sub Write(Text As String)
+		  // Part of the Writeable interface.
 		  Dim byteswritten As Integer
 		  Dim mb As MemoryBlock = Text
 		  mLastError = curl_easy_send(Me.Handle, mb, mb.Size, byteswritten)
-		  If mLastError = 0 Then Return byteswritten
+		  'If mLastError = 0 Then Return byteswritten
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
@@ -399,6 +425,13 @@ Protected Class cURLBase
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function WriteError() As Boolean
+		  // Part of the Writeable interface.
+		  Return Me.LastError <> 0
 		End Function
 	#tag EndMethod
 
@@ -439,11 +472,11 @@ Protected Class cURLBase
 		The callback functions are registered to the instance in cURLBase.Constructor(). For example, this registers the WriteCallback function
 		to handle newly downloaded data:
 		
-		    If Not SetOption(OPT_WRITEDATA, InstanceRef) Then Raise cURLException(Me.LastError)
-		    If Not SetOption(OPT_WRITEFUNCTION, AddressOf WriteCallback) Then Raise cURLException(Me.LastError)
+		    If Not SetOption(cURL.Opts.WRITEDATA, InstanceRef) Then Raise cURLException(Me.LastError)
+		    If Not SetOption(cURL.Opts.WRITEFUNCTION, AddressOf WriteCallback) Then Raise cURLException(Me.LastError)
 		
 		When cURLBase.Constructor() is called, the new instance stores a reference to itself in the cURLBase.Instances shared Dictionary. Each 
-		callback function (OPT_*FUNCTION) must have an associtated instance reference (OPT_*DATA). This instance reference is passed to the 
+		callback function (cURL.Opts.*FUNCTION) must have an associtated instance reference (cURL.Opts.*DATA). This instance reference is passed to the 
 		callback functions which use it as a key in the Instances dictionary. 
 		
 		When libcURL calls a callback function, the function will locate the proper instance and call the curl* instance method that corresponds
@@ -459,7 +492,7 @@ Protected Class cURLBase
 		For example, setting the user-agent string:
 		
 		   Dim mcURL As New cURL.cURLBase
-		   If Not mcURL.SetOption(OPT_USERAGENT, "Bob's download manager/5.1") Then
+		   If Not mcURL.SetOption(cURL.Opts.USERAGENT, "Bob's download manager/5.1") Then
 		      MsgBox("cURL error: " + Str(mcURL.LastError))
 		   End If
 		
@@ -486,118 +519,13 @@ Protected Class cURLBase
 	#tag EndProperty
 
 
-	#tag Constant, Name = INFO_EFFECTIVE_URL, Type = Double, Dynamic = False, Default = \"1048577", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = INFO_LOCAL_IP, Type = Double, Dynamic = False, Default = \"1048617", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = INFO_LOCAL_PORT, Type = Double, Dynamic = False, Default = \"2097194", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = INFO_PRIMARY_IP, Type = Double, Dynamic = False, Default = \"1048608", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = INFO_PRIMARY_PORT, Type = Double, Dynamic = False, Default = \"2097192", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = INFO_REDIRECT_COUNT, Type = Double, Dynamic = False, Default = \"2097172", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = INFO_RESPONSE_CODE, Type = Double, Dynamic = False, Default = \"2097154", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = INFO_SIZE_DOWNLOAD, Type = Double, Dynamic = False, Default = \"3145736", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = INFO_SPEED_DOWNLOAD, Type = Double, Dynamic = False, Default = \"3145737", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = OPT_CLOSESOCKETDATA, Type = Double, Dynamic = False, Default = \"10209", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = OPT_CLOSESOCKETFUNCTION, Type = Double, Dynamic = False, Default = \"20208", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = OPT_CONNECT_ONLY, Type = Double, Dynamic = False, Default = \"141", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = OPT_DEBUGDATA, Type = Double, Dynamic = False, Default = \"10095", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = OPT_DEBUGFUNCTION, Type = Double, Dynamic = False, Default = \"20094", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = OPT_DIRLISTONLY, Type = Double, Dynamic = False, Default = \"48", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = OPT_HEADERDATA, Type = Double, Dynamic = False, Default = \"10029", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = OPT_HEADERFUNCTION, Type = Double, Dynamic = False, Default = \"20079", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = OPT_HTTPGET, Type = Double, Dynamic = False, Default = \"80", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = OPT_NOPROGRESS, Type = Double, Dynamic = False, Default = \"43", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = OPT_OPENSOCKETDATA, Type = Double, Dynamic = False, Default = \"10164", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = OPT_OPENSOCKETFUNCTION, Type = Double, Dynamic = False, Default = \"20163", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = OPT_PASSWORD, Type = Double, Dynamic = False, Default = \"10174", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = OPT_PORT, Type = Double, Dynamic = False, Default = \"3", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = OPT_PROGRESSDATA, Type = Double, Dynamic = False, Default = \"10057", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = OPT_PROGRESSFUNCTION, Type = Double, Dynamic = False, Default = \"20056", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = OPT_READDATA, Type = Double, Dynamic = False, Default = \"10009", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = OPT_READFUNCTION, Type = Double, Dynamic = False, Default = \"20012", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = OPT_SEEKFUNCTION, Type = Double, Dynamic = False, Default = \"20167", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = OPT_UPLOAD, Type = Double, Dynamic = False, Default = \"46", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = OPT_URL, Type = Double, Dynamic = False, Default = \"10002", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = OPT_USERAGENT, Type = Double, Dynamic = False, Default = \"10018", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = OPT_USERNAME, Type = Double, Dynamic = False, Default = \"10173", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = OPT_VERBOSE, Type = Double, Dynamic = False, Default = \"41", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = OPT_WRITEDATA, Type = Double, Dynamic = False, Default = \"10001", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = OPT_WRITEFUNCTION, Type = Double, Dynamic = False, Default = \"20011", Scope = Protected
-	#tag EndConstant
-
-
 	#tag ViewBehavior
 		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
+			Type="Integer"
 			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
