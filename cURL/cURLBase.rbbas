@@ -42,31 +42,7 @@ Implements Readable,Writeable
 		  mHandle = curl_easy_init()
 		  If mHandle > 0 Then
 		    Instances.Value(mHandle) = New WeakRef(Me)
-		    
-		    'If Not SetOption(cURL.Opts.OPENSOCKETDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
-		    'If Not SetOption(cURL.Opts.OPENSOCKETFUNCTION, AddressOf OpenCallback) Then Raise cURLException(Me.LastError)
-		    
-		    If Not SetOption(cURL.Opts.CLOSESOCKETDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
-		    If Not SetOption(cURL.Opts.CLOSESOCKETFUNCTION, AddressOf CloseCallback) Then Raise cURLException(Me.LastError)
-		    
-		    If Not SetOption(cURL.Opts.WRITEDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
-		    If Not SetOption(cURL.Opts.WRITEFUNCTION, AddressOf WriteCallback) Then Raise cURLException(Me.LastError)
-		    
-		    If Not SetOption(cURL.Opts.READDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
-		    If Not SetOption(cURL.Opts.READFUNCTION, AddressOf ReadCallback) Then Raise cURLException(Me.LastError)
-		    
-		    If Not SetOption(cURL.Opts.NOPROGRESS, False) Then Raise cURLException(Me.LastError)
-		    If Not SetOption(cURL.Opts.PROGRESSDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
-		    If Not SetOption(cURL.Opts.PROGRESSFUNCTION, AddressOf ProgressCallback) Then Raise cURLException(Me.LastError)
-		    
-		    If Not SetOption(cURL.Opts.HEADERDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
-		    If Not SetOption(cURL.Opts.HEADERFUNCTION, AddressOf HeaderCallback) Then Raise cURLException(Me.LastError)
-		    
-		    #If DebugBuild Then
-		      If Not SetOption(cURL.Opts.VERBOSE, True) Then Raise cURLException(Me.LastError)
-		      If Not SetOption(cURL.Opts.DEBUGDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
-		      If Not SetOption(cURL.Opts.DEBUGFUNCTION, AddressOf DebugCallback) Then Raise cURLException(Me.LastError)
-		    #endif
+		    InitCallbacks()
 		  End If
 		End Sub
 	#tag EndMethod
@@ -77,15 +53,12 @@ Implements Readable,Writeable
 		  If Not cURL.IsAvailable Then Raise cURLException(0)
 		  If CopyOpts <> Nil And CopyOpts.Handle > 0 Then
 		    mHandle = curl_easy_duphandle(CopyOpts.Handle)
-		    Instances.Value(mHandle) = Me
-		    
-		    If Not SetOption(cURL.Opts.WRITEDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
-		    If Not SetOption(cURL.Opts.READDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
-		    If Not SetOption(cURL.Opts.PROGRESSDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
-		    If Not SetOption(cURL.Opts.HEADERDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
-		    #If DebugBuild Then
-		      If Not SetOption(cURL.Opts.DEBUGDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
-		    #endif
+		    If Me.Handle > 0 Then
+		      Instances.Value(mHandle) = New WeakRef(Me)
+		      InitCallbacks()
+		    Else
+		      Raise cURLException(Me.LastError)
+		    End If
 		  End If
 		End Sub
 	#tag EndMethod
@@ -242,6 +215,35 @@ Implements Readable,Writeable
 		  
 		  Break ' UserData does not refer to a valid instance!
 		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub InitCallbacks()
+		  'If Not SetOption(cURL.Opts.OPENSOCKETDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
+		  'If Not SetOption(cURL.Opts.OPENSOCKETFUNCTION, AddressOf OpenCallback) Then Raise cURLException(Me.LastError)
+		  
+		  If Not SetOption(cURL.Opts.CLOSESOCKETDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
+		  If Not SetOption(cURL.Opts.CLOSESOCKETFUNCTION, AddressOf CloseCallback) Then Raise cURLException(Me.LastError)
+		  
+		  If Not SetOption(cURL.Opts.WRITEDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
+		  If Not SetOption(cURL.Opts.WRITEFUNCTION, AddressOf WriteCallback) Then Raise cURLException(Me.LastError)
+		  
+		  If Not SetOption(cURL.Opts.READDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
+		  If Not SetOption(cURL.Opts.READFUNCTION, AddressOf ReadCallback) Then Raise cURLException(Me.LastError)
+		  
+		  If Not SetOption(cURL.Opts.NOPROGRESS, False) Then Raise cURLException(Me.LastError)
+		  If Not SetOption(cURL.Opts.PROGRESSDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
+		  If Not SetOption(cURL.Opts.PROGRESSFUNCTION, AddressOf ProgressCallback) Then Raise cURLException(Me.LastError)
+		  
+		  If Not SetOption(cURL.Opts.HEADERDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
+		  If Not SetOption(cURL.Opts.HEADERFUNCTION, AddressOf HeaderCallback) Then Raise cURLException(Me.LastError)
+		  
+		  #If DebugBuild Then
+		    If Not SetOption(cURL.Opts.VERBOSE, True) Then Raise cURLException(Me.LastError)
+		    If Not SetOption(cURL.Opts.DEBUGDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
+		    If Not SetOption(cURL.Opts.DEBUGFUNCTION, AddressOf DebugCallback) Then Raise cURLException(Me.LastError)
+		  #endif
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
