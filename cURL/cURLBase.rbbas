@@ -4,8 +4,6 @@ Implements Readable,Writeable
 	#tag Method, Flags = &h0
 		Sub Close()
 		  // This method cleans up the instance
-		  // This class will not automatically destruct!
-		  // You MUST call this method to destroy the instance
 		  // If no more instances, cleans up libcurl completely
 		  
 		  If Not cURL.IsAvailable Then Return
@@ -21,12 +19,12 @@ Implements Readable,Writeable
 	#tag Method, Flags = &h21
 		Private Shared Function CloseCallback(UserData As Integer, Socket As Integer) As Integer
 		  #pragma Unused Socket ' socket is an OS socket reference
-		  Dim curl As Object = Instances.Lookup(UserData, Nil)
+		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl = Nil Then
 		    Break ' UserData does not refer to a valid instance!
 		    Return 1
 		  End If
-		  cURLBase(curl).curlClose
+		  cURLBase(curl.Value).curlClose
 		  Return 0
 		End Function
 	#tag EndMethod
@@ -43,7 +41,7 @@ Implements Readable,Writeable
 		  
 		  mHandle = curl_easy_init()
 		  If mHandle > 0 Then
-		    Instances.Value(mHandle) = Me
+		    Instances.Value(mHandle) = New WeakRef(Me)
 		    
 		    'If Not SetOption(cURL.Opts.OPENSOCKETDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
 		    'If Not SetOption(cURL.Opts.OPENSOCKETFUNCTION, AddressOf OpenCallback) Then Raise cURLException(Me.LastError)
@@ -193,13 +191,19 @@ Implements Readable,Writeable
 	#tag Method, Flags = &h21
 		Private Shared Function DebugCallback(Handle As Integer, info As curl_infotype, data As Ptr, size As Integer, UserData As Integer) As Integer
 		  #pragma Unused Handle ' handle is the cURL handle of the instance
-		  Dim curl As Object = Instances.Lookup(UserData, Nil)
+		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil Then
-		    Return cURLBase(curl).curlDebug(info, data, size)
+		    Return cURLBase(curl.Value).curlDebug(info, data, size)
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
 		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub Destructor()
+		  Me.Close()
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -231,9 +235,9 @@ Implements Readable,Writeable
 
 	#tag Method, Flags = &h21
 		Private Shared Function HeaderCallback(char As Ptr, size As Integer, nmemb As Integer, UserData As Integer) As Integer
-		  Dim curl As Object = Instances.Lookup(UserData, Nil)
+		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil Then
-		    Return cURLBase(curl).curlHeader(char, size, nmemb)
+		    Return cURLBase(curl.Value).curlHeader(char, size, nmemb)
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
@@ -248,9 +252,9 @@ Implements Readable,Writeable
 
 	#tag Method, Flags = &h21
 		Private Shared Function OpenCallback(UserData As Ptr, SocketType As Integer, Socket As Ptr) As Ptr
-		  Dim curl As Object = Instances.Lookup(UserData, Nil)
+		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl = Nil Then Return Nil
-		  Return cURLBase(curl).curlOpen(SocketType, Socket)
+		  Return cURLBase(curl.Value).curlOpen(SocketType, Socket)
 		  
 		  Break ' UserData does not refer to a valid instance!
 		End Function
@@ -292,9 +296,9 @@ Implements Readable,Writeable
 
 	#tag Method, Flags = &h21
 		Private Shared Function ProgressCallback(UserData As Integer, dlTotal As UInt64, dlnow As UInt64, ultotal As UInt64, ulnow As UInt64) As Integer
-		  Dim curl As Object = Instances.Lookup(UserData, Nil)
+		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil Then
-		    Return cURLBase(curl).curlProgress(dlTotal, dlnow, ultotal, ulnow)
+		    Return cURLBase(curl.Value).curlProgress(dlTotal, dlnow, ultotal, ulnow)
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
@@ -321,9 +325,9 @@ Implements Readable,Writeable
 	#tag Method, Flags = &h21
 		Private Shared Function ReadCallback(char As Ptr, size As Integer, nmemb As Integer, UserData As Integer) As Integer
 		  // called when data is needed
-		  Dim curl As Object = Instances.Lookup(UserData, Nil)
+		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil Then
-		    Return cURLBase(curl).curlRead(char, size, nmemb)
+		    Return cURLBase(curl.Value).curlRead(char, size, nmemb)
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
@@ -419,9 +423,9 @@ Implements Readable,Writeable
 	#tag Method, Flags = &h21
 		Private Shared Function WriteCallback(char As Ptr, size As Integer, nmemb As Integer, UserData As Integer) As Integer
 		  // Called when data is available
-		  Dim curl As Object = Instances.Lookup(UserData, Nil)
+		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil Then
-		    Return cURLBase(curl).curlWrite(char, size, nmemb)
+		    Return cURLBase(curl.Value).curlWrite(char, size, nmemb)
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
