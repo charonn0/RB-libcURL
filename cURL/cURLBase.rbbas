@@ -1,6 +1,5 @@
 #tag Class
 Protected Class cURLBase
-Implements Readable,Writeable
 	#tag Method, Flags = &h0
 		Sub Close()
 		  // This method cleans up the instance
@@ -8,11 +7,7 @@ Implements Readable,Writeable
 		  
 		  If Not cURL.IsAvailable Then Return
 		  cURL.curl_easy_cleanup(Me.Handle)
-		  Instances.Remove(mHandle)
-		  If Instances.Count = 0 Then
-		    cURL.curl_global_cleanup()
-		    Instances = Nil
-		  End If
+		  
 		End Sub
 	#tag EndMethod
 
@@ -42,7 +37,7 @@ Implements Readable,Writeable
 		  mHandle = curl_easy_init()
 		  If mHandle > 0 Then
 		    Instances.Value(mHandle) = New WeakRef(Me)
-		    InitCallbacks()
+		    InitCallbacks(Me)
 		  End If
 		End Sub
 	#tag EndMethod
@@ -55,7 +50,7 @@ Implements Readable,Writeable
 		    mHandle = curl_easy_duphandle(CopyOpts.Handle)
 		    If Me.Handle > 0 Then
 		      Instances.Value(mHandle) = New WeakRef(Me)
-		      InitCallbacks()
+		      InitCallbacks(Me)
 		    Else
 		      Raise cURLException(Me.LastError)
 		    End If
@@ -173,23 +168,14 @@ Implements Readable,Writeable
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h21
-		Private Sub Destructor()
+	#tag Method, Flags = &h1
+		Protected Sub Destructor()
 		  Me.Close()
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function EOF() As Boolean
-		  // Part of the Readable interface.
-		  Return Me.LastError <> 0
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub Flush()
-		  // Part of the Writeable interface.
-		  Return
+		  Instances.Remove(mHandle)
+		  If Instances.Count = 0 Then
+		    cURL.curl_global_cleanup()
+		    Instances = Nil
+		  End If
 		End Sub
 	#tag EndMethod
 
@@ -217,31 +203,31 @@ Implements Readable,Writeable
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h21
-		Private Sub InitCallbacks()
-		  'If Not SetOption(cURL.Opts.OPENSOCKETDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
-		  'If Not SetOption(cURL.Opts.OPENSOCKETFUNCTION, AddressOf OpenCallback) Then Raise cURLException(Me.LastError)
+	#tag Method, Flags = &h1
+		Protected Shared Sub InitCallbacks(Sender As cURL.cURLBase)
+		  'If Not Sender.SetOption(cURL.Opts.OPENSOCKETDATA, Ptr(Sender.Handle)) Then Raise cURLException(Sender.LastError)
+		  'If Not Sender.SetOption(cURL.Opts.OPENSOCKETFUNCTION, AddressOf OpenCallback) Then Raise cURLException(Sender.LastError)
 		  
-		  If Not SetOption(cURL.Opts.CLOSESOCKETDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
-		  If Not SetOption(cURL.Opts.CLOSESOCKETFUNCTION, AddressOf CloseCallback) Then Raise cURLException(Me.LastError)
+		  If Not Sender.SetOption(cURL.Opts.CLOSESOCKETDATA, Ptr(Sender.Handle)) Then Raise cURLException(Sender.LastError)
+		  If Not Sender.SetOption(cURL.Opts.CLOSESOCKETFUNCTION, AddressOf CloseCallback) Then Raise cURLException(Sender.LastError)
 		  
-		  If Not SetOption(cURL.Opts.WRITEDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
-		  If Not SetOption(cURL.Opts.WRITEFUNCTION, AddressOf WriteCallback) Then Raise cURLException(Me.LastError)
+		  If Not Sender.SetOption(cURL.Opts.WRITEDATA, Ptr(Sender.Handle)) Then Raise cURLException(Sender.LastError)
+		  If Not Sender.SetOption(cURL.Opts.WRITEFUNCTION, AddressOf WriteCallback) Then Raise cURLException(Sender.LastError)
 		  
-		  If Not SetOption(cURL.Opts.READDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
-		  If Not SetOption(cURL.Opts.READFUNCTION, AddressOf ReadCallback) Then Raise cURLException(Me.LastError)
+		  If Not Sender.SetOption(cURL.Opts.READDATA, Ptr(Sender.Handle)) Then Raise cURLException(Sender.LastError)
+		  If Not Sender.SetOption(cURL.Opts.READFUNCTION, AddressOf ReadCallback) Then Raise cURLException(Sender.LastError)
 		  
-		  If Not SetOption(cURL.Opts.NOPROGRESS, False) Then Raise cURLException(Me.LastError)
-		  If Not SetOption(cURL.Opts.PROGRESSDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
-		  If Not SetOption(cURL.Opts.PROGRESSFUNCTION, AddressOf ProgressCallback) Then Raise cURLException(Me.LastError)
+		  If Not Sender.SetOption(cURL.Opts.NOPROGRESS, False) Then Raise cURLException(Sender.LastError)
+		  If Not Sender.SetOption(cURL.Opts.PROGRESSDATA, Ptr(Sender.Handle)) Then Raise cURLException(Sender.LastError)
+		  If Not Sender.SetOption(cURL.Opts.PROGRESSFUNCTION, AddressOf ProgressCallback) Then Raise cURLException(Sender.LastError)
 		  
-		  If Not SetOption(cURL.Opts.HEADERDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
-		  If Not SetOption(cURL.Opts.HEADERFUNCTION, AddressOf HeaderCallback) Then Raise cURLException(Me.LastError)
+		  If Not Sender.SetOption(cURL.Opts.HEADERDATA, Ptr(Sender.Handle)) Then Raise cURLException(Sender.LastError)
+		  If Not Sender.SetOption(cURL.Opts.HEADERFUNCTION, AddressOf HeaderCallback) Then Raise cURLException(Sender.LastError)
 		  
 		  #If DebugBuild Then
-		    If Not SetOption(cURL.Opts.VERBOSE, True) Then Raise cURLException(Me.LastError)
-		    If Not SetOption(cURL.Opts.DEBUGDATA, Ptr(mHandle)) Then Raise cURLException(Me.LastError)
-		    If Not SetOption(cURL.Opts.DEBUGFUNCTION, AddressOf DebugCallback) Then Raise cURLException(Me.LastError)
+		    If Not Sender.SetOption(cURL.Opts.VERBOSE, True) Then Raise cURLException(Sender.LastError)
+		    If Not Sender.SetOption(cURL.Opts.DEBUGDATA, Ptr(Sender.Handle)) Then Raise cURLException(Sender.LastError)
+		    If Not Sender.SetOption(cURL.Opts.DEBUGFUNCTION, AddressOf DebugCallback) Then Raise cURLException(Sender.LastError)
 		  #endif
 		End Sub
 	#tag EndMethod
@@ -337,17 +323,10 @@ Implements Readable,Writeable
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ReadError() As Boolean
-		  // Part of the Readable interface.
-		  Return Me.LastError <> 0
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Sub Reset()
 		  If Not cURL.IsAvailable Then Return
 		  curl_easy_reset(Me.Handle)
-		  mLastError = 0
+		  InitCallbacks(Me)
 		End Sub
 	#tag EndMethod
 
@@ -361,19 +340,22 @@ Implements Readable,Writeable
 		  Select Case ValueType
 		  Case Variant.TypeNil
 		    Raise New NilObjectException
+		    
 		  Case Variant.TypeBoolean
 		    mb = New MemoryBlock(1)
 		    mb.BooleanValue(0) = NewValue.BooleanValue
-		  Case Variant.TypeInteger
-		    mb = New MemoryBlock(4)
-		    mb.Int32Value(0) = NewValue.Int32Value
-		  Case Variant.TypePtr
+		    
+		  Case Variant.TypePtr, Variant.TypeInteger
 		    mb = NewValue.PtrValue
+		    
 		  Case Variant.TypeString
 		    mb = NewValue.StringValue + Chr(0)
-		  Case Variant.TypeObject
 		    
+		  Case Variant.TypeObject
 		    Select Case NewValue
+		    Case IsA MemoryBlock
+		      mb = NewValue.PtrValue
+		      
 		    Case IsA cURLProgressCallback
 		      Dim p As cURLProgressCallback = NewValue
 		      mb = p
@@ -398,6 +380,7 @@ Implements Readable,Writeable
 		      Dim err As New TypeMismatchException
 		      err.Message = "NewValue is of unsupported type: " + Introspection.GetType(NewValue).Name
 		      Raise err
+		      
 		    End Select
 		    
 		  Else
@@ -431,13 +414,6 @@ Implements Readable,Writeable
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function WriteError() As Boolean
-		  // Part of the Writeable interface.
-		  Return Me.LastError <> 0
 		End Function
 	#tag EndMethod
 
@@ -512,6 +488,36 @@ Implements Readable,Writeable
 		Private Shared Instances As Dictionary
 	#tag EndProperty
 
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  //The IP address of the local connection used for the transfer
+			  //Note: this is usually NOT the client's public IP
+			  Dim p As Ptr
+			  Me.GetInfo(INFO_LOCAL_IP, p)
+			  If Me.LastError = 0 Then
+			    Dim buffer As MemoryBlock = p.Ptr(0)
+			    Return buffer.CString(0)
+			  End If
+			End Get
+		#tag EndGetter
+		LocalIP As String
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  //The local port used to make the connection. This is decided upon by libcurl and the OS's network stack
+			  Dim mb As New MemoryBlock(4)
+			  Me.GetInfo(INFO_LOCAL_PORT, mb)
+			  If Me.LastError = 0 Then
+			    Return mb.Int32Value(0)
+			  End If
+			End Get
+		#tag EndGetter
+		LocalPort As Integer
+	#tag EndComputedProperty
+
 	#tag Property, Flags = &h1
 		Protected mHandle As Integer
 	#tag EndProperty
@@ -523,6 +529,94 @@ Implements Readable,Writeable
 	#tag Property, Flags = &h1
 		Protected mLastError As Integer
 	#tag EndProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Setter
+			Set
+			  //If the server will require a password, set it here. If the server doesn't require one, this property is ignored
+			  If Value <> "" Then
+			    Dim mb As New MemoryBlock(Len(value) + 1)
+			    mb.CString(0) = value
+			    Call Me.SetOption(cURL.Opts.PASSWORD, mb)
+			  End If
+			End Set
+		#tag EndSetter
+		Password As String
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  //Remote port
+			  Dim mb As New MemoryBlock(4)
+			  Me.GetInfo(INFO_PRIMARY_PORT, mb)
+			  If Me.LastError = 0 Then
+			    Return mb.Int32Value(0)
+			  End If
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  //remote port. 
+			  Call Me.SetOption(cURL.Opts.PORT, value)
+			End Set
+		#tag EndSetter
+		Port As Integer
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  //The IP address of the remote server
+			  Dim mb As New MemoryBlock(4)
+			  Me.GetInfo(INFO_PRIMARY_IP, mb)
+			  If Me.LastError = 0 Then
+			    Dim buffer As MemoryBlock = mb.Ptr(0)
+			    Return buffer.CString(0)
+			  End If
+			End Get
+		#tag EndGetter
+		RemoteIP As String
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  Dim p As Ptr
+			  Me.GetInfo(INFO_EFFECTIVE_URL, p)
+			  Dim mb As MemoryBlock = p.Ptr(0)
+			  If Me.LastError = 0 Then
+			    Return mb.CString(0)
+			  End If
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  If Not SetOption(cURL.cURL.Opts.URL, value) Then Raise cURLException(Me.LastError)
+			End Set
+		#tag EndSetter
+		URL As String
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Setter
+			Set
+			  //Set your application's UserAgent string. The default will be the output of cURLversion()
+			  Call Me.SetOption(cURL.Opts.USERAGENT, value)
+			End Set
+		#tag EndSetter
+		UserAgent As String
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Setter
+			Set
+			  //If the server will require a username, set it here. If the server doesn't require one, this property is ignored
+			  Call Me.SetOption(cURL.Opts.USERNAME, value)
+			End Set
+		#tag EndSetter
+		Username As String
+	#tag EndComputedProperty
 
 
 	#tag ViewBehavior
