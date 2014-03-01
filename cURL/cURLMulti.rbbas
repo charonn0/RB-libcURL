@@ -1,20 +1,21 @@
 #tag Class
 Protected Class cURLMulti
 	#tag Method, Flags = &h0
-		Sub AddInstance(cURL As cURL.cURLBase)
-		  mLastError = curl_multi_add_handle(Me.Handle, cURL.Handle)
-		  If mLastError = 0 Then cURLHandles.Append(cURL)
+		Sub AddInstance(newcurl As cURL.cURLBase)
+		  mLastError = curl_multi_add_handle(Me.Handle, newcurl.Handle)
+		  If mLastError = 0 Then 
+		    cURLHandles.Append(newcurl)
+		  End If
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub Close()
-		  mLastError = curl_multi_cleanup(Me.Handle)
 		  For Each cURL As cURLBase In cURLHandles
-		    Me.RemoveInstance(cURL)
 		    cURL.Close
 		  Next
 		  mLastError = curl_multi_cleanup(Me.Handle)
+		  ReDim cURLHandles(-1)
 		End Sub
 	#tag EndMethod
 
@@ -43,6 +44,31 @@ Protected Class cURLMulti
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h1
+		Protected Function NextMessage() As Integer
+		  Dim msg As curl_multi_msg
+		  Dim msgsleft As Integer
+		  Dim p As Ptr = cURL_multi_info_read(Me.Handle, msgsleft)
+		  If p <> Nil Then
+		    Dim mb As MemoryBlock = p
+		    msg.StringValue(TargetLittleEndian) = mb.StringValue(0, msg.Size)
+		    Dim ihandle As Integer = msg.Handle
+		    Dim instance As cURLBase
+		    For i As Integer = 0 To UBound(cURLHandles)
+		      If cURLHandles(i).Handle = ihandle Then
+		        instance = cURLHandles(i)
+		        Exit For
+		      End If
+		    Next
+		    If instance <> Nil Then
+		      RaiseEvent cURLEvent(instance, Msg.Msg, Ptr(Msg.MsgCode))
+		    End If
+		    
+		    Return msgsleft
+		  End If
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Function Perform() As Integer
 		  Dim active As Integer
@@ -52,10 +78,10 @@ Protected Class cURLMulti
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub RemoveInstance(cURL As cURL.cURLBase)
+		Sub RemoveInstance(cURL As Integer)
 		  For i As Integer = UBound(cURLHandles) DownTo 0
-		    If cURLHandles(i) <> Nil And cURLHandles(i) Is cURL Then
-		      mLastError = curl_multi_remove_handle(Me.Handle, cURL.Handle)
+		    If cURLHandles(i) <> Nil And cURLHandles(i).Handle = cURL Then
+		      mLastError = curl_multi_remove_handle(Me.Handle, cURL)
 		      If Me.LastError <> 0 Then Exit For
 		      cURLHandles.Remove(i)
 		    End If
@@ -121,6 +147,11 @@ Protected Class cURLMulti
 		  Return mLastError = 0
 		End Function
 	#tag EndMethod
+
+
+	#tag Hook, Flags = &h0
+		Event cURLEvent(ByRef Instance As cURL.cURLBase, Msg As Integer, Data As Ptr)
+	#tag EndHook
 
 
 	#tag Property, Flags = &h21
