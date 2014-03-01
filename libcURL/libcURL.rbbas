@@ -1,9 +1,9 @@
 #tag Module
-Protected Module cURL
+Protected Module libcURL
 	#tag Method, Flags = &h21
 		Private Function cURLException(Err As Integer) As RuntimeException
 		  Dim ex As New RuntimeException
-		  If cURL.IsAvailable Then
+		  If libcURL.IsAvailable Then
 		    ex.ErrorNumber = Err
 		    ex.Message = FormatError(Err)
 		  Else
@@ -122,7 +122,7 @@ Protected Module cURL
 	#tag Method, Flags = &h1
 		Protected Function FormatError(cURLError As Integer) As String
 		  //Translates libcurl error numbers to messages
-		  If cURL.IsAvailable Then
+		  If libcURL.IsAvailable Then
 		    Dim mb As MemoryBlock = curl_easy_strerror(cURLError)
 		    Return mb.CString(0)
 		  End If
@@ -137,7 +137,7 @@ Protected Module cURL
 
 	#tag Method, Flags = &h1
 		Protected Function URLDecode(Data As String) As String
-		  If cURL.IsAvailable Then
+		  If libcURL.IsAvailable Then
 		    If curl_global_init(3) = 0 Then
 		      Dim mHandle As Integer = curl_easy_init()
 		      If mHandle > 0 Then
@@ -157,7 +157,7 @@ Protected Module cURL
 
 	#tag Method, Flags = &h1
 		Protected Function URLEncode(Data As String) As String
-		  If cURL.IsAvailable Then
+		  If libcURL.IsAvailable Then
 		    If curl_global_init(3) = 0 Then
 		      Dim mHandle As Integer = curl_easy_init()
 		      If mHandle > 0 Then

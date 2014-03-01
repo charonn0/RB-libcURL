@@ -1,9 +1,9 @@
 #tag Class
 Protected Class cURLMulti
 	#tag Method, Flags = &h0
-		Sub AddInstance(newcurl As cURL.cURLBase)
+		Sub AddInstance(newcurl As libcURL.cURLItem)
 		  mLastError = curl_multi_add_handle(Me.Handle, newcurl.Handle)
-		  If mLastError = 0 Then 
+		  If mLastError = 0 Then
 		    cURLHandles.Append(newcurl)
 		  End If
 		End Sub
@@ -11,7 +11,7 @@ Protected Class cURLMulti
 
 	#tag Method, Flags = &h0
 		Sub Close()
-		  For Each cURL As cURLBase In cURLHandles
+		  For Each cURL As cURLItem In cURLHandles
 		    cURL.Close
 		  Next
 		  mLastError = curl_multi_cleanup(Me.Handle)
@@ -53,7 +53,7 @@ Protected Class cURLMulti
 		    Dim mb As MemoryBlock = p
 		    msg.StringValue(TargetLittleEndian) = mb.StringValue(0, msg.Size)
 		    Dim ihandle As Integer = msg.Handle
-		    Dim instance As cURLBase
+		    Dim instance As cURLItem
 		    For i As Integer = 0 To UBound(cURLHandles)
 		      If cURLHandles(i).Handle = ihandle Then
 		        instance = cURLHandles(i)
@@ -93,7 +93,7 @@ Protected Class cURLMulti
 		Function SetOption(OptionNumber As Integer, NewValue As Variant) As Boolean
 		  // This method marshals the NewValue into a Ptr then calls curl_multi_setopt
 		  
-		  If Not cURL.IsAvailable Then Return False
+		  If Not libcURL.IsAvailable Then Return False
 		  Dim mb As MemoryBlock
 		  Dim ValueType As Integer = VarType(NewValue)
 		  Select Case ValueType
@@ -150,12 +150,12 @@ Protected Class cURLMulti
 
 
 	#tag Hook, Flags = &h0
-		Event cURLEvent(ByRef Instance As cURL.cURLBase, Msg As Integer, Data As Ptr)
+		Event cURLEvent(ByRef Instance As libcURL.cURLItem, Msg As Integer, Data As Ptr)
 	#tag EndHook
 
 
 	#tag Property, Flags = &h21
-		Private cURLHandles() As cURLBase
+		Private cURLHandles() As cURLItem
 	#tag EndProperty
 
 	#tag Property, Flags = &h1

@@ -24,14 +24,16 @@ Begin Window Window1
    Title           =   "Untitled"
    Visible         =   True
    Width           =   879
-   Begin cURL.cURLBase curlget
+   Begin libcURL.cURLItem curlget
       Height          =   32
       Index           =   -2147483648
-      Left            =   909
+      Left            =   9.11e+2
+      LocalPort       =   ""
       LockedInPosition=   False
+      Port            =   ""
       Scope           =   0
       TabPanelIndex   =   0
-      Top             =   42
+      Top             =   4.2e+1
       Width           =   32
    End
    Begin PushButton PushButton1
@@ -456,7 +458,7 @@ End
 #tag WindowCode
 	#tag Event
 		Sub Open()
-		  Me.Title = cURL.Version.Name
+		  Me.Title = libcURL.Version.Name
 		End Sub
 	#tag EndEvent
 
@@ -514,20 +516,20 @@ End
 #tag Events Features
 	#tag Event
 		Sub Open()
-		  Dim feat As Integer = cURL.Version.Struct.Features
-		  If BitAnd(feat, cURL.Version.ASYNCHDNS) = cURL.Version.ASYNCHDNS Then Me.AddRow("Async DNS supported")
-		  If BitAnd(feat, cURL.Version.CONV) = cURL.Version.CONV Then Me.AddRow("Character conversion supported")
-		  If BitAnd(feat, cURL.Version.DEBUG) = cURL.Version.DEBUG Then Me.AddRow("Built with debug capabilities")
-		  If BitAnd(feat, cURL.Version.GSSNEGOTIATE) = cURL.Version.GSSNEGOTIATE Then Me.AddRow("Negotiate auth support")
-		  If BitAnd(feat, cURL.Version.IDN) = cURL.Version.IDN Then Me.AddRow("International Domain Names support")
-		  If BitAnd(feat, cURL.Version.KERBEROS4) = cURL.Version.KERBEROS4 Then Me.AddRow("kerberos auth is supported")
-		  If BitAnd(feat, cURL.Version.IPV6) = cURL.Version.IPV6 Then Me.AddRow("IPv6-enabled")
-		  If BitAnd(feat, cURL.Version.LARGEFILE) = cURL.Version.LARGEFILE Then Me.AddRow("supports files bigger than 2GB")
-		  If BitAnd(feat, cURL.Version.LIBZ) = cURL.Version.LIBZ Then Me.AddRow("libz features are present")
-		  If BitAnd(feat, cURL.Version.NTLM) = cURL.Version.NTLM Then Me.AddRow("NTLM auth is supported")
-		  If BitAnd(feat, cURL.Version.SPNEGO) = cURL.Version.SPNEGO Then Me.AddRow("SPNEGO auth")
-		  If BitAnd(feat, cURL.Version.SSL) = cURL.Version.SSL Then Me.AddRow("SSL options are present")
-		  If BitAnd(feat, cURL.Version.SSPI) = cURL.Version.SSPI Then Me.AddRow("SSPI is supported")
+		  Dim feat As Integer = libcURL.Version.Struct.Features
+		  If BitAnd(feat, libcURL.Version.ASYNCHDNS) = libcURL.Version.ASYNCHDNS Then Me.AddRow("Async DNS supported")
+		  If BitAnd(feat, libcURL.Version.CONV) = libcURL.Version.CONV Then Me.AddRow("Character conversion supported")
+		  If BitAnd(feat, libcURL.Version.DEBUG) = libcURL.Version.DEBUG Then Me.AddRow("Built with debug capabilities")
+		  If BitAnd(feat, libcURL.Version.GSSNEGOTIATE) = libcURL.Version.GSSNEGOTIATE Then Me.AddRow("Negotiate auth support")
+		  If BitAnd(feat, libcURL.Version.IDN) = libcURL.Version.IDN Then Me.AddRow("International Domain Names support")
+		  If BitAnd(feat, libcURL.Version.KERBEROS4) = libcURL.Version.KERBEROS4 Then Me.AddRow("kerberos auth is supported")
+		  If BitAnd(feat, libcURL.Version.IPV6) = libcURL.Version.IPV6 Then Me.AddRow("IPv6-enabled")
+		  If BitAnd(feat, libcURL.Version.LARGEFILE) = libcURL.Version.LARGEFILE Then Me.AddRow("supports files bigger than 2GB")
+		  If BitAnd(feat, libcURL.Version.LIBZ) = libcURL.Version.LIBZ Then Me.AddRow("libz features are present")
+		  If BitAnd(feat, libcURL.Version.NTLM) = libcURL.Version.NTLM Then Me.AddRow("NTLM auth is supported")
+		  If BitAnd(feat, libcURL.Version.SPNEGO) = libcURL.Version.SPNEGO Then Me.AddRow("SPNEGO auth")
+		  If BitAnd(feat, libcURL.Version.SSL) = libcURL.Version.SSL Then Me.AddRow("SSL options are present")
+		  If BitAnd(feat, libcURL.Version.SSPI) = libcURL.Version.SSPI Then Me.AddRow("SSPI is supported")
 		End Sub
 	#tag EndEvent
 #tag EndEvents

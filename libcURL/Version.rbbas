@@ -62,7 +62,7 @@ Protected Module Version
 
 	#tag Method, Flags = &h1
 		Protected Function Name() As String
-		  If Not cURL.IsAvailable Then Return ""
+		  If Not libcURL.IsAvailable Then Return ""
 		  Dim p As MemoryBlock = curl_version()
 		  Return p.CString(0)
 		End Function
@@ -76,7 +76,7 @@ Protected Module Version
 
 	#tag Method, Flags = &h1
 		Protected Function Protocols() As String()
-		  Dim ve As CURLVersion = cURL.Version.Struct
+		  Dim ve As CURLVersion = libcURL.Version.Struct
 		  Dim l() As String' = ve.Protocols.Ptr(0)
 		  Dim mb As MemoryBlock = ve.Protocols.Ptr(0)
 		  Dim bs As New BinaryStream(mb)
@@ -121,7 +121,7 @@ Protected Module Version
 
 	#tag Method, Flags = &h1
 		Protected Function Struct() As CURLVersion
-		  If cURL.IsAvailable Then
+		  If libcURL.IsAvailable Then
 		    If curl_global_init(3) = 0 Then
 		      Dim ve As MemoryBlock
 		      ve = curl_version_info(CURLVERSION_FOURTH)

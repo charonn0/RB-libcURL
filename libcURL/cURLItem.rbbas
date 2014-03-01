@@ -1,12 +1,12 @@
 #tag Class
-Protected Class cURLBase
+Protected Class cURLItem
 	#tag Method, Flags = &h0
 		Sub Close()
 		  // This method cleans up the instance
 		  // If no more instances, cleans up libcurl completely
 		  
-		  If Not cURL.IsAvailable Then Return
-		  cURL.curl_easy_cleanup(Me.Handle)
+		  If Not libcURL.IsAvailable Then Return
+		  curl_easy_cleanup(Me.Handle)
 		  
 		End Sub
 	#tag EndMethod
@@ -19,7 +19,7 @@ Protected Class cURLBase
 		    Break ' UserData does not refer to a valid instance!
 		    Return 1
 		  End If
-		  cURLBase(curl.Value).curlClose
+		  cURLItem(curl.Value).curlClose
 		  Return 0
 		End Function
 	#tag EndMethod
@@ -27,7 +27,7 @@ Protected Class cURLBase
 	#tag Method, Flags = &h0
 		Sub Constructor()
 		  // Creates a new instance, sets up the callback functions
-		  If Not cURL.IsAvailable Then Raise cURLException(0)
+		  If Not libcURL.IsAvailable Then Raise cURLException(0)
 		  
 		  If Instances = Nil Then
 		    mLastError = curl_global_init(CURL_GLOBAL_ALL)
@@ -43,9 +43,9 @@ Protected Class cURLBase
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub Constructor(CopyOpts As cURL.cURLBase)
+		Protected Sub Constructor(CopyOpts As libcURL.cURLItem)
 		  // creates a new instance by cloning the passed instance
-		  If Not cURL.IsAvailable Then Raise cURLException(0)
+		  If Not libcURL.IsAvailable Then Raise cURLException(0)
 		  If CopyOpts <> Nil And CopyOpts.Handle > 0 Then
 		    mHandle = curl_easy_duphandle(CopyOpts.Handle)
 		    If Me.Handle > 0 Then
@@ -161,7 +161,7 @@ Protected Class cURLBase
 		  #pragma Unused Handle ' handle is the cURL handle of the instance
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil Then
-		    Return cURLBase(curl.Value).curlDebug(info, data, size)
+		    Return cURLItem(curl.Value).curlDebug(info, data, size)
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
@@ -173,7 +173,7 @@ Protected Class cURLBase
 		  Me.Close()
 		  Instances.Remove(mHandle)
 		  If Instances.Count = 0 Then
-		    cURL.curl_global_cleanup()
+		    curl_global_cleanup()
 		    Instances = Nil
 		  End If
 		End Sub
@@ -181,7 +181,7 @@ Protected Class cURLBase
 
 	#tag Method, Flags = &h1
 		Protected Sub GetInfo(InfoType As Integer, Buffer As Ptr)
-		  If Not cURL.IsAvailable Then Return
+		  If Not libcURL.IsAvailable Then Return
 		  mLastError = curl_easy_getinfo(Me.Handle, InfoType, Buffer)
 		End Sub
 	#tag EndMethod
@@ -196,7 +196,7 @@ Protected Class cURLBase
 		Private Shared Function HeaderCallback(char As Ptr, size As Integer, nmemb As Integer, UserData As Integer) As Integer
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil Then
-		    Return cURLBase(curl.Value).curlHeader(char, size, nmemb)
+		    Return cURLItem(curl.Value).curlHeader(char, size, nmemb)
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
@@ -204,30 +204,30 @@ Protected Class cURLBase
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Shared Sub InitCallbacks(Sender As cURL.cURLBase)
-		  'If Not Sender.SetOption(cURL.Opts.OPENSOCKETDATA, Ptr(Sender.Handle)) Then Raise cURLException(Sender.LastError)
-		  'If Not Sender.SetOption(cURL.Opts.OPENSOCKETFUNCTION, AddressOf OpenCallback) Then Raise cURLException(Sender.LastError)
+		Protected Shared Sub InitCallbacks(Sender As libcURL.cURLItem)
+		  'If Not Sender.SetOption(libcURL.Opts.OPENSOCKETDATA, Ptr(Sender.Handle)) Then Raise cURLException(Sender.LastError)
+		  'If Not Sender.SetOption(libcURL.Opts.OPENSOCKETFUNCTION, AddressOf OpenCallback) Then Raise cURLException(Sender.LastError)
 		  
-		  If Not Sender.SetOption(cURL.Opts.CLOSESOCKETDATA, Ptr(Sender.Handle)) Then Raise cURLException(Sender.LastError)
-		  If Not Sender.SetOption(cURL.Opts.CLOSESOCKETFUNCTION, AddressOf CloseCallback) Then Raise cURLException(Sender.LastError)
+		  If Not Sender.SetOption(libcURL.Opts.CLOSESOCKETDATA, Ptr(Sender.Handle)) Then Raise cURLException(Sender.LastError)
+		  If Not Sender.SetOption(libcURL.Opts.CLOSESOCKETFUNCTION, AddressOf CloseCallback) Then Raise cURLException(Sender.LastError)
 		  
-		  If Not Sender.SetOption(cURL.Opts.WRITEDATA, Ptr(Sender.Handle)) Then Raise cURLException(Sender.LastError)
-		  If Not Sender.SetOption(cURL.Opts.WRITEFUNCTION, AddressOf WriteCallback) Then Raise cURLException(Sender.LastError)
+		  If Not Sender.SetOption(libcURL.Opts.WRITEDATA, Ptr(Sender.Handle)) Then Raise cURLException(Sender.LastError)
+		  If Not Sender.SetOption(libcURL.Opts.WRITEFUNCTION, AddressOf WriteCallback) Then Raise cURLException(Sender.LastError)
 		  
-		  If Not Sender.SetOption(cURL.Opts.READDATA, Ptr(Sender.Handle)) Then Raise cURLException(Sender.LastError)
-		  If Not Sender.SetOption(cURL.Opts.READFUNCTION, AddressOf ReadCallback) Then Raise cURLException(Sender.LastError)
+		  If Not Sender.SetOption(libcURL.Opts.READDATA, Ptr(Sender.Handle)) Then Raise cURLException(Sender.LastError)
+		  If Not Sender.SetOption(libcURL.Opts.READFUNCTION, AddressOf ReadCallback) Then Raise cURLException(Sender.LastError)
 		  
-		  If Not Sender.SetOption(cURL.Opts.NOPROGRESS, False) Then Raise cURLException(Sender.LastError)
-		  If Not Sender.SetOption(cURL.Opts.PROGRESSDATA, Ptr(Sender.Handle)) Then Raise cURLException(Sender.LastError)
-		  If Not Sender.SetOption(cURL.Opts.PROGRESSFUNCTION, AddressOf ProgressCallback) Then Raise cURLException(Sender.LastError)
+		  If Not Sender.SetOption(libcURL.Opts.NOPROGRESS, False) Then Raise cURLException(Sender.LastError)
+		  If Not Sender.SetOption(libcURL.Opts.PROGRESSDATA, Ptr(Sender.Handle)) Then Raise cURLException(Sender.LastError)
+		  If Not Sender.SetOption(libcURL.Opts.PROGRESSFUNCTION, AddressOf ProgressCallback) Then Raise cURLException(Sender.LastError)
 		  
-		  If Not Sender.SetOption(cURL.Opts.HEADERDATA, Ptr(Sender.Handle)) Then Raise cURLException(Sender.LastError)
-		  If Not Sender.SetOption(cURL.Opts.HEADERFUNCTION, AddressOf HeaderCallback) Then Raise cURLException(Sender.LastError)
+		  If Not Sender.SetOption(libcURL.Opts.HEADERDATA, Ptr(Sender.Handle)) Then Raise cURLException(Sender.LastError)
+		  If Not Sender.SetOption(libcURL.Opts.HEADERFUNCTION, AddressOf HeaderCallback) Then Raise cURLException(Sender.LastError)
 		  
 		  #If DebugBuild Then
-		    If Not Sender.SetOption(cURL.Opts.VERBOSE, True) Then Raise cURLException(Sender.LastError)
-		    If Not Sender.SetOption(cURL.Opts.DEBUGDATA, Ptr(Sender.Handle)) Then Raise cURLException(Sender.LastError)
-		    If Not Sender.SetOption(cURL.Opts.DEBUGFUNCTION, AddressOf DebugCallback) Then Raise cURLException(Sender.LastError)
+		    If Not Sender.SetOption(libcURL.Opts.VERBOSE, True) Then Raise cURLException(Sender.LastError)
+		    If Not Sender.SetOption(libcURL.Opts.DEBUGDATA, Ptr(Sender.Handle)) Then Raise cURLException(Sender.LastError)
+		    If Not Sender.SetOption(libcURL.Opts.DEBUGFUNCTION, AddressOf DebugCallback) Then Raise cURLException(Sender.LastError)
 		  #endif
 		End Sub
 	#tag EndMethod
@@ -242,7 +242,7 @@ Protected Class cURLBase
 		Private Shared Function OpenCallback(UserData As Ptr, SocketType As Integer, Socket As Ptr) As Ptr
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl = Nil Then Return Nil
-		  Return cURLBase(curl.Value).curlOpen(SocketType, Socket)
+		  Return cURLItem(curl.Value).curlOpen(SocketType, Socket)
 		  
 		  Break ' UserData does not refer to a valid instance!
 		End Function
@@ -250,7 +250,7 @@ Protected Class cURLBase
 
 	#tag Method, Flags = &h0
 		Function Pause(PauseUpload As Boolean = True, PauseDownload As Boolean = True) As Boolean
-		  If Not cURL.IsAvailable Then Return False
+		  If Not libcURL.IsAvailable Then Return False
 		  Dim pU, pD As Integer
 		  pU = ShiftLeft(1, 2)
 		  pD = ShiftLeft(0, 1)
@@ -273,9 +273,9 @@ Protected Class cURLBase
 
 	#tag Method, Flags = &h0
 		Function Perform(URL As String = "") As Boolean
-		  If Not cURL.IsAvailable Then Return False
+		  If Not libcURL.IsAvailable Then Return False
 		  If URL <> "" Then
-		    If Not SetOption(cURL.cURL.Opts.URL, URL) Then Raise cURLException(Me.LastError)
+		    If Not SetOption(libcURL.Opts.URL, URL) Then Raise cURLException(Me.LastError)
 		  End If
 		  mLastError = curl_easy_perform(Me.Handle)
 		  Return Me.LastError = 0
@@ -286,7 +286,7 @@ Protected Class cURLBase
 		Private Shared Function ProgressCallback(UserData As Integer, dlTotal As UInt64, dlnow As UInt64, ultotal As UInt64, ulnow As UInt64) As Integer
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil Then
-		    Return cURLBase(curl.Value).curlProgress(dlTotal, dlnow, ultotal, ulnow)
+		    Return cURLItem(curl.Value).curlProgress(dlTotal, dlnow, ultotal, ulnow)
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
@@ -315,7 +315,7 @@ Protected Class cURLBase
 		  // called when data is needed
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil Then
-		    Return cURLBase(curl.Value).curlRead(char, size, nmemb)
+		    Return cURLItem(curl.Value).curlRead(char, size, nmemb)
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
@@ -324,7 +324,7 @@ Protected Class cURLBase
 
 	#tag Method, Flags = &h0
 		Sub Reset()
-		  If Not cURL.IsAvailable Then Return
+		  If Not libcURL.IsAvailable Then Return
 		  curl_easy_reset(Me.Handle)
 		  InitCallbacks(Me)
 		End Sub
@@ -334,7 +334,7 @@ Protected Class cURLBase
 		Function SetOption(OptionNumber As Integer, NewValue As Variant) As Boolean
 		  // This method marshals the NewValue into a Ptr then calls curl_easy-setopt
 		  
-		  If Not cURL.IsAvailable Then Return False
+		  If Not libcURL.IsAvailable Then Return False
 		  Dim mb As MemoryBlock
 		  Dim ValueType As Integer = VarType(NewValue)
 		  Select Case ValueType
@@ -410,7 +410,7 @@ Protected Class cURLBase
 		  // Called when data is available
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil Then
-		    Return cURLBase(curl.Value).curlWrite(char, size, nmemb)
+		    Return cURLItem(curl.Value).curlWrite(char, size, nmemb)
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
@@ -454,8 +454,8 @@ Protected Class cURLBase
 		
 		For example, setting the user-agent string:
 		
-		   Dim mcURL As New cURL.cURLBase
-		   If Not mcURL.SetOption(cURL.Opts.USERAGENT, "Bob's download manager/5.1") Then
+		   Dim mcURL As New libcURL.cURLItem
+		   If Not mcURL.SetOption(libcURL.Opts.USERAGENT, "Bob's download manager/5.1") Then
 		      MsgBox("cURL error: " + Str(mcURL.LastError))
 		   End If
 		
@@ -518,7 +518,7 @@ Protected Class cURLBase
 			  If Value <> "" Then
 			    Dim mb As New MemoryBlock(Len(value) + 1)
 			    mb.CString(0) = value
-			    Call Me.SetOption(cURL.Opts.PASSWORD, mb)
+			    Call Me.SetOption(libcURL.Opts.PASSWORD, mb)
 			  End If
 			End Set
 		#tag EndSetter
@@ -538,8 +538,8 @@ Protected Class cURLBase
 		#tag EndGetter
 		#tag Setter
 			Set
-			  //remote port. 
-			  Call Me.SetOption(cURL.Opts.PORT, value)
+			  //remote port.
+			  Call Me.SetOption(libcURL.Opts.PORT, value)
 			End Set
 		#tag EndSetter
 		Port As Integer
@@ -574,7 +574,7 @@ Protected Class cURLBase
 		#tag EndGetter
 		#tag Setter
 			Set
-			  If Not SetOption(cURL.cURL.Opts.URL, value) Then Raise cURLException(Me.LastError)
+			  If Not SetOption(libcURL.Opts.URL, value) Then Raise cURLException(Me.LastError)
 			End Set
 		#tag EndSetter
 		URL As String
@@ -584,7 +584,7 @@ Protected Class cURLBase
 		#tag Setter
 			Set
 			  //Set your application's UserAgent string. The default will be the output of cURLversion()
-			  Call Me.SetOption(cURL.Opts.USERAGENT, value)
+			  Call Me.SetOption(libcURL.Opts.USERAGENT, value)
 			End Set
 		#tag EndSetter
 		UserAgent As String
@@ -594,7 +594,7 @@ Protected Class cURLBase
 		#tag Setter
 			Set
 			  //If the server will require a username, set it here. If the server doesn't require one, this property is ignored
-			  Call Me.SetOption(cURL.Opts.USERNAME, value)
+			  Call Me.SetOption(libcURL.Opts.USERNAME, value)
 			End Set
 		#tag EndSetter
 		Username As String
@@ -628,10 +628,35 @@ Protected Class cURLBase
 			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
+			Name="LocalIP"
+			Group="Behavior"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="LocalPort"
+			Group="Behavior"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
 			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Password"
+			Group="Behavior"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Port"
+			Group="Behavior"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="RemoteIP"
+			Group="Behavior"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
@@ -645,6 +670,21 @@ Protected Class cURLBase
 			Group="Position"
 			InitialValue="0"
 			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="URL"
+			Group="Behavior"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="UserAgent"
+			Group="Behavior"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Username"
+			Group="Behavior"
+			Type="String"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class
