@@ -7,6 +7,7 @@ Protected Module cURL
 		    ex.ErrorNumber = Err
 		    ex.Message = FormatError(Err)
 		  Else
+		    ex = New FunctionNotFoundException
 		    ex.Message = "libcURL is not available."
 		  End If
 		  
@@ -87,7 +88,7 @@ Protected Module cURL
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h1
-		Protected Soft Declare Function curl_multi_info_read Lib "libcurl" (MultiHandle As Integer, ByRef MsgQueueCount As Integer) As curl_multi_msg
+		Protected Soft Declare Function curl_multi_info_read Lib "libcurl" (MultiHandle As Integer, ByRef MsgQueueCount As Integer) As Ptr
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h1
@@ -450,6 +451,8 @@ Protected Module cURL
 
 	#tag Structure, Name = curl_multi_msg, Flags = &h1
 		Msg As Integer
+		  Handle As Integer
+		MsgCode As Integer
 	#tag EndStructure
 
 	#tag Structure, Name = curl_waitfd, Flags = &h1
