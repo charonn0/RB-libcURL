@@ -3,18 +3,16 @@ Protected Class cURLMulti
 	#tag Method, Flags = &h0
 		Sub AddInstance(cURL As cURL.cURLBase)
 		  mLastError = curl_multi_add_handle(Me.Handle, cURL.Handle)
-		  If mLastError = 0 Then cURLHandles.Append(New WeakRef(cURL))
+		  If mLastError = 0 Then cURLHandles.Append(cURL)
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub Close()
 		  mLastError = curl_multi_cleanup(Me.Handle)
-		  For Each Ref As WeakRef In cURLHandles
-		    If Ref.Value <> Nil And Ref.Value IsA cURLBase Then
-		      Me.RemoveInstance(cURLBase(Ref.Value))
-		      cURLBase(Ref.Value).Close
-		    End If
+		  For Each cURL As cURLBase In cURLHandles
+		    Me.RemoveInstance(cURL)
+		    cURL.Close
 		  Next
 		  mLastError = curl_multi_cleanup(Me.Handle)
 		End Sub
@@ -56,7 +54,7 @@ Protected Class cURLMulti
 	#tag Method, Flags = &h0
 		Sub RemoveInstance(cURL As cURL.cURLBase)
 		  For i As Integer = UBound(cURLHandles) DownTo 0
-		    If cURLHandles(i).Value <> Nil And cURLHandles(i).Value Is cURL Then
+		    If cURLHandles(i) <> Nil And cURLHandles(i) Is cURL Then
 		      mLastError = curl_multi_remove_handle(Me.Handle, cURL.Handle)
 		      If Me.LastError <> 0 Then Exit For
 		      cURLHandles.Remove(i)
@@ -126,7 +124,7 @@ Protected Class cURLMulti
 
 
 	#tag Property, Flags = &h21
-		Private cURLHandles() As WeakRef
+		Private cURLHandles() As cURLBase
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
