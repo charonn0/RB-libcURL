@@ -494,13 +494,6 @@ End
 		End Sub
 	#tag EndEvent
 	#tag Event
-		Sub HeadersReceived(Headers As InternetHeaders)
-		  For i As Integer = 0 To Headers.Count - 1
-		    Self.Headers.AddRow(Headers.Name(i), Headers.Value(i))
-		  Next
-		End Sub
-	#tag EndEvent
-	#tag Event
 		Function Progress(dlTotal As UInt64, dlnow As UInt64, ultotal As UInt64, ulnow As UInt64) As Integer
 		  #pragma Unused ultotal
 		  #pragma Unused ulnow
@@ -516,6 +509,19 @@ End
 	#tag Event
 		Sub Disconnected()
 		  Debug.AddRow("RB-libcURL", "Disconnected")
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Sub HeaderReceived(HeaderLine As String)
+		  Dim n, v As String
+		  If InStr(HeaderLine, ":") > 1 Then
+		    n = NthField(HeaderLine, ":", 1)
+		    v = Replace(HeaderLine, n + ":", "")
+		  Else
+		    n = HeaderLine.Trim
+		  End If
+		  
+		  Self.Headers.AddRow(n, v)
 		End Sub
 	#tag EndEvent
 #tag EndEvents

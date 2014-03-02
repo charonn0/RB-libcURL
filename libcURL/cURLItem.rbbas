@@ -93,15 +93,7 @@ Protected Class cURLItem
 		  Dim sz As Integer = nmemb * size
 		  Dim data As MemoryBlock = char
 		  Dim s As String = data.StringValue(0, sz)
-		  Dim n, v As String
-		  If InStr(s, ":") > 1 Then
-		    n = NthField(s, ":", 1)
-		    v = Replace(s, n + ":", "")
-		  Else
-		    n = s.Trim
-		  End If
-		  If mHeaderBuffer = Nil Then mHeaderBuffer = New InternetHeaders
-		  mHeaderBuffer.AppendHeader(n, v)
+		  RaiseEvent HeaderReceived(s)
 		  Return sz
 		End Function
 	#tag EndMethod
@@ -158,8 +150,6 @@ Protected Class cURLItem
 		Private Function curlWrite(char As Ptr, size As Integer, nmemb As Integer) As Integer
 		  // called by WriteCallback
 		  ' data available
-		  If mHeaderBuffer <> Nil Then RaiseEvent HeadersReceived(mheaderBuffer)
-		  mHeaderBuffer = Nil
 		  Dim mb As MemoryBlock = char
 		  Dim s As String = mb.StringValue(0, nmemb * size)
 		  RaiseEvent DataAvailable(s)
@@ -469,7 +459,7 @@ Protected Class cURLItem
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
-		Event HeadersReceived(Headers As InternetHeaders)
+		Event HeaderReceived(HeaderLine As String)
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
@@ -535,10 +525,6 @@ Protected Class cURLItem
 
 	#tag Property, Flags = &h1
 		Protected mHandle As Integer
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private mHeaderBuffer As InternetHeaders
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
