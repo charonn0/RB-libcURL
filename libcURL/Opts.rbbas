@@ -57,6 +57,12 @@ Protected Module Opts
 	#tag Constant, Name = SEEKFUNCTION, Type = Double, Dynamic = False, Default = \"20167", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = SSL_CTX_DATA, Type = Double, Dynamic = False, Default = \"10109", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = SSL_CTX_FUNCTION, Type = Double, Dynamic = False, Default = \"20108", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = UPLOAD, Type = Double, Dynamic = False, Default = \"46", Scope = Protected
 	#tag EndConstant
 

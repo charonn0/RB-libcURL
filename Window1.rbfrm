@@ -27,13 +27,13 @@ Begin Window Window1
    Begin libcURL.cURLItem curlget
       Height          =   32
       Index           =   -2147483648
-      Left            =   9.11e+2
+      Left            =   911
       LocalPort       =   ""
       LockedInPosition=   False
       Port            =   ""
       Scope           =   0
       TabPanelIndex   =   0
-      Top             =   4.2e+1
+      Top             =   42
       Width           =   32
    End
    Begin PushButton PushButton1
@@ -94,7 +94,7 @@ Begin Window Window1
       TextUnit        =   0
       Top             =   0
       Underline       =   ""
-      Value           =   2
+      Value           =   1
       Visible         =   True
       Width           =   879
       Begin TextArea Output
@@ -197,9 +197,9 @@ Begin Window Window1
          AutoHideScrollbars=   True
          Bold            =   ""
          Border          =   True
-         ColumnCount     =   1
+         ColumnCount     =   2
          ColumnsResizable=   True
-         ColumnWidths    =   ""
+         ColumnWidths    =   "10%"
          DataField       =   ""
          DataSource      =   ""
          DefaultRowHeight=   -1
@@ -215,7 +215,7 @@ Begin Window Window1
          Hierarchical    =   ""
          Index           =   -2147483648
          InitialParent   =   "TabPanel1"
-         InitialValue    =   "Debug"
+         InitialValue    =   "Type	Debug Message"
          Italic          =   ""
          Left            =   334
          LockBottom      =   ""
@@ -467,8 +467,30 @@ End
 
 #tag Events curlget
 	#tag Event
-		Sub DebugMessage(data As String)
-		  Debug.AddRow(data.Trim)
+		Sub DebugMessage(MessageType As libcURL.curl_infotype, data As String)
+		  'If MessageType <> libcURL.cURL_InfoType.Text Then
+		  Dim ty As String
+		  Select Case MessageType
+		  Case libcURL.curl_infotype.data_in
+		    ty = "Data In"
+		  Case libcURL.curl_infotype.data_out
+		    ty = "Data Out"
+		  Case libcURL.curl_infotype.header_in
+		    ty = "Header In"
+		  Case libcURL.curl_infotype.header_out
+		    ty = "Header Out"
+		  Case libcURL.curl_infotype.info_end
+		    ty = "Info End"
+		  Case libcURL.curl_infotype.ssl_in
+		    ty = "SSL In"
+		  Case libcURL.curl_infotype.ssl_out
+		    ty = "SSL Out"
+		  Case libcURL.curl_infotype.text
+		    ty = "Text"
+		  End Select
+		  
+		  Debug.AddRow(ty, data.Trim)
+		  'End If
 		End Sub
 	#tag EndEvent
 	#tag Event
@@ -493,7 +515,7 @@ End
 	#tag EndEvent
 	#tag Event
 		Sub Disconnected()
-		  Debug.AddRow("Disconnected")
+		  Debug.AddRow("RB-libcURL", "Disconnected")
 		End Sub
 	#tag EndEvent
 #tag EndEvents

@@ -78,7 +78,7 @@ Protected Class cURLItem
 		  // called by DebugCallback
 		  Dim mb As MemoryBlock = data
 		  Dim s As String = mb.StringValue(0, size)
-		  If info = curl_infotype.text Then RaiseEvent DebugMessage(s)
+		  RaiseEvent DebugMessage(info, s)
 		  Return size
 		End Function
 	#tag EndMethod
@@ -144,6 +144,17 @@ Protected Class cURLItem
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
+		Private Function curlSSLInit(SSLCTX As Ptr) As Integer
+		  // called by InitSSLCallback
+		  Return RaiseEvent SSLInit(SSLCTX)
+		End Function
+	#tag EndMethod
+
+	#tag DelegateDeclaration, Flags = &h21
+		Private Delegate Function cURLSSLInitCallback(Handle As Integer, SSLCTXStruct As Ptr, UserData As Integer) As Integer
+	#tag EndDelegateDeclaration
+
+	#tag Method, Flags = &h21
 		Private Function curlWrite(char As Ptr, size As Integer, nmemb As Integer) As Integer
 		  // called by WriteCallback
 		  ' data available
@@ -207,6 +218,9 @@ Protected Class cURLItem
 		Protected Shared Sub InitCallbacks(Sender As libcURL.cURLItem)
 		  'If Not Sender.SetOption(libcURL.Opts.OPENSOCKETDATA, Ptr(Sender.Handle)) Then Raise cURLException(Sender.LastError)
 		  'If Not Sender.SetOption(libcURL.Opts.OPENSOCKETFUNCTION, AddressOf OpenCallback) Then Raise cURLException(Sender.LastError)
+		  
+		  'If Not Sender.SetOption(libcURL.Opts.SSL_CTX_DATA, Ptr(Sender.Handle)) Then Raise cURLException(Sender.LastError)
+		  'If Not Sender.SetOption(libcURL.Opts.SSL_CTX_FUNCTION, AddressOf SSLInitCallback) Then Raise cURLException(Sender.LastError)
 		  
 		  If Not Sender.SetOption(libcURL.Opts.CLOSESOCKETDATA, Ptr(Sender.Handle)) Then Raise cURLException(Sender.LastError)
 		  If Not Sender.SetOption(libcURL.Opts.CLOSESOCKETFUNCTION, AddressOf CloseCallback) Then Raise cURLException(Sender.LastError)
@@ -376,6 +390,10 @@ Protected Class cURLItem
 		      Dim p As cURLOpenCallback = NewValue
 		      mb = p
 		      
+		    Case IsA cURLSSLInitCallback
+		      Dim p As cURLSSLInitCallback = NewValue
+		      mb = p
+		      
 		    Else
 		      Dim err As New TypeMismatchException
 		      err.Message = "NewValue is of unsupported type: " + Introspection.GetType(NewValue).Name
@@ -391,6 +409,18 @@ Protected Class cURLItem
 		  
 		  mLastError = curl_easy_setopt(Me.Handle, OptionNumber, mb)
 		  Return mLastError = 0
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Shared Function SSLInitCallback(Handle As Integer, SSLCTXStruct As Ptr, UserData As Integer) As Integer
+		  #pragma Unused Handle ' Handle is the handle to the instance
+		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
+		  If curl = Nil Then
+		    Break ' UserData does not refer to a valid instance!
+		    Return 1
+		  End If
+		  Return cURLItem(curl.Value).curlSSLInit(SSLCTXStruct)
 		End Function
 	#tag EndMethod
 
@@ -431,7 +461,7 @@ Protected Class cURLItem
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
-		Event DebugMessage(data As String)
+		Event DebugMessage(MessageType As libcURL.curl_infotype, data As String)
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
@@ -444,6 +474,10 @@ Protected Class cURLItem
 
 	#tag Hook, Flags = &h0
 		Event Progress(dlTotal As UInt64, dlnow As UInt64, ultotal As UInt64, ulnow As UInt64) As Integer
+	#tag EndHook
+
+	#tag Hook, Flags = &h0
+		Event SSLInit(SSLCTX As Ptr) As Integer
 	#tag EndHook
 
 
@@ -631,6 +665,7 @@ Protected Class cURLItem
 			Name="LocalIP"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="LocalPort"
@@ -647,6 +682,7 @@ Protected Class cURLItem
 			Name="Password"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Port"
@@ -657,6 +693,7 @@ Protected Class cURLItem
 			Name="RemoteIP"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
@@ -675,16 +712,19 @@ Protected Class cURLItem
 			Name="URL"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="UserAgent"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Username"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class
