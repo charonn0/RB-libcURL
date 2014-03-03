@@ -415,14 +415,14 @@ Protected Class cURLItem
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub Write(Text As String)
+		Protected Function Write(Text As String) As Integer
 		  // Part of the Writeable interface.
 		  Dim byteswritten As Integer
 		  Dim mb As MemoryBlock = Text
 		  mLastError = curl_easy_send(Me.Handle, mb, mb.Size, byteswritten)
-		  'If mLastError = 0 Then Return byteswritten
+		  If mLastError = 0 Then Return byteswritten
 		  
-		End Sub
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
