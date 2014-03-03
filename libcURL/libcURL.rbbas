@@ -80,6 +80,38 @@ Protected Module libcURL
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h1
+		Protected Soft Declare Function curl_multi_add_handle Lib "libcurl" (MultiHandle As Integer, cURLHandle As Integer) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h1
+		Protected Soft Declare Function curl_multi_cleanup Lib "libcurl" (MultiHandle As Integer) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h1
+		Protected Soft Declare Function curl_multi_info_read Lib "libcurl" (MultiHandle As Integer, ByRef MsgQueueCount As Integer) As Ptr
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h1
+		Protected Soft Declare Function curl_multi_init Lib "libcurl" () As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h1
+		Protected Soft Declare Function curl_multi_perform Lib "libcurl" (MultiHandle As Integer, ByRef RunningHandleCount As Integer) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h1
+		Protected Soft Declare Function curl_multi_remove_handle Lib "libcurl" (MultiHandle As Integer, cURLHandle As Integer) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h1
+		Protected Soft Declare Function curl_multi_setopt Lib "libcurl" (MultiHandle As Integer, Option As Integer, Value As Ptr) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h1
+		Protected Soft Declare Function curl_multi_wait Lib "libcurl" (MultiHandle As Integer, ExtraFDs As Ptr, TimerOutMS As Integer, ByRef NumFDs As Integer) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h1
 		Protected Soft Declare Function curl_version Lib "libcurl" () As Ptr
 	#tag EndExternalMethod
 
@@ -439,6 +471,19 @@ Protected Module libcURL
 
 	#tag Constant, Name = INFO_SPEED_DOWNLOAD, Type = Double, Dynamic = False, Default = \"3145737", Scope = Protected
 	#tag EndConstant
+
+
+	#tag Structure, Name = curl_multi_msg, Flags = &h1
+		Msg As Integer
+		  Handle As Integer
+		MsgCode As Integer
+	#tag EndStructure
+
+	#tag Structure, Name = curl_waitfd, Flags = &h1
+		curl_socket As Integer
+		  Events As Int16
+		Revents As Int16
+	#tag EndStructure
 
 
 	#tag Enum, Name = curl_infotype, Flags = &h1
