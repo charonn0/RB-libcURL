@@ -1,5 +1,5 @@
 #tag Class
-Protected Class cURLItem
+Class cURLItem
 	#tag Method, Flags = &h0
 		Sub Close()
 		  // This method cleans up the instance
@@ -478,7 +478,7 @@ Protected Class cURLItem
 		
 		For example, setting the user-agent string:
 		
-		   Dim mcURL As New libcURL.cURLItem
+		   Dim mcURL As New cURLItem
 		   If Not mcURL.SetOption(libcURL.Opts.USERAGENT, "Bob's download manager/5.1") Then
 		      MsgBox("cURL error: " + Str(mcURL.LastError))
 		   End If

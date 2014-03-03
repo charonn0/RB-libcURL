@@ -1,5 +1,5 @@
 #tag Class
-Protected Class cURLMulti
+Class cURLMulti
 	#tag Method, Flags = &h0
 		Sub AddInstance(newcurl As libcURL.cURLItem)
 		  mLastError = curl_multi_add_handle(Me.Handle, newcurl.Handle)
