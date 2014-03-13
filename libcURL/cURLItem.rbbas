@@ -6,6 +6,9 @@ Class cURLItem
 		  
 		  If Not libcURL.IsAvailable Then Return
 		  curl_easy_cleanup(Me.Handle)
+		  #If DebugBuild Then
+		    System.DebugLog("libcURL instance closed.(" + Hex(mHandle) + ")")
+		  #endif
 		End Sub
 	#tag EndMethod
 
@@ -30,12 +33,18 @@ Class cURLItem
 		  If Instances = Nil Then
 		    mLastError = curl_global_init(CURL_GLOBAL_ALL)
 		    If Me.LastError = 0 Then Instances = New Dictionary
+		    #If DebugBuild Then
+		      System.DebugLog("Initiated libcURL.")
+		    #endif
 		  End If
 		  
 		  mHandle = curl_easy_init()
 		  If mHandle > 0 Then
 		    Instances.Value(mHandle) = New WeakRef(Me)
 		    InitCallbacks(Me)
+		    #If DebugBuild Then
+		      System.DebugLog("libcURL instance created successfully.(" + Hex(mHandle) + ")")
+		    #endif
 		  End If
 		End Sub
 	#tag EndMethod
@@ -171,9 +180,15 @@ Class cURLItem
 		Private Sub Destructor()
 		  Me.Close()
 		  Instances.Remove(mHandle)
+		  #If DebugBuild Then
+		    System.DebugLog("libcURL instance destroyed.(" + Hex(mHandle) + ")")
+		  #endif
 		  If Instances.Count = 0 Then
 		    curl_global_cleanup()
 		    Instances = Nil
+		    #If DebugBuild Then
+		      System.DebugLog("Cleaned up libcURL.")
+		    #endif
 		  End If
 		End Sub
 	#tag EndMethod
