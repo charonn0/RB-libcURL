@@ -3,11 +3,9 @@ Class cURLItem
 	#tag Method, Flags = &h0
 		Sub Close()
 		  // This method cleans up the instance
-		  // If no more instances, cleans up libcurl completely
 		  
 		  If Not libcURL.IsAvailable Then Return
 		  curl_easy_cleanup(Me.Handle)
-		  
 		End Sub
 	#tag EndMethod
 
@@ -42,8 +40,8 @@ Class cURLItem
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Sub Constructor(CopyOpts As libcURL.cURLItem)
+	#tag Method, Flags = &h0
+		Sub Constructor(CopyOpts As libcURL.cURLItem)
 		  // creates a new instance by cloning the passed instance
 		  If Not libcURL.IsAvailable Then Raise cURLException(0)
 		  If CopyOpts <> Nil And CopyOpts.Handle > 0 Then
@@ -169,8 +167,8 @@ Class cURLItem
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Sub Destructor()
+	#tag Method, Flags = &h21
+		Private Sub Destructor()
 		  Me.Close()
 		  Instances.Remove(mHandle)
 		  If Instances.Count = 0 Then
