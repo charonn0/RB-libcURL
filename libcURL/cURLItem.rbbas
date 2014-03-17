@@ -219,31 +219,31 @@ Class cURLItem
 
 	#tag Method, Flags = &h1
 		Protected Shared Sub InitCallbacks(Sender As libcURL.cURLItem)
-		  'If Not Sender.SetOption(libcURL.Opts.OPENSOCKETDATA, Ptr(Sender.Handle)) Then Raise cURLException(Sender.LastError)
+		  'If Not Sender.SetOption(libcURL.Opts.OPENSOCKETDATA, Sender.Handle) Then Raise cURLException(Sender.LastError)
 		  'If Not Sender.SetOption(libcURL.Opts.OPENSOCKETFUNCTION, AddressOf OpenCallback) Then Raise cURLException(Sender.LastError)
 		  
-		  'If Not Sender.SetOption(libcURL.Opts.SSL_CTX_DATA, Ptr(Sender.Handle)) Then Raise cURLException(Sender.LastError)
+		  'If Not Sender.SetOption(libcURL.Opts.SSL_CTX_DATA, Sender.Handle) Then Raise cURLException(Sender.LastError)
 		  'If Not Sender.SetOption(libcURL.Opts.SSL_CTX_FUNCTION, AddressOf SSLInitCallback) Then Raise cURLException(Sender.LastError)
 		  
-		  If Not Sender.SetOption(libcURL.Opts.CLOSESOCKETDATA, Ptr(Sender.Handle)) Then Raise cURLException(Sender.LastError)
+		  If Not Sender.SetOption(libcURL.Opts.CLOSESOCKETDATA, Sender.Handle) Then Raise cURLException(Sender.LastError)
 		  If Not Sender.SetOption(libcURL.Opts.CLOSESOCKETFUNCTION, AddressOf CloseCallback) Then Raise cURLException(Sender.LastError)
 		  
-		  If Not Sender.SetOption(libcURL.Opts.WRITEDATA, Ptr(Sender.Handle)) Then Raise cURLException(Sender.LastError)
+		  If Not Sender.SetOption(libcURL.Opts.WRITEDATA, Sender.Handle) Then Raise cURLException(Sender.LastError)
 		  If Not Sender.SetOption(libcURL.Opts.WRITEFUNCTION, AddressOf WriteCallback) Then Raise cURLException(Sender.LastError)
 		  
-		  If Not Sender.SetOption(libcURL.Opts.READDATA, Ptr(Sender.Handle)) Then Raise cURLException(Sender.LastError)
+		  If Not Sender.SetOption(libcURL.Opts.READDATA, Sender.Handle) Then Raise cURLException(Sender.LastError)
 		  If Not Sender.SetOption(libcURL.Opts.READFUNCTION, AddressOf ReadCallback) Then Raise cURLException(Sender.LastError)
 		  
 		  If Not Sender.SetOption(libcURL.Opts.NOPROGRESS, False) Then Raise cURLException(Sender.LastError)
-		  If Not Sender.SetOption(libcURL.Opts.PROGRESSDATA, Ptr(Sender.Handle)) Then Raise cURLException(Sender.LastError)
+		  If Not Sender.SetOption(libcURL.Opts.PROGRESSDATA, Sender.Handle) Then Raise cURLException(Sender.LastError)
 		  If Not Sender.SetOption(libcURL.Opts.PROGRESSFUNCTION, AddressOf ProgressCallback) Then Raise cURLException(Sender.LastError)
 		  
-		  If Not Sender.SetOption(libcURL.Opts.HEADERDATA, Ptr(Sender.Handle)) Then Raise cURLException(Sender.LastError)
+		  If Not Sender.SetOption(libcURL.Opts.HEADERDATA, Sender.Handle) Then Raise cURLException(Sender.LastError)
 		  If Not Sender.SetOption(libcURL.Opts.HEADERFUNCTION, AddressOf HeaderCallback) Then Raise cURLException(Sender.LastError)
 		  
 		  #If DebugBuild Then
 		    If Not Sender.SetOption(libcURL.Opts.VERBOSE, True) Then Raise cURLException(Sender.LastError)
-		    If Not Sender.SetOption(libcURL.Opts.DEBUGDATA, Ptr(Sender.Handle)) Then Raise cURLException(Sender.LastError)
+		    If Not Sender.SetOption(libcURL.Opts.DEBUGDATA, Sender.Handle) Then Raise cURLException(Sender.LastError)
 		    If Not Sender.SetOption(libcURL.Opts.DEBUGFUNCTION, AddressOf DebugCallback) Then Raise cURLException(Sender.LastError)
 		  #endif
 		End Sub

@@ -537,7 +537,7 @@ End
 	#tag EndEvent
 	#tag Event
 		Sub Close()
-		  curlget.Close
+		  'curlget.Close
 		End Sub
 	#tag EndEvent
 #tag EndEvents
