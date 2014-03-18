@@ -14,6 +14,7 @@ Class cURLItem
 
 	#tag Method, Flags = &h21
 		Private Shared Function CloseCallback(UserData As Integer, Socket As Integer) As Integer
+		  #pragma X86CallingConvention CDecl
 		  #pragma Unused Socket ' socket is an OS socket reference
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl = Nil Then
@@ -166,6 +167,7 @@ Class cURLItem
 
 	#tag Method, Flags = &h21
 		Private Shared Function DebugCallback(Handle As Integer, info As curl_infotype, data As Ptr, size As Integer, UserData As Integer) As Integer
+		  #pragma X86CallingConvention CDecl
 		  #pragma Unused Handle ' handle is the cURL handle of the instance
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil Then
@@ -208,6 +210,7 @@ Class cURLItem
 
 	#tag Method, Flags = &h21
 		Private Shared Function HeaderCallback(char As Ptr, size As Integer, nmemb As Integer, UserData As Integer) As Integer
+		  #pragma X86CallingConvention CDecl
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil Then
 		    Return cURLItem(curl.Value).curlHeader(char, size, nmemb)
@@ -257,6 +260,7 @@ Class cURLItem
 
 	#tag Method, Flags = &h21
 		Private Shared Function OpenCallback(UserData As Ptr, SocketType As Integer, Socket As Ptr) As Ptr
+		  #pragma X86CallingConvention CDecl
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl = Nil Then Return Nil
 		  Return cURLItem(curl.Value).curlOpen(SocketType, Socket)
@@ -301,6 +305,7 @@ Class cURLItem
 
 	#tag Method, Flags = &h21
 		Private Shared Function ProgressCallback(UserData As Integer, dlTotal As UInt64, dlnow As UInt64, ultotal As UInt64, ulnow As UInt64) As Integer
+		  #pragma X86CallingConvention CDecl
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil Then
 		    Return cURLItem(curl.Value).curlProgress(dlTotal, dlnow, ultotal, ulnow)
@@ -329,6 +334,7 @@ Class cURLItem
 
 	#tag Method, Flags = &h21
 		Private Shared Function ReadCallback(char As Ptr, size As Integer, nmemb As Integer, UserData As Integer) As Integer
+		  #pragma X86CallingConvention CDecl
 		  // called when data is needed
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil Then
@@ -417,6 +423,7 @@ Class cURLItem
 
 	#tag Method, Flags = &h21
 		Private Shared Function SSLInitCallback(Handle As Integer, SSLCTXStruct As Ptr, UserData As Integer) As Integer
+		  #pragma X86CallingConvention CDecl
 		  #pragma Unused Handle ' Handle is the handle to the instance
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl = Nil Then
@@ -440,6 +447,7 @@ Class cURLItem
 
 	#tag Method, Flags = &h21
 		Private Shared Function WriteCallback(char As Ptr, size As Integer, nmemb As Integer, UserData As Integer) As Integer
+		  #pragma X86CallingConvention CDecl
 		  // Called when data is available
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil Then
