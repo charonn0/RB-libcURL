@@ -72,6 +72,10 @@ Protected Module libcURL
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h1
+		Protected Soft Declare Function curl_getdate Lib "libcurl" (sDate As CString, Reserved As Ptr) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h1
 		Protected Soft Declare Sub curl_global_cleanup Lib "libcurl" ()
 	#tag EndExternalMethod
 
@@ -100,6 +104,21 @@ Protected Module libcURL
 	#tag Method, Flags = &h1
 		Protected Function IsAvailable() As Boolean
 		  Return System.IsFunctionAvailable("curl_easy_init", "libcurl")
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function ParseDate(RawDate As String, ByRef Parsed As Date) As Boolean
+		  ' Parses the passed date string into the referenced Date object.
+		  ' If parsing was successful, returns True and instantiates the passed date reference; else, returns false.
+		  ' Valid for dates on or before December 31, 2037 24:59:59 GMT
+		  
+		  Dim count As Integer = curl_getdate(RawDate, Nil)
+		  If count > -1 Then
+		    Parsed = New Date(1970, 1, 1, 0, 0, 0, 0.0) 'UNIX epoch
+		    Parsed.TotalSeconds = Parsed.TotalSeconds + count
+		    Return True
+		  End If
 		End Function
 	#tag EndMethod
 
