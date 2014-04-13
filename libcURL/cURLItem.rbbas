@@ -436,7 +436,6 @@ Class cURLItem
 
 	#tag Method, Flags = &h1
 		Protected Function Write(Text As String) As Integer
-		  // Part of the Writeable interface.
 		  Dim byteswritten As Integer
 		  Dim mb As MemoryBlock = Text
 		  mLastError = curl_easy_send(Me.Handle, mb, mb.Size, byteswritten)
@@ -556,11 +555,7 @@ Class cURLItem
 		#tag Setter
 			Set
 			  //If the server will require a password, set it here. If the server doesn't require one, this property is ignored
-			  If Value <> "" Then
-			    Dim mb As New MemoryBlock(Len(value) + 1)
-			    mb.CString(0) = value
-			    Call Me.SetOption(libcURL.Opts.PASSWORD, mb)
-			  End If
+			  Call Me.SetOption(libcURL.Opts.PASSWORD, value)
 			End Set
 		#tag EndSetter
 		Password As String
