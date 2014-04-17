@@ -94,7 +94,7 @@ Begin Window Window1
       TextUnit        =   0
       Top             =   0
       Underline       =   ""
-      Value           =   1
+      Value           =   2
       Visible         =   True
       Width           =   879
       Begin TextArea Output
@@ -259,7 +259,7 @@ Begin Window Window1
          GridLinesVertical=   0
          HasHeading      =   True
          HeadingIndex    =   -1
-         Height          =   503
+         Height          =   264
          HelpTag         =   ""
          Hierarchical    =   ""
          Index           =   -2147483648
@@ -308,14 +308,14 @@ Begin Window Window1
          GridLinesVertical=   0
          HasHeading      =   True
          HeadingIndex    =   -1
-         Height          =   503
+         Height          =   235
          HelpTag         =   ""
          Hierarchical    =   ""
          Index           =   -2147483648
          InitialParent   =   "TabPanel1"
-         InitialValue    =   "Features"
+         InitialValue    =   "Protocols"
          Italic          =   ""
-         Left            =   259
+         Left            =   8
          LockBottom      =   ""
          LockedInPosition=   False
          LockLeft        =   True
@@ -332,7 +332,7 @@ Begin Window Window1
          TextFont        =   "System"
          TextSize        =   0
          TextUnit        =   0
-         Top             =   28
+         Top             =   296
          Underline       =   ""
          UseFocusRing    =   True
          Visible         =   True
@@ -364,7 +364,7 @@ Begin Window Window1
          InitialParent   =   "TabPanel1"
          InitialValue    =   "Version"
          Italic          =   ""
-         Left            =   510
+         Left            =   252
          LockBottom      =   ""
          LockedInPosition=   False
          LockLeft        =   True
@@ -544,20 +544,30 @@ End
 #tag Events Features
 	#tag Event
 		Sub Open()
-		  Dim feat As Integer = libcURL.Version.Struct.Features
-		  If BitAnd(feat, libcURL.Version.ASYNCHDNS) = libcURL.Version.ASYNCHDNS Then Me.AddRow("Async DNS supported")
-		  If BitAnd(feat, libcURL.Version.CONV) = libcURL.Version.CONV Then Me.AddRow("Character conversion supported")
-		  If BitAnd(feat, libcURL.Version.DEBUG) = libcURL.Version.DEBUG Then Me.AddRow("Built with debug capabilities")
-		  If BitAnd(feat, libcURL.Version.GSSNEGOTIATE) = libcURL.Version.GSSNEGOTIATE Then Me.AddRow("Negotiate auth support")
-		  If BitAnd(feat, libcURL.Version.IDN) = libcURL.Version.IDN Then Me.AddRow("International Domain Names support")
-		  If BitAnd(feat, libcURL.Version.KERBEROS4) = libcURL.Version.KERBEROS4 Then Me.AddRow("kerberos auth is supported")
-		  If BitAnd(feat, libcURL.Version.IPV6) = libcURL.Version.IPV6 Then Me.AddRow("IPv6-enabled")
-		  If BitAnd(feat, libcURL.Version.LARGEFILE) = libcURL.Version.LARGEFILE Then Me.AddRow("supports files bigger than 2GB")
-		  If BitAnd(feat, libcURL.Version.LIBZ) = libcURL.Version.LIBZ Then Me.AddRow("libz features are present")
-		  If BitAnd(feat, libcURL.Version.NTLM) = libcURL.Version.NTLM Then Me.AddRow("NTLM auth is supported")
-		  If BitAnd(feat, libcURL.Version.SPNEGO) = libcURL.Version.SPNEGO Then Me.AddRow("SPNEGO auth")
-		  If BitAnd(feat, libcURL.Version.SSL) = libcURL.Version.SSL Then Me.AddRow("SSL options are present")
-		  If BitAnd(feat, libcURL.Version.SSPI) = libcURL.Version.SSPI Then Me.AddRow("SSPI is supported")
+		  If libcURL.Version.ASYNCHDNS Then Me.AddRow("Async DNS supported")
+		  If libcURL.Version.CONV Then Me.AddRow("Character conversion supported")
+		  If libcURL.Version.DEBUG Then Me.AddRow("Built with debug capabilities")
+		  If libcURL.Version.GSSNEGOTIATE Then Me.AddRow("Negotiate auth support")
+		  If libcURL.Version.IDN Then Me.AddRow("International Domain Names support")
+		  If libcURL.Version.KERBEROS4 Then Me.AddRow("kerberos auth is supported")
+		  If libcURL.Version.IPV6 Then Me.AddRow("IPv6-enabled")
+		  If libcURL.Version.LARGEFILE Then Me.AddRow("supports files bigger than 2GB")
+		  If libcURL.Version.LIBZ Then Me.AddRow("libz features are present")
+		  If libcURL.Version.NTLM Then Me.AddRow("NTLM auth is supported")
+		  If libcURL.Version.SPNEGO Then Me.AddRow("SPNEGO auth")
+		  If libcURL.Version.SSL Then Me.AddRow("SSL options are present")
+		  If libcURL.Version.SSPI Then Me.AddRow("SSPI is supported")
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events Protocols
+	#tag Event
+		Sub Open()
+		  Dim l() As String = libcURL.Version.Protocols
+		  l.Sort
+		  For i As Integer = 0 To UBound(l)
+		    Me.AddRow(l(i))
+		  Next
 		End Sub
 	#tag EndEvent
 #tag EndEvents
