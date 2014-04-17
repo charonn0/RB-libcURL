@@ -68,6 +68,10 @@ Protected Module libcURL
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h1
+		Protected Soft Declare Function curl_formadd Lib "libcurl" (FirstItem As Ptr, LastItem As Ptr, NameOption As Integer, Name As Ptr, ContentOption As Integer, Contents As Ptr, TypeOption As Integer, Type As Ptr, FileNameOption As Integer, FileName As Ptr) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h1
 		Protected Soft Declare Sub curl_free Lib "libcurl" (char As Ptr)
 	#tag EndExternalMethod
 
@@ -186,10 +190,25 @@ Protected Module libcURL
 	#tag EndNote
 
 
+	#tag Constant, Name = CURLFORM_COPYCONTENTS, Type = Double, Dynamic = False, Default = \"2", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURLFORM_COPYNAME, Type = Double, Dynamic = False, Default = \"1", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = CURLM_CALL_MULTI_PERFORM, Type = Double, Dynamic = False, Default = \"4294967295", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = CURLVERSION_FOURTH, Type = Double, Dynamic = False, Default = \"3", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = CURL_GLOBAL_ALL, Type = Double, Dynamic = False, Default = \"3", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURL_GLOBAL_SSL, Type = Double, Dynamic = False, Default = \"1", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURL_GLOBAL_WIN32, Type = Double, Dynamic = False, Default = \"2", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = ERROR_ABORTED_BY_CALLBACK, Type = Double, Dynamic = False, Default = \"42", Scope = Protected
