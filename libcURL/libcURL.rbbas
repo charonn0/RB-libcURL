@@ -111,7 +111,7 @@ Protected Module libcURL
 		Protected Function ParseDate(RawDate As String, ByRef Parsed As Date) As Boolean
 		  ' Parses the passed date string into the referenced Date object.
 		  ' If parsing was successful, returns True and instantiates the passed date reference; else, returns false.
-		  ' Valid for dates on or before December 31, 2037 24:59:59 GMT
+		  ' Valid for dates on or before December 31, 2037 23:59:59 GMT
 		  
 		  Dim count As Integer = curl_getdate(RawDate, Nil)
 		  If count > -1 Then
