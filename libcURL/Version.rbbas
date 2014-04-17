@@ -1,62 +1,8 @@
 #tag Module
 Protected Module Version
-	#tag Method, Flags = &h1
-		Protected Function ASYNCHDNS() As Integer
-		  Return ShiftLeft(1, 7)  // asynchronous dns resolves
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Function CONV() As Integer
-		  Return ShiftLeft(1, 12) // character conversions are supported
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Function DEBUG() As Integer
-		  Return ShiftLeft(1, 6)  // built with debug capabilities
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Function Features() As Integer
+	#tag Method, Flags = &h21
+		Private Function Features() As Integer
 		  Return Struct.Features
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Function GSSNEGOTIATE() As Integer
-		  Return ShiftLeft(1, 5) // Negotiate auth support
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Function IDN() As Integer
-		  Return ShiftLeft(1, 10) // International Domain Names support
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Function IPV6() As Integer
-		  Return ShiftLeft(0, 1)  // IPv6-enabled
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Function KERBEROS4() As Integer
-		  Return ShiftLeft(1, 1) // kerberos auth is supported
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Function LARGEFILE() As Integer
-		  Return ShiftLeft(1, 9)  // supports files bigger than 2GB
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Function LIBZ() As Integer
-		  Return ShiftLeft(1, 3)  // libz features are present
 		End Function
 	#tag EndMethod
 
@@ -69,53 +15,18 @@ Protected Module Version
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function NTLM() As Integer
-		  Return ShiftLeft(1, 4)  // NTLM auth is supported
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
 		Protected Function Protocols() As String()
+		  Dim prots() As String
 		  Dim ve As CURLVersion = libcURL.Version.Struct
-		  Dim l() As String' = ve.Protocols.Ptr(0)
-		  Dim mb As MemoryBlock = ve.Protocols.Ptr(0)
-		  Dim bs As New BinaryStream(mb)
-		  
-		  Do
-		    Dim word As String
-		    Dim null As Integer
-		    While Not bs.EOF
-		      Dim char As Byte = bs.ReadByte
-		      If char <> 0 Then
-		        word = word + Chr(char)
-		      Else
-		        Exit While
-		      End If
-		    Wend
-		    l.Append(word)
-		    null = 0
-		  Loop
-		  
-		  'Dim s As String = mb.CString(0)
-		  Break
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Function SPNEGO() As Integer
-		  Return ShiftLeft(1, 8)  // SPNEGO auth
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Function SSL() As Integer
-		  Return ShiftLeft(1, 2)  // SSL options are present
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Function SSPI() As Integer
-		  Return ShiftLeft(1, 11) // SSPI is supported
+		  Dim p1 As Ptr = ve.Protocols.Ptr(0)
+		  Dim mb As MemoryBlock = p1
+		  Dim s As String = mb.WString(0) + Chr(0)
+		  s = DefineEncoding(s, Encodings.ASCII)
+		  prots = Split(s, Chr(0))
+		  For i As Integer = UBound(prots) DownTo 0
+		    If prots(i).Trim = "" Then prots.Remove(i)
+		  Next
+		  Return prots
 		End Function
 	#tag EndMethod
 
@@ -134,7 +45,138 @@ Protected Module Version
 	#tag EndMethod
 
 
-	#tag Structure, Name = CURLVersion, Flags = &h1
+	#tag ComputedProperty, Flags = &h1
+		#tag Getter
+			Get
+			  Dim kASYNCHDNS As Integer = ShiftLeft(1, 7)
+			  Return BitAnd(Features, kASYNCHDNS) = kASYNCHDNS  // asynchronous dns resolves
+			End Get
+		#tag EndGetter
+		Protected ASYNCHDNS As Boolean
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h1
+		#tag Getter
+			Get
+			  Dim kCONV As Integer = ShiftLeft(1, 12)
+			  Return BitAnd(Features, kCONV) = kCONV // character conversions are supported
+			End Get
+		#tag EndGetter
+		Protected CONV As Boolean
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h1
+		#tag Getter
+			Get
+			  Dim kDEBUG As Integer = ShiftLeft(1, 6)
+			  Return BitAnd(Features, kDEBUG) = kDEBUG // built with debug capabilities
+			End Get
+		#tag EndGetter
+		Protected DEBUG As Boolean
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h1
+		#tag Getter
+			Get
+			  Dim kGSSNEGOTIATE As Integer = ShiftLeft(1, 5)
+			  Return BitAnd(Features, kGSSNEGOTIATE) = kGSSNEGOTIATE // Negotiate auth support
+			End Get
+		#tag EndGetter
+		Protected GSSNEGOTIATE As Boolean
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h1
+		#tag Getter
+			Get
+			  Dim kIDN As Integer = ShiftLeft(1, 10)
+			  Return BitAnd(Features, kIDN) = kIDN // International Domain Names support
+			End Get
+		#tag EndGetter
+		Protected IDN As Boolean
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h1
+		#tag Getter
+			Get
+			  Dim kIPV6 As Integer = ShiftLeft(0, 1)
+			  Return BitAnd(Features, kIPV6) = kIPV6 // IPv6-enabled
+			End Get
+		#tag EndGetter
+		Protected IPV6 As Boolean
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h1
+		#tag Getter
+			Get
+			  Dim kKERBEROS4 As Integer = ShiftLeft(1, 1)
+			  Return BitAnd(Features, kKERBEROS4) = kKERBEROS4 // kerberos auth is supported
+			End Get
+		#tag EndGetter
+		Protected KERBEROS4 As Boolean
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h1
+		#tag Getter
+			Get
+			  Dim kLARGEFILE As Integer = ShiftLeft(1, 9)
+			  Return BitAnd(Features, kLARGEFILE) = kLARGEFILE // supports files bigger than 2GB
+			End Get
+		#tag EndGetter
+		Protected LARGEFILE As Boolean
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h1
+		#tag Getter
+			Get
+			  Dim kLIBZ As Integer = ShiftLeft(1, 3)
+			  Return BitAnd(Features, kLIBZ) = kLIBZ // libz features are present
+			End Get
+		#tag EndGetter
+		Protected LIBZ As Boolean
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h1
+		#tag Getter
+			Get
+			  Dim kNTLM As Integer = ShiftLeft(1, 4)
+			  Return BitAnd(Features, kNTLM) = kNTLM // NTLM auth is supported
+			End Get
+		#tag EndGetter
+		Protected NTLM As Boolean
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h1
+		#tag Getter
+			Get
+			  Dim kSPNEGO As Integer = ShiftLeft(1, 8)
+			  Return BitAnd(Features, kSPNEGO) = kSPNEGO // SPNEGO auth
+			End Get
+		#tag EndGetter
+		Protected SPNEGO As Boolean
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h1
+		#tag Getter
+			Get
+			  Dim kSSL As Integer = ShiftLeft(1, 2)
+			  Return BitAnd(Features, kSSL) = kSSL // SSL options are present
+			End Get
+		#tag EndGetter
+		Protected SSL As Boolean
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h1
+		#tag Getter
+			Get
+			  Dim kSSPI As Integer = ShiftLeft(1, 11)
+			  Return BitAnd(Features, kSSPI) = kSSPI // SSPI is supported
+			End Get
+		#tag EndGetter
+		Protected SSPI As Boolean
+	#tag EndComputedProperty
+
+
+	#tag Structure, Name = CURLVersion, Flags = &h21
 		Age As Integer
 		  VersionString As Ptr
 		  VersionNumber As UInt32
@@ -152,5 +194,40 @@ Protected Module Version
 	#tag EndStructure
 
 
+	#tag ViewBehavior
+		#tag ViewProperty
+			Name="Index"
+			Visible=true
+			Group="ID"
+			InitialValue="-2147483648"
+			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Left"
+			Visible=true
+			Group="Position"
+			InitialValue="0"
+			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Name"
+			Visible=true
+			Group="ID"
+			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Super"
+			Visible=true
+			Group="ID"
+			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Top"
+			Visible=true
+			Group="Position"
+			InitialValue="0"
+			InheritedFrom="Object"
+		#tag EndViewProperty
+	#tag EndViewBehavior
 End Module
 #tag EndModule
