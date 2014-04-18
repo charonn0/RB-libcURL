@@ -2,8 +2,7 @@
 Protected Class cURLItem
 	#tag Method, Flags = &h0
 		Sub Close()
-		  // This method cleans up the instance
-		  // If no more instances, cleans up libcurl completely
+		  // cleans up the instance
 		  
 		  If Not libcURL.IsAvailable Then Return
 		  curl_easy_cleanup(Me.Handle)
@@ -31,13 +30,19 @@ Protected Class cURLItem
 		  
 		  If Instances = Nil Then
 		    mLastError = curl_global_init(CURL_GLOBAL_ALL)
-		    If Me.LastError = 0 Then Instances = New Dictionary
+		    If Me.LastError = 0 Then 
+		      Instances = New Dictionary
+		    Else
+		      Raise cURLException(Me.LastError)
+		    End If
 		  End If
 		  
 		  mHandle = curl_easy_init()
 		  If mHandle > 0 Then
 		    Instances.Value(mHandle) = New WeakRef(Me)
 		    InitCallbacks(Me)
+		  Else
+		    Raise cURLException(libcURL.Errors.INIT_FAILED)
 		  End If
 		End Sub
 	#tag EndMethod
