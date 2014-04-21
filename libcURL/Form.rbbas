@@ -4,7 +4,7 @@ Protected Class Form
 		Function AddElement(Name As String, Value As Variant) As Boolean
 		  If Not libcURL.IsAvailable Then Return False
 		  Dim Contents, type, filename, nm As MemoryBlock
-		  nm = Name
+		  nm = Name + Chr(0)
 		  Dim ValueType As Integer = VarType(Value)
 		  Select Case ValueType
 		  Case Variant.TypeObject
@@ -27,7 +27,7 @@ Protected Class Form
 		    Contents = Value.PtrValue
 		    
 		  Case Variant.TypeString
-		    Contents = Value.StringValue
+		    Contents = Value.StringValue + Chr(0)
 		    
 		  Else
 		    Dim err As New TypeMismatchException
@@ -35,7 +35,8 @@ Protected Class Form
 		    Raise err
 		    
 		  End Select
-		  mLastError = curl_formadd(FirstItem, LastItem, CURLFORM_COPYNAME, nm, CURLFORM_COPYCONTENTS, Contents, 0, Nil, 0, Nil)
+		  mLastError = curl_formadd(FirstItem, LastItem, 0, Nil, 0, Nil, CURLFORM_END)
+		  'CURLFORM_COPYNAME, nm, CURLFORM_COPYCONTENTS, Contents, CURLFORM_END)
 		  'Ptr,Ptr,Integer,Ptr,Integer,Ptr,Integer,Ptr,Integer,Ptr
 		  Return mLastError = 0
 		End Function
@@ -44,10 +45,6 @@ Protected Class Form
 	#tag Method, Flags = &h0
 		Sub Constructor()
 		  If Not libcURL.IsAvailable Or curl_global_init(CURL_GLOBAL_ALL) <> 0 Then Raise cURLException(0)
-		  FirstItem = Nil
-		  LastItem = Nil
-		  mLastError = curl_formadd(FirstItem, LastItem, 0, Nil, 0, Nil, 0, Nil, 0, Nil)
-		  If Me.LastError <> 0 Then Raise cURLException(mLastError)
 		End Sub
 	#tag EndMethod
 
