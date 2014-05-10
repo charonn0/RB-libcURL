@@ -1,5 +1,5 @@
 #tag Class
-Protected Class cURLItem
+Class cURLItem
 	#tag Method, Flags = &h0
 		Sub Close()
 		  // cleans up the instance
