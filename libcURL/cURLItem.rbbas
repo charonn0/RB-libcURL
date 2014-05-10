@@ -30,7 +30,7 @@ Protected Class cURLItem
 		  
 		  If Instances = Nil Then
 		    mLastError = curl_global_init(CURL_GLOBAL_ALL)
-		    If Me.LastError = 0 Then 
+		    If Me.LastError = 0 Then
 		      Instances = New Dictionary
 		    Else
 		      Raise cURLException(Me.LastError)
