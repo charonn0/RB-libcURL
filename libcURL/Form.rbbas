@@ -3,7 +3,7 @@ Protected Class Form
 	#tag Method, Flags = &h0
 		Function AddElement(Name As String, Value As Variant) As Boolean
 		  If Not libcURL.IsAvailable Then Return False
-		  Dim Contents, type, filename, nm As MemoryBlock
+		  Dim Contents, type, filename, nm As String
 		  nm = Name + Chr(0)
 		  Dim ValueType As Integer = VarType(Value)
 		  Select Case ValueType
@@ -13,7 +13,7 @@ Protected Class Form
 		      If f.Exists And Not f.Directory Then
 		        Dim bs As BinaryStream = BinaryStream.Open(f)
 		        Contents = New MemoryBlock(bs.Length)
-		        Contents.StringValue(0, Contents.Size) = bs.Read(bs.Length)
+		        Contents = bs.Read(bs.Length)
 		        filename = f.Name
 		        type = "application/octet-stream"
 		      End If
@@ -24,7 +24,7 @@ Protected Class Form
 		    End If
 		    
 		  Case Variant.TypeInteger
-		    Contents = Value.PtrValue
+		    Contents = Str(Value.IntegerValue) + Chr(0)
 		    
 		  Case Variant.TypeString
 		    Contents = Value.StringValue + Chr(0)
@@ -35,8 +35,7 @@ Protected Class Form
 		    Raise err
 		    
 		  End Select
-		  mLastError = curl_formadd(FirstItem, LastItem, 0, Nil, 0, Nil, CURLFORM_END)
-		  'CURLFORM_COPYNAME, nm, CURLFORM_COPYCONTENTS, Contents, CURLFORM_END)
+		  mLastError = curl_formadd(FirstItem, LastItem, CURLFORM_COPYNAME, nm, CURLFORM_COPYCONTENTS, Contents, CURLFORM_END)
 		  'Ptr,Ptr,Integer,Ptr,Integer,Ptr,Integer,Ptr,Integer,Ptr
 		  Return mLastError = 0
 		End Function
@@ -49,8 +48,20 @@ Protected Class Form
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub Destructor()
+		  If FirstItem <> Nil Then libcURL.curl_formfree(FirstItem)
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function LastError() As Integer
 		  Return mLastError
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Operator_Convert() As Ptr
+		  Return FirstItem
 		End Function
 	#tag EndMethod
 
@@ -66,6 +77,16 @@ Protected Class Form
 	#tag Property, Flags = &h1
 		Protected mLastError As Integer
 	#tag EndProperty
+
+
+	#tag Constant, Name = CURLFORM_COPYCONTENTS, Type = Double, Dynamic = False, Default = \"4", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURLFORM_COPYNAME, Type = Double, Dynamic = False, Default = \"1", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURLFORM_END, Type = Double, Dynamic = False, Default = \"17", Scope = Protected
+	#tag EndConstant
 
 
 	#tag ViewBehavior

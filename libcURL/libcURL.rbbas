@@ -68,11 +68,15 @@ Protected Module libcURL
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h1
-		Protected Soft Declare Function curl_formadd Lib "libcurl" (FirstItem As Ptr, LastItem As Ptr, Option1 As Integer, Value1 As Ptr, Option2 As Integer, Value2 As Ptr, FinalOption As Integer) As Integer
+		Protected Soft Declare Function curl_formadd Lib "libcurl" (ByRef FirstItem As Ptr, ByRef LastItem As Ptr, Option1 As Integer, Value1 As CString, Option2 As Integer, Value2 As CString, FinalOption As Integer) As Integer
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h1
-		Protected Soft Declare Function curl_formadd Lib "libcurl" (FirstItem As Ptr, LastItem As Ptr, NameOption As Integer, Name As Ptr, ContentOption As Integer, Contents As Ptr, TypeOption As Integer, Type As Ptr, FileNameOption As Integer, FileName As Ptr) As Integer
+		Protected Soft Declare Function curl_formadd Lib "libcurl" (ByRef FirstItem As Ptr, ByRef LastItem As Ptr, NameOption As Integer, Name As CString, ContentOption As Integer, Contents As CString, TypeOption As Integer, Type As CString, FileNameOption As Integer, FileName As CString) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h1
+		Protected Soft Declare Sub curl_formfree Lib "libcurl" (curlform As Ptr)
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h1
@@ -193,15 +197,6 @@ Protected Module libcURL
 		in this Software without prior written authorization of the copyright holder.
 	#tag EndNote
 
-
-	#tag Constant, Name = CURLFORM_COPYCONTENTS, Type = Double, Dynamic = False, Default = \"2", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = CURLFORM_COPYNAME, Type = Double, Dynamic = False, Default = \"1", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = CURLFORM_END, Type = Double, Dynamic = False, Default = \"17", Scope = Protected
-	#tag EndConstant
 
 	#tag Constant, Name = CURLM_CALL_MULTI_PERFORM, Type = Double, Dynamic = False, Default = \"4294967295", Scope = Protected
 	#tag EndConstant
