@@ -129,7 +129,7 @@ Protected Module libcURL
 	#tag Method, Flags = &h1
 		Protected Function URLDecode(Data As String) As String
 		  If libcURL.IsAvailable Then
-		    If curl_global_init(3) = 0 Then
+		    If curl_global_init(CURL_GLOBAL_NOTHING) = 0 Then
 		      Dim mHandle As Integer = curl_easy_init()
 		      If mHandle > 0 Then
 		        Dim InP As MemoryBlock = Data
@@ -149,7 +149,7 @@ Protected Module libcURL
 	#tag Method, Flags = &h1
 		Protected Function URLEncode(Data As String) As String
 		  If libcURL.IsAvailable Then
-		    If curl_global_init(3) = 0 Then
+		    If curl_global_init(CURL_GLOBAL_NOTHING) = 0 Then
 		      Dim mHandle As Integer = curl_easy_init()
 		      If mHandle > 0 Then
 		        Dim InP As MemoryBlock = Data
