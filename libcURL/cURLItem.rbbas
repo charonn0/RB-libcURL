@@ -248,7 +248,7 @@ Class cURLItem
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Shared Function OpenCallback(UserData As Ptr, SocketType As Integer, Socket As Ptr) As Ptr
+		Private Shared Function OpenCallback(UserData As Integer, SocketType As Integer, Socket As Ptr) As Ptr
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl = Nil Then Return Nil
 		  Return cURLItem(curl.Value).curlOpen(SocketType, Socket)
