@@ -81,18 +81,9 @@ Protected Module libcURL
 		Protected Soft Declare Sub curl_global_cleanup Lib "libcurl" ()
 	#tag EndExternalMethod
 
-	#tag Method, Flags = &h1
-		Protected Function curl_global_init(flags As Integer) As Integer
-		  Static initlock As Semaphore
-		  If initlock = Nil Then initlock = New Semaphore
-		  While Not initlock.TrySignal
-		    App.YieldToNextThread
-		  Wend
-		  Dim ret As Integer = _curl_global_init(flags)
-		  initlock.Release
-		  Return ret
-		End Function
-	#tag EndMethod
+	#tag ExternalMethod, Flags = &h1
+		Protected Soft Declare Function curl_global_init Lib "libcurl" Alias "curl_global_init" (flags As Integer) As Integer
+	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h1
 		Protected Soft Declare Function curl_version Lib "libcurl" () As Ptr
@@ -173,10 +164,6 @@ Protected Module libcURL
 		  End If
 		End Function
 	#tag EndMethod
-
-	#tag ExternalMethod, Flags = &h1
-		Protected Soft Declare Function _curl_global_init Lib "libcurl" Alias "curl_global_init" (flags As Integer) As Integer
-	#tag EndExternalMethod
 
 
 	#tag Note, Name = Copying
