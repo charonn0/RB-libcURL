@@ -3,7 +3,7 @@ Protected Class Form
 	#tag Method, Flags = &h0
 		Function AddElement(Name As String, Value As Variant) As Boolean
 		  If Not libcURL.IsAvailable Then Return False
-		  Dim Contents, type, filename, nm As String
+		  Dim Contents, nm As String
 		  nm = Name + Chr(0)
 		  Dim ValueType As Integer = VarType(Value)
 		  Select Case ValueType
