@@ -38,6 +38,7 @@ Protected Module Version
 		      ve = curl_version_info(CURLVERSION_FOURTH)
 		      Dim v As CURLVersion
 		      v.StringValue(TargetLittleEndian) = ve.StringValue(0, v.Size)
+		      curl_global_cleanup()
 		      Return v
 		    End If
 		  End If

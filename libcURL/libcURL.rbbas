@@ -139,6 +139,7 @@ Protected Module libcURL
 		        Dim ret As String = InP.StringValue(0, outlen)
 		        curl_free(p)
 		        curl_easy_cleanup(mHandle)
+		        curl_global_cleanup()
 		        Return ret
 		      End If
 		    End If
@@ -158,6 +159,7 @@ Protected Module libcURL
 		        Dim ret As String = InP.CString(0)
 		        curl_free(p)
 		        curl_easy_cleanup(mHandle)
+		        curl_global_cleanup()
 		        Return ret
 		      End If
 		    End If

@@ -47,6 +47,7 @@ Protected Class Form
 	#tag Method, Flags = &h0
 		Sub Destructor()
 		  If FirstItem <> Nil Then libcURL.curl_formfree(FirstItem)
+		  libcURL.curl_global_cleanup()
 		End Sub
 	#tag EndMethod
 
@@ -76,6 +77,26 @@ Protected Class Form
 		  Return mLastError
 		End Function
 	#tag EndMethod
+
+
+	#tag Note, Name = Using this class
+		This class represents a linked list of form elements that are managed by libcURL.
+		Use the AddElement method to add a form element to the form. Form elements may be
+		either strings or folderitems (for uploading)
+		
+		Once the form is constructed you can pass it to the cURLItem.SetOption method using
+		libcURL.Opts.HTTPPOST as the option number.
+		
+		e.g.
+		
+		  Dim frm As New libcURL.Form
+		  Call frm.AddElement("username", "Bob")
+		  Dim sock As New cURLItem
+		  Call sock.SetOption(libcURL.Opts.HTTPPOST, frm)
+		  Call sock.Perform("http://www.example.com/submit.php", 5)
+		
+		  
+	#tag EndNote
 
 
 	#tag Property, Flags = &h1
