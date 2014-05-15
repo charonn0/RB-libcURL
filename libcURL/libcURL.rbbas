@@ -82,7 +82,7 @@ Protected Module libcURL
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h1
-		Protected Soft Declare Function curl_global_init Lib "libcurl" Alias "curl_global_init" (flags As Integer) As Integer
+		Protected Soft Declare Function curl_global_init Lib "libcurl" (flags As Integer) As Integer
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h1
