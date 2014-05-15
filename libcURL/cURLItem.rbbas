@@ -281,10 +281,13 @@ Class cURLItem
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Perform(URL As String = "") As Boolean
+		Function Perform(URL As String = "", Timeout As Integer = 0) As Boolean
 		  If Not libcURL.IsAvailable Then Return False
 		  If URL <> "" Then
 		    If Not SetOption(libcURL.Opts.URL, URL) Then Raise cURLException(Me.LastError)
+		  End If
+		  If Timeout > 0 Then
+		    If Not SetOption(libcURL.Opts.TIMEOUT, Timeout) Then Raise cURLException(Me.LastError)
 		  End If
 		  mLastError = curl_easy_perform(Me.Handle)
 		  Return Me.LastError = 0

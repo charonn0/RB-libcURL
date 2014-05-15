@@ -72,6 +72,9 @@ Protected Module Opts
 	#tag Constant, Name = SSL_VERIFYPEER, Type = Double, Dynamic = False, Default = \"64", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = TIMEOUT, Type = Double, Dynamic = False, Default = \"13", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = UPLOAD, Type = Double, Dynamic = False, Default = \"46", Scope = Protected
 	#tag EndConstant
 
