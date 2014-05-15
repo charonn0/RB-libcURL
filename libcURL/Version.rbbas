@@ -33,7 +33,7 @@ Protected Module Version
 	#tag Method, Flags = &h1
 		Protected Function Struct() As CURLVersion
 		  If libcURL.IsAvailable Then
-		    If curl_global_init(3) = 0 Then
+		    If curl_global_init(CURL_GLOBAL_DEFAULT) = 0 Then
 		      Dim ve As MemoryBlock
 		      ve = curl_version_info(CURLVERSION_FOURTH)
 		      Dim v As CURLVersion

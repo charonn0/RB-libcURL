@@ -29,7 +29,7 @@ Class cURLItem
 		  If Not libcURL.IsAvailable Then Raise cURLException(0)
 		  
 		  If Instances = Nil Then
-		    mLastError = curl_global_init(CURL_GLOBAL_ALL)
+		    mLastError = curl_global_init(CURL_GLOBAL_DEFAULT)
 		    If Me.LastError = 0 Then
 		      Instances = New Dictionary
 		    Else
@@ -364,6 +364,10 @@ Class cURLItem
 		    Select Case NewValue
 		    Case IsA MemoryBlock
 		      mb = NewValue.PtrValue
+		      
+		    Case IsA libcURL.Form
+		      Dim f As libcURL.Form = NewValue
+		      mb = f.Handle
 		      
 		    Case IsA cURLProgressCallback
 		      Dim p As cURLProgressCallback = NewValue
