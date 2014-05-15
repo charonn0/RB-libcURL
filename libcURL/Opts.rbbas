@@ -27,6 +27,9 @@ Protected Module Opts
 	#tag Constant, Name = HTTPGET, Type = Double, Dynamic = False, Default = \"80", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = HTTPHEADER, Type = Double, Dynamic = False, Default = \"10023", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = HTTPPOST, Type = Double, Dynamic = False, Default = \"10024", Scope = Protected
 	#tag EndConstant
 

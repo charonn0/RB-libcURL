@@ -372,6 +372,10 @@ Class cURLItem
 		      Dim f As libcURL.Form = NewValue
 		      mb = f.Handle
 		      
+		    Case IsA libcURL.Headers
+		      Dim f As libcURL.Headers = NewValue
+		      mb = f.Handle
+		      
 		    Case IsA cURLProgressCallback
 		      Dim p As cURLProgressCallback = NewValue
 		      mb = p

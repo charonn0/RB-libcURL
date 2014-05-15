@@ -10,6 +10,7 @@ Module=Opts;libcURL/Opts.rbbas;&h72597FFF;&h1B9FF7FF;false
 Module=Version;libcURL/Version.rbbas;&h44617FFF;&h1B9FF7FF;false
 Class=cURLItem;libcURL/cURLItem.rbbas;&h4A33EFFF;&h1B9FF7FF;false
 Module=Errors;libcURL/Errors.rbbas;&h591417FF;&h1B9FF7FF;false
+Class=Headers;libcURL/Headers.rbbas;&h1BFED7FF;&h1B9FF7FF;false
 DefaultWindow=Window1
 MajorVersion=1
 MinorVersion=0

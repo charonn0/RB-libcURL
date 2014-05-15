@@ -86,6 +86,14 @@ Protected Module libcURL
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h1
+		Protected Soft Declare Function curl_slist_append Lib "libcurl" (sList As Ptr, Data As CString) As Ptr
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h1
+		Protected Soft Declare Sub curl_slist_free_all Lib "libcurl" (sList As Ptr)
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h1
 		Protected Soft Declare Function curl_version Lib "libcurl" () As Ptr
 	#tag EndExternalMethod
 
