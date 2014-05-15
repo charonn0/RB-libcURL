@@ -11,15 +11,8 @@ Protected Class Form
 		    If Value IsA FolderItem Then
 		      Dim f As FolderItem = Value
 		      If f.Exists And Not f.Directory Then
-		        Dim bs As BinaryStream = BinaryStream.Open(f)
-		        Contents = New MemoryBlock(bs.Length)
-		        Contents = bs.Read(bs.Length)
-		        filename = f.Name
-		        type = "application/octet-stream"
 		        Call Me.FormAdd(Name, f)
-		        Return mLastError = 0
-		        'mLastError = curl_formadd(FirstItem, LastItem, CURLFORM_COPYNAME, nm, CURLFORM_COPYCONTENTS, Contents, CURLFORM_FILE, filename, CURLFORM_FILECONTENT, f.AbsolutePath, CURLFORM_END)
-		        'TypeOption As Integer, Type As CString, FileNameOption As Integer, FileName As CString
+		        Return mLastError = 0 ' RETURN early
 		      End If
 		    Else
 		      Dim err As New TypeMismatchException
@@ -47,7 +40,7 @@ Protected Class Form
 
 	#tag Method, Flags = &h0
 		Sub Constructor()
-		  If Not libcURL.IsAvailable Or curl_global_init(CURL_GLOBAL_DEFAULT) <> 0 Then Raise cURLException(0)
+		  If Not libcURL.IsAvailable Or curl_global_init(CURL_GLOBAL_NOTHING) <> 0 Then Raise cURLException(0)
 		End Sub
 	#tag EndMethod
 
