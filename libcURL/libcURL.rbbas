@@ -66,10 +66,6 @@ Protected Module libcURL
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h1
-		Protected Soft Declare Function curl_formadd Lib "libcurl" (ByRef FirstItem As Ptr, ByRef LastItem As Ptr, NameOption As Integer, Name As CString, ContentOption As Integer, Contents As CString, TypeOption As Integer, Type As CString, FileNameOption As Integer, FileName As CString) As Integer
-	#tag EndExternalMethod
-
-	#tag ExternalMethod, Flags = &h1
 		Protected Soft Declare Sub curl_formfree Lib "libcurl" (curlform As Ptr)
 	#tag EndExternalMethod
 
@@ -201,6 +197,12 @@ Protected Module libcURL
 	#tag EndConstant
 
 	#tag Constant, Name = CURL_GLOBAL_ALL, Type = Double, Dynamic = False, Default = \"3", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURL_GLOBAL_DEFAULT, Type = Double, Dynamic = False, Default = \"CURL_GLOBAL_ALL", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURL_GLOBAL_NOTHING, Type = Double, Dynamic = False, Default = \"0", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = CURL_GLOBAL_SSL, Type = Double, Dynamic = False, Default = \"1", Scope = Protected

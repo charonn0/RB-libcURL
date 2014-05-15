@@ -16,6 +16,10 @@ Protected Class Form
 		        Contents = bs.Read(bs.Length)
 		        filename = f.Name
 		        type = "application/octet-stream"
+		        Call Me.FormAdd(Name, f)
+		        Return mLastError = 0
+		        'mLastError = curl_formadd(FirstItem, LastItem, CURLFORM_COPYNAME, nm, CURLFORM_COPYCONTENTS, Contents, CURLFORM_FILE, filename, CURLFORM_FILECONTENT, f.AbsolutePath, CURLFORM_END)
+		        'TypeOption As Integer, Type As CString, FileNameOption As Integer, FileName As CString
 		      End If
 		    Else
 		      Dim err As New TypeMismatchException
@@ -35,15 +39,15 @@ Protected Class Form
 		    Raise err
 		    
 		  End Select
-		  mLastError = curl_formadd(FirstItem, LastItem, CURLFORM_COPYNAME, nm, CURLFORM_COPYCONTENTS, Contents, CURLFORM_END)
-		  'Ptr,Ptr,Integer,Ptr,Integer,Ptr,Integer,Ptr,Integer,Ptr
+		  'mLastError = curl_formadd(FirstItem, LastItem, CURLFORM_COPYNAME, nm, CURLFORM_COPYCONTENTS, Contents, CURLFORM_END)
+		  Call Me.FormAdd(Name, Value.StringValue)
 		  Return mLastError = 0
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub Constructor()
-		  If Not libcURL.IsAvailable Or curl_global_init(CURL_GLOBAL_ALL) <> 0 Then Raise cURLException(0)
+		  If Not libcURL.IsAvailable Or curl_global_init(CURL_GLOBAL_DEFAULT) <> 0 Then Raise cURLException(0)
 		End Sub
 	#tag EndMethod
 
@@ -53,15 +57,30 @@ Protected Class Form
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Function LastError() As Integer
-		  Return mLastError
+	#tag Method, Flags = &h1
+		Protected Function FormAdd(Name As String, Value As FolderItem) As Boolean
+		  mLastError = curl_formadd(FirstItem, LastItem, CURLFORM_COPYNAME, Name, CURLFORM_FILE, Value.AbsolutePath, CURLFORM_END)
+		  'TypeOption As Integer, Type As CString, FileNameOption As Integer, FileName As CString
+		  Return mLastError = 0
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function FormAdd(Name As String, Value As String) As Boolean
+		  mLastError = curl_formadd(FirstItem, LastItem, CURLFORM_COPYNAME, Name, CURLFORM_COPYCONTENTS, Value, CURLFORM_END)
+		  Return mLastError = 0
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Operator_Convert() As Ptr
+		Function Handle() As Ptr
 		  Return FirstItem
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function LastError() As Integer
+		  Return mLastError
 		End Function
 	#tag EndMethod
 
@@ -86,6 +105,12 @@ Protected Class Form
 	#tag EndConstant
 
 	#tag Constant, Name = CURLFORM_END, Type = Double, Dynamic = False, Default = \"17", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURLFORM_FILE, Type = Double, Dynamic = False, Default = \"10", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURLFORM_FILECONTENT, Type = Double, Dynamic = False, Default = \"7", Scope = Protected
 	#tag EndConstant
 
 
