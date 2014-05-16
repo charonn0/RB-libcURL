@@ -511,22 +511,6 @@ Class cURLItem
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  //The IP address of the local connection used for the transfer
-			  //Note: this is usually NOT the client's public IP
-			  Dim p As Ptr
-			  Me.GetInfo(INFO_LOCAL_IP, p)
-			  If Me.LastError = 0 Then
-			    Dim buffer As MemoryBlock = p.Ptr(0)
-			    Return buffer.CString(0)
-			  End If
-			End Get
-		#tag EndGetter
-		LocalIP As String
-	#tag EndComputedProperty
-
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
 			  //The local port used to make the connection. This is decided upon by libcurl and the OS's network stack
 			  Dim mb As New MemoryBlock(4)
 			  Me.GetInfo(INFO_LOCAL_PORT, mb)
@@ -545,6 +529,29 @@ Class cURLItem
 	#tag Property, Flags = &h1
 		Protected mLastError As Integer
 	#tag EndProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  Dim mb As New MemoryBlock(4)
+			  Me.GetInfo(INFO_LOCAL_IP, mb)
+			  If Me.LastError <> 0 Then Return Nil
+			  Dim buffer As MemoryBlock = mb.Ptr(0)
+			  For i As Integer = 0 To System.NetworkInterfaceCount - 1
+			    Dim iface As NetworkInterface = System.GetNetworkInterface(i)
+			    If iface.IPAddress = buffer.CString(0) Then
+			      Return iface
+			    End If
+			  Next
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  Call Me.SetOption(libcURL.Opts.NETINTERFACE, value.IPAddress)
+			End Set
+		#tag EndSetter
+		NetworkInterface As NetworkInterface
+	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
 		#tag Setter
