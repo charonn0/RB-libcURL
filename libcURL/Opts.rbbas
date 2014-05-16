@@ -1,5 +1,14 @@
 #tag Module
 Protected Module Opts
+	#tag Constant, Name = ACCEPT_ENCODING, Type = Double, Dynamic = False, Default = \"10102", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CAINFO, Type = Double, Dynamic = False, Default = \"10065", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CAPATH, Type = Double, Dynamic = False, Default = \"10097", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = CLOSESOCKETDATA, Type = Double, Dynamic = False, Default = \"10209", Scope = Protected
 	#tag EndConstant
 
@@ -9,6 +18,24 @@ Protected Module Opts
 	#tag Constant, Name = CONNECT_ONLY, Type = Double, Dynamic = False, Default = \"141", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = COOKIE, Type = Double, Dynamic = False, Default = \"10022", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = COOKIEFILE, Type = Double, Dynamic = False, Default = \"10031", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = COOKIEJAR, Type = Double, Dynamic = False, Default = \"10082", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = COOKIELIST, Type = Double, Dynamic = False, Default = \"10135", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CRLFILE, Type = Double, Dynamic = False, Default = \"10169", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CUSTOMREQUEST, Type = Double, Dynamic = False, Default = \"10036", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = DEBUGDATA, Type = Double, Dynamic = False, Default = \"10095", Scope = Protected
 	#tag EndConstant
 
@@ -16,6 +43,18 @@ Protected Module Opts
 	#tag EndConstant
 
 	#tag Constant, Name = DIRLISTONLY, Type = Double, Dynamic = False, Default = \"48", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = EGDSOCKET, Type = Double, Dynamic = False, Default = \"10077", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = FTPPORT, Type = Double, Dynamic = False, Default = \"10017", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = FTP_ACCOUNT, Type = Double, Dynamic = False, Default = \"10134", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = FTP_ALTERNATIVE_TO_USER, Type = Double, Dynamic = False, Default = \"10147", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = HEADERDATA, Type = Double, Dynamic = False, Default = \"10029", Scope = Protected
@@ -33,7 +72,28 @@ Protected Module Opts
 	#tag Constant, Name = HTTPPOST, Type = Double, Dynamic = False, Default = \"10024", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = ISSUERCERT, Type = Double, Dynamic = False, Default = \"10170", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = KEYPASSWD, Type = Double, Dynamic = False, Default = \"10026", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = KRBLEVEL, Type = Double, Dynamic = False, Default = \"10063", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = MAIL_FROM, Type = Double, Dynamic = False, Default = \"10186", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = NETINTERFACE, Type = Double, Dynamic = False, Default = \"10062", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = NETRC_FILE, Type = Double, Dynamic = False, Default = \"10118", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = NOPROGRESS, Type = Double, Dynamic = False, Default = \"43", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = NOPROXY, Type = Double, Dynamic = False, Default = \"10177", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = OPENSOCKETDATA, Type = Double, Dynamic = False, Default = \"10164", Scope = Protected
@@ -54,13 +114,76 @@ Protected Module Opts
 	#tag Constant, Name = PROGRESSFUNCTION, Type = Double, Dynamic = False, Default = \"20056", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = PROXY, Type = Double, Dynamic = False, Default = \"10004", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = PROXYPASSWORD, Type = Double, Dynamic = False, Default = \"10176", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = PROXYUSERNAME, Type = Double, Dynamic = False, Default = \"10175", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = PROXYUSERPWD, Type = Double, Dynamic = False, Default = \"10006", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = RANDOM_FILE, Type = Double, Dynamic = False, Default = \"10076", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = RANGE, Type = Double, Dynamic = False, Default = \"10007", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = READDATA, Type = Double, Dynamic = False, Default = \"10009", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = READFUNCTION, Type = Double, Dynamic = False, Default = \"20012", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = REFERER, Type = Double, Dynamic = False, Default = \"10016", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = RTSP_SESSION_ID, Type = Double, Dynamic = False, Default = \"10190", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = RTSP_STREAM_URI, Type = Double, Dynamic = False, Default = \"10191", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = RTSP_TRANSPORT, Type = Double, Dynamic = False, Default = \"10192", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = SEEKFUNCTION, Type = Double, Dynamic = False, Default = \"20167", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = SOCKS5_GSSAPI_SERVICE, Type = Double, Dynamic = False, Default = \"10179", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = SSH_HOST_PUBLIC_KEY_MD5, Type = Double, Dynamic = False, Default = \"10162", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = SSH_KNOWNHOSTS, Type = Double, Dynamic = False, Default = \"10183", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = SSH_PRIVATE_KEYFILE, Type = Double, Dynamic = False, Default = \"10153", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = SSH_PUBLIC_KEYFILE, Type = Double, Dynamic = False, Default = \"10152", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = SSLCERT, Type = Double, Dynamic = False, Default = \"10025", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = SSLCERTTYPE, Type = Double, Dynamic = False, Default = \"10086", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = SSLENGINE, Type = Double, Dynamic = False, Default = \"10089", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = SSLKEY, Type = Double, Dynamic = False, Default = \"10087", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = SSLKEYTYPE, Type = Double, Dynamic = False, Default = \"10088", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = SSL_CIPHER_LIST, Type = Double, Dynamic = False, Default = \"10083", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = SSL_CTX_DATA, Type = Double, Dynamic = False, Default = \"10109", Scope = Protected
