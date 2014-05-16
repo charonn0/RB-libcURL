@@ -94,7 +94,7 @@ Begin Window Window1
       TextUnit        =   0
       Top             =   0
       Underline       =   ""
-      Value           =   2
+      Value           =   0
       Visible         =   True
       Width           =   879
       Begin TextArea Output
@@ -531,7 +531,7 @@ End
 		  Output.Text = ""
 		  Headers.DeleteAllRows
 		  Debug.DeleteAllRows
-		  Call curlget.Perform(TextField1.Text)
+		  Call curlget.Perform(TextField1.Text, 5)
 		  curlget.Reset
 		End Sub
 	#tag EndEvent
