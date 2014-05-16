@@ -107,6 +107,11 @@ Class cURLItem
 		Private Function curlOpen(SocketType As Integer, Socket As Ptr) As Ptr
 		  // called by OpenCallback
 		  #pragma Warning "Fix Me"
+		  ' This method is called whenever libcURL needs to create a new socket and gives
+		  ' us an opportunity to tinker with the raw socketry. However, we must return a
+		  ' valid socket otherwise nothing works. So, OpenCallback is not initialized 
+		  ' at this time, this method is not executed and the CreateSocket event is not
+		  ' raised.
 		  Dim p As Ptr = RaiseEvent CreateSocket(SocketType, Socket)
 		  Return p
 		End Function
@@ -368,6 +373,9 @@ Class cURLItem
 		    Case IsA MemoryBlock
 		      mb = NewValue.PtrValue
 		      
+		    Case IsA FolderItem
+		      mb = FolderItem(NewValue).AbsolutePath + Chr(0)
+		      
 		    Case IsA libcURL.Form
 		      Dim f As libcURL.Form = NewValue
 		      mb = f.Handle
@@ -504,6 +512,25 @@ Class cURLItem
 	#tag EndNote
 
 
+	#tag ComputedProperty, Flags = &h0
+		#tag Note
+			 
+			Sets the file containing one or more certificates to verify the peer with.
+		#tag EndNote
+		#tag Getter
+			Get
+			  return mCA_ListFile
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  mCA_ListFile = value
+			  Call Me.SetOption(libcURL.Opts.CAINFO, value)
+			End Set
+		#tag EndSetter
+		CA_ListFile As FolderItem
+	#tag EndComputedProperty
+
 	#tag Property, Flags = &h21
 		Private Shared Instances As Dictionary
 	#tag EndProperty
@@ -521,6 +548,10 @@ Class cURLItem
 		#tag EndGetter
 		LocalPort As Integer
 	#tag EndComputedProperty
+
+	#tag Property, Flags = &h21
+		Private mCA_ListFile As FolderItem
+	#tag EndProperty
 
 	#tag Property, Flags = &h1
 		Protected mHandle As Integer
@@ -654,12 +685,6 @@ Class cURLItem
 			Group="Position"
 			InitialValue="0"
 			InheritedFrom="Object"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="LocalIP"
-			Group="Behavior"
-			Type="String"
-			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="LocalPort"
