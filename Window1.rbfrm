@@ -27,13 +27,13 @@ Begin Window Window1
    Begin libcURL.cURLItem curlget
       Height          =   32
       Index           =   -2147483648
-      Left            =   911
+      Left            =   9.11e+2
       LocalPort       =   ""
       LockedInPosition=   False
       Port            =   ""
       Scope           =   0
       TabPanelIndex   =   0
-      Top             =   42
+      Top             =   4.2e+1
       Width           =   32
    End
    Begin PushButton PushButton1
@@ -459,8 +459,20 @@ End
 	#tag Event
 		Sub Open()
 		  Me.Title = libcURL.Version.Name
+		  
+		  'for SSL/TLS connections we must specify a file with a list of acceptable cartificate authorities
+		  ' We create a temp file and dump the DEFAULT_CA_INFO_PEM data into it for this purpose.
+		  CA_File = GetTemporaryFolderItem()
+		  Dim bs As BinaryStream = BinaryStream.Create(CA_File, True)
+		  bs.Write(DEFAULT_CA_INFO_PEM)
+		  bs.Close
 		End Sub
 	#tag EndEvent
+
+
+	#tag Property, Flags = &h1
+		Protected CA_File As FolderItem
+	#tag EndProperty
 
 
 #tag EndWindowCode
@@ -531,8 +543,10 @@ End
 		  Output.Text = ""
 		  Headers.DeleteAllRows
 		  Debug.DeleteAllRows
+		  curlget.CA_ListFile = CA_File ' for SSL/TLS connections we must specify a list of acceptable cartificate authorities
 		  Call curlget.Perform(TextField1.Text, 5)
 		  curlget.Reset
+		  
 		End Sub
 	#tag EndEvent
 	#tag Event
