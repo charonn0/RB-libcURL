@@ -20,6 +20,10 @@ Protected Module Version
 		  Dim ve As CURLVersion = libcURL.Version.Struct
 		  Dim p1 As Ptr = ve.Protocols.Ptr(0)
 		  Dim mb As MemoryBlock = p1
+		  ' Note that the following line fails on my Linux Vm
+		  ' The docs say that the Protocols list is terminated
+		  ' by an empty entry, but on Linux the final entry is
+		  ' not empty.
 		  Dim s As String = mb.WString(0) + Chr(0)
 		  s = DefineEncoding(s, Encodings.ASCII)
 		  prots = Split(s, Chr(0))
