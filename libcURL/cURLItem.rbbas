@@ -182,6 +182,7 @@ Class cURLItem
 	#tag Method, Flags = &h1
 		Protected Sub Destructor()
 		  Me.Close()
+		  If Instances = Nil Then Return
 		  Instances.Remove(mHandle)
 		  If Instances.Count = 0 Then
 		    curl_global_cleanup()
@@ -219,8 +220,10 @@ Class cURLItem
 		  'If Not Sender.SetOption(libcURL.Opts.OPENSOCKETDATA, Sender.Handle) Then Raise cURLException(Sender.LastError)
 		  'If Not Sender.SetOption(libcURL.Opts.OPENSOCKETFUNCTION, AddressOf OpenCallback) Then Raise cURLException(Sender.LastError)
 		  
-		  'If Not Sender.SetOption(libcURL.Opts.SSL_CTX_DATA, Sender.Handle) Then Raise cURLException(Sender.LastError)
-		  'If Not Sender.SetOption(libcURL.Opts.SSL_CTX_FUNCTION, AddressOf SSLInitCallback) Then Raise cURLException(Sender.LastError)
+		  If libcURL.Version.SSL Then
+		    If Not Sender.SetOption(libcURL.Opts.SSL_CTX_DATA, Sender.Handle) Then Raise cURLException(Sender.LastError)
+		    If Not Sender.SetOption(libcURL.Opts.SSL_CTX_FUNCTION, AddressOf SSLInitCallback) Then Raise cURLException(Sender.LastError)
+		  End If
 		  
 		  If Not Sender.SetOption(libcURL.Opts.CLOSESOCKETDATA, Sender.Handle) Then Raise cURLException(Sender.LastError)
 		  If Not Sender.SetOption(libcURL.Opts.CLOSESOCKETFUNCTION, AddressOf CloseCallback) Then Raise cURLException(Sender.LastError)
@@ -309,6 +312,7 @@ Class cURLItem
 
 	#tag Method, Flags = &h1
 		Protected Function Read(Count As Integer, encoding As TextEncoding = Nil) As String
+		  ' experimental
 		  Dim mb As New MemoryBlock(Count)
 		  Dim i As Integer
 		  mLastError = curl_easy_recv(Me.Handle, mb, mb.Size, i)
@@ -427,6 +431,9 @@ Class cURLItem
 		Private Shared Function SSLInitCallback(Handle As Integer, SSLCTXStruct As Ptr, UserData As Integer) As Integer
 		  #pragma Unused Handle ' Handle is the handle to the instance
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
+		  Dim data As SSL_CTX
+		  Dim mb As MemoryBlock = SSLCTXStruct
+		  data.StringValue(TargetLittleEndian) = mb.StringValue(0, SSL_CTX.Size)
 		  If curl = Nil Then
 		    Break ' UserData does not refer to a valid instance!
 		    Return 1
@@ -437,12 +444,14 @@ Class cURLItem
 
 	#tag Method, Flags = &h0
 		Sub Verbose(Assigns Verbosity As Boolean)
+		  ' Pass True to receive the DebugMessage event. The default is False
 		  If Not Me.SetOption(libcURL.Opts.VERBOSE, Verbosity) Then Raise cURLException(Me.LastError)
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
 		Protected Function Write(Text As String) As Integer
+		  ' experimental
 		  Dim byteswritten As Integer
 		  Dim mb As MemoryBlock = Text
 		  mLastError = curl_easy_send(Me.Handle, mb, mb.Size, byteswritten)
@@ -670,6 +679,31 @@ Class cURLItem
 		#tag EndSetter
 		Username As String
 	#tag EndComputedProperty
+
+
+	#tag Constant, Name = GNUTLS_MAX_ALGORITHM_NUM, Type = Double, Dynamic = False, Default = \"16", Scope = Private
+	#tag EndConstant
+
+
+	#tag Structure, Name = SSL_CTX, Flags = &h21
+		Method As SSL_METHOD
+		  certfile As Ptr
+		  certfile_type As Integer
+		  keyfile As Ptr
+		  keyfile_type As Integer
+		  options As UInt32
+		  verifycallbackORX509_STORE_CTX As Ptr
+		verify_mode As Integer
+	#tag EndStructure
+
+	#tag Structure, Name = SSL_METHOD, Flags = &h21
+		protocol_priority As Integer
+		  cipher_priority As Integer
+		  comp_priority As Integer
+		  kx_priority As Integer
+		  mac_priority As Integer
+		connend As UInt32
+	#tag EndStructure
 
 
 	#tag ViewBehavior
