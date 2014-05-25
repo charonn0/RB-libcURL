@@ -27,13 +27,13 @@ Begin Window Window1
    Begin libcURL.cURLItem curlget
       Height          =   32
       Index           =   -2147483648
-      Left            =   9.11e+2
+      Left            =   911
       LocalPort       =   ""
       LockedInPosition=   False
       Port            =   ""
       Scope           =   0
       TabPanelIndex   =   0
-      Top             =   4.2e+1
+      Top             =   42
       Width           =   32
    End
    Begin PushButton PushButton1
@@ -94,7 +94,7 @@ Begin Window Window1
       TextUnit        =   0
       Top             =   0
       Underline       =   ""
-      Value           =   0
+      Value           =   2
       Visible         =   True
       Width           =   879
       Begin TextArea Output
@@ -544,6 +544,7 @@ End
 		  Headers.DeleteAllRows
 		  Debug.DeleteAllRows
 		  curlget.CA_ListFile = CA_File ' for SSL/TLS connections we must specify a list of acceptable cartificate authorities
+		  curlget.Verbose = True
 		  Call curlget.Perform(TextField1.Text, 5)
 		  curlget.Reset
 		  
