@@ -109,7 +109,7 @@ Class cURLItem
 		  #pragma Warning "Fix Me"
 		  ' This method is called whenever libcURL needs to create a new socket and gives
 		  ' us an opportunity to tinker with the raw socketry. However, we must return a
-		  ' valid socket otherwise nothing works. So, OpenCallback is not initialized 
+		  ' valid socket otherwise nothing works. So, OpenCallback is not initialized
 		  ' at this time, this method is not executed and the CreateSocket event is not
 		  ' raised.
 		  Dim p As Ptr = RaiseEvent CreateSocket(SocketType, Socket)
@@ -238,11 +238,8 @@ Class cURLItem
 		  If Not Sender.SetOption(libcURL.Opts.HEADERDATA, Sender.Handle) Then Raise cURLException(Sender.LastError)
 		  If Not Sender.SetOption(libcURL.Opts.HEADERFUNCTION, AddressOf HeaderCallback) Then Raise cURLException(Sender.LastError)
 		  
-		  #If DebugBuild Then
-		    If Not Sender.SetOption(libcURL.Opts.VERBOSE, True) Then Raise cURLException(Sender.LastError)
-		    If Not Sender.SetOption(libcURL.Opts.DEBUGDATA, Sender.Handle) Then Raise cURLException(Sender.LastError)
-		    If Not Sender.SetOption(libcURL.Opts.DEBUGFUNCTION, AddressOf DebugCallback) Then Raise cURLException(Sender.LastError)
-		  #endif
+		  If Not Sender.SetOption(libcURL.Opts.DEBUGDATA, Sender.Handle) Then Raise cURLException(Sender.LastError)
+		  If Not Sender.SetOption(libcURL.Opts.DEBUGFUNCTION, AddressOf DebugCallback) Then Raise cURLException(Sender.LastError)
 		End Sub
 	#tag EndMethod
 
@@ -438,6 +435,12 @@ Class cURLItem
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Sub Verbose(Assigns Verbosity As Boolean)
+		  If Not Me.SetOption(libcURL.Opts.VERBOSE, Verbosity) Then Raise cURLException(Me.LastError)
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h1
 		Protected Function Write(Text As String) As Integer
 		  Dim byteswritten As Integer
@@ -514,7 +517,6 @@ Class cURLItem
 
 	#tag ComputedProperty, Flags = &h0
 		#tag Note
-			 
 			Sets the file containing one or more certificates to verify the peer with.
 		#tag EndNote
 		#tag Getter
