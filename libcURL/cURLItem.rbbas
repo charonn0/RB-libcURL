@@ -47,8 +47,8 @@ Class cURLItem
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Sub Constructor(CopyOpts As libcURL.cURLItem)
+	#tag Method, Flags = &h0
+		Sub Constructor(CopyOpts As libcURL.cURLItem)
 		  // creates a new instance by cloning the passed instance
 		  If Not libcURL.IsAvailable Then Raise cURLException(0)
 		  If CopyOpts <> Nil And CopyOpts.Handle > 0 Then
