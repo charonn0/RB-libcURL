@@ -2,18 +2,25 @@
 Protected Class Form
 	#tag Method, Flags = &h0
 		Function AddElement(Name As String, Value As Variant) As Boolean
+		  ' Adds the passed Value to the form using the specified name.
+		  ' Value may be a String, FolderItem, or Integer. All other types,
+		  ' including Nil, will raise an exception.
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/curl_formadd.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Form.AddElement
+		  
 		  If Not libcURL.IsAvailable Then Return False
 		  Dim ValueType As Integer = VarType(Value)
-		  Select Case ValueType
+		  Select Case ValueType ' marshal the value
 		  Case Variant.TypeObject
-		    If Value IsA FolderItem Then
+		    Select Case Value
+		    Case IsA FolderItem 
 		      Dim f As FolderItem = Value
-		      If f.Exists And Not f.Directory Then 
+		      If f.Exists And Not f.Directory Then
 		        mLastError = curl_formadd(FirstItem, LastItem, CURLFORM_COPYNAME, Name, CURLFORM_FILE, f.AbsolutePath, CURLFORM_END)
 		        Return Me.LastError = 0
 		      End If
-		    End If
-		    
+		    End Select
 		  Case Variant.TypeInteger, Variant.TypeString
 		    mLastError = curl_formadd(FirstItem, LastItem, CURLFORM_COPYNAME, Name, CURLFORM_COPYCONTENTS, Value.StringValue, CURLFORM_END)
 		    Return Me.LastError = 0
@@ -22,10 +29,10 @@ Protected Class Form
 		  Dim err As RuntimeException
 		  If Value IsA FolderItem Then
 		    err = New IOException
-		    err.Message = "Value does not exist or is a directory."
+		    err.Message = "Value does not exist or is a directory." ' bad file
 		  Else
 		    err = New TypeMismatchException
-		    err.Message = "Value is of unsupported type: " + Introspection.GetType(Value).Name
+		    err.Message = "Value is of unsupported type: " + Introspection.GetType(Value).Name ' bad type
 		  End If
 		  Raise err
 		  
@@ -34,6 +41,7 @@ Protected Class Form
 
 	#tag Method, Flags = &h0
 		Sub Constructor()
+		  ' initialize libcURL just enough to handle form building
 		  If Not libcURL.IsAvailable Or curl_global_init(CURL_GLOBAL_NOTHING) <> 0 Then Raise cURLException(0)
 		End Sub
 	#tag EndMethod
@@ -47,6 +55,7 @@ Protected Class Form
 
 	#tag Method, Flags = &h0
 		Function Handle() As Ptr
+		  ' This method returns a Ptr to the form structure which can be passed back to libcURL
 		  Return FirstItem
 		End Function
 	#tag EndMethod

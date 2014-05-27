@@ -2,6 +2,7 @@
 Protected Module libcURL
 	#tag Method, Flags = &h21
 		Private Function cURLException(Err As Integer) As RuntimeException
+		  ' Returns a RuntimeException populated with the error message for the passed curl error code.
 		  Dim ex As New RuntimeException
 		  ex.ErrorNumber = Err
 		  ex.Message = FormatError(Err)
@@ -103,7 +104,11 @@ Protected Module libcURL
 
 	#tag Method, Flags = &h1
 		Protected Function FormatError(cURLError As Integer) As String
-		  //Translates libcurl error numbers to messages
+		  ' Translates libcurl error numbers to messages
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/curl_easy_strerror.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.FormatError
+		  
 		  If libcURL.IsAvailable Then
 		    Dim mb As MemoryBlock = curl_easy_strerror(cURLError)
 		    Return mb.CString(0)
@@ -124,6 +129,9 @@ Protected Module libcURL
 		  ' Parses the passed date string into the referenced Date object.
 		  ' If parsing was successful, returns True and instantiates the passed date reference; else, returns false.
 		  ' Valid for dates on or before December 31, 2037 23:59:59 GMT
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/curl_getdate.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ParseDate
 		  
 		  Dim count As Integer = curl_getdate(RawDate, Nil)
 		  If count > -1 Then

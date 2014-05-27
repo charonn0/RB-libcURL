@@ -2,6 +2,11 @@
 Protected Class Headers
 	#tag Method, Flags = &h0
 		Function AddHeader(Name As String, Value As String) As Boolean
+		  ' Adds the passed Value to the headers using the specified name.
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/curl_slist_append.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Headers.AddHeader
+		  
 		  If Not libcURL.IsAvailable Then Return False
 		  List = curl_slist_append(List, Name + ": " + Value)
 		  Return List <> Nil
@@ -10,6 +15,7 @@ Protected Class Headers
 
 	#tag Method, Flags = &h0
 		Sub Constructor()
+		  ' initialize libcURL just enough to handle header building
 		  If Not libcURL.IsAvailable Or curl_global_init(CURL_GLOBAL_NOTHING) <> 0 Then Raise cURLException(0)
 		End Sub
 	#tag EndMethod
@@ -23,6 +29,7 @@ Protected Class Headers
 
 	#tag Method, Flags = &h0
 		Function Handle() As Ptr
+		  ' This method returns a Ptr to the header list which can be passed back to libcURL
 		  Return List
 		End Function
 	#tag EndMethod
