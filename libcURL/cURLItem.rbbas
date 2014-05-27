@@ -53,7 +53,7 @@ Class cURLItem
 		  If Not libcURL.IsAvailable Then Raise cURLException(0)
 		  If CopyOpts <> Nil And CopyOpts.Handle > 0 Then
 		    mHandle = curl_easy_duphandle(CopyOpts.Handle)
-		    If Me.Handle > 0 Then
+		    If mHandle > 0 Then
 		      Instances.Value(mHandle) = New WeakRef(Me)
 		      InitCallbacks(Me)
 		    Else
@@ -194,7 +194,7 @@ Class cURLItem
 	#tag Method, Flags = &h1
 		Protected Sub GetInfo(InfoType As Integer, Buffer As Ptr)
 		  If Not libcURL.IsAvailable Then Return
-		  mLastError = curl_easy_getinfo(Me.Handle, InfoType, Buffer)
+		  mLastError = curl_easy_getinfo(mHandle, InfoType, Buffer)
 		End Sub
 	#tag EndMethod
 
@@ -280,7 +280,7 @@ Class cURLItem
 		    End If
 		  End If
 		  
-		  mLastError = curl_easy_pause(Me.Handle, mask)
+		  mLastError = curl_easy_pause(mHandle, mask)
 		  Return Me.LastError = 0
 		End Function
 	#tag EndMethod
@@ -294,7 +294,7 @@ Class cURLItem
 		  If Timeout > 0 Then
 		    If Not SetOption(libcURL.Opts.TIMEOUT, Timeout) Then Raise cURLException(Me.LastError)
 		  End If
-		  mLastError = curl_easy_perform(Me.Handle)
+		  mLastError = curl_easy_perform(mHandle)
 		  Return Me.LastError = 0
 		End Function
 	#tag EndMethod
@@ -315,7 +315,7 @@ Class cURLItem
 		  ' experimental
 		  Dim mb As New MemoryBlock(Count)
 		  Dim i As Integer
-		  mLastError = curl_easy_recv(Me.Handle, mb, mb.Size, i)
+		  mLastError = curl_easy_recv(mHandle, mb, mb.Size, i)
 		  If Me.LastError = 0 Then
 		    Dim s As String
 		    If encoding <> Nil Then
@@ -343,7 +343,7 @@ Class cURLItem
 	#tag Method, Flags = &h0
 		Sub Reset()
 		  If Not libcURL.IsAvailable Then Return
-		  curl_easy_reset(Me.Handle)
+		  curl_easy_reset(mHandle)
 		  InitCallbacks(Me)
 		End Sub
 	#tag EndMethod
@@ -422,7 +422,7 @@ Class cURLItem
 		    Raise err
 		  End Select
 		  
-		  mLastError = curl_easy_setopt(Me.Handle, OptionNumber, mb)
+		  mLastError = curl_easy_setopt(mHandle, OptionNumber, mb)
 		  Return mLastError = 0
 		End Function
 	#tag EndMethod
@@ -454,7 +454,7 @@ Class cURLItem
 		  ' experimental
 		  Dim byteswritten As Integer
 		  Dim mb As MemoryBlock = Text
-		  mLastError = curl_easy_send(Me.Handle, mb, mb.Size, byteswritten)
+		  mLastError = curl_easy_send(mHandle, mb, mb.Size, byteswritten)
 		  If mLastError = 0 Then Return byteswritten
 		  
 		End Function
