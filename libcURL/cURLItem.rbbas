@@ -2,16 +2,26 @@
 Class cURLItem
 	#tag Method, Flags = &h0
 		Sub Close()
-		  // cleans up the instance
+		  ' cleans up the instance. 
+		  ' called automatically by the class destructor.
+		  ' See: 
+		  ' http://curl.haxx.se/libcurl/c/curl_easy_cleanup.html 
+		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Close
 		  
 		  If Not libcURL.IsAvailable Then Return
-		  curl_easy_cleanup(Me.Handle)
+		  If mHandle <> 0 Then 
+		    curl_easy_cleanup(mHandle)
+		    Instances.Remove(mHandle)
+		  End If
+		  mHandle = 0
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
 		Private Shared Function CloseCallback(UserData As Integer, Socket As Integer) As Integer
+		  ' This method is invoked by libcURL. DO NOT CALL THIS METHOD
+		  
 		  #pragma Unused Socket ' socket is an OS socket reference
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl = Nil Then
@@ -25,7 +35,12 @@ Class cURLItem
 
 	#tag Method, Flags = &h0
 		Sub Constructor()
-		  // Creates a new instance, sets up the callback functions
+		  ' Initializes libcURL if necessary and creates a new curl_easy handle
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/curl_global_init.html 
+		  ' http://curl.haxx.se/libcurl/c/curl_easy_init.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Constructor
+		  
 		  If Not libcURL.IsAvailable Then Raise cURLException(0)
 		  
 		  If Instances = Nil Then
@@ -49,7 +64,12 @@ Class cURLItem
 
 	#tag Method, Flags = &h0
 		Sub Constructor(CopyOpts As libcURL.cURLItem)
-		  // creates a new instance by cloning the passed instance
+		  ' Creates a new curl_easy handle by cloning the passed handle. The clone is independent of the original.
+		  ' This method does not initialize libcURL as it is assumed to have been initialized in CopyOpts.Constructor()
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/curl_easy_duphandle.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Constructor
+		  
 		  If Not libcURL.IsAvailable Then Raise cURLException(0)
 		  If CopyOpts <> Nil And CopyOpts.Handle > 0 Then
 		    mHandle = curl_easy_duphandle(CopyOpts.Handle)
@@ -69,7 +89,8 @@ Class cURLItem
 
 	#tag Method, Flags = &h21
 		Private Sub curlClose()
-		  // called by CloseCallback
+		  ' This method is the intermediary between CloseCallback and the Disconnected event.
+		  ' DO NOT CALL THIS METHOD
 		  RaiseEvent Disconnected()
 		End Sub
 	#tag EndMethod
@@ -80,7 +101,8 @@ Class cURLItem
 
 	#tag Method, Flags = &h21
 		Private Function curlDebug(info As curl_infotype, data As Ptr, Size As Integer) As Integer
-		  // called by DebugCallback
+		  ' This method is the intermediary between DebugCallback and the DebugMessage event.
+		  ' DO NOT CALL THIS METHOD
 		  Dim mb As MemoryBlock = data
 		  Dim s As String = mb.StringValue(0, size)
 		  RaiseEvent DebugMessage(info, s)
@@ -94,7 +116,9 @@ Class cURLItem
 
 	#tag Method, Flags = &h21
 		Private Function curlHeader(char As Ptr, size As Integer, nmemb As Integer) As Integer
-		  // called by HeaderCallback
+		  ' This method is the intermediary between HeaderCallback and the HeaderReceived event.
+		  ' DO NOT CALL THIS METHOD
+		  
 		  Dim sz As Integer = nmemb * size
 		  Dim data As MemoryBlock = char
 		  Dim s As String = data.StringValue(0, sz)
@@ -105,7 +129,9 @@ Class cURLItem
 
 	#tag Method, Flags = &h21
 		Private Function curlOpen(SocketType As Integer, Socket As Ptr) As Ptr
-		  // called by OpenCallback
+		  ' This method is the intermediary between OpenCallback and the CreateSocket event.
+		  ' DO NOT CALL THIS METHOD
+		  
 		  #pragma Warning "Fix Me"
 		  ' This method is called whenever libcURL needs to create a new socket and gives
 		  ' us an opportunity to tinker with the raw socketry. However, we must return a
@@ -123,7 +149,9 @@ Class cURLItem
 
 	#tag Method, Flags = &h21
 		Private Function curlProgress(dlTotal As UInt64, dlnow As UInt64, ultotal As UInt64, ulnow As UInt64) As Integer
-		  // called by ProgressCallback
+		  ' This method is the intermediary between ProgressCallback and the Progress event.
+		  ' DO NOT CALL THIS METHOD
+		  
 		  Return RaiseEvent Progress(dlTotal, dlnow, ultotal, ulnow)
 		End Function
 	#tag EndMethod
@@ -134,7 +162,9 @@ Class cURLItem
 
 	#tag Method, Flags = &h21
 		Private Function curlRead(char As Ptr, size As Integer, nmemb As Integer) As Integer
-		  // called by ReadCallback
+		  ' This method is the intermediary between ReadCallback and the DataNeeded event.
+		  ' DO NOT CALL THIS METHOD
+		  
 		  Dim sz As Integer = nmemb * size
 		  Dim data As String = RaiseEvent DataNeeded(sz)
 		  If data.LenB <= sz Then
@@ -147,7 +177,9 @@ Class cURLItem
 
 	#tag Method, Flags = &h21
 		Private Function curlSSLInit(SSLCTX As Ptr) As Integer
-		  // called by InitSSLCallback
+		  ' This method is the intermediary between InitSSLCallback and the SSLInit event.
+		  ' DO NOT CALL THIS METHOD
+		  
 		  Return RaiseEvent SSLInit(SSLCTX)
 		End Function
 	#tag EndMethod
@@ -158,8 +190,9 @@ Class cURLItem
 
 	#tag Method, Flags = &h21
 		Private Function curlWrite(char As Ptr, size As Integer, nmemb As Integer) As Integer
-		  // called by WriteCallback
-		  ' data available
+		  ' This method is the intermediary between WriteCallback and the DataAvailable event.
+		  ' DO NOT CALL THIS METHOD
+		  
 		  Dim mb As MemoryBlock = char
 		  Dim s As String = mb.StringValue(0, nmemb * size)
 		  RaiseEvent DataAvailable(s)
@@ -169,6 +202,8 @@ Class cURLItem
 
 	#tag Method, Flags = &h21
 		Private Shared Function DebugCallback(Handle As Integer, info As curl_infotype, data As Ptr, size As Integer, UserData As Integer) As Integer
+		  ' This method is invoked by libcURL. DO NOT CALL THIS METHOD
+		  
 		  #pragma Unused Handle ' handle is the cURL handle of the instance
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil Then
@@ -181,9 +216,12 @@ Class cURLItem
 
 	#tag Method, Flags = &h1
 		Protected Sub Destructor()
+		  ' Closes the instance and, if no more instances, cleans up libcURL
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/curl_global_cleanup.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Destructor
+		  
 		  Me.Close()
-		  If Instances = Nil Then Return
-		  Instances.Remove(mHandle)
 		  If Instances.Count = 0 Then
 		    curl_global_cleanup()
 		    Instances = Nil
@@ -193,6 +231,11 @@ Class cURLItem
 
 	#tag Method, Flags = &h1
 		Protected Sub GetInfo(InfoType As Integer, Buffer As Ptr)
+		  ' Calls curl_easy_getinfo. Pass a MemoryBlock suitable to contain the InfoType requested.
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/curl_easy_getinfo.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.GetInfo
+		  
 		  If Not libcURL.IsAvailable Then Return
 		  mLastError = curl_easy_getinfo(mHandle, InfoType, Buffer)
 		End Sub
@@ -200,12 +243,15 @@ Class cURLItem
 
 	#tag Method, Flags = &h0
 		Function Handle() As Integer
+		  ' The curl_easy handle.
 		  Return mHandle
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
 		Private Shared Function HeaderCallback(char As Ptr, size As Integer, nmemb As Integer, UserData As Integer) As Integer
+		  ' This method is invoked by libcURL. DO NOT CALL THIS METHOD
+		  
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil Then
 		    Return cURLItem(curl.Value).curlHeader(char, size, nmemb)
@@ -217,8 +263,10 @@ Class cURLItem
 
 	#tag Method, Flags = &h1
 		Protected Shared Sub InitCallbacks(Sender As libcURL.cURLItem)
-		  'If Not Sender.SetOption(libcURL.Opts.OPENSOCKETDATA, Sender.Handle) Then Raise cURLException(Sender.LastError)
-		  'If Not Sender.SetOption(libcURL.Opts.OPENSOCKETFUNCTION, AddressOf OpenCallback) Then Raise cURLException(Sender.LastError)
+		  ' This method sets up the callback functions for the passed instance of cURLItem
+		  
+		  //If Not Sender.SetOption(libcURL.Opts.OPENSOCKETDATA, Sender.Handle) Then Raise cURLException(Sender.LastError)
+		  //If Not Sender.SetOption(libcURL.Opts.OPENSOCKETFUNCTION, AddressOf OpenCallback) Then Raise cURLException(Sender.LastError)
 		  
 		  If libcURL.Version.SSL Then
 		    If Not Sender.SetOption(libcURL.Opts.SSL_CTX_DATA, Sender.Handle) Then Raise cURLException(Sender.LastError)
@@ -248,12 +296,19 @@ Class cURLItem
 
 	#tag Method, Flags = &h0
 		Function LastError() As Integer
+		  ' All calls into libcURL that return an error code will update LastError 
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Errors
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.FormatError
+		  
 		  Return mLastError
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
 		Private Shared Function OpenCallback(UserData As Integer, SocketType As Integer, Socket As Ptr) As Ptr
+		  ' This method is invoked by libcURL. DO NOT CALL THIS METHOD
+		  
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl = Nil Then Return Nil
 		  Return cURLItem(curl.Value).curlOpen(SocketType, Socket)
@@ -264,7 +319,11 @@ Class cURLItem
 
 	#tag Method, Flags = &h0
 		Function Pause(PauseUpload As Boolean = True, PauseDownload As Boolean = True) As Boolean
-		  If Not libcURL.IsAvailable Then Return False
+		  ' Pauses or unpauses uploads and/or downloads
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/curl_easy_pause.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Pause
+		  
 		  Dim pU, pD As Integer
 		  pU = ShiftLeft(1, 2)
 		  pD = ShiftLeft(0, 1)
@@ -287,7 +346,13 @@ Class cURLItem
 
 	#tag Method, Flags = &h0
 		Function Perform(URL As String = "", Timeout As Integer = 0) As Boolean
-		  If Not libcURL.IsAvailable Then Return False
+		  ' Tells libcURL to perform the transer. Pass a URL if you have not specified one already using cURLItem.URL. 
+		  ' Pass an integer representing how long libcURL should wait, in seconds, before giving up the connection
+		  ' attempt. The default is to wait forever.
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/curl_easy_perform.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Perform
+		  
 		  If URL <> "" Then
 		    If Not SetOption(libcURL.Opts.URL, URL) Then Raise cURLException(Me.LastError)
 		  End If
@@ -301,6 +366,8 @@ Class cURLItem
 
 	#tag Method, Flags = &h21
 		Private Shared Function ProgressCallback(UserData As Integer, dlTotal As UInt64, dlnow As UInt64, ultotal As UInt64, ulnow As UInt64) As Integer
+		  ' This method is invoked by libcURL. DO NOT CALL THIS METHOD
+		  
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil Then
 		    Return cURLItem(curl.Value).curlProgress(dlTotal, dlnow, ultotal, ulnow)
@@ -313,6 +380,10 @@ Class cURLItem
 	#tag Method, Flags = &h1
 		Protected Function Read(Count As Integer, encoding As TextEncoding = Nil) As String
 		  ' experimental
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/curl_easy_recv.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Read
+		  
 		  Dim mb As New MemoryBlock(Count)
 		  Dim i As Integer
 		  mLastError = curl_easy_recv(mHandle, mb, mb.Size, i)
@@ -330,6 +401,8 @@ Class cURLItem
 
 	#tag Method, Flags = &h21
 		Private Shared Function ReadCallback(char As Ptr, size As Integer, nmemb As Integer, UserData As Integer) As Integer
+		  ' This method is invoked by libcURL. DO NOT CALL THIS METHOD
+		  
 		  // called when data is needed
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil Then
@@ -342,17 +415,38 @@ Class cURLItem
 
 	#tag Method, Flags = &h0
 		Sub Reset()
+		  ' Resets the curl_easy handle to a pristine state. You may reuse the handle immediately.
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/curl_easy_reset.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Reset
+		  
 		  If Not libcURL.IsAvailable Then Return
 		  curl_easy_reset(mHandle)
+		  mLastError = 0
 		  InitCallbacks(Me)
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function SetOption(OptionNumber As Integer, NewValue As Variant) As Boolean
-		  // This method marshals the NewValue into a Ptr then calls curl_easy-setopt
+		  ' SetOption is the primary interface to the easy_handle. Call this method with a curl option number
+		  ' and a value that is acceptable for that option. SetOption does not check that a value is valid for
+		  ' a particular option, however it does enforce type safety of the value and will raise an exception if an 
+		  ' unsupported type is passed.
 		  
-		  If Not libcURL.IsAvailable Then Return False
+		  ' NewValue may be an Boolean, Integer, Ptr, String, MemoryBlock, FolderItem, libcURL.Form, libcURL.Headers,
+		  ' or a Delegate matching cURLCallback, cURLCloseCallback, cURLDebugCallback, cURLOpenCallback, cURLProgressCallback,
+		  ' or cURLSSLInitCallback. Passing a Nil object will raise an exception regardless of the object type.
+		  
+		  ' If the option was set this method returns True. If it returns False the option was not set and the 
+		  ' curl error number is stored in cURLItem.LastError.
+		  
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/curl_easy_setopt.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.SetOption
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Opts
+		  
+		  
 		  Dim mb As MemoryBlock
 		  Dim ValueType As Integer = VarType(NewValue)
 		  Select Case ValueType
@@ -429,6 +523,8 @@ Class cURLItem
 
 	#tag Method, Flags = &h21
 		Private Shared Function SSLInitCallback(Handle As Integer, SSLCTXStruct As Ptr, UserData As Integer) As Integer
+		  ' This method is invoked by libcURL. DO NOT CALL THIS METHOD
+		  
 		  #pragma Unused Handle ' Handle is the handle to the instance
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  Dim data As SSL_CTX
@@ -445,6 +541,10 @@ Class cURLItem
 	#tag Method, Flags = &h0
 		Sub Verbose(Assigns Verbosity As Boolean)
 		  ' Pass True to receive the DebugMessage event. The default is False
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/curl_easy_setopt.html#CURLOPTVERBOSE
+		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Verbose
+		  
 		  If Not Me.SetOption(libcURL.Opts.VERBOSE, Verbosity) Then Raise cURLException(Me.LastError)
 		End Sub
 	#tag EndMethod
@@ -452,6 +552,10 @@ Class cURLItem
 	#tag Method, Flags = &h1
 		Protected Function Write(Text As String) As Integer
 		  ' experimental
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/curl_easy_send.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Write
+		  
 		  Dim byteswritten As Integer
 		  Dim mb As MemoryBlock = Text
 		  mLastError = curl_easy_send(mHandle, mb, mb.Size, byteswritten)
@@ -462,6 +566,8 @@ Class cURLItem
 
 	#tag Method, Flags = &h21
 		Private Shared Function WriteCallback(char As Ptr, size As Integer, nmemb As Integer, UserData As Integer) As Integer
+		  ' This method is invoked by libcURL. DO NOT CALL THIS METHOD
+		  
 		  // Called when data is available
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil Then
@@ -526,7 +632,14 @@ Class cURLItem
 
 	#tag ComputedProperty, Flags = &h0
 		#tag Note
-			Sets the file containing one or more certificates to verify the peer with.
+			Sets the PEM file containing one or more certificate authorities libcURL should trust to verify the peer with. 
+			The included DEFAULT_CA_INFO_PEM file contains the default CA list for Mozilla products.
+			
+			To generate an updated Mozilla CA file use one of these two scripts
+			
+			VBScript: https://github.com/bagder/curl/blob/master/lib/mk-ca-bundle.vbs
+			Perl: https://github.com/bagder/curl/blob/master/lib/mk-ca-bundle.pl
+			
 		#tag EndNote
 		#tag Getter
 			Get
@@ -573,6 +686,16 @@ Class cURLItem
 	#tag EndProperty
 
 	#tag ComputedProperty, Flags = &h0
+		#tag Note
+			SocketCore.NetworkInterface workalike.
+			See: http://docs.realsoftware.com/index.php/SocketCore.NetworkInterface
+			
+			For example:
+			
+			  Dim curl As New cURLItem
+			  curl.NetworkInterface = System.GetNetworkInterface(0)
+			  MsgBox(curl.NetworkInterface.IPAddress))
+		#tag EndNote
 		#tag Getter
 			Get
 			  Dim mb As New MemoryBlock(4)
@@ -596,6 +719,10 @@ Class cURLItem
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
+		#tag Note
+			The password to be supplied to the remote host if the underlying protocol requires/allows users to log on.
+			
+		#tag EndNote
 		#tag Setter
 			Set
 			  //If the server will require a password, set it here. If the server doesn't require one, this property is ignored
@@ -606,6 +733,15 @@ Class cURLItem
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
+		#tag Note
+			SocketCore.Port workalike.
+			See: See: http://docs.realsoftware.com/index.php/SocketCore.Port
+			
+			Prior to connecting, you may set this value to the remote port to connect to. If the port is not specified
+			libcURL will select the default port for the inferred protocol (e.g. HTTP=80; HTTPS=443)
+			
+			Once connected, you may get this value to read the actual remote port number that is connected to.
+		#tag EndNote
 		#tag Getter
 			Get
 			  //Remote port
@@ -628,7 +764,9 @@ Class cURLItem
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  //The IP address of the remote server
+			  ' Prior to connecting this value will be empty. Once connected, this value will contain the 
+			  ' IP address of the remote server.
+			  
 			  Dim mb As New MemoryBlock(4)
 			  Me.GetInfo(INFO_PRIMARY_IP, mb)
 			  If Me.LastError = 0 Then
@@ -643,6 +781,8 @@ Class cURLItem
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Returns the last effective URL, if any
+			  
 			  Dim p As Ptr
 			  Me.GetInfo(INFO_EFFECTIVE_URL, p)
 			  If p = Nil Then Return ""
@@ -654,6 +794,9 @@ Class cURLItem
 		#tag EndGetter
 		#tag Setter
 			Set
+			  ' Sets the URL for the next request.
+			  ' See: http://curl.haxx.se/libcurl/c/curl_easy_setopt.html#CURLOPTURL
+			  
 			  If Not SetOption(libcURL.Opts.URL, value) Then Raise cURLException(Me.LastError)
 			End Set
 		#tag EndSetter
@@ -663,14 +806,19 @@ Class cURLItem
 	#tag ComputedProperty, Flags = &h0
 		#tag Setter
 			Set
-			  //Set your application's UserAgent string. The default will be the output of cURLversion()
-			  Call Me.SetOption(libcURL.Opts.USERAGENT, value)
+			  //Set your application's UserAgent string for protocols that support/require such. The default will be the output of cURLversion()
+			  
+			  If Not Me.SetOption(libcURL.Opts.USERAGENT, value) Then Raise cURLException(Me.LastError)
 			End Set
 		#tag EndSetter
 		UserAgent As String
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
+		#tag Note
+			The username to be supplied to the remote host if the underlying protocol requires/allows users to log on.
+			
+		#tag EndNote
 		#tag Setter
 			Set
 			  //If the server will require a username, set it here. If the server doesn't require one, this property is ignored
