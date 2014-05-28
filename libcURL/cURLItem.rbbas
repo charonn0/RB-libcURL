@@ -2,14 +2,14 @@
 Class cURLItem
 	#tag Method, Flags = &h0
 		Sub Close()
-		  ' cleans up the instance. 
+		  ' cleans up the instance.
 		  ' called automatically by the class destructor.
-		  ' See: 
-		  ' http://curl.haxx.se/libcurl/c/curl_easy_cleanup.html 
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/curl_easy_cleanup.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Close
 		  
 		  If Not libcURL.IsAvailable Then Return
-		  If mHandle <> 0 Then 
+		  If mHandle <> 0 Then
 		    curl_easy_cleanup(mHandle)
 		    Instances.Remove(mHandle)
 		  End If
@@ -37,7 +37,7 @@ Class cURLItem
 		Sub Constructor()
 		  ' Initializes libcURL if necessary and creates a new curl_easy handle
 		  ' See:
-		  ' http://curl.haxx.se/libcurl/c/curl_global_init.html 
+		  ' http://curl.haxx.se/libcurl/c/curl_global_init.html
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_init.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Constructor
 		  
@@ -296,7 +296,7 @@ Class cURLItem
 
 	#tag Method, Flags = &h0
 		Function LastError() As Integer
-		  ' All calls into libcURL that return an error code will update LastError 
+		  ' All calls into libcURL that return an error code will update LastError
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Errors
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.FormatError
@@ -346,7 +346,7 @@ Class cURLItem
 
 	#tag Method, Flags = &h0
 		Function Perform(URL As String = "", Timeout As Integer = 0) As Boolean
-		  ' Tells libcURL to perform the transer. Pass a URL if you have not specified one already using cURLItem.URL. 
+		  ' Tells libcURL to perform the transer. Pass a URL if you have not specified one already using cURLItem.URL.
 		  ' Pass an integer representing how long libcURL should wait, in seconds, before giving up the connection
 		  ' attempt. The default is to wait forever.
 		  ' See:
@@ -431,14 +431,14 @@ Class cURLItem
 		Function SetOption(OptionNumber As Integer, NewValue As Variant) As Boolean
 		  ' SetOption is the primary interface to the easy_handle. Call this method with a curl option number
 		  ' and a value that is acceptable for that option. SetOption does not check that a value is valid for
-		  ' a particular option, however it does enforce type safety of the value and will raise an exception if an 
+		  ' a particular option, however it does enforce type safety of the value and will raise an exception if an
 		  ' unsupported type is passed.
 		  
 		  ' NewValue may be an Boolean, Integer, Ptr, String, MemoryBlock, FolderItem, libcURL.Form, libcURL.Headers,
 		  ' or a Delegate matching cURLCallback, cURLCloseCallback, cURLDebugCallback, cURLOpenCallback, cURLProgressCallback,
 		  ' or cURLSSLInitCallback. Passing a Nil object will raise an exception regardless of the object type.
 		  
-		  ' If the option was set this method returns True. If it returns False the option was not set and the 
+		  ' If the option was set this method returns True. If it returns False the option was not set and the
 		  ' curl error number is stored in cURLItem.LastError.
 		  
 		  ' See:
@@ -632,14 +632,13 @@ Class cURLItem
 
 	#tag ComputedProperty, Flags = &h0
 		#tag Note
-			Sets the PEM file containing one or more certificate authorities libcURL should trust to verify the peer with. 
+			Sets the PEM file containing one or more certificate authorities libcURL should trust to verify the peer with.
 			The included DEFAULT_CA_INFO_PEM file contains the default CA list for Mozilla products.
 			
 			To generate an updated Mozilla CA file use one of these two scripts
 			
 			VBScript: https://github.com/bagder/curl/blob/master/lib/mk-ca-bundle.vbs
 			Perl: https://github.com/bagder/curl/blob/master/lib/mk-ca-bundle.pl
-			
 		#tag EndNote
 		#tag Getter
 			Get
@@ -692,9 +691,9 @@ Class cURLItem
 			
 			For example:
 			
-			  Dim curl As New cURLItem
-			  curl.NetworkInterface = System.GetNetworkInterface(0)
-			  MsgBox(curl.NetworkInterface.IPAddress))
+			Dim curl As New cURLItem
+			curl.NetworkInterface = System.GetNetworkInterface(0)
+			MsgBox(curl.NetworkInterface.IPAddress))
 		#tag EndNote
 		#tag Getter
 			Get
@@ -721,7 +720,6 @@ Class cURLItem
 	#tag ComputedProperty, Flags = &h0
 		#tag Note
 			The password to be supplied to the remote host if the underlying protocol requires/allows users to log on.
-			
 		#tag EndNote
 		#tag Setter
 			Set
@@ -764,7 +762,7 @@ Class cURLItem
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  ' Prior to connecting this value will be empty. Once connected, this value will contain the 
+			  ' Prior to connecting this value will be empty. Once connected, this value will contain the
 			  ' IP address of the remote server.
 			  
 			  Dim mb As New MemoryBlock(4)
@@ -817,7 +815,6 @@ Class cURLItem
 	#tag ComputedProperty, Flags = &h0
 		#tag Note
 			The username to be supplied to the remote host if the underlying protocol requires/allows users to log on.
-			
 		#tag EndNote
 		#tag Setter
 			Set
