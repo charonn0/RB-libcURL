@@ -457,7 +457,9 @@ Class cURLItem
 		    Select Case OptionNumber
 		    Case libcURL.Opts.POSTFIELDS, libcURL.Opts.HTTPHEADER, libcURL.Opts.PROXYHEADER, libcURL.Opts.FTPPORT, libcURL.Opts.QUOTE, _
 		      libcURL.Opts.POSTQUOTE, libcURL.Opts.PREQUOTE, libcURL.Opts.FTP_ACCOUNT, libcURL.Opts.RTSP_SESSION_ID, libcURL.Opts.RANGE, _
-		      libcURL.Opts.CUSTOMREQUEST, libcURL.Opts.DNS_INTERFACE, libcURL.Opts.DNS_LOCAL_IP4, libcURL.Opts.DNS_LOCAL_IP6, libcURL.Opts.KRBLEVEL
+		      libcURL.Opts.CUSTOMREQUEST, libcURL.Opts.DNS_INTERFACE, libcURL.Opts.DNS_LOCAL_IP4, libcURL.Opts.DNS_LOCAL_IP6, libcURL.Opts.KRBLEVEL, _
+		      libcURL.Opts.CLOSESOCKETFUNCTION, libcURL.Opts.DEBUGFUNCTION, libcURL.Opts.HEADERFUNCTION, libcURL.Opts.OPENSOCKETFUNCTION, _
+		      libcURL.Opts.PROGRESSFUNCTION, libcURL.Opts.READFUNCTION, libcURL.Opts.SSL_CTX_FUNCTION, libcURL.Opts.WRITEFUNCTION
 		      ' These option numbers explicitly accept NULL. Refer to the curl documentation on the individual option numbers for details.
 		      MarshalledValue = New MemoryBlock(0)
 		    Else
