@@ -79,6 +79,8 @@ Class cURLItem
 		    Else
 		      Raise cURLException(Me.LastError)
 		    End If
+		  Else
+		    Raise New NilObjectException
 		  End If
 		End Sub
 	#tag EndMethod
