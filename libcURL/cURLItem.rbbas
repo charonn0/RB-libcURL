@@ -433,12 +433,12 @@ Class cURLItem
 		Function SetOption(OptionNumber As Integer, NewValue As Variant) As Boolean
 		  ' SetOption is the primary interface to the easy_handle. Call this method with a curl option number
 		  ' and a value that is acceptable for that option. SetOption does not check that a value is valid for
-		  ' a particular option, however it does enforce type safety of the value and will raise an exception if an
+		  ' a particular option (except Nil,) however it does enforce type safety of the value and will raise an exception if an
 		  ' unsupported type is passed.
 		  
 		  ' NewValue may be an Boolean, Integer, Ptr, String, MemoryBlock, FolderItem, libcURL.Form, libcURL.Headers,
 		  ' or a Delegate matching cURLCallback, cURLCloseCallback, cURLDebugCallback, cURLOpenCallback, cURLProgressCallback,
-		  ' or cURLSSLInitCallback. Passing a Nil object will raise an exception regardless of the object type.
+		  ' or cURLSSLInitCallback. Passing a Nil object will raise an exception unless the option explicitly accepts NULL.
 		  
 		  ' If the option was set this method returns True. If it returns False the option was not set and the
 		  ' curl error number is stored in cURLItem.LastError.
@@ -449,61 +449,73 @@ Class cURLItem
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Opts
 		  
 		  
-		  Dim mb As MemoryBlock
+		  Dim MarshalledValue As MemoryBlock
 		  Dim ValueType As Integer = VarType(NewValue)
 		  Select Case ValueType
 		  Case Variant.TypeNil
-		    Raise New NilObjectException
+		    ' Sometimes Nil is an error; sometimes not
+		    Select Case OptionNumber
+		    Case libcURL.Opts.POSTFIELDS, libcURL.Opts.HTTPHEADER, libcURL.Opts.PROXYHEADER, libcURL.Opts.FTPPORT, libcURL.Opts.QUOTE, _
+		      libcURL.Opts.POSTQUOTE, libcURL.Opts.PREQUOTE, libcURL.Opts.FTP_ACCOUNT, libcURL.Opts.RTSP_SESSION_ID, libcURL.Opts.RANGE, _
+		      libcURL.Opts.CUSTOMREQUEST, libcURL.Opts.DNS_INTERFACE, libcURL.Opts.DNS_LOCAL_IP4, libcURL.Opts.DNS_LOCAL_IP6, libcURL.Opts.KRBLEVEL
+		      ' These option numbers explicitly accept NULL. Refer to the curl documentation on the individual option numbers for details.
+		      MarshalledValue = New MemoryBlock(0)
+		    Else
+		      ' for all other option numbers reject NULL values.
+		      Raise New NilObjectException
+		    End Select
 		    
 		  Case Variant.TypeBoolean
-		    mb = New MemoryBlock(1)
-		    mb.BooleanValue(0) = NewValue.BooleanValue
+		    MarshalledValue = New MemoryBlock(1)
+		    MarshalledValue.BooleanValue(0) = NewValue.BooleanValue
 		    
 		  Case Variant.TypePtr, Variant.TypeInteger
-		    mb = NewValue.PtrValue
+		    MarshalledValue = NewValue.PtrValue
 		    
 		  Case Variant.TypeString
-		    mb = NewValue.StringValue + Chr(0)
+		    ' COPY the string to a new buffer so there's no weirdness if libcURL releases the memory.
+		    MarshalledValue = NewValue.StringValue + Chr(0)
 		    
 		  Case Variant.TypeObject
+		    ' To add support for a custom object type, add a block to this Select statement that stores the object in MarshalledValue
 		    Select Case NewValue
 		    Case IsA MemoryBlock
-		      mb = NewValue.PtrValue
+		      MarshalledValue = NewValue.PtrValue
 		      
 		    Case IsA FolderItem
-		      mb = FolderItem(NewValue).AbsolutePath + Chr(0)
+		      MarshalledValue = FolderItem(NewValue).AbsolutePath + Chr(0)
 		      
 		    Case IsA libcURL.Form
 		      Dim f As libcURL.Form = NewValue
-		      mb = f.Handle
+		      MarshalledValue = f.Handle
 		      
 		    Case IsA libcURL.Headers
 		      Dim f As libcURL.Headers = NewValue
-		      mb = f.Handle
+		      MarshalledValue = f.Handle
 		      
 		    Case IsA cURLProgressCallback
 		      Dim p As cURLProgressCallback = NewValue
-		      mb = p
+		      MarshalledValue = p
 		      
 		    Case IsA cURLCallback
 		      Dim p As cURLCallback = NewValue
-		      mb = p
+		      MarshalledValue = p
 		      
 		    Case IsA cURLDebugCallback
 		      Dim p As cURLDebugCallback = NewValue
-		      mb = p
+		      MarshalledValue = p
 		      
 		    Case IsA cURLCloseCallback
 		      Dim p As cURLCloseCallback = NewValue
-		      mb = p
+		      MarshalledValue = p
 		      
 		    Case IsA cURLOpenCallback
 		      Dim p As cURLOpenCallback = NewValue
-		      mb = p
+		      MarshalledValue = p
 		      
 		    Case IsA cURLSSLInitCallback
 		      Dim p As cURLSSLInitCallback = NewValue
-		      mb = p
+		      MarshalledValue = p
 		      
 		    Else
 		      Dim err As New TypeMismatchException
@@ -518,7 +530,7 @@ Class cURLItem
 		    Raise err
 		  End Select
 		  
-		  mLastError = curl_easy_setopt(mHandle, OptionNumber, mb)
+		  mLastError = curl_easy_setopt(mHandle, OptionNumber, MarshalledValue)
 		  Return mLastError = 0
 		End Function
 	#tag EndMethod

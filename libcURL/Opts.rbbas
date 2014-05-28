@@ -45,6 +45,15 @@ Protected Module Opts
 	#tag Constant, Name = DIRLISTONLY, Type = Double, Dynamic = False, Default = \"48", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = DNS_INTERFACE, Type = Double, Dynamic = False, Default = \"10221", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = DNS_LOCAL_IP4, Type = Double, Dynamic = False, Default = \"10222", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = DNS_LOCAL_IP6, Type = Double, Dynamic = False, Default = \"10223", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = EGDSOCKET, Type = Double, Dynamic = False, Default = \"10077", Scope = Protected
 	#tag EndConstant
 
@@ -108,6 +117,15 @@ Protected Module Opts
 	#tag Constant, Name = PORT, Type = Double, Dynamic = False, Default = \"3", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = POSTFIELDS, Type = Double, Dynamic = False, Default = \"10015", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = POSTQUOTE, Type = Double, Dynamic = False, Default = \"10039", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = PREQUOTE, Type = Double, Dynamic = False, Default = \"10093", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = PROGRESSDATA, Type = Double, Dynamic = False, Default = \"10057", Scope = Protected
 	#tag EndConstant
 
@@ -117,6 +135,9 @@ Protected Module Opts
 	#tag Constant, Name = PROXY, Type = Double, Dynamic = False, Default = \"10004", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = PROXYHEADER, Type = Double, Dynamic = False, Default = \"10228", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = PROXYPASSWORD, Type = Double, Dynamic = False, Default = \"10176", Scope = Protected
 	#tag EndConstant
 
@@ -124,6 +145,9 @@ Protected Module Opts
 	#tag EndConstant
 
 	#tag Constant, Name = PROXYUSERPWD, Type = Double, Dynamic = False, Default = \"10006", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = QUOTE, Type = Double, Dynamic = False, Default = \"10028", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = RANDOM_FILE, Type = Double, Dynamic = False, Default = \"10076", Scope = Protected
