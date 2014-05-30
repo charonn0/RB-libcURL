@@ -77,7 +77,7 @@ Class cURLItem
 		      Instances.Value(mHandle) = New WeakRef(Me)
 		      InitCallbacks(Me)
 		    Else
-		      Raise cURLException(Me.LastError)
+		      Raise cURLException(Me.LastError) ' Note that this is not the actual error number (there is none for this function)
 		    End If
 		  Else
 		    Raise New NilObjectException
@@ -434,7 +434,7 @@ Class cURLItem
 		Function SetOption(OptionNumber As Integer, NewValue As Variant) As Boolean
 		  ' SetOption is the primary interface to the easy_handle. Call this method with a curl option number
 		  ' and a value that is acceptable for that option. SetOption does not check that a value is valid for
-		  ' a particular option (except Nil,) however it does enforce type safety of the value and will raise 
+		  ' a particular option (except Nil,) however it does enforce type safety of the value and will raise
 		  ' an exception if an unsupported type is passed.
 		  
 		  ' NewValue may be an Boolean, Integer, Ptr, String, MemoryBlock, FolderItem, libcURL.Form, libcURL.Headers,
