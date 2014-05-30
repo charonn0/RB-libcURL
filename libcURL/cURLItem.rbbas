@@ -666,7 +666,7 @@ Class cURLItem
 		#tag Setter
 			Set
 			  mCA_ListFile = value
-			  Call Me.SetOption(libcURL.Opts.CAINFO, value)
+			  If Not Me.SetOption(libcURL.Opts.CAINFO, value) Then Raise cURLException(Me.LastError)
 			End Set
 		#tag EndSetter
 		CA_ListFile As FolderItem
@@ -729,7 +729,7 @@ Class cURLItem
 		#tag EndGetter
 		#tag Setter
 			Set
-			  Call Me.SetOption(libcURL.Opts.NETINTERFACE, value.IPAddress)
+			  If Not Me.SetOption(libcURL.Opts.NETINTERFACE, value.IPAddress) Then Raise cURLException(Me.LastError)
 			End Set
 		#tag EndSetter
 		NetworkInterface As NetworkInterface
@@ -742,7 +742,7 @@ Class cURLItem
 		#tag Setter
 			Set
 			  //If the server will require a password, set it here. If the server doesn't require one, this property is ignored
-			  Call Me.SetOption(libcURL.Opts.PASSWORD, value)
+			  If Not Me.SetOption(libcURL.Opts.PASSWORD, value) Then Raise cURLException(Me.LastError)
 			End Set
 		#tag EndSetter
 		Password As String
@@ -771,7 +771,7 @@ Class cURLItem
 		#tag Setter
 			Set
 			  //remote port.
-			  Call Me.SetOption(libcURL.Opts.PORT, value)
+			  If Not Me.SetOption(libcURL.Opts.PORT, value) Then Raise cURLException(Me.LastError)
 			End Set
 		#tag EndSetter
 		Port As Integer
@@ -837,7 +837,7 @@ Class cURLItem
 		#tag Setter
 			Set
 			  //If the server will require a username, set it here. If the server doesn't require one, this property is ignored
-			  Call Me.SetOption(libcURL.Opts.USERNAME, value)
+			  If Not Me.SetOption(libcURL.Opts.USERNAME, value) Then Raise cURLException(Me.LastError)
 			End Set
 		#tag EndSetter
 		Username As String
