@@ -381,7 +381,8 @@ Class cURLItem
 
 	#tag Method, Flags = &h1
 		Protected Function Read(Count As Integer, encoding As TextEncoding = Nil) As String
-		  ' experimental
+		  ' Only available after calling SetOption(libcURL.Opts.CONNECT_ONLY, True)
+		  ' Once Perform returns you may Read from the easy_handle by calling this method
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_recv.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Read
@@ -433,8 +434,8 @@ Class cURLItem
 		Function SetOption(OptionNumber As Integer, NewValue As Variant) As Boolean
 		  ' SetOption is the primary interface to the easy_handle. Call this method with a curl option number
 		  ' and a value that is acceptable for that option. SetOption does not check that a value is valid for
-		  ' a particular option (except Nil,) however it does enforce type safety of the value and will raise an exception if an
-		  ' unsupported type is passed.
+		  ' a particular option (except Nil,) however it does enforce type safety of the value and will raise 
+		  ' an exception if an unsupported type is passed.
 		  
 		  ' NewValue may be an Boolean, Integer, Ptr, String, MemoryBlock, FolderItem, libcURL.Form, libcURL.Headers,
 		  ' or a Delegate matching cURLCallback, cURLCloseCallback, cURLDebugCallback, cURLOpenCallback, cURLProgressCallback,
@@ -567,7 +568,8 @@ Class cURLItem
 
 	#tag Method, Flags = &h1
 		Protected Function Write(Text As String) As Integer
-		  ' experimental
+		  ' Only available after calling SetOption(CURLOPT_CONNECT_ONLY, True)
+		  ' Once Perform returns you may Write to the easy_handle by calling this method
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_send.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Write
