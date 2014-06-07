@@ -18,12 +18,12 @@ Protected Class Form
 		      Dim f As FolderItem = Value
 		      If f.Exists And Not f.Directory Then
 		        mLastError = curl_formadd(FirstItem, LastItem, CURLFORM_COPYNAME, Name, CURLFORM_FILE, f.AbsolutePath, CURLFORM_END)
-		        Return Me.LastError = 0
+		        Return mLastError = 0
 		      End If
 		    End Select
 		  Case Variant.TypeInteger, Variant.TypeString
 		    mLastError = curl_formadd(FirstItem, LastItem, CURLFORM_COPYNAME, Name, CURLFORM_COPYCONTENTS, Value.StringValue, CURLFORM_END)
-		    Return Me.LastError = 0
+		    Return mLastError = 0
 		  End Select
 		  
 		  Dim err As RuntimeException
