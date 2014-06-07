@@ -254,9 +254,6 @@ Protected Module libcURL
 	#tag EndNote
 
 
-	#tag Constant, Name = CURLM_CALL_MULTI_PERFORM, Type = Double, Dynamic = False, Default = \"4294967295", Scope = Protected
-	#tag EndConstant
-
 	#tag Constant, Name = CURLVERSION_FOURTH, Type = Double, Dynamic = False, Default = \"3", Scope = Private
 	#tag EndConstant
 
