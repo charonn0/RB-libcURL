@@ -531,7 +531,6 @@ End
 	#tag Event
 		Sub Disconnected()
 		  Debug.AddRow("RB-libcURL", "Disconnected")
-		  Outstream.Close
 		End Sub
 	#tag EndEvent
 	#tag Event
