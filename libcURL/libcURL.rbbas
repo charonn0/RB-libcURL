@@ -120,7 +120,9 @@ Protected Module libcURL
 
 	#tag Method, Flags = &h1
 		Protected Function IsAvailable() As Boolean
-		  Return System.IsFunctionAvailable("curl_easy_init", "libcurl")
+		  Static available As Boolean
+		  If Not available Then available = System.IsFunctionAvailable("curl_easy_init", "libcurl")
+		  Return available
 		End Function
 	#tag EndMethod
 
