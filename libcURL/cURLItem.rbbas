@@ -446,6 +446,11 @@ Class cURLItem
 		      s = mb.StringValue(0, i)
 		    End If
 		    Return s
+		  Else
+		    Dim err As New IOException
+		    err.ErrorNumber = mLastError
+		    err.Message = libcURL.FormatError(mLastError)
+		    Raise err
 		  End If
 		End Function
 	#tag EndMethod
@@ -637,7 +642,14 @@ Class cURLItem
 		  Dim byteswritten As Integer
 		  Dim mb As MemoryBlock = Text
 		  mLastError = curl_easy_send(mHandle, mb, mb.Size, byteswritten)
-		  If mLastError = 0 Then Return byteswritten
+		  If mLastError = 0 Then 
+		    Return byteswritten
+		  Else
+		    Dim err As New IOException
+		    err.ErrorNumber = mLastError
+		    err.Message = libcURL.FormatError(mLastError)
+		    Raise err
+		  End If
 		  
 		End Function
 	#tag EndMethod
