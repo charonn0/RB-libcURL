@@ -41,7 +41,7 @@ Class cURLItem
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_init.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Constructor
 		  
-		  If Not libcURL.IsAvailable Then Raise cURLException(0)
+		  If Not libcURL.IsAvailable Then Raise cURLException(mLastError)
 		  
 		  If Instances = Nil Then
 		    mLastError = curl_global_init(CURL_GLOBAL_DEFAULT)
@@ -59,6 +59,13 @@ Class cURLItem
 		  Else
 		    Raise cURLException(libcURL.Errors.INIT_FAILED)
 		  End If
+		  
+		  ' by default, only raise the DebugMessage event if we're debugging
+		  #If DebugBuild Then
+		    Me.Verbose = True
+		  #else
+		    Me.Verbose = False
+		  #endif
 		End Sub
 	#tag EndMethod
 
@@ -70,7 +77,7 @@ Class cURLItem
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_duphandle.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Constructor
 		  
-		  If Not libcURL.IsAvailable Then Raise cURLException(0)
+		  If Not libcURL.IsAvailable Then Raise cURLException(mLastError)
 		  If CopyOpts <> Nil And CopyOpts.Handle > 0 Then
 		    mHandle = curl_easy_duphandle(CopyOpts.Handle)
 		    If mHandle > 0 Then
@@ -224,8 +231,8 @@ Class cURLItem
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Destructor
 		  
 		  Me.Close()
-		  If Instances.Count = 0 Then
-		    curl_global_cleanup()
+		  If Instances = Nil Or Instances.Count = 0 Then
+		    If libcURL.IsAvailable Then curl_global_cleanup()
 		    Instances = Nil
 		  End If
 		End Sub
@@ -326,6 +333,8 @@ Class cURLItem
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_pause.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Pause
 		  
+		  If Not libcURL.IsAvailable Then Return False
+		  
 		  Dim pU, pD As Integer
 		  pU = ShiftLeft(1, 2)
 		  pD = ShiftLeft(0, 1)
@@ -354,7 +363,7 @@ Class cURLItem
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_perform.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Perform
-		  
+		  If Not libcURL.IsAvailable Then Raise cURLException(mLastError)
 		  If URL <> "" Then
 		    If Not SetOption(libcURL.Opts.URL, URL) Then Raise cURLException(Me.LastError)
 		  End If
@@ -386,6 +395,8 @@ Class cURLItem
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_recv.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Read
+		  
+		  If Not libcURL.IsAvailable Then Raise cURLException(mLastError)
 		  
 		  Dim mb As New MemoryBlock(Count)
 		  Dim i As Integer
@@ -449,6 +460,7 @@ Class cURLItem
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.SetOption
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Opts
 		  
+		  If Not libcURL.IsAvailable Then Return False
 		  
 		  Dim MarshalledValue As MemoryBlock
 		  Dim ValueType As Integer = VarType(NewValue)
@@ -573,6 +585,8 @@ Class cURLItem
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_send.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Write
+		  
+		  If Not libcURL.IsAvailable Then Raise cURLException(mLastError)
 		  
 		  Dim byteswritten As Integer
 		  Dim mb As MemoryBlock = Text

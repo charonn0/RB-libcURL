@@ -14,7 +14,7 @@ Protected Class Form
 		  Select Case ValueType ' marshal the value
 		  Case Variant.TypeObject
 		    Select Case Value
-		    Case IsA FolderItem 
+		    Case IsA FolderItem
 		      Dim f As FolderItem = Value
 		      If f.Exists And Not f.Directory Then
 		        mLastError = curl_formadd(FirstItem, LastItem, CURLFORM_COPYNAME, Name, CURLFORM_FILE, f.AbsolutePath, CURLFORM_END)
@@ -42,7 +42,7 @@ Protected Class Form
 	#tag Method, Flags = &h0
 		Sub Constructor()
 		  ' initialize libcURL just enough to handle form building
-		  If Not libcURL.IsAvailable Or curl_global_init(CURL_GLOBAL_NOTHING) <> 0 Then Raise cURLException(0)
+		  If Not libcURL.IsAvailable Or curl_global_init(CURL_GLOBAL_NOTHING) <> 0 Then Raise cURLException(mLastError)
 		End Sub
 	#tag EndMethod
 

@@ -108,9 +108,6 @@ Protected Module Errors
 	#tag Constant, Name = LDAP_SEARCH_FAILED, Type = Double, Dynamic = False, Default = \"39", Scope = Protected
 	#tag EndConstant
 
-	#tag Constant, Name = LIB_NOT_FOUND, Type = Double, Dynamic = False, Default = \"-4", Scope = Protected
-	#tag EndConstant
-
 	#tag Constant, Name = LOGIN_DENIED, Type = Double, Dynamic = False, Default = \"67", Scope = Protected
 	#tag EndConstant
 
