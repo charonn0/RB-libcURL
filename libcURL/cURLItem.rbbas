@@ -438,6 +438,8 @@ Class cURLItem
 		  curl_easy_reset(mHandle)
 		  mLastError = 0
 		  InitCallbacks(Me)
+		  Me.Verbose = mVerbose
+		  
 		End Sub
 	#tag EndMethod
 
@@ -504,8 +506,8 @@ Class cURLItem
 		      Dim f As libcURL.Form = NewValue
 		      MarshalledValue = f.Handle
 		      
-		    Case IsA libcURL.Headers
-		      Dim f As libcURL.Headers = NewValue
+		    Case IsA libcURL.curl_slist
+		      Dim f As libcURL.curl_slist = NewValue
 		      MarshalledValue = f.Handle
 		      
 		    Case IsA cURLProgressCallback
@@ -568,6 +570,12 @@ Class cURLItem
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function Verbose() As Boolean
+		  Return mVerbose
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub Verbose(Assigns Verbosity As Boolean)
 		  ' Pass True to receive the DebugMessage event. The default is False
 		  ' See:
@@ -575,6 +583,7 @@ Class cURLItem
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Verbose
 		  
 		  If Not Me.SetOption(libcURL.Opts.VERBOSE, Verbosity) Then Raise cURLException(Me.LastError)
+		  mVerbose = Verbosity
 		End Sub
 	#tag EndMethod
 
@@ -714,6 +723,10 @@ Class cURLItem
 
 	#tag Property, Flags = &h1
 		Protected mLastError As Integer
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mVerbose As Boolean
 	#tag EndProperty
 
 	#tag ComputedProperty, Flags = &h0

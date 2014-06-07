@@ -12,6 +12,7 @@ Class=cURLItem;libcURL/cURLItem.rbbas;&h4A33EFFF;&h1B9FF7FF;false
 Module=Errors;libcURL/Errors.rbbas;&h591417FF;&h1B9FF7FF;false
 Class=Headers;libcURL/Headers.rbbas;&h1BFED7FF;&h1B9FF7FF;false
 RawData=DEFAULT_CA_INFO_PEM;DEFAULT_CA_INFO_PEM;&h1C6FCFFF;&h0;false
+Class=curl_slist;libcURL/curl_slist.rbbas;&h6CCF97FF;&h1B9FF7FF;false
 DefaultWindow=Window1
 MajorVersion=1
 MinorVersion=0

@@ -544,7 +544,6 @@ End
 		  Headers.DeleteAllRows
 		  Debug.DeleteAllRows
 		  curlget.CA_ListFile = CA_File ' for SSL/TLS connections we must specify a list of acceptable cartificate authorities
-		  curlget.Verbose = True
 		  Call curlget.Perform(TextField1.Text, 5)
 		  curlget.Reset
 		  
