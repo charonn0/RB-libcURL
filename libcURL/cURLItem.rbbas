@@ -45,10 +45,10 @@ Class cURLItem
 		  
 		  If Instances = Nil Then
 		    mLastError = curl_global_init(CURL_GLOBAL_DEFAULT)
-		    If Me.LastError = 0 Then
+		    If mLastError = 0 Then
 		      Instances = New Dictionary
 		    Else
-		      Raise cURLException(Me.LastError)
+		      Raise cURLException(mLastError)
 		    End If
 		  End If
 		  
@@ -84,7 +84,7 @@ Class cURLItem
 		      Instances.Value(mHandle) = New WeakRef(Me)
 		      InitCallbacks(Me)
 		    Else
-		      Raise cURLException(Me.LastError) ' Note that this is not the actual error number (there is none for this function)
+		      Raise cURLException(mLastError) ' Note that this is not the actual error number (there is none for this function)
 		    End If
 		  Else
 		    Raise New NilObjectException
@@ -238,16 +238,51 @@ Class cURLItem
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Sub GetInfo(InfoType As Integer, Buffer As Ptr)
+	#tag Method, Flags = &h0
+		Function GetInfo(InfoType As Integer) As Variant
 		  ' Calls curl_easy_getinfo. Pass a MemoryBlock suitable to contain the InfoType requested.
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_getinfo.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.GetInfo
 		  
-		  If Not libcURL.IsAvailable Then Return
-		  mLastError = curl_easy_getinfo(mHandle, InfoType, Buffer)
-		End Sub
+		  If Not libcURL.IsAvailable Then Raise cURLException(0)
+		  Dim mb As MemoryBlock
+		  
+		  Select Case InfoType
+		  Case libcURL.Info.EFFECTIVE_URL, libcURL.Info.REDIRECT_URL, libcURL.Info.CONTENT_TYPE, libcURL.Info.PRIVATE_, libcURL.Info.PRIMARY_IP, _
+		    libcURL.Info.LOCAL_IP, libcURL.Info.FTP_ENTRY_PATH, libcURL.Info.RTSP_SESSION_ID
+		    mb = New MemoryBlock(4096)
+		    mLastError = curl_easy_getinfo(mHandle, InfoType, mb)
+		    If mLastError = 0 Then 
+		      mb = mb.Ptr(0)
+		      Return mb.CString(0)
+		    End If
+		    
+		  Case libcURL.Info.RESPONSE_CODE, libcURL.Info.HTTP_CONNECTCODE, libcURL.Info.FILETIME, libcURL.Info.REDIRECT_COUNT, libcURL.Info.HEADER_SIZE, _
+		    libcURL.Info.REQUEST_SIZE, libcURL.Info.SSL_VERIFYRESULT, libcURL.Info.HTTPAUTH_AVAIL, libcURL.Info.OS_ERRNO, libcURL.Info.NUM_CONNECTS, _
+		    libcURL.Info.PRIMARY_PORT, libcURL.Info.LOCAL_PORT, libcURL.Info.LASTSOCKET, libcURL.Info.CONDITION_UNMET, libcURL.Info.RTSP_CLIENT_CSEQ, _
+		    libcURL.Info.RTSP_SERVER_CSEQ, libcURL.Info.RTSP_CSEQ_RECV
+		    mb = New MemoryBlock(4)
+		    mLastError = curl_easy_getinfo(mHandle, InfoType, mb)
+		    If mLastError = 0 Then Return mb.Int32Value(0)
+		    
+		  Case libcURL.Info.TOTAL_TIME, libcURL.Info.NAMELOOKUP_TIME, libcURL.Info.CONNECT_TIME, libcURL.Info.APPCONNECT_TIME, libcURL.Info.PRETRANSFER_TIME, _
+		    libcURL.Info.STARTTRANSFER_TIME, libcURL.Info.REDIRECT_TIME, libcURL.Info.SIZE_DOWNLOAD, libcURL.Info.SIZE_UPLOAD, libcURL.Info.SPEED_DOWNLOAD, _
+		    libcURL.Info.SPEED_UPLOAD, libcURL.Info.CONTENT_LENGTH_UPLOAD, libcURL.Info.CONTENT_LENGTH_DOWNLOAD
+		    mb = New MemoryBlock(8)
+		    mLastError = curl_easy_getinfo(mHandle, InfoType, mb)
+		    If mLastError = 0 Then Return mb.DoubleValue(0)
+		    
+		  Case libcURL.Info.SSL_ENGINES, libcURL.Info.COOKIELIST
+		    Dim lst As New libcURL.curl_slist
+		    mb = lst.Handle
+		    mLastError = curl_easy_getinfo(mHandle, InfoType, mb)
+		    If mLastError = 0 Then Return lst
+		    
+		  Else
+		    Raise New TypeMismatchException
+		  End Select
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -351,7 +386,7 @@ Class cURLItem
 		  End If
 		  
 		  mLastError = curl_easy_pause(mHandle, mask)
-		  Return Me.LastError = 0
+		  Return mLastError = 0
 		End Function
 	#tag EndMethod
 
@@ -363,15 +398,16 @@ Class cURLItem
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_perform.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Perform
+		  
 		  If Not libcURL.IsAvailable Then Raise cURLException(mLastError)
 		  If URL <> "" Then
-		    If Not SetOption(libcURL.Opts.URL, URL) Then Raise cURLException(Me.LastError)
+		    If Not SetOption(libcURL.Opts.URL, URL) Then Raise cURLException(mLastError)
 		  End If
 		  If Timeout > 0 Then
-		    If Not SetOption(libcURL.Opts.TIMEOUT, Timeout) Then Raise cURLException(Me.LastError)
+		    If Not SetOption(libcURL.Opts.TIMEOUT, Timeout) Then Raise cURLException(mLastError)
 		  End If
 		  mLastError = curl_easy_perform(mHandle)
-		  Return Me.LastError = 0
+		  Return mLastError = 0
 		End Function
 	#tag EndMethod
 
@@ -401,7 +437,7 @@ Class cURLItem
 		  Dim mb As New MemoryBlock(Count)
 		  Dim i As Integer
 		  mLastError = curl_easy_recv(mHandle, mb, mb.Size, i)
-		  If Me.LastError = 0 Then
+		  If mLastError = 0 Then
 		    Dim s As String
 		    If encoding <> Nil Then
 		      s = DefineEncoding(mb.StringValue(0, i), encoding)
@@ -582,7 +618,7 @@ Class cURLItem
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_setopt.html#CURLOPTVERBOSE
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Verbose
 		  
-		  If Not Me.SetOption(libcURL.Opts.VERBOSE, Verbosity) Then Raise cURLException(Me.LastError)
+		  If Not Me.SetOption(libcURL.Opts.VERBOSE, Verbosity) Then Raise cURLException(mLastError)
 		  mVerbose = Verbosity
 		End Sub
 	#tag EndMethod
@@ -689,7 +725,7 @@ Class cURLItem
 		#tag Setter
 			Set
 			  mCA_ListFile = value
-			  If Not Me.SetOption(libcURL.Opts.CAINFO, value) Then Raise cURLException(Me.LastError)
+			  If Not Me.SetOption(libcURL.Opts.CAINFO, value) Then Raise cURLException(mLastError)
 			End Set
 		#tag EndSetter
 		CA_ListFile As FolderItem
@@ -703,11 +739,13 @@ Class cURLItem
 		#tag Getter
 			Get
 			  //The local port used to make the connection. This is decided upon by libcurl and the OS's network stack
-			  Dim mb As New MemoryBlock(4)
-			  Me.GetInfo(INFO_LOCAL_PORT, mb)
-			  If Me.LastError = 0 Then
-			    Return mb.Int32Value(0)
-			  End If
+			  
+			  Return Me.GetInfo(libcURL.Info.LOCAL_PORT)
+			  'Dim mb As New MemoryBlock(4)
+			  'Me.GetInfo(libcURL.Info.LOCAL_PORT, mb)
+			  'If mLastError = 0 Then
+			  'Return mb.Int32Value(0)
+			  'End If
 			End Get
 		#tag EndGetter
 		LocalPort As Integer
@@ -742,13 +780,11 @@ Class cURLItem
 		#tag EndNote
 		#tag Getter
 			Get
-			  Dim mb As New MemoryBlock(4)
-			  Me.GetInfo(INFO_LOCAL_IP, mb)
-			  If Me.LastError <> 0 Then Return Nil
-			  Dim buffer As MemoryBlock = mb.Ptr(0)
+			  Dim ip As String = Me.GetInfo(libcURL.Info.LOCAL_IP)
+			  If mLastError <> 0 Then Return Nil
 			  For i As Integer = 0 To System.NetworkInterfaceCount - 1
 			    Dim iface As NetworkInterface = System.GetNetworkInterface(i)
-			    If iface.IPAddress = buffer.CString(0) Then
+			    If iface.IPAddress = ip Then
 			      Return iface
 			    End If
 			  Next
@@ -756,7 +792,7 @@ Class cURLItem
 		#tag EndGetter
 		#tag Setter
 			Set
-			  If Not Me.SetOption(libcURL.Opts.NETINTERFACE, value.IPAddress) Then Raise cURLException(Me.LastError)
+			  If Not Me.SetOption(libcURL.Opts.NETINTERFACE, value.IPAddress) Then Raise cURLException(mLastError)
 			End Set
 		#tag EndSetter
 		NetworkInterface As NetworkInterface
@@ -769,7 +805,7 @@ Class cURLItem
 		#tag Setter
 			Set
 			  //If the server will require a password, set it here. If the server doesn't require one, this property is ignored
-			  If Not Me.SetOption(libcURL.Opts.PASSWORD, value) Then Raise cURLException(Me.LastError)
+			  If Not Me.SetOption(libcURL.Opts.PASSWORD, value) Then Raise cURLException(mLastError)
 			End Set
 		#tag EndSetter
 		Password As String
@@ -788,17 +824,13 @@ Class cURLItem
 		#tag Getter
 			Get
 			  //Remote port
-			  Dim mb As New MemoryBlock(4)
-			  Me.GetInfo(INFO_PRIMARY_PORT, mb)
-			  If Me.LastError = 0 Then
-			    Return mb.Int32Value(0)
-			  End If
+			  Return Me.GetInfo(libcURL.Info.PRIMARY_PORT)
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
 			  //remote port.
-			  If Not Me.SetOption(libcURL.Opts.PORT, value) Then Raise cURLException(Me.LastError)
+			  If Not Me.SetOption(libcURL.Opts.PORT, value) Then Raise cURLException(mLastError)
 			End Set
 		#tag EndSetter
 		Port As Integer
@@ -810,12 +842,7 @@ Class cURLItem
 			  ' Prior to connecting this value will be empty. Once connected, this value will contain the
 			  ' IP address of the remote server.
 			  
-			  Dim mb As New MemoryBlock(4)
-			  Me.GetInfo(INFO_PRIMARY_IP, mb)
-			  If Me.LastError = 0 Then
-			    Dim buffer As MemoryBlock = mb.Ptr(0)
-			    Return buffer.CString(0)
-			  End If
+			  Return Me.GetInfo(libcURL.Info.PRIMARY_IP)
 			End Get
 		#tag EndGetter
 		RemoteIP As String
@@ -826,13 +853,7 @@ Class cURLItem
 			Get
 			  ' Returns the last effective URL, if any
 			  
-			  Dim p As Ptr
-			  Me.GetInfo(INFO_EFFECTIVE_URL, p)
-			  If p = Nil Then Return ""
-			  Dim mb As MemoryBlock = p.Ptr(0)
-			  If Me.LastError = 0 Then
-			    Return mb.CString(0)
-			  End If
+			  Return Me.GetInfo(libcURL.Info.EFFECTIVE_URL)
 			End Get
 		#tag EndGetter
 		#tag Setter
@@ -840,7 +861,7 @@ Class cURLItem
 			  ' Sets the URL for the next request.
 			  ' See: http://curl.haxx.se/libcurl/c/curl_easy_setopt.html#CURLOPTURL
 			  
-			  If Not SetOption(libcURL.Opts.URL, value) Then Raise cURLException(Me.LastError)
+			  If Not SetOption(libcURL.Opts.URL, value) Then Raise cURLException(mLastError)
 			End Set
 		#tag EndSetter
 		URL As String
@@ -851,7 +872,7 @@ Class cURLItem
 			Set
 			  //Set your application's UserAgent string for protocols that support/require such. The default will be the output of cURLversion()
 			  
-			  If Not Me.SetOption(libcURL.Opts.USERAGENT, value) Then Raise cURLException(Me.LastError)
+			  If Not Me.SetOption(libcURL.Opts.USERAGENT, value) Then Raise cURLException(mLastError)
 			End Set
 		#tag EndSetter
 		UserAgent As String
@@ -864,7 +885,7 @@ Class cURLItem
 		#tag Setter
 			Set
 			  //If the server will require a username, set it here. If the server doesn't require one, this property is ignored
-			  If Not Me.SetOption(libcURL.Opts.USERNAME, value) Then Raise cURLException(Me.LastError)
+			  If Not Me.SetOption(libcURL.Opts.USERNAME, value) Then Raise cURLException(mLastError)
 			End Set
 		#tag EndSetter
 		Username As String
