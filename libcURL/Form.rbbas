@@ -78,7 +78,10 @@ Protected Class Form
 		e.g.
 		
 		  Dim frm As New libcURL.Form
-		  Call frm.AddElement("username", "Bob")
+		  Dim f FolderItem //assume a valid & extant file
+		  Call frm.AddElement("file", f)
+		  Call frm.AddElement("username", "AzureDiamond")
+		  Call frm.AddElement("password", "hunter2")
 		  Dim sock As New cURLItem
 		  Call sock.SetOption(libcURL.Opts.HTTPPOST, frm)
 		  Call sock.Perform("http://www.example.com/submit.php", 5)
