@@ -23,6 +23,7 @@ Class cURLItem
 		  ' This method is invoked by libcURL. DO NOT CALL THIS METHOD
 		  
 		  #pragma Unused Socket ' socket is an OS socket reference
+		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl = Nil Then
 		    Break ' UserData does not refer to a valid instance!
@@ -253,7 +254,7 @@ Class cURLItem
 		    libcURL.Info.LOCAL_IP, libcURL.Info.FTP_ENTRY_PATH, libcURL.Info.RTSP_SESSION_ID
 		    mb = New MemoryBlock(4096)
 		    mLastError = curl_easy_getinfo(mHandle, InfoType, mb)
-		    If mLastError = 0 Then 
+		    If mLastError = 0 Then
 		      mb = mb.Ptr(0)
 		      Return mb.CString(0)
 		    End If

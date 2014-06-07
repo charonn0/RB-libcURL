@@ -452,6 +452,16 @@ Begin Window Window1
       Visible         =   True
       Width           =   527
    End
+   Begin libcURL.cURLMulti multicurl
+      Height          =   32
+      Index           =   -2147483648
+      Left            =   9.11e+2
+      LockedInPosition=   False
+      Scope           =   0
+      TabPanelIndex   =   0
+      Top             =   8.6e+1
+      Width           =   32
+   End
 End
 #tag EndWindow
 
@@ -521,6 +531,7 @@ End
 	#tag Event
 		Sub Disconnected()
 		  Debug.AddRow("RB-libcURL", "Disconnected")
+		  Outstream.Close
 		End Sub
 	#tag EndEvent
 	#tag Event
@@ -544,8 +555,11 @@ End
 		  Headers.DeleteAllRows
 		  Debug.DeleteAllRows
 		  curlget.CA_ListFile = CA_File ' for SSL/TLS connections we must specify a list of acceptable cartificate authorities
-		  Call curlget.Perform(TextField1.Text, 5)
-		  curlget.Reset
+		  curlget.URL = TextField1.Text
+		  Call multicurl.AddItem(curlget)
+		  multicurl.Perform()
+		  'Call curlget.Perform(TextField1.Text, 5)
+		  'curlget.Reset
 		  
 		End Sub
 	#tag EndEvent
@@ -582,6 +596,13 @@ End
 		  For i As Integer = 0 To UBound(l)
 		    Me.AddRow(l(i))
 		  Next
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events multicurl
+	#tag Event
+		Sub TransferComplete(easyitem As cURLItem)
+		  Call Me.RemoveItem(easyitem)
 		End Sub
 	#tag EndEvent
 #tag EndEvents

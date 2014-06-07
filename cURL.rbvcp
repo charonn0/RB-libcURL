@@ -5,6 +5,7 @@ Class=App;App.rbbas;&h48C3A7FF;&h0;false
 Window=Window1;Window1.rbfrm;&h78794FFF;&h0;false
 BuildSteps=Build Automation;Build Automation.rbbas;&h4A2D3FFF;&h0;false
 Module=libcURL;libcURL/libcURL.rbbas;&h1B9FF7FF;&h0;false
+Class=cURLMulti;libcURL/cURLMulti.rbbas;&h249DC7FF;&h1B9FF7FF;false
 Module=Info;libcURL/Info.rbbas;&h768A47FF;&h1B9FF7FF;false
 Class=Form;libcURL/Form.rbbas;&h62B42FFF;&h1B9FF7FF;false
 Module=Opts;libcURL/Opts.rbbas;&h72597FFF;&h1B9FF7FF;false

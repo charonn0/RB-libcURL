@@ -87,6 +87,50 @@ Protected Module libcURL
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h1
+		Protected Soft Declare Function curl_multi_add_handle Lib "libcurl" (MultiHandle As Integer, EasyHandle As Integer) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h1
+		Protected Soft Declare Function curl_multi_assign Lib "libcurl" (MultiHandle As Integer, SockFD As Integer, sockptr As Ptr) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h1
+		Protected Soft Declare Function curl_multi_cleanup Lib "libcurl" (MultiHandle As Integer) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h1
+		Protected Soft Declare Function curl_multi_fdset Lib "libcurl" (MultiHandle As Integer, ByRef read_fd As Integer, ByRef write_fd As Integer, ByRef exc_fd As Integer, ByRef max_fd As Integer) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h1
+		Protected Soft Declare Function curl_multi_info_read Lib "libcurl" (MultiHandle As Integer, ByRef MsgCount As Integer) As Ptr
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h1
+		Protected Soft Declare Function curl_multi_init Lib "libcurl" () As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h1
+		Protected Soft Declare Function curl_multi_perform Lib "libcurl" (MultiHandle As Integer, ByRef ActiveCount As Integer) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h1
+		Protected Soft Declare Function curl_multi_remove_handle Lib "libcurl" (MultiHandle As Integer, EasyHandle As Integer) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h1
+		Protected Soft Declare Function curl_multi_setopt Lib "libcurl" (MultiHandle As Integer, Option As Integer, Value As Ptr) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h1
+		Protected Soft Declare Function curl_multi_socket_action Lib "libcurl" (MultiHandle As Integer, sock_fd As Integer, ev_bitmask As Integer, ByRef running_handles As Integer) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h1
+		Protected Soft Declare Function curl_multi_timeout Lib "libcurl" (MultiHandle As Integer, ByRef Timeout As Integer) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h1
 		Protected Soft Declare Function curl_slist_append Lib "libcurl" (sList As Ptr, Data As CString) As Ptr
 	#tag EndExternalMethod
 
@@ -230,6 +274,13 @@ Protected Module libcURL
 
 	#tag Constant, Name = CURL_GLOBAL_WIN32, Type = Double, Dynamic = False, Default = \"2", Scope = Protected
 	#tag EndConstant
+
+
+	#tag Structure, Name = CURLMsg, Flags = &h1
+		msg As Integer
+		  easy_handle As Integer
+		Data As Ptr
+	#tag EndStructure
 
 
 	#tag Enum, Name = curl_infotype, Flags = &h1

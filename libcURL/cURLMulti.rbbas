@@ -1,34 +1,45 @@
 #tag Class
 Class cURLMulti
 	#tag Method, Flags = &h0
-		Sub AddInstance(newcurl As libcURL.cURLItem)
-		  mLastError = curl_multi_add_handle(Me.Handle, newcurl.Handle)
+		Function AddItem(Item As cURLItem) As Boolean
+		  mLastError = curl_multi_add_handle(mHandle, Item.Handle)
 		  If mLastError = 0 Then
-		    cURLHandles.Append(newcurl)
+		    Instances.Value(Item.Handle) = Item
+		    Return True
 		  End If
-		End Sub
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub Close()
-		  For Each cURL As cURLItem In cURLHandles
-		    cURL.Close
+		  ' NOTE: this does not affect cURLItems that have been added to the multistack; they must be closed individually
+		  For Each h As Integer In Instances.Keys
+		    Call Me.RemoveItem(Instances.Value(h))
 		  Next
-		  mLastError = curl_multi_cleanup(Me.Handle)
-		  ReDim cURLHandles(-1)
+		  mLastError = curl_multi_cleanup(mHandle)
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub Constructor()
+		  // Creates a new instance, sets up the callback functions
+		  If Not libcURL.IsAvailable Then Raise cURLException(0)
+		  mLastError = curl_global_init(CURL_GLOBAL_DEFAULT)
+		  If Me.LastError <> 0 Then Raise cURLException(Me.LastError)
+		  
 		  mHandle = curl_multi_init()
-		  If Me.Handle <= 0 Then Raise cURLException(Me.LastError)
+		  If mHandle <= 0 Then
+		    Raise cURLException(libcURL.Errors.FAILED_INIT)
+		  End If
+		  Instances = New Dictionary
+		  PerformTimer = New Timer
+		  AddHandler PerformTimer.Action, WeakAddressOf PerformTimerHandler
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
 		Protected Sub Destructor()
-		  Me.Close()
+		  Me.Close
 		End Sub
 	#tag EndMethod
 
@@ -44,54 +55,52 @@ Class cURLMulti
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Function NextMessage() As Integer
-		  Dim msg As curl_multi_msg
-		  Dim msgsleft As Integer
-		  Dim p As Ptr = cURL_multi_info_read(Me.Handle, msgsleft)
-		  If p <> Nil Then
-		    Dim mb As MemoryBlock = p
-		    msg.StringValue(TargetLittleEndian) = mb.StringValue(0, msg.Size)
-		    Dim ihandle As Integer = msg.Handle
-		    Dim instance As cURLItem
-		    For i As Integer = 0 To UBound(cURLHandles)
-		      If cURLHandles(i).Handle = ihandle Then
-		        instance = cURLHandles(i)
-		        Exit For
-		      End If
-		    Next
-		    If instance <> Nil Then
-		      RaiseEvent cURLEvent(instance, Msg.Msg, Ptr(Msg.MsgCode))
-		    End If
-		    
-		    Return msgsleft
+	#tag Method, Flags = &h0
+		Sub Perform()
+		  Dim i As Integer
+		  mLastError = curl_multi_timeout(mHandle, i)
+		  If mLastError = 0 And i > 0 Then
+		    PerformTimer.Period = i
+		  Else
+		    PerformTimer.Period = 100
 		  End If
-		End Function
+		  PerformTimer.Mode = Timer.ModeMultiple
+		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Function Perform() As Integer
-		  Dim active As Integer
-		  mLastError = curl_multi_perform(Me.Handle, active)
-		  If Me.LastError = 0 Then Return active
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub RemoveInstance(cURL As Integer)
-		  For i As Integer = UBound(cURLHandles) DownTo 0
-		    If cURLHandles(i) <> Nil And cURLHandles(i).Handle = cURL Then
-		      mLastError = curl_multi_remove_handle(Me.Handle, cURL)
-		      If Me.LastError <> 0 Then Exit For
-		      cURLHandles.Remove(i)
-		    End If
-		  Next
+	#tag Method, Flags = &h21
+		Private Sub PerformTimerHandler(Sender As Timer)
+		  #pragma Unused Sender
+		  Dim c As Integer
+		  mLastError = curl_multi_perform(mHandle, c)
+		  If (mLastError = 0 Or mLastError = CURLM_CALL_MULTI_PERFORM) And (LastCount <> c Or c <> Instances.Count) Then
+		    LastCount = c
+		    Do
+		      Dim mb As MemoryBlock = libcURL.curl_multi_info_read(mHandle, c)
+		      If mb <> Nil Then
+		        Dim msg As CURLMsg
+		        msg.StringValue(TargetLittleEndian) = mb.StringValue(0, msg.Size)
+		        RaiseEvent TransferComplete(Instances.Value(msg.easy_handle))
+		      End If
+		    Loop Until c = 0
+		  End If
+		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function RemoveItem(Item As cURLItem) As Boolean
+		  mLastError = curl_multi_remove_handle(mHandle, Item.Handle)
+		  If Instances.HasKey(Item.Handle) Then
+		    Instances.Remove(Item.Handle)
+		  End If
+		  Return mLastError = 0
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function SetOption(OptionNumber As Integer, NewValue As Variant) As Boolean
-		  // This method marshals the NewValue into a Ptr then calls curl_multi_setopt
+		  // This method marshals the NewValue into a Ptr then calls curl_easy-setopt
 		  
 		  If Not libcURL.IsAvailable Then Return False
 		  Dim mb As MemoryBlock
@@ -99,43 +108,28 @@ Class cURLMulti
 		  Select Case ValueType
 		  Case Variant.TypeNil
 		    Raise New NilObjectException
+		    
 		  Case Variant.TypeBoolean
 		    mb = New MemoryBlock(1)
 		    mb.BooleanValue(0) = NewValue.BooleanValue
-		  Case Variant.TypeInteger
-		    mb = New MemoryBlock(4)
-		    mb.Int32Value(0) = NewValue.Int32Value
-		  Case Variant.TypePtr
+		    
+		  Case Variant.TypePtr, Variant.TypeInteger
 		    mb = NewValue.PtrValue
+		    
 		  Case Variant.TypeString
 		    mb = NewValue.StringValue + Chr(0)
-		    'Case Variant.TypeObject
-		    'Select Case NewValue
-		    'Case IsA cURLProgressCallback
-		    'Dim p As cURLProgressCallback = NewValue
-		    'mb = p
-		    '
-		    'Case IsA cURLCallback
-		    'Dim p As cURLCallback = NewValue
-		    'mb = p
-		    '
-		    'Case IsA cURLDebugCallback
-		    'Dim p As cURLDebugCallback = NewValue
-		    'mb = p
-		    '
-		    'Case IsA cURLCloseCallback
-		    'Dim p As cURLCloseCallback = NewValue
-		    'mb = p
-		    '
-		    'Case IsA cURLOpenCallback
-		    'Dim p As cURLOpenCallback = NewValue
-		    'mb = p
-		    '
-		    'Else
-		    'Dim err As New TypeMismatchException
-		    'err.Message = "NewValue is of unsupported type: " + Introspection.GetType(NewValue).Name
-		    'Raise err
-		    'End Select
+		    
+		  Case Variant.TypeObject
+		    Select Case NewValue
+		    Case IsA MemoryBlock
+		      mb = NewValue.PtrValue
+		      
+		    Else
+		      Dim err As New TypeMismatchException
+		      err.Message = "NewValue is of unsupported type: " + Introspection.GetType(NewValue).Name
+		      Raise err
+		      
+		    End Select
 		    
 		  Else
 		    Dim err As New TypeMismatchException
@@ -150,20 +144,28 @@ Class cURLMulti
 
 
 	#tag Hook, Flags = &h0
-		Event cURLEvent(ByRef Instance As libcURL.cURLItem, Msg As Integer, Data As Ptr)
+		Event TransferComplete(easyitem As cURLItem)
 	#tag EndHook
 
 
+	#tag Property, Flags = &h1
+		Protected Instances As Dictionary
+	#tag EndProperty
+
 	#tag Property, Flags = &h21
-		Private cURLHandles() As cURLItem
+		Private LastCount As Integer = -1
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
 		Protected mHandle As Integer
 	#tag EndProperty
 
-	#tag Property, Flags = &h0
-		mLastError As Integer
+	#tag Property, Flags = &h1
+		Protected mLastError As Integer
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private PerformTimer As Timer
 	#tag EndProperty
 
 
@@ -173,6 +175,7 @@ Class cURLMulti
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
+			Type="Integer"
 			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
@@ -181,11 +184,6 @@ Class cURLMulti
 			Group="Position"
 			InitialValue="0"
 			InheritedFrom="Object"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="mLastError"
-			Group="Behavior"
-			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
