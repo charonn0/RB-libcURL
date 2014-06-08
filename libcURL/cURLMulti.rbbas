@@ -4,6 +4,7 @@ Class cURLMulti
 		Function AddItem(Item As cURLItem) As Boolean
 		  mLastError = curl_multi_add_handle(mHandle, Item.Handle)
 		  If mLastError = 0 Then
+		    If Instances.Count > 0 Then PerformTimer.Mode = Timer.ModeMultiple
 		    Instances.Value(Item.Handle) = Item
 		    Return True
 		  End If
@@ -94,6 +95,7 @@ Class cURLMulti
 		  If Instances.HasKey(Item.Handle) Then
 		    Instances.Remove(Item.Handle)
 		  End If
+		  If Instances.Count = 0 Then PerformTimer.Mode = Timer.ModeOff
 		  Return mLastError = 0
 		End Function
 	#tag EndMethod
