@@ -24,18 +24,6 @@ Begin Window Window1
    Title           =   "Untitled"
    Visible         =   True
    Width           =   879
-   Begin libcURL.cURLItem curlget
-      Height          =   32
-      Index           =   -2147483648
-      Left            =   911
-      LocalPort       =   ""
-      LockedInPosition=   False
-      Port            =   ""
-      Scope           =   0
-      TabPanelIndex   =   0
-      Top             =   42
-      Width           =   32
-   End
    Begin PushButton PushButton1
       AutoDeactivate  =   True
       Bold            =   ""
@@ -452,16 +440,6 @@ Begin Window Window1
       Visible         =   True
       Width           =   527
    End
-   Begin libcURL.cURLMulti multicurl
-      Height          =   32
-      Index           =   -2147483648
-      Left            =   9.11e+2
-      LockedInPosition=   False
-      Scope           =   0
-      TabPanelIndex   =   0
-      Top             =   8.6e+1
-      Width           =   32
-   End
 End
 #tag EndWindow
 
@@ -476,20 +454,20 @@ End
 		  Dim bs As BinaryStream = BinaryStream.Create(CA_File, True)
 		  bs.Write(DEFAULT_CA_INFO_PEM)
 		  bs.Close
+		  multi = New cURLMulti
+		  AddHandler multi.TransferComplete, WeakAddressOf TransferCompleteHandler
 		End Sub
 	#tag EndEvent
 
 
-	#tag Property, Flags = &h1
-		Protected CA_File As FolderItem
-	#tag EndProperty
+	#tag Method, Flags = &h21
+		Private Sub DataAvailableHandler(Sender As cURLItem, NewData As String)
+		  Output.AppendText(NewData)
+		End Sub
+	#tag EndMethod
 
-
-#tag EndWindowCode
-
-#tag Events curlget
-	#tag Event
-		Sub DebugMessage(MessageType As libcURL.curl_infotype, data As String)
+	#tag Method, Flags = &h21
+		Private Sub DebugMessageHandler(Sender As cURLItem, MessageType As libcURL.curl_infotype, data As String)
 		  'If MessageType <> libcURL.cURL_InfoType.Text Then
 		  Dim ty As String
 		  Select Case MessageType
@@ -514,27 +492,16 @@ End
 		  Debug.AddRow(ty, data.Trim)
 		  'End If
 		End Sub
-	#tag EndEvent
-	#tag Event
-		Function Progress(dlTotal As UInt64, dlnow As UInt64, ultotal As UInt64, ulnow As UInt64) As Integer
-		  #pragma Unused ultotal
-		  #pragma Unused ulnow
-		  ProgressBar1.Maximum = dlTotal
-		  ProgressBar1.Value = dlnow
-		End Function
-	#tag EndEvent
-	#tag Event
-		Sub DataAvailable(NewData As String)
-		  Output.AppendText(NewData)
-		End Sub
-	#tag EndEvent
-	#tag Event
-		Sub Disconnected()
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub DisconnectedHandler(Sender As cURLItem)
 		  Debug.AddRow("RB-libcURL", "Disconnected")
 		End Sub
-	#tag EndEvent
-	#tag Event
-		Sub HeaderReceived(HeaderLine As String)
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub HeaderReceivedHandler(Sender As cURLItem, HeaderLine As String)
 		  Dim n, v As String
 		  If InStr(HeaderLine, ":") > 1 Then
 		    n = NthField(HeaderLine, ":", 1)
@@ -545,26 +512,56 @@ End
 		  
 		  Self.Headers.AddRow(n, v)
 		End Sub
-	#tag EndEvent
-#tag EndEvents
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Function ProgressHandler(Sender As cURLItem, dlTotal As UInt64, dlnow As UInt64, ultotal As UInt64, ulnow As UInt64) As Integer
+		  #pragma Unused ultotal
+		  #pragma Unused ulnow
+		  ProgressBar1.Maximum = dlTotal
+		  ProgressBar1.Value = dlnow
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub TransferCompleteHandler(Sender As cURLMulti, easyitem As cURLItem)
+		  Call Sender.RemoveItem(easyitem)
+		End Sub
+	#tag EndMethod
+
+
+	#tag Property, Flags = &h1
+		Protected CA_File As FolderItem
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private multi As cURLMulti
+	#tag EndProperty
+
+
+#tag EndWindowCode
+
 #tag Events PushButton1
 	#tag Event
 		Sub Action()
 		  Output.Text = ""
 		  Headers.DeleteAllRows
 		  Debug.DeleteAllRows
-		  curlget.CA_ListFile = CA_File ' for SSL/TLS connections we must specify a list of acceptable cartificate authorities
-		  curlget.URL = TextField1.Text
-		  Call multicurl.AddItem(curlget)
-		  multicurl.Perform()
-		  'Call curlget.Perform(TextField1.Text, 5)
-		  'curlget.Reset
 		  
-		End Sub
-	#tag EndEvent
-	#tag Event
-		Sub Close()
-		  curlget.Close
+		  For i As Integer = 0 To 9
+		    Dim curlget As New cURLItem
+		    AddHandler curlget.DataAvailable, WeakAddressOf DataAvailableHandler
+		    AddHandler curlget.DebugMessage, WeakAddressOf DebugMessageHandler
+		    AddHandler curlget.Disconnected, WeakAddressOf DisconnectedHandler
+		    AddHandler curlget.HeaderReceived, WeakAddressOf HeaderReceivedHandler
+		    AddHandler curlget.Progress, WeakAddressOf ProgressHandler
+		    
+		    curlget.CA_ListFile = CA_File ' for SSL/TLS connections we must specify a list of acceptable cartificate authorities
+		    curlget.URL = TextField1.Text
+		    Call multi.AddItem(curlget)
+		  Next
+		  multi.Perform()
+		  
 		End Sub
 	#tag EndEvent
 #tag EndEvents
@@ -595,13 +592,6 @@ End
 		  For i As Integer = 0 To UBound(l)
 		    Me.AddRow(l(i))
 		  Next
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events multicurl
-	#tag Event
-		Sub TransferComplete(easyitem As cURLItem)
-		  Call Me.RemoveItem(easyitem)
 		End Sub
 	#tag EndEvent
 #tag EndEvents
