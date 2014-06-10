@@ -2,6 +2,7 @@
 Class cURLMulti
 	#tag Method, Flags = &h0
 		Function AddItem(Item As cURLItem) As Boolean
+		  ' Add a cURLItem to the multistack. The cURLItem should have all of its options already set and ready to go.
 		  mLastError = curl_multi_add_handle(mHandle, Item.Handle)
 		  If mLastError = 0 Then
 		    If Instances.Count > 0 Then PerformTimer.Mode = Timer.ModeMultiple
@@ -148,6 +149,16 @@ Class cURLMulti
 	#tag Hook, Flags = &h0
 		Event TransferComplete(easyitem As cURLItem)
 	#tag EndHook
+
+
+	#tag Note, Name = Using this class
+		This class implements the curl_multi interface of libcURL. A curl_multi "stack" can manage 1 or more
+		cURLItems. Once all desired cURLItems have been added, you may call cURLMulti.Perform to beging the
+		transfer.
+		
+		Calling cURLMulti.Perform will activate a timer which calls curl_multi_perform on the multistack until
+		there are no more items (i.e. all calls to AddItem have a matching call to RemoveItem.)
+	#tag EndNote
 
 
 	#tag Property, Flags = &h1

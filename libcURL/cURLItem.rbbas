@@ -241,7 +241,7 @@ Class cURLItem
 
 	#tag Method, Flags = &h0
 		Function GetInfo(InfoType As Integer) As Variant
-		  ' Calls curl_easy_getinfo. Pass a MemoryBlock suitable to contain the InfoType requested.
+		  ' Calls curl_easy_getinfo. Returns a Variant suitable to contain the InfoType requested.
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_getinfo.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.GetInfo
@@ -642,7 +642,7 @@ Class cURLItem
 		  Dim byteswritten As Integer
 		  Dim mb As MemoryBlock = Text
 		  mLastError = curl_easy_send(mHandle, mb, mb.Size, byteswritten)
-		  If mLastError = 0 Then 
+		  If mLastError = 0 Then
 		    Return byteswritten
 		  Else
 		    Dim err As New IOException
