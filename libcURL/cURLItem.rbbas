@@ -145,9 +145,10 @@ Class cURLItem
 		  #pragma Warning "Fix Me"
 		  ' This method is called whenever libcURL needs to create a new socket and gives
 		  ' us an opportunity to tinker with the raw socketry. However, we must return a
-		  ' valid socket otherwise nothing works. So, OpenCallback is not initialized
-		  ' at this time, this method is not executed and the CreateSocket event is not
-		  ' raised.
+		  ' valid OS-level socket descriptor otherwise nothing works. So, OpenCallback is 
+		  ' not initialized at this time, this method is not executed and the CreateSocket 
+		  ' event is not raised.
+		  
 		  Dim p As Ptr = RaiseEvent CreateSocket(SocketType, Socket)
 		  Return p
 		End Function

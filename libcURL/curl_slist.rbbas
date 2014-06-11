@@ -14,7 +14,7 @@ Protected Class curl_slist
 
 	#tag Method, Flags = &h0
 		Sub Constructor()
-		  ' initialize libcURL just enough to handle header building
+		  ' initialize libcURL just enough to handle list building
 		  If Not libcURL.IsAvailable Or curl_global_init(CURL_GLOBAL_NOTHING) <> 0 Then Raise cURLException(mLastError)
 		End Sub
 	#tag EndMethod
