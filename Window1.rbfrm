@@ -37,7 +37,7 @@ Begin Window Window1
       Index           =   -2147483648
       InitialParent   =   ""
       Italic          =   ""
-      Left            =   532
+      Left            =   473
       LockBottom      =   ""
       LockedInPosition=   False
       LockLeft        =   True
@@ -53,7 +53,7 @@ Begin Window Window1
       Top             =   543
       Underline       =   ""
       Visible         =   True
-      Width           =   80
+      Width           =   67
    End
    Begin TabPanel TabPanel1
       AutoDeactivate  =   True
@@ -82,7 +82,7 @@ Begin Window Window1
       TextUnit        =   0
       Top             =   0
       Underline       =   ""
-      Value           =   2
+      Value           =   0
       Visible         =   True
       Width           =   879
       Begin TextArea Output
@@ -438,7 +438,38 @@ Begin Window Window1
       Underline       =   ""
       UseFocusRing    =   True
       Visible         =   True
-      Width           =   527
+      Width           =   469
+   End
+   Begin PushButton PushButton2
+      AutoDeactivate  =   True
+      Bold            =   ""
+      ButtonStyle     =   0
+      Cancel          =   ""
+      Caption         =   "To File"
+      Default         =   ""
+      Enabled         =   True
+      Height          =   22
+      HelpTag         =   ""
+      Index           =   -2147483648
+      InitialParent   =   ""
+      Italic          =   ""
+      Left            =   545
+      LockBottom      =   ""
+      LockedInPosition=   False
+      LockLeft        =   True
+      LockRight       =   ""
+      LockTop         =   True
+      Scope           =   0
+      TabIndex        =   4
+      TabPanelIndex   =   0
+      TabStop         =   True
+      TextFont        =   "System"
+      TextSize        =   0
+      TextUnit        =   0
+      Top             =   543
+      Underline       =   ""
+      Visible         =   True
+      Width           =   67
    End
 End
 #tag EndWindow
@@ -462,13 +493,19 @@ End
 
 	#tag Method, Flags = &h21
 		Private Sub DataAvailableHandler(Sender As cURLItem, NewData As String)
-		  Output.AppendText(NewData)
+		  #pragma Unused Sender
+		  If SaveTo <> Nil Then
+		    SaveTo.Write(NewData)
+		  Else
+		    Output.AppendText(NewData)
+		  End If
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
 		Private Sub DebugMessageHandler(Sender As cURLItem, MessageType As libcURL.curl_infotype, data As String)
 		  'If MessageType <> libcURL.cURL_InfoType.Text Then
+		  #pragma Unused Sender
 		  Dim ty As String
 		  Select Case MessageType
 		  Case libcURL.curl_infotype.data_in
@@ -496,12 +533,37 @@ End
 
 	#tag Method, Flags = &h21
 		Private Sub DisconnectedHandler(Sender As cURLItem)
+		  #pragma Unused Sender
 		  Debug.AddRow("RB-libcURL", "Disconnected")
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
+		Private Sub DoPerform()
+		  Output.Text = ""
+		  Headers.DeleteAllRows
+		  Debug.DeleteAllRows
+		  
+		  Dim curlget As New cURLItem
+		  AddHandler curlget.DataAvailable, WeakAddressOf DataAvailableHandler
+		  AddHandler curlget.DebugMessage, WeakAddressOf DebugMessageHandler
+		  AddHandler curlget.Disconnected, WeakAddressOf DisconnectedHandler
+		  AddHandler curlget.HeaderReceived, WeakAddressOf HeaderReceivedHandler
+		  AddHandler curlget.Progress, WeakAddressOf ProgressHandler
+		  
+		  'Call curlget.SetOption(libcURL.Opts.POSTFIELDS, Nil)
+		  
+		  curlget.CA_ListFile = CA_File ' for SSL/TLS connections we must specify a list of acceptable certificate authorities
+		  curlget.URL = TextField1.Text
+		  Call multi.AddItem(curlget) ' by using a multistack a RB app will remain responsive during the transfer.
+		  multi.Perform()
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
 		Private Sub HeaderReceivedHandler(Sender As cURLItem, HeaderLine As String)
+		  #pragma Unused Sender
 		  Dim n, v As String
 		  If InStr(HeaderLine, ":") > 1 Then
 		    n = NthField(HeaderLine, ":", 1)
@@ -516,6 +578,7 @@ End
 
 	#tag Method, Flags = &h21
 		Private Function ProgressHandler(Sender As cURLItem, dlTotal As UInt64, dlnow As UInt64, ultotal As UInt64, ulnow As UInt64) As Integer
+		  #pragma Unused Sender
 		  #pragma Unused ultotal
 		  #pragma Unused ulnow
 		  ProgressBar1.Maximum = dlTotal
@@ -524,9 +587,14 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Sub TransferCompleteHandler(Sender As cURLMulti, easyitem As cURLItem)
-		  Call Sender.RemoveItem(easyitem)
-		End Sub
+		Private Function TransferCompleteHandler(Sender As cURLMulti, easyitem As cURLItem) As Boolean
+		  #pragma Unused Sender
+		  MsgBox(easyitem.URL + " complete.")
+		  If SaveTo <> Nil Then
+		    SaveTo.Close
+		    SaveTo = Nil
+		  End If
+		End Function
 	#tag EndMethod
 
 
@@ -538,30 +606,17 @@ End
 		Private multi As cURLMulti
 	#tag EndProperty
 
+	#tag Property, Flags = &h21
+		Private SaveTo As BinaryStream
+	#tag EndProperty
+
 
 #tag EndWindowCode
 
 #tag Events PushButton1
 	#tag Event
 		Sub Action()
-		  Output.Text = ""
-		  Headers.DeleteAllRows
-		  Debug.DeleteAllRows
-		  
-		  For i As Integer = 0 To 9
-		    Dim curlget As New cURLItem
-		    AddHandler curlget.DataAvailable, WeakAddressOf DataAvailableHandler
-		    AddHandler curlget.DebugMessage, WeakAddressOf DebugMessageHandler
-		    AddHandler curlget.Disconnected, WeakAddressOf DisconnectedHandler
-		    AddHandler curlget.HeaderReceived, WeakAddressOf HeaderReceivedHandler
-		    AddHandler curlget.Progress, WeakAddressOf ProgressHandler
-		    
-		    curlget.CA_ListFile = CA_File ' for SSL/TLS connections we must specify a list of acceptable cartificate authorities
-		    curlget.URL = TextField1.Text
-		    Call multi.AddItem(curlget)
-		  Next
-		  multi.Perform()
-		  
+		  DoPerform()
 		End Sub
 	#tag EndEvent
 #tag EndEvents
@@ -592,6 +647,15 @@ End
 		  For i As Integer = 0 To UBound(l)
 		    Me.AddRow(l(i))
 		  Next
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events PushButton2
+	#tag Event
+		Sub Action()
+		  Dim g As FolderItem = GetSaveFolderItem("", "")
+		  SaveTo = BinaryStream.Create(g, True)
+		  DoPerform()
 		End Sub
 	#tag EndEvent
 #tag EndEvents
