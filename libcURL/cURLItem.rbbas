@@ -492,7 +492,7 @@ Class cURLItem
 		  ' a particular option (except Nil,) however it does enforce type safety of the value and will raise
 		  ' an exception if an unsupported type is passed.
 		  
-		  ' NewValue may be an Boolean, Integer, Ptr, String, MemoryBlock, FolderItem, libcURL.Form, libcURL.Headers,
+		  ' NewValue may be a Boolean, Integer, Ptr, String, MemoryBlock, FolderItem, libcURL.Form, libcURL.Headers,
 		  ' or a Delegate matching cURLCallback, cURLCloseCallback, cURLDebugCallback, cURLOpenCallback, cURLProgressCallback,
 		  ' or cURLSSLInitCallback. Passing a Nil object will raise an exception unless the option explicitly accepts NULL.
 		  
@@ -506,7 +506,8 @@ Class cURLItem
 		  
 		  If Not libcURL.IsAvailable Then Return False
 		  
-		  Dim MarshalledValue As MemoryBlock
+		  Dim MarshalledValue As Ptr
+		  Dim mb As MemoryBlock
 		  Dim ValueType As Integer = VarType(NewValue)
 		  Select Case ValueType
 		  Case Variant.TypeNil
@@ -518,22 +519,24 @@ Class cURLItem
 		      libcURL.Opts.CLOSESOCKETFUNCTION, libcURL.Opts.DEBUGFUNCTION, libcURL.Opts.HEADERFUNCTION, libcURL.Opts.OPENSOCKETFUNCTION, _
 		      libcURL.Opts.PROGRESSFUNCTION, libcURL.Opts.READFUNCTION, libcURL.Opts.SSL_CTX_FUNCTION, libcURL.Opts.WRITEFUNCTION
 		      ' These option numbers explicitly accept NULL. Refer to the curl documentation on the individual option numbers for details.
-		      MarshalledValue = New MemoryBlock(0)
+		      MarshalledValue = Nil
 		    Else
 		      ' for all other option numbers reject NULL values.
 		      Raise New NilObjectException
 		    End Select
 		    
 		  Case Variant.TypeBoolean
-		    MarshalledValue = New MemoryBlock(1)
-		    MarshalledValue.BooleanValue(0) = NewValue.BooleanValue
+		    mb = New MemoryBlock(1)
+		    mb.BooleanValue(0) = NewValue.BooleanValue
+		    MarshalledValue = mb
 		    
 		  Case Variant.TypePtr, Variant.TypeInteger
 		    MarshalledValue = NewValue.PtrValue
 		    
 		  Case Variant.TypeString
 		    ' COPY the string to a new buffer so there's no weirdness if libcURL releases the memory.
-		    MarshalledValue = NewValue.StringValue + Chr(0)
+		    mb = NewValue.CStringValue + Chr(0)
+		    MarshalledValue = mb
 		    
 		  Case Variant.TypeObject
 		    ' To add support for a custom object type, add a block to this Select statement that stores the object in MarshalledValue
@@ -542,7 +545,8 @@ Class cURLItem
 		      MarshalledValue = NewValue.PtrValue
 		      
 		    Case IsA FolderItem
-		      MarshalledValue = FolderItem(NewValue).AbsolutePath + Chr(0)
+		      mb = FolderItem(NewValue).AbsolutePath + Chr(0)
+		      MarshalledValue = mb
 		      
 		    Case IsA libcURL.Form
 		      Dim f As libcURL.Form = NewValue
@@ -587,6 +591,7 @@ Class cURLItem
 		    Dim err As New TypeMismatchException
 		    err.Message = "NewValue is of unsupported vartype: " + Str(ValueType)
 		    Raise err
+		    
 		  End Select
 		  
 		  mLastError = curl_easy_setopt(mHandle, OptionNumber, MarshalledValue)
