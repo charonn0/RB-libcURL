@@ -64,8 +64,6 @@ Class cURLItem
 		  ' by default, only raise the DebugMessage event if we're debugging
 		  #If DebugBuild Then
 		    Me.Verbose = True
-		  #else
-		    Me.Verbose = False
 		  #endif
 		End Sub
 	#tag EndMethod
@@ -145,8 +143,8 @@ Class cURLItem
 		  #pragma Warning "Fix Me"
 		  ' This method is called whenever libcURL needs to create a new socket and gives
 		  ' us an opportunity to tinker with the raw socketry. However, we must return a
-		  ' valid OS-level socket descriptor otherwise nothing works. So, OpenCallback is 
-		  ' not initialized at this time, this method is not executed and the CreateSocket 
+		  ' valid OS-level socket descriptor otherwise nothing works. So, OpenCallback is
+		  ' not initialized at this time, this method is not executed and the CreateSocket
 		  ' event is not raised.
 		  
 		  Dim p As Ptr = RaiseEvent CreateSocket(SocketType, Socket)
@@ -257,7 +255,7 @@ Class cURLItem
 		    mLastError = curl_easy_getinfo(mHandle, InfoType, mb)
 		    If mLastError = 0 Then
 		      mb = mb.Ptr(0)
-		      Return mb.CString(0)
+		      If mb <> Nil Then Return mb.CString(0)
 		    End If
 		    
 		  Case libcURL.Info.RESPONSE_CODE, libcURL.Info.HTTP_CONNECTCODE, libcURL.Info.FILETIME, libcURL.Info.REDIRECT_COUNT, libcURL.Info.HEADER_SIZE, _
