@@ -127,6 +127,10 @@ Protected Module libcURL
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h1
+		Protected Soft Declare Function curl_multi_strerror Lib "libcurl" (errNo As Integer) As Ptr
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h1
 		Protected Soft Declare Function curl_multi_timeout Lib "libcurl" (MultiHandle As Integer, ByRef Timeout As Integer) As Integer
 	#tag EndExternalMethod
 
@@ -155,6 +159,22 @@ Protected Module libcURL
 		  
 		  If libcURL.IsAvailable Then
 		    Dim mb As MemoryBlock = curl_easy_strerror(cURLError)
+		    Return mb.CString(0)
+		  Else
+		    Return "libcURL is not available."
+		  End If
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function FormatMultiError(cURLMultiError As Integer) As String
+		  ' Translates libcurl multi error numbers to messages
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/curl_multi_strerror.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.FormatMultiError
+		  
+		  If libcURL.IsAvailable Then
+		    Dim mb As MemoryBlock = curl_multi_strerror(cURLMultiError)
 		    Return mb.CString(0)
 		  Else
 		    Return "libcURL is not available."
