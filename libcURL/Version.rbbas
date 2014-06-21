@@ -181,6 +181,10 @@ Protected Module Version
 	#tag EndComputedProperty
 
 
+	#tag Constant, Name = CURLVERSION_FOURTH, Type = Double, Dynamic = False, Default = \"3", Scope = Private
+	#tag EndConstant
+
+
 	#tag Structure, Name = CURLVersion, Flags = &h21
 		Age As Integer
 		  VersionString As Ptr

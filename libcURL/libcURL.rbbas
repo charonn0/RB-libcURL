@@ -278,9 +278,6 @@ Protected Module libcURL
 	#tag EndNote
 
 
-	#tag Constant, Name = CURLVERSION_FOURTH, Type = Double, Dynamic = False, Default = \"3", Scope = Private
-	#tag EndConstant
-
 	#tag Constant, Name = CURL_GLOBAL_ALL, Type = Double, Dynamic = False, Default = \"3", Scope = Protected
 	#tag EndConstant
 
