@@ -251,7 +251,7 @@ Class cURLItem
 		  Select Case InfoType
 		  Case libcURL.Info.EFFECTIVE_URL, libcURL.Info.REDIRECT_URL, libcURL.Info.CONTENT_TYPE, libcURL.Info.PRIVATE_, libcURL.Info.PRIMARY_IP, _
 		    libcURL.Info.LOCAL_IP, libcURL.Info.FTP_ENTRY_PATH, libcURL.Info.RTSP_SESSION_ID
-		    mb = New MemoryBlock(4096)
+		    mb = New MemoryBlock(4)
 		    mLastError = curl_easy_getinfo(mHandle, InfoType, mb)
 		    If mLastError = 0 Then
 		      mb = mb.Ptr(0)
@@ -396,7 +396,7 @@ Class cURLItem
 		  ' Pass an integer representing how long libcURL should wait, in seconds, before giving up the connection
 		  ' attempt. The default is to wait forever.
 		  '
-		  ' This method is a blocking function: it will not return (and your application will stop responding) until the 
+		  ' This method is a blocking function: it will not return (and your application will stop responding) until the
 		  ' transfer completes. For non-blocking transfers use the cURLMulti class to manage the cURLItem.
 		  '
 		  ' If this method returns true the transfer completed without error. Otherwise, check cURLItem.LastError for the
