@@ -44,11 +44,11 @@ Class cURLMulti
 		  
 		  If Not libcURL.IsAvailable Then Raise cURLException(0)
 		  mLastError = curl_global_init(CURL_GLOBAL_DEFAULT)
-		  If Me.LastError <> 0 Then Raise cURLException(Me.LastError)
+		  If Me.LastError <> 0 Then Raise cURLException(Me.LastError, True)
 		  
 		  mHandle = curl_multi_init()
 		  If mHandle <= 0 Then
-		    Raise cURLException(libcURL.Errors.FAILED_INIT)
+		    Raise cURLException(libcURL.Errors.FAILED_INIT, True)
 		  End If
 		  Instances = New Dictionary
 		  PerformTimer = New Timer

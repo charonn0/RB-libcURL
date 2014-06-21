@@ -1,11 +1,15 @@
 #tag Module
 Protected Module libcURL
 	#tag Method, Flags = &h21
-		Private Function cURLException(Err As Integer) As RuntimeException
+		Private Function cURLException(Err As Integer, MultiError As Boolean = False) As RuntimeException
 		  ' Returns a RuntimeException populated with the error message for the passed curl error code.
 		  Dim ex As New RuntimeException
 		  ex.ErrorNumber = Err
-		  ex.Message = FormatError(Err)
+		  If Not MultiError Then
+		    ex.Message = FormatError(Err)
+		  Else
+		    ex.Message = FormatMultiError(Err)
+		  End If
 		  Return ex
 		End Function
 	#tag EndMethod
