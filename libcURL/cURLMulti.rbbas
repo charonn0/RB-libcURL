@@ -3,6 +3,11 @@ Class cURLMulti
 	#tag Method, Flags = &h0
 		Function AddItem(Item As cURLItem) As Boolean
 		  ' Add a cURLItem to the multistack. The cURLItem should have all of its options already set and ready to go.
+		  '
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/curl_multi_add_handle.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLMulti.AddItem
+		  
 		  mLastError = curl_multi_add_handle(mHandle, Item.Handle)
 		  If mLastError = 0 Then
 		    If Instances.Count > 0 Then PerformTimer.Mode = Timer.ModeMultiple
@@ -14,7 +19,13 @@ Class cURLMulti
 
 	#tag Method, Flags = &h0
 		Sub Close()
-		  ' NOTE: this does not affect cURLItems that have been added to the multistack; they must be closed individually
+		  ' Removes all remaining cURLItems from the stack and then destroys the stack.
+		  ' NOTE: this does not Close cURLItems that have been added to the multistack; they must be closed individually
+		  '
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/curl_multi_cleanup.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLMulti.Close
+		  
 		  For Each h As Integer In Instances.Keys
 		    Call Me.RemoveItem(Instances.Value(h))
 		  Next
@@ -24,7 +35,13 @@ Class cURLMulti
 
 	#tag Method, Flags = &h0
 		Sub Constructor()
-		  // Creates a new instance, sets up the callback functions
+		  ' Creates a new multi stack
+		  
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/curl_global_init.html
+		  ' http://curl.haxx.se/libcurl/c/curl_multi_init.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLMulti.Constructor
+		  
 		  If Not libcURL.IsAvailable Then Raise cURLException(0)
 		  mLastError = curl_global_init(CURL_GLOBAL_DEFAULT)
 		  If Me.LastError <> 0 Then Raise cURLException(Me.LastError)
@@ -47,18 +64,28 @@ Class cURLMulti
 
 	#tag Method, Flags = &h0
 		Function Handle() As Integer
+		  ' the multi handle
 		  Return mHandle
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function LastError() As Integer
+		  ' Returns the most recent curl error code for the multistack (but not for any cURLItems managed by the stack.)
 		  Return mLastError
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub Perform()
+		  ' Calling this method will activate a timer which calls curl_multi_perform on the multistack until the last item is Removed. 
+		  ' If the stack is not being processed, begins processing the stack. If the stack is already being processed, updates the PerformTimer 
+		  ' period with libcURL's best estimate of an optimum interval. 
+		  '
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/curl_multi_timeout.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLMulti.Perform
+		  
 		  Dim i As Integer
 		  mLastError = curl_multi_timeout(mHandle, i)
 		  If mLastError = 0 And i > 0 Then
@@ -72,6 +99,15 @@ Class cURLMulti
 
 	#tag Method, Flags = &h21
 		Private Sub PerformTimerHandler(Sender As Timer)
+		  ' This method handles the PerformTimer.Action event.
+		  ' On each run of the timer, checks to see whether any cURLItems have finished and calls the TransferComplete event if needed.
+		  ' Call cURLMulti.Perform to start the timer or update its interval.
+		  '
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/curl_multi_perform.html
+		  ' http://curl.haxx.se/libcurl/c/curl_multi_info_read.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLMulti.TransferComplete
+		  
 		  #pragma Unused Sender
 		  Dim c As Integer
 		  mLastError = curl_multi_perform(mHandle, c) ' on exit, 'c' will contain the number of easy handles with unfinished business.
@@ -95,6 +131,12 @@ Class cURLMulti
 
 	#tag Method, Flags = &h0
 		Function RemoveItem(Item As cURLItem) As Boolean
+		  ' Removes the passed cURLItem from the multistack. If there no more cURLItems then turns off the PerformTimer.
+		  '
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/curl_multi_remove_handle.html
+		  'https://github.com/charonn0/RB-libcURL/wiki/cURLMulti.RemoveItem
+		  
 		  mLastError = curl_multi_remove_handle(mHandle, Item.Handle)
 		  If Instances.HasKey(Item.Handle) Then
 		    Instances.Remove(Item.Handle)
@@ -106,29 +148,51 @@ Class cURLMulti
 
 	#tag Method, Flags = &h0
 		Function SetOption(OptionNumber As Integer, NewValue As Variant) As Boolean
-		  // This method marshals the NewValue into a Ptr then calls curl_easy-setopt
+		  ' SetOption is the primary interface to the multistack. Call this method with a curlmulti option number
+		  ' and a value that is acceptable for that option. SetOption does not check that a value is valid for
+		  ' a particular option (except Nil,) however it does enforce type safety of the value and will raise
+		  ' an exception if an unsupported type is passed.
+		  
+		  ' NewValue may be a Boolean, Integer, Ptr, String, or MemoryBlock. Passing a Nil object will raise an 
+		  ' exception unless the option explicitly accepts NULL.
+		  
+		  ' If the option was set this method returns True. If it returns False the option was not set and the
+		  ' curl error number is stored in cURLMulti.LastError.
+		  
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/curl_easy_setopt.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.SetOption
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Opts
 		  
 		  If Not libcURL.IsAvailable Then Return False
-		  Dim mb As MemoryBlock
+		  Dim MarshalledValue As MemoryBlock
 		  Dim ValueType As Integer = VarType(NewValue)
 		  Select Case ValueType
 		  Case Variant.TypeNil
-		    Raise New NilObjectException
+		    ' Sometimes Nil is an error; sometimes not
+		    Select Case OptionNumber
+		    Case libcURL.Opts.PIPELINING_SITE_BL, libcURL.Opts.PIPELINING_SERVER_BL
+		      ' These option numbers explicitly accept NULL. Refer to the curl documentation on the individual option numbers for details.
+		      MarshalledValue = Nil
+		    Else
+		      ' for all other option numbers reject NULL values.
+		      Raise New NilObjectException
+		    End Select
 		    
 		  Case Variant.TypeBoolean
-		    mb = New MemoryBlock(1)
-		    mb.BooleanValue(0) = NewValue.BooleanValue
+		    MarshalledValue = New MemoryBlock(1)
+		    MarshalledValue.BooleanValue(0) = NewValue.BooleanValue
 		    
 		  Case Variant.TypePtr, Variant.TypeInteger
-		    mb = NewValue.PtrValue
+		    MarshalledValue = NewValue.PtrValue
 		    
 		  Case Variant.TypeString
-		    mb = NewValue.StringValue + Chr(0)
+		    MarshalledValue = NewValue.StringValue + Chr(0)
 		    
 		  Case Variant.TypeObject
 		    Select Case NewValue
 		    Case IsA MemoryBlock
-		      mb = NewValue.PtrValue
+		      MarshalledValue = NewValue.PtrValue
 		      
 		    Else
 		      Dim err As New TypeMismatchException
@@ -143,7 +207,7 @@ Class cURLMulti
 		    Raise err
 		  End Select
 		  
-		  mLastError = curl_multi_setopt(Me.Handle, OptionNumber, mb)
+		  mLastError = curl_multi_setopt(Me.Handle, OptionNumber, MarshalledValue)
 		  Return mLastError = 0
 		End Function
 	#tag EndMethod
