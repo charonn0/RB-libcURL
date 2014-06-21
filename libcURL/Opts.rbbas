@@ -93,6 +93,39 @@ Protected Module Opts
 	#tag Constant, Name = MAIL_FROM, Type = Double, Dynamic = False, Default = \"10186", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = Multi_CHUNK_LENGTH_PENALTY_SIZE, Type = Double, Dynamic = False, Default = \"30010", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = Multi_CONTENT_LENGTH_PENALTY_SIZE, Type = Double, Dynamic = False, Default = \"30009", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = Multi_MAXCONNECTS, Type = Double, Dynamic = False, Default = \"6", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = Multi_MAX_HOST_CONNECTIONS, Type = Double, Dynamic = False, Default = \"7", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = Multi_MAX_PIPELINE_LENGTH, Type = Double, Dynamic = False, Default = \"8", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = Multi_MAX_TOTAL_CONNECTIONS, Type = Double, Dynamic = False, Default = \"13", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = Multi_PIPELINING, Type = Double, Dynamic = False, Default = \"3", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = Multi_SOCKETDATA, Type = Double, Dynamic = False, Default = \"10002", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = Multi_SOCKETFUNCTION, Type = Double, Dynamic = False, Default = \"20001", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = Multi_TIMERDATA, Type = Double, Dynamic = False, Default = \"10005", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = Multi_TIMERFUNCTION, Type = Double, Dynamic = False, Default = \"20004", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = NETINTERFACE, Type = Double, Dynamic = False, Default = \"10062", Scope = Protected
 	#tag EndConstant
 
@@ -112,6 +145,12 @@ Protected Module Opts
 	#tag EndConstant
 
 	#tag Constant, Name = PASSWORD, Type = Double, Dynamic = False, Default = \"10174", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = PIPELINING_SERVER_BL, Type = Double, Dynamic = False, Default = \"10012", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = PIPELINING_SITE_BL, Type = Double, Dynamic = False, Default = \"10011", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = PORT, Type = Double, Dynamic = False, Default = \"3", Scope = Protected
