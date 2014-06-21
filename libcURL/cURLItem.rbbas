@@ -395,6 +395,13 @@ Class cURLItem
 		  ' Tells libcURL to perform the transer. Pass a URL if you have not specified one already using cURLItem.URL.
 		  ' Pass an integer representing how long libcURL should wait, in seconds, before giving up the connection
 		  ' attempt. The default is to wait forever.
+		  '
+		  ' This method is a blocking function: it will not return (and your application will stop responding) until the 
+		  ' transfer completes. For non-blocking transfers use the cURLMulti class to manage the cURLItem.
+		  '
+		  ' If this method returns true the transfer completed without error. Otherwise, check cURLItem.LastError for the
+		  ' error code.
+		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_perform.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Perform
