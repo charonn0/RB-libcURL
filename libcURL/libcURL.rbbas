@@ -293,6 +293,9 @@ Protected Module libcURL
 	#tag Constant, Name = CURL_GLOBAL_WIN32, Type = Double, Dynamic = False, Default = \"2", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = CURL_READFUNC_ABORT, Type = Double, Dynamic = False, Default = \"&h10000000", Scope = Protected
+	#tag EndConstant
+
 
 	#tag Structure, Name = CURLMsg, Flags = &h1
 		msg As Integer
