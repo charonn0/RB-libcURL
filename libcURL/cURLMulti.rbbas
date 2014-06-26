@@ -78,9 +78,9 @@ Class cURLMulti
 
 	#tag Method, Flags = &h0
 		Sub Perform()
-		  ' Calling this method will activate a timer which calls curl_multi_perform on the multistack until the last item is Removed. 
-		  ' If the stack is not being processed, begins processing the stack. If the stack is already being processed, updates the PerformTimer 
-		  ' period with libcURL's best estimate of an optimum interval. 
+		  ' Calling this method will activate a timer which calls curl_multi_perform on the multistack until the last item is Removed.
+		  ' If the stack is not being processed, begins processing the stack. If the stack is already being processed, updates the PerformTimer
+		  ' period with libcURL's best estimate of an optimum interval.
 		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_timeout.html
@@ -91,7 +91,7 @@ Class cURLMulti
 		  If mLastError = 0 And i > 0 Then
 		    PerformTimer.Period = i
 		  Else
-		    PerformTimer.Period = 100
+		    PerformTimer.Period = 1
 		  End If
 		  PerformTimer.Mode = Timer.ModeMultiple
 		End Sub
@@ -153,7 +153,7 @@ Class cURLMulti
 		  ' a particular option (except Nil,) however it does enforce type safety of the value and will raise
 		  ' an exception if an unsupported type is passed.
 		  
-		  ' NewValue may be a Boolean, Integer, Ptr, String, or MemoryBlock. Passing a Nil object will raise an 
+		  ' NewValue may be a Boolean, Integer, Ptr, String, or MemoryBlock. Passing a Nil object will raise an
 		  ' exception unless the option explicitly accepts NULL.
 		  
 		  ' If the option was set this method returns True. If it returns False the option was not set and the

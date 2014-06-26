@@ -240,7 +240,11 @@ Class cURLItem
 
 	#tag Method, Flags = &h0
 		Function GetInfo(InfoType As Integer) As Variant
-		  ' Calls curl_easy_getinfo. Returns a Variant suitable to contain the InfoType requested.
+		  ' Calls curl_easy_getinfo. Returns a Variant suitable to contain the InfoType requested. If the InfoType is not
+		  ' among the values marshalled below, a TypeMismatchException will be raised.
+		  ' This method returns various data about the most recently completed connection (successful or not.)
+		  ' As such, it is not useful to call this method before the first connection attempt.
+		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_getinfo.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.GetInfo
@@ -280,7 +284,10 @@ Class cURLItem
 		    If mLastError = 0 Then Return lst
 		    
 		  Else
-		    Raise New TypeMismatchException
+		    Dim err As New TypeMismatchException
+		    err.Message = "0x" + Left(Hex(InfoType) + "00000000", 8) + " is not a known InfoType."
+		    err.ErrorNumber = InfoType
+		    Raise err
 		  End Select
 		End Function
 	#tag EndMethod
