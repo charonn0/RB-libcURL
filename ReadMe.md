@@ -17,3 +17,13 @@ is equivalent to:
     Call cURL.SetOption(cURL.Opts.PORT, 8080)
     Call cURL.SetOption(cURL.Opts.URL, "http://www.example.com/example.txt")
     Call cURL.Perform()
+
+The curlmulti class allows you to manage 1 or more curlitem objects as a "stack" of connections and handle transfers in a non-blocking fashion.
+
+    Dim cURL As New cURLItem
+    Call cURL.SetOption(cURL.Opts.URL, "http://www.example.com/BigFile.bin")
+    Dim multi As New cURLMulti
+    multi.AddItem(cURL)
+    multi.Perform 
+    
+
