@@ -1,19 +1,5 @@
 #tag Module
 Protected Module libcURL
-	#tag Method, Flags = &h21
-		Private Function cURLException(Err As Integer, MultiError As Boolean = False) As RuntimeException
-		  ' Returns a RuntimeException populated with the error message for the passed curl error code.
-		  Dim ex As New RuntimeException
-		  ex.ErrorNumber = Err
-		  If Not MultiError Then
-		    ex.Message = FormatError(Err)
-		  Else
-		    ex.Message = FormatMultiError(Err)
-		  End If
-		  Return ex
-		End Function
-	#tag EndMethod
-
 	#tag ExternalMethod, Flags = &h1
 		Protected Soft Declare Sub curl_easy_cleanup Lib "libcurl" (Handle As Integer)
 	#tag EndExternalMethod

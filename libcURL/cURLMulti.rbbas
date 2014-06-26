@@ -42,13 +42,13 @@ Class cURLMulti
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_init.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLMulti.Constructor
 		  
-		  If Not libcURL.IsAvailable Then Raise cURLException(0)
+		  If Not libcURL.IsAvailable Then Raise New cURLException(0)
 		  mLastError = curl_global_init(CURL_GLOBAL_DEFAULT)
-		  If Me.LastError <> 0 Then Raise cURLException(Me.LastError, True)
+		  If Me.LastError <> 0 Then Raise New cURLException(Me.LastError, True)
 		  
 		  mHandle = curl_multi_init()
 		  If mHandle <= 0 Then
-		    Raise cURLException(libcURL.Errors.FAILED_INIT, True)
+		    Raise New cURLException(libcURL.Errors.FAILED_INIT, True)
 		  End If
 		  Instances = New Dictionary
 		  PerformTimer = New Timer
@@ -114,7 +114,7 @@ Class cURLMulti
 		  If (mLastError = 0 Or mLastError = CURLM_CALL_MULTI_PERFORM) And (LastCount <> c Or c <> Instances.Count) Then
 		    LastCount = c
 		    Do
-		      Dim mb As MemoryBlock = libcURL.curl_multi_info_read(mHandle, c) ' on exit, 'c' will contain the number of messages remaining.
+		      Dim mb As MemoryBlock = curl_multi_info_read(mHandle, c) ' on exit, 'c' will contain the number of messages remaining.
 		      If mb <> Nil Then
 		        Dim msg As CURLMsg
 		        msg.StringValue(TargetLittleEndian) = mb.StringValue(0, msg.Size)
