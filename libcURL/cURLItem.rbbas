@@ -334,8 +334,12 @@ Class cURLItem
 		  If Not Sender.SetOption(libcURL.Opts.READFUNCTION, AddressOf ReadCallback) Then Raise New cURLException(Sender.LastError)
 		  
 		  If Not Sender.SetOption(libcURL.Opts.NOPROGRESS, False) Then Raise New cURLException(Sender.LastError)
-		  If Not Sender.SetOption(libcURL.Opts.PROGRESSDATA, Sender.Handle) Then Raise New cURLException(Sender.LastError)
-		  If Not Sender.SetOption(libcURL.Opts.PROGRESSFUNCTION, AddressOf ProgressCallback) Then Raise New cURLException(Sender.LastError)
+		  If Sender.SetOption(libcURL.Opts.XFERINFOFUNCTION, AddressOf ProgressCallback) Then ' New versions
+		    If Not Sender.SetOption(libcURL.Opts.XFERINFODATA, Sender.Handle) Then Raise New cURLException(Sender.LastError)
+		  Else ' old versions
+		    If Not Sender.SetOption(libcURL.Opts.PROGRESSDATA, Sender.Handle) Then Raise New cURLException(Sender.LastError)
+		    If Not Sender.SetOption(libcURL.Opts.PROGRESSFUNCTION, AddressOf ProgressCallback) Then Raise New cURLException(Sender.LastError)
+		  End If
 		  
 		  If Not Sender.SetOption(libcURL.Opts.HEADERDATA, Sender.Handle) Then Raise New cURLException(Sender.LastError)
 		  If Not Sender.SetOption(libcURL.Opts.HEADERFUNCTION, AddressOf HeaderCallback) Then Raise New cURLException(Sender.LastError)

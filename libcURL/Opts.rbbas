@@ -285,6 +285,12 @@ Protected Module Opts
 	#tag Constant, Name = WRITEFUNCTION, Type = Double, Dynamic = False, Default = \"20011", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = XFERINFODATA, Type = Double, Dynamic = False, Default = \"10057", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = XFERINFOFUNCTION, Type = Double, Dynamic = False, Default = \"20219", Scope = Protected
+	#tag EndConstant
+
 
 	#tag ViewBehavior
 		#tag ViewProperty
