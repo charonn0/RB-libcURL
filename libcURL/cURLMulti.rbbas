@@ -20,7 +20,6 @@ Class cURLMulti
 	#tag Method, Flags = &h0
 		Sub Close()
 		  ' Removes all remaining cURLItems from the stack and then destroys the stack.
-		  ' NOTE: this does not Close cURLItems that have been added to the multistack; they must be closed individually
 		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_cleanup.html

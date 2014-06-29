@@ -147,12 +147,18 @@ Protected Module libcURL
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_strerror.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.FormatError
 		  
-		  If libcURL.IsAvailable Then
+		  Select Case True
+		    
+		  Case Not libcURL.IsAvailable
+		    Return "libcURL is not available."
+		    
+		  Case cURLError = libcURL.Errors.INIT_FAILED
+		    Return "Failed to create a new curl instance."
+		    
+		  Else
 		    Dim mb As MemoryBlock = curl_easy_strerror(cURLError)
 		    Return mb.CString(0)
-		  Else
-		    Return "libcURL is not available."
-		  End If
+		  End Select
 		End Function
 	#tag EndMethod
 
