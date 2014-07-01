@@ -653,7 +653,7 @@ Class cURLItem
 
 	#tag Method, Flags = &h1
 		Protected Function Write(Text As String) As Integer
-		  ' Only available after calling SetOption(CURLOPT_CONNECT_ONLY, True)
+		  ' Only available after calling SetOption(libcURL.Opts.CONNECT_ONLY, True)
 		  ' Once Perform returns you may Write to the easy_handle by calling this method
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_send.html
