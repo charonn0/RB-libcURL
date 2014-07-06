@@ -1,4 +1,4 @@
-RB-libcURL provides a RB-friendly interface to libcURL. RB-libcURL is designed and tested on Windows against [curl-7.34.0-devel-mingw32](http://curl.haxx.se/gknw.net/7.34.0/dist-w32/curl-7.34.0-devel-mingw32.zip) and associated security and compression libraries.
+RB-libcURL provides a RB-friendly interface to libcURL. RB-libcURL is designed and tested on Windows against [curl-7.34.0-devel-mingw32](http://curl.haxx.se/gknw.net/7.34.0/dist-w32/curl-7.34.0-devel-mingw32.zip) and associated security and compression libraries; version 7.15.2 and newer ought to work also.
 
 The cURL.cURLItem class provides an interface to a curl_easy handle. After creating a new instance, you can set various options for the instance by calling the SetOption method with the desired cURL option number and its new value. The new value may be a string, boolean, memoryblock, ptr or Integer. 
 
