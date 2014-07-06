@@ -278,10 +278,11 @@ Class cURLItem
 		    If mLastError = 0 Then Return mb.DoubleValue(0)
 		    
 		  Case libcURL.Info.SSL_ENGINES, libcURL.Info.COOKIELIST
-		    Dim lst As New libcURL.curl_slist
-		    mb = lst.Handle
+		    Dim p As Ptr = New MemoryBlock(4)
+		    mb = New MemoryBlock(4)
+		    mb.Ptr(0) = p
 		    mLastError = curl_easy_getinfo(mHandle, InfoType, mb)
-		    If mLastError = 0 Then Return lst
+		    If mLastError = 0 Then Return New libcURL.curl_slist(p)
 		    
 		  Else
 		    Dim err As New TypeMismatchException

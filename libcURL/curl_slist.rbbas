@@ -2,7 +2,7 @@
 Protected Class curl_slist
 	#tag Method, Flags = &h1
 		Protected Function Append(s As String) As Boolean
-		  ' Appends the passed string to the list.
+		  ' Appends the passed string to the list. If the List is NULL it will be created.
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_slist_append.html
 		  
@@ -13,9 +13,10 @@ Protected Class curl_slist
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Constructor()
+		Sub Constructor(ListPtr As Ptr = Nil)
 		  ' initialize libcURL just enough to handle list building
 		  If Not libcURL.IsAvailable Or curl_global_init(CURL_GLOBAL_NOTHING) <> 0 Then Raise New cURLException(mLastError)
+		  List = ListPtr
 		End Sub
 	#tag EndMethod
 
