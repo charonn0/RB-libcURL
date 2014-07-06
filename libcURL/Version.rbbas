@@ -7,10 +7,31 @@ Protected Module Version
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
+		Protected Function MajorNumber() As Integer
+		  ' libcurl's major version; e.g. if the version is 1.2.3 then the MajorNumber is 1
+		  Return Val(NthField(NthField(NthField(libcURL.Version.Name, " ", 1), "/", 2), ".", 1))
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function MinorNumber() As Integer
+		  ' libcurl's minor version; e.g. if the version is 1.2.3 then the MinorNumber is 2
+		  Return Val(NthField(NthField(NthField(libcURL.Version.Name, " ", 1), "/", 2), ".", 2))
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
 		Protected Function Name() As String
 		  If Not libcURL.IsAvailable Then Return ""
 		  Dim p As MemoryBlock = curl_version()
 		  Return p.CString(0)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function PatchNumber() As Integer
+		  ' libcurl's patch version; e.g. if the version is 1.2.3 then the PatchNumber is 3
+		  Return Val(NthField(NthField(NthField(libcURL.Version.Name, " ", 1), "/", 2), ".", 3))
 		End Function
 	#tag EndMethod
 
