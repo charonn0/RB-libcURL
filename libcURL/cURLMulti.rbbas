@@ -160,7 +160,7 @@ Class cURLMulti
 		  
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_setopt.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.SetOption
+		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLMulti.SetOption
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Opts
 		  
 		  If Not libcURL.IsAvailable Then Return False
