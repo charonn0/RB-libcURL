@@ -159,7 +159,7 @@ Class cURLMulti
 		  ' curl error number is stored in cURLMulti.LastError.
 		  
 		  ' See:
-		  ' http://curl.haxx.se/libcurl/c/curl_easy_setopt.html
+		  ' http://curl.haxx.se/libcurl/c/curl_multi_setopt.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.SetOption
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Opts
 		  
