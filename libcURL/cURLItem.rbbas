@@ -404,7 +404,7 @@ Class cURLItem
 
 	#tag Method, Flags = &h0
 		Function Perform(URL As String = "", Timeout As Integer = 0) As Boolean
-		  ' Tells libcURL to perform the transer. Pass a URL if you have not specified one already using cURLItem.URL.
+		  ' Tells libcURL to perform the transfer. Pass a URL if you have not specified one already using cURLItem.URL.
 		  ' Pass an integer representing how long libcURL should wait, in seconds, before giving up the connection
 		  ' attempt. The default is to wait forever.
 		  '
@@ -656,6 +656,8 @@ Class cURLItem
 		Protected Function Write(Text As String) As Integer
 		  ' Only available after calling SetOption(libcURL.Opts.CONNECT_ONLY, True)
 		  ' Once Perform returns you may Write to the easy_handle by calling this method
+		  ' If the write succeeded this method returns then number of bytes actually written.
+		  ' If the write failed an IOException will be raised.
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_send.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Write
