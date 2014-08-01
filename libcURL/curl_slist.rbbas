@@ -1,7 +1,7 @@
 #tag Class
 Protected Class curl_slist
-	#tag Method, Flags = &h1
-		Protected Function Append(s As String) As Boolean
+	#tag Method, Flags = &h0
+		Function Append(s As String) As Boolean
 		  ' Appends the passed string to the list. If the List is NULL it will be created.
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_slist_append.html
