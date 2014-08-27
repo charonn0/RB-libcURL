@@ -180,6 +180,8 @@ Class cURLItem
 		    Dim mb As MemoryBlock = char
 		    mb.StringValue(0, sz) = LeftB(data, sz)
 		    Return data.LenB
+		  Else
+		    Raise New OutOfBoundsException
 		  End If
 		End Function
 	#tag EndMethod
