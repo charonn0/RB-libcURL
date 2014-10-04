@@ -40,7 +40,7 @@ Protected Class Form
 
 	#tag Method, Flags = &h0
 		Sub Constructor()
-		  ' initialize libcURL just enough to handle list building
+		  ' initialize libcURL just enough to handle form building
 		  
 		  If Not libcURL.IsAvailable Then
 		    Dim err As New PlatformNotSupportedException
