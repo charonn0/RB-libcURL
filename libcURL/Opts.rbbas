@@ -33,6 +33,84 @@ Protected Module Opts
 	#tag Constant, Name = CRLFILE, Type = Double, Dynamic = False, Default = \"10169", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = CURLPROTO_DICT, Type = Double, Dynamic = False, Default = \"&h200", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURLPROTO_FILE, Type = Double, Dynamic = False, Default = \"&h400", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURLPROTO_FTP, Type = Double, Dynamic = False, Default = \"&h4", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURLPROTO_FTPS, Type = Double, Dynamic = False, Default = \"&h8", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURLPROTO_GOPHER, Type = Double, Dynamic = False, Default = \"&h2000000", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURLPROTO_HTTP, Type = Double, Dynamic = False, Default = \"&h1", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURLPROTO_HTTPS, Type = Double, Dynamic = False, Default = \"&h2", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURLPROTO_IMAP, Type = Double, Dynamic = False, Default = \"&h1000", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURLPROTO_IMAPS, Type = Double, Dynamic = False, Default = \"&h2000", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURLPROTO_LDAP, Type = Double, Dynamic = False, Default = \"&h80", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURLPROTO_LDAPS, Type = Double, Dynamic = False, Default = \"&h100", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURLPROTO_POP3, Type = Double, Dynamic = False, Default = \"&h4000", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURLPROTO_POP3S, Type = Double, Dynamic = False, Default = \"&h8000", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURLPROTO_RTMP, Type = Double, Dynamic = False, Default = \"&h80000", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURLPROTO_RTMPE, Type = Double, Dynamic = False, Default = \"&h200000", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURLPROTO_RTMPS, Type = Double, Dynamic = False, Default = \"&h800000", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURLPROTO_RTMPT, Type = Double, Dynamic = False, Default = \"&h100000", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURLPROTO_RTMPTE, Type = Double, Dynamic = False, Default = \"&h400000", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURLPROTO_RTMPTS, Type = Double, Dynamic = False, Default = \"&h1000000", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURLPROTO_RTSP, Type = Double, Dynamic = False, Default = \"&h40000", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURLPROTO_SCP, Type = Double, Dynamic = False, Default = \"&h10", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURLPROTO_SFTP, Type = Double, Dynamic = False, Default = \"&h20", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURLPROTO_SMTP, Type = Double, Dynamic = False, Default = \"&h10000", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURLPROTO_SMTPS, Type = Double, Dynamic = False, Default = \"&h20000", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURLPROTO_TELNET, Type = Double, Dynamic = False, Default = \"&h40", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURLPROTO_TFTP, Type = Double, Dynamic = False, Default = \"&h800", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = CURLSOCKTYPE_IPCXN, Type = Double, Dynamic = False, Default = \"0", Scope = Protected
 	#tag EndConstant
 
@@ -213,6 +291,9 @@ Protected Module Opts
 	#tag Constant, Name = READFUNCTION, Type = Double, Dynamic = False, Default = \"20012", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = REDIR_PROTOCOLS, Type = Double, Dynamic = False, Default = \"182", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = REFERER, Type = Double, Dynamic = False, Default = \"10016", Scope = Protected
 	#tag EndConstant
 
@@ -303,62 +384,6 @@ Protected Module Opts
 	#tag Constant, Name = XFERINFOFUNCTION, Type = Double, Dynamic = False, Default = \"20219", Scope = Protected
 	#tag EndConstant
 
-	#tag Constant, Name = CURLPROTO_HTTP, Type = Double, Dynamic = False, Default = \"&h1", Scope = Protected
-	#tag EndConstant
-#tag Constant, Name = CURLPROTO_HTTPS , Type = Double, Dynamic = False, Default = \"&h2", Scope = Protected
-	#tag EndConstant
-#tag Constant, Name = CURLPROTO_FTP , Type = Double, Dynamic = False, Default = \"&h4", Scope = Protected
-	#tag EndConstant
-#tag Constant, Name = CURLPROTO_FTPS, Type = Double, Dynamic = False, Default = \"&h8", Scope = Protected
-	#tag EndConstant
-#tag Constant, Name = CURLPROTO_SCP , Type = Double, Dynamic = False, Default = \"&h10", Scope = Protected
-	#tag EndConstant
-#tag Constant, Name = CURLPROTO_SFTP, Type = Double, Dynamic = False, Default = \"&h20", Scope = Protected
-	#tag EndConstant
-#tag Constant, Name = CURLPROTO_TELNET, Type = Double, Dynamic = False, Default = \"&h40", Scope = Protected
-	#tag EndConstant
-#tag Constant, Name = CURLPROTO_LDAP, Type = Double, Dynamic = False, Default = \"&h80", Scope = Protected
-	#tag EndConstant
-#tag Constant, Name = CURLPROTO_LDAPS , Type = Double, Dynamic = False, Default = \"&h100", Scope = Protected
-	#tag EndConstant
-#tag Constant, Name = CURLPROTO_DICT, Type = Double, Dynamic = False, Default = \"&h200", Scope = Protected
-	#tag EndConstant
-#tag Constant, Name = CURLPROTO_FILE, Type = Double, Dynamic = False, Default = \"&h400", Scope = Protected
-	#tag EndConstant
-#tag Constant, Name = CURLPROTO_TFTP, Type = Double, Dynamic = False, Default = \"&h800", Scope = Protected
-	#tag EndConstant
-#tag Constant, Name = CURLPROTO_IMAP, Type = Double, Dynamic = False, Default = \"&h1000", Scope = Protected
-	#tag EndConstant
-#tag Constant, Name = CURLPROTO_IMAPS , Type = Double, Dynamic = False, Default = \"&h2000", Scope = Protected
-	#tag EndConstant
-#tag Constant, Name = CURLPROTO_POP3, Type = Double, Dynamic = False, Default = \"&h4000", Scope = Protected
-	#tag EndConstant
-#tag Constant, Name = CURLPROTO_POP3S , Type = Double, Dynamic = False, Default = \"&h8000", Scope = Protected
-	#tag EndConstant
-#tag Constant, Name = CURLPROTO_SMTP, Type = Double, Dynamic = False, Default = \"&h10000", Scope = Protected
-	#tag EndConstant
-#tag Constant, Name = CURLPROTO_SMTPS , Type = Double, Dynamic = False, Default = \"&h20000", Scope = Protected
-	#tag EndConstant
-#tag Constant, Name = CURLPROTO_RTSP, Type = Double, Dynamic = False, Default = \"&h40000", Scope = Protected
-	#tag EndConstant
-#tag Constant, Name = CURLPROTO_RTMP, Type = Double, Dynamic = False, Default = \"&h80000", Scope = Protected
-	#tag EndConstant
-#tag Constant, Name = CURLPROTO_RTMPT , Type = Double, Dynamic = False, Default = \"&h100000", Scope = Protected
-	#tag EndConstant
-#tag Constant, Name = CURLPROTO_RTMPE , Type = Double, Dynamic = False, Default = \"&h200000", Scope = Protected
-	#tag EndConstant
-#tag Constant, Name = CURLPROTO_RTMPTE, Type = Double, Dynamic = False, Default = \"&h400000", Scope = Protected
-	#tag EndConstant
-#tag Constant, Name = CURLPROTO_RTMPS , Type = Double, Dynamic = False, Default = \"&h800000", Scope = Protected
-	#tag EndConstant
-#tag Constant, Name = CURLPROTO_RTMPTS, Type = Double, Dynamic = False, Default = \"&h1000000", Scope = Protected
-	#tag EndConstant
-#tag Constant, Name = CURLPROTO_GOPHER, Type = Double, Dynamic = False, Default = \"&h2000000", Scope = Protected
-	#tag EndConstant
-
-	
-	
-	
 
 	#tag ViewBehavior
 		#tag ViewProperty

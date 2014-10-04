@@ -82,7 +82,7 @@ Begin Window Window1
       TextUnit        =   0
       Top             =   0
       Underline       =   ""
-      Value           =   0
+      Value           =   1
       Visible         =   True
       Width           =   879
       Begin Listbox Headers
@@ -564,8 +564,7 @@ End
 		  AddHandler curlget.HeaderReceived, WeakAddressOf HeaderReceivedHandler
 		  AddHandler curlget.Progress, WeakAddressOf ProgressHandler
 		  
-		  'Call curlget.SetOption(libcURL.Opts.POSTFIELDS, Nil)
-		  
+		  Call curlget.SetOption(libcURL.Opts.FOLLOWLOCATION, True) ' Follow redirects automatically
 		  curlget.CA_ListFile = CA_File ' for SSL/TLS connections we must specify a list of acceptable certificate authorities
 		  curlget.URL = TextField1.Text
 		  Call multi.AddItem(curlget) ' by using a multistack a RB app will remain responsive during the transfer.
