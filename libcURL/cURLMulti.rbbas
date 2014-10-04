@@ -25,10 +25,13 @@ Class cURLMulti
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_cleanup.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLMulti.Close
 		  
-		  For Each h As Integer In Instances.Keys
-		    Call Me.RemoveItem(Instances.Value(h))
-		  Next
-		  mLastError = curl_multi_cleanup(mHandle)
+		  If libcURL.IsAvailable Then
+		    For Each h As Integer In Instances.Keys
+		      Call Me.RemoveItem(Instances.Value(h))
+		    Next
+		    If mHandle <> 0 Then mLastError = curl_multi_cleanup(mHandle)
+		  End If
+		  mHandle = 0
 		End Sub
 	#tag EndMethod
 
@@ -41,7 +44,12 @@ Class cURLMulti
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_init.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLMulti.Constructor
 		  
-		  If Not libcURL.IsAvailable Then Raise New cURLException(0)
+		  If Not libcURL.IsAvailable Then
+		    Dim err As New PlatformNotSupportedException
+		    err.Message = "libcURL is not available."
+		    Raise err
+		  End If
+		  
 		  mLastError = curl_global_init(CURL_GLOBAL_DEFAULT)
 		  If Me.LastError <> 0 Then Raise New cURLException(Me.LastError, True)
 		  
@@ -163,7 +171,6 @@ Class cURLMulti
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLMulti.SetOption
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Opts
 		  
-		  If Not libcURL.IsAvailable Then Return False
 		  Dim MarshalledValue As MemoryBlock
 		  Dim ValueType As Integer = VarType(NewValue)
 		  Select Case ValueType

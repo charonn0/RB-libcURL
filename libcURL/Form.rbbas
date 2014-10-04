@@ -9,7 +9,6 @@ Protected Class Form
 		  ' http://curl.haxx.se/libcurl/c/curl_formadd.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Form.AddElement
 		  
-		  If Not libcURL.IsAvailable Then Return False
 		  Dim ValueType As Integer = VarType(Value)
 		  Select Case ValueType ' marshal the value
 		  Case Variant.TypeObject
@@ -41,15 +40,24 @@ Protected Class Form
 
 	#tag Method, Flags = &h0
 		Sub Constructor()
-		  ' initialize libcURL just enough to handle form building
-		  If Not libcURL.IsAvailable Or curl_global_init(CURL_GLOBAL_NOTHING) <> 0 Then Raise New cURLException(mLastError)
+		  ' initialize libcURL just enough to handle list building
+		  
+		  If Not libcURL.IsAvailable Then
+		    Dim err As New PlatformNotSupportedException
+		    err.Message = "libcURL is not available."
+		    Raise err
+		  End If
+		  
+		  If curl_global_init(CURL_GLOBAL_NOTHING) <> 0 Then Raise New cURLException(libcURL.Errors.INIT_FAILED)
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub Destructor()
-		  If FirstItem <> Nil Then libcURL.curl_formfree(FirstItem)
-		  libcURL.curl_global_cleanup()
+		  If libcURL.IsAvailable Then
+		    If FirstItem <> Nil Then libcURL.curl_formfree(FirstItem)
+		    libcURL.curl_global_cleanup()
+		  End If
 		End Sub
 	#tag EndMethod
 

@@ -38,6 +38,7 @@ Protected Module Version
 	#tag Method, Flags = &h1
 		Protected Function Protocols() As String()
 		  Dim prots() As String
+		  If Not libcURL.IsAvailable Then Return prots
 		  Dim ve As CURLVersion = libcURL.Version.Struct
 		  Dim p1 As Ptr = ve.Protocols.Ptr(0)
 		  Dim mb As MemoryBlock = p1

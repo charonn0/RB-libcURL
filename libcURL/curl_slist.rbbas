@@ -6,7 +6,6 @@ Protected Class curl_slist
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_slist_append.html
 		  
-		  If Not libcURL.IsAvailable Then Return False
 		  List = curl_slist_append(List, s)
 		  Return List <> Nil
 		End Function
@@ -15,7 +14,14 @@ Protected Class curl_slist
 	#tag Method, Flags = &h0
 		Sub Constructor(ListPtr As Ptr = Nil)
 		  ' initialize libcURL just enough to handle list building
-		  If Not libcURL.IsAvailable Or curl_global_init(CURL_GLOBAL_NOTHING) <> 0 Then Raise New cURLException(mLastError)
+		  
+		  If Not libcURL.IsAvailable Then
+		    Dim err As New PlatformNotSupportedException
+		    err.Message = "libcURL is not available."
+		    Raise err
+		  End If
+		  
+		  If curl_global_init(CURL_GLOBAL_NOTHING) <> 0 Then Raise New cURLException(libcURL.Errors.INIT_FAILED)
 		  List = ListPtr
 		End Sub
 	#tag EndMethod
