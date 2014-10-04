@@ -33,6 +33,12 @@ Protected Module Opts
 	#tag Constant, Name = CRLFILE, Type = Double, Dynamic = False, Default = \"10169", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = CURLSOCKTYPE_IPCXN, Type = Double, Dynamic = False, Default = \"0", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURL_SOCKET_BAD, Type = Double, Dynamic = False, Default = \"-1", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = CUSTOMREQUEST, Type = Double, Dynamic = False, Default = \"10036", Scope = Protected
 	#tag EndConstant
 

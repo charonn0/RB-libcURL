@@ -492,6 +492,15 @@ End
 
 
 	#tag Method, Flags = &h21
+		Private Function CreateSocketHandler(Sender As cURLItem) As SocketCore
+		  #pragma Unused Sender
+		  Dim sock As New TCPSocket
+		  socks.Append(sock)
+		  Return sock
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
 		Private Sub DataAvailableHandler(Sender As cURLItem, NewData As String)
 		  #pragma Unused Sender
 		  If SaveTo <> Nil Then
@@ -548,6 +557,7 @@ End
 		  CurlInfo.DeleteAllRows
 		  
 		  Dim curlget As New cURLItem
+		  AddHandler curlget.CreateSocket, WeakAddressOf CreateSocketHandler
 		  AddHandler curlget.DataAvailable, WeakAddressOf DataAvailableHandler
 		  AddHandler curlget.DebugMessage, WeakAddressOf DebugMessageHandler
 		  AddHandler curlget.Disconnected, WeakAddressOf DisconnectedHandler
@@ -621,6 +631,10 @@ End
 
 	#tag Property, Flags = &h21
 		Private SaveTo As BinaryStream
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected Socks() As SocketCore
 	#tag EndProperty
 
 

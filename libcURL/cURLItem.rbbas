@@ -138,7 +138,7 @@ Class cURLItem
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Function curlOpen(SocketType As Integer, Socket As Ptr) As Ptr
+		Private Function curlOpen(SocketType As Integer, Socket As Ptr) As Integer
 		  ' This method is the intermediary between OpenCallback and the CreateSocket event.
 		  ' DO NOT CALL THIS METHOD
 		  
@@ -149,13 +149,24 @@ Class cURLItem
 		  ' not initialized at this time, this method is not executed and the CreateSocket
 		  ' event is not raised.
 		  
-		  Dim p As Ptr = RaiseEvent CreateSocket(SocketType, Socket)
-		  Return p
+		  Dim mb As MemoryBlock = Socket
+		  Dim t As curl_sockaddr
+		  t.StringValue(TargetLittleEndian) = mb.StringValue(0, t.Size)
+		  
+		  Select Case SocketType
+		  Case libcURL.Opts.CURLSOCKTYPE_IPCXN
+		    Dim sock As SocketCore = RaiseEvent CreateSocket()
+		    If sock <> Nil Then
+		      Return sock.Handle
+		    End If
+		  End Select
+		  
+		  Return libcURL.Opts.CURL_SOCKET_BAD
 		End Function
 	#tag EndMethod
 
 	#tag DelegateDeclaration, Flags = &h21
-		Private Delegate Function cURLOpenCallback(UserData As Integer, SocketType As Integer, Socket As Ptr) As Ptr
+		Private Delegate Function cURLOpenCallback(UserData As Integer, SocketType As Integer, Socket As Ptr) As Integer
 	#tag EndDelegateDeclaration
 
 	#tag Method, Flags = &h21
@@ -320,8 +331,10 @@ Class cURLItem
 		Protected Shared Sub InitCallbacks(Sender As libcURL.cURLItem)
 		  ' This method sets up the callback functions for the passed instance of cURLItem
 		  
-		  //If Not Sender.SetOption(libcURL.Opts.OPENSOCKETDATA, Sender.Handle) Then Raise New cURLException(Sender.LastError)
-		  //If Not Sender.SetOption(libcURL.Opts.OPENSOCKETFUNCTION, AddressOf OpenCallback) Then Raise New cURLException(Sender.LastError)
+		  #If RAISE_CREATE_SOCKET Then
+		    If Not Sender.SetOption(libcURL.Opts.OPENSOCKETDATA, Sender.Handle) Then Raise New cURLException(Sender.LastError)
+		    If Not Sender.SetOption(libcURL.Opts.OPENSOCKETFUNCTION, AddressOf OpenCallback) Then Raise New cURLException(Sender.LastError)
+		  #endif
 		  
 		  If libcURL.Version.SSL Then
 		    If Not Sender.SetOption(libcURL.Opts.SSL_CTX_DATA, Sender.Handle) Then Raise New cURLException(Sender.LastError)
@@ -365,11 +378,11 @@ Class cURLItem
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Shared Function OpenCallback(UserData As Integer, SocketType As Integer, Socket As Ptr) As Ptr
+		Private Shared Function OpenCallback(UserData As Integer, SocketType As Integer, Socket As Ptr) As Integer
 		  ' This method is invoked by libcURL. DO NOT CALL THIS METHOD
 		  
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl = Nil Then Return Nil
+		  If curl = Nil Then Return libcURL.Opts.CURL_SOCKET_BAD
 		  Return cURLItem(curl.Value).curlOpen(SocketType, Socket)
 		  
 		  Break ' UserData does not refer to a valid instance!
@@ -688,7 +701,7 @@ Class cURLItem
 
 
 	#tag Hook, Flags = &h0
-		Event CreateSocket(SocketType As Integer, Address As Ptr) As Ptr
+		Event CreateSocket() As SocketCore
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
@@ -926,6 +939,16 @@ Class cURLItem
 	#tag Constant, Name = GNUTLS_MAX_ALGORITHM_NUM, Type = Double, Dynamic = False, Default = \"16", Scope = Private
 	#tag EndConstant
 
+	#tag Constant, Name = RAISE_CREATE_SOCKET, Type = Boolean, Dynamic = False, Default = \"False", Scope = Private
+	#tag EndConstant
+
+
+	#tag Structure, Name = curl_sockaddr, Flags = &h21
+		family As Integer
+		  socktype As Integer
+		  protocol As Integer
+		addrlen As UInt32
+	#tag EndStructure
 
 	#tag Structure, Name = SSL_CTX, Flags = &h21
 		Method As SSL_METHOD
