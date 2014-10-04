@@ -28,8 +28,10 @@ Protected Class curl_slist
 
 	#tag Method, Flags = &h0
 		Sub Destructor()
-		  If List <> Nil Then libcURL.curl_slist_free_all(List)
-		  libcURL.curl_global_cleanup()
+		  If libcURL.IsAvailable Then
+		    If List <> Nil Then libcURL.curl_slist_free_all(List)
+		    libcURL.curl_global_cleanup()
+		  End If
 		End Sub
 	#tag EndMethod
 
