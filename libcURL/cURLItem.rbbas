@@ -520,7 +520,7 @@ Class cURLItem
 		  ' a particular option (except Nil,) however it does enforce type safety of the value and will raise
 		  ' an exception if an unsupported type is passed.
 		  
-		  ' NewValue may be a Boolean, Integer, Ptr, String, MemoryBlock, FolderItem, libcURL.Form, libcURL.Headers,
+		  ' NewValue may be a Boolean, Integer, Ptr, String, MemoryBlock, FolderItem, libcURL.Form, libcURL.curl_slist,
 		  ' or a Delegate matching cURLCallback, cURLCloseCallback, cURLDebugCallback, cURLOpenCallback, cURLProgressCallback,
 		  ' or cURLSSLInitCallback. Passing a Nil object will raise an exception unless the option explicitly accepts NULL.
 		  
