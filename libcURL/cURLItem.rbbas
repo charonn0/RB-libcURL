@@ -41,7 +41,7 @@ Class cURLItem
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_init.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Constructor
 		  
-		  If Not libcURL.IsAvailable Then 
+		  If Not libcURL.IsAvailable Then
 		    Dim err As New PlatformNotSupportedException
 		    err.Message = "libcURL is not available."
 		    Raise err
@@ -548,7 +548,9 @@ Class cURLItem
 		      MarshalledValue = Nil
 		    Else
 		      ' for all other option numbers reject NULL values.
-		      Raise New NilObjectException
+		      Dim err As New NilObjectException
+		      err.Message = "cURL option number 0x" + Hex(OptionNumber) + " may not be set to null."
+		      Raise err
 		    End Select
 		    
 		  Case Variant.TypeBoolean

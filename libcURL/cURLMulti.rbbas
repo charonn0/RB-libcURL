@@ -182,7 +182,9 @@ Class cURLMulti
 		      MarshalledValue = Nil
 		    Else
 		      ' for all other option numbers reject NULL values.
-		      Raise New NilObjectException
+		      Dim err As New NilObjectException
+		      err.Message = "cURL option number 0x" + Hex(OptionNumber) + " may not be set to null."
+		      Raise err
 		    End Select
 		    
 		  Case Variant.TypeBoolean
