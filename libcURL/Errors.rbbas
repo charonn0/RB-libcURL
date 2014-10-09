@@ -33,13 +33,7 @@ Protected Module Errors
 	#tag Constant, Name = COULDNT_RESOLVE_PROXY, Type = Double, Dynamic = False, Default = \"5", Scope = Protected
 	#tag EndConstant
 
-	#tag Constant, Name = EVERYTHINGS_PEACHY, Type = Double, Dynamic = False, Default = \"0", Scope = Protected
-	#tag EndConstant
-
 	#tag Constant, Name = FAILED_INIT, Type = Double, Dynamic = False, Default = \"2", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = FEATURE_NOT_AVAILABLE, Type = Double, Dynamic = False, Default = \"4", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = FILESIZE_EXCEEDED, Type = Double, Dynamic = False, Default = \"63", Scope = Protected
@@ -111,10 +105,13 @@ Protected Module Errors
 	#tag Constant, Name = LOGIN_DENIED, Type = Double, Dynamic = False, Default = \"67", Scope = Protected
 	#tag EndConstant
 
-	#tag Constant, Name = MALFORMED, Type = Double, Dynamic = False, Default = \"3", Scope = Protected
+	#tag Constant, Name = NOT_BUILT_IN, Type = Double, Dynamic = False, Default = \"4", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = NO_TARGET, Type = Double, Dynamic = False, Default = \"-2", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = OK, Type = Double, Dynamic = False, Default = \"0", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = OUT_OF_MEMORY, Type = Double, Dynamic = False, Default = \"27", Scope = Protected
@@ -229,6 +226,9 @@ Protected Module Errors
 	#tag EndConstant
 
 	#tag Constant, Name = UPLOAD_FAILED, Type = Double, Dynamic = False, Default = \"25", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = URL_MALFORMAT, Type = Double, Dynamic = False, Default = \"3", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = USE_SSL_FAILED, Type = Double, Dynamic = False, Default = \"64", Scope = Protected
