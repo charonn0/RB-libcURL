@@ -133,9 +133,9 @@ Class cURLMulti
 		          If oi(x).Name = "mLastError" Then oi(x).Value(curl) = Integer(msg.Data)
 		        Next
 		        
-		        If Not RaiseEvent TransferComplete(curl) Then ' Return True to prevent the cURLItem from being removed.
-		          Call Me.RemoveItem(curl)
-		        End If
+		        Call Me.RemoveItem(curl)
+		        RaiseEvent TransferComplete(curl)
+		        
 		      End If
 		    Loop Until c = 0
 		  End If
@@ -229,7 +229,7 @@ Class cURLMulti
 
 
 	#tag Hook, Flags = &h0
-		Event TransferComplete(easyitem As cURLItem) As Boolean
+		Event TransferComplete(easyitem As cURLItem)
 	#tag EndHook
 
 

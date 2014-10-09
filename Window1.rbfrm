@@ -599,7 +599,7 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Function TransferCompleteHandler(Sender As cURLMulti, easyitem As cURLItem) As Boolean
+		Private Sub TransferCompleteHandler(Sender As cURLMulti, easyitem As cURLItem)
 		  #pragma Unused Sender
 		  CurlInfo.AddRow("EFFECTIVE_URL", easyitem.GetInfo(libcURL.Info.EFFECTIVE_URL))
 		  CurlInfo.AddRow("REDIRECT_COUNT", Str(easyitem.GetInfo(libcURL.Info.REDIRECT_COUNT).Int32Value))
@@ -616,7 +616,7 @@ End
 		    SaveTo.Close
 		    SaveTo = Nil
 		  End If
-		End Function
+		End Sub
 	#tag EndMethod
 
 
