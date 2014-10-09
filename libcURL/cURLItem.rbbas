@@ -377,6 +377,12 @@ Class cURLItem
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Attributes( hidden )  Sub LastError(Assigns NewErr As Integer)
+		  mLastError = NewErr
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h21
 		Private Shared Function OpenCallback(UserData As Integer, SocketType As Integer, Socket As Ptr) As Integer
 		  ' This method is invoked by libcURL. DO NOT CALL THIS METHOD

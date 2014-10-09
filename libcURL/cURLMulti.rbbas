@@ -127,13 +127,14 @@ Class cURLMulti
 		        msg.StringValue(TargetLittleEndian) = mb.StringValue(0, msg.Size)
 		        Dim curl As cURLItem = Instances.Value(msg.easy_handle)
 		        
-		        ' msg.Data is the last error code for the easy handle
+		        Call Me.RemoveItem(curl)
+		        
+		        msg.Data is the last error code for the easy handle
 		        Dim oi() As Introspection.PropertyInfo = Introspection.GetType(curl).GetProperties
 		        For x As Integer = 0 To UBound(oi)
 		          If oi(x).Name = "mLastError" Then oi(x).Value(curl) = Integer(msg.Data)
 		        Next
 		        
-		        Call Me.RemoveItem(curl)
 		        RaiseEvent TransferComplete(curl)
 		        
 		      End If

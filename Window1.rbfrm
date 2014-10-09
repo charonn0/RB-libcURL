@@ -601,6 +601,8 @@ End
 	#tag Method, Flags = &h21
 		Private Sub TransferCompleteHandler(Sender As cURLMulti, easyitem As cURLItem)
 		  #pragma Unused Sender
+		  Dim err As Integer = easyitem.LastError
+		  MsgBox(easyitem.URL + " completed with error code: " + Hex(err) + " (" + libcURL.FormatError(err) + ").")
 		  CurlInfo.AddRow("EFFECTIVE_URL", easyitem.GetInfo(libcURL.Info.EFFECTIVE_URL))
 		  CurlInfo.AddRow("REDIRECT_COUNT", Str(easyitem.GetInfo(libcURL.Info.REDIRECT_COUNT).Int32Value))
 		  CurlInfo.AddRow("REDIRECT_URL", easyitem.GetInfo(libcURL.Info.REDIRECT_URL))
@@ -611,7 +613,7 @@ End
 		  CurlInfo.AddRow("OS_ERRNO", Str(easyitem.GetInfo(libcURL.Info.OS_ERRNO).Int32Value))
 		  CurlInfo.AddRow("SIZE_DOWNLOAD", Str(easyitem.GetInfo(libcURL.Info.SIZE_DOWNLOAD).Int32Value))
 		  CurlInfo.AddRow("SIZE_UPLOAD", Str(easyitem.GetInfo(libcURL.Info.SIZE_UPLOAD).Int32Value))
-		  MsgBox(easyitem.URL + " complete.")
+		  
 		  If SaveTo <> Nil Then
 		    SaveTo.Close
 		    SaveTo = Nil
