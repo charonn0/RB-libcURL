@@ -129,7 +129,7 @@ Class cURLMulti
 		        
 		        Call Me.RemoveItem(curl)
 		        
-		        msg.Data is the last error code for the easy handle
+		        'msg.Data is the last error code for the easy handle
 		        Dim oi() As Introspection.PropertyInfo = Introspection.GetType(curl).GetProperties
 		        For x As Integer = 0 To UBound(oi)
 		          If oi(x).Name = "mLastError" Then oi(x).Value(curl) = Integer(msg.Data)
