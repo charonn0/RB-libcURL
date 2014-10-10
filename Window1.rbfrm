@@ -465,7 +465,9 @@ Begin Window Window1
       LockTop         =   True
       Maximum         =   100
       Scope           =   0
+      TabIndex        =   4
       TabPanelIndex   =   0
+      TabStop         =   True
       Top             =   543
       Value           =   0
       Visible         =   True
@@ -593,8 +595,7 @@ End
 		  #pragma Unused Sender
 		  #pragma Unused ultotal
 		  #pragma Unused ulnow
-		  ProgressBar1.Maximum = dlTotal
-		  ProgressBar1.Value = dlnow
+		  ProgressBar1.Value = dlnow * 100 / dlTotal
 		End Function
 	#tag EndMethod
 
