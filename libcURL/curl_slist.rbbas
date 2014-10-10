@@ -6,8 +6,11 @@ Protected Class curl_slist
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_slist_append.html
 		  
-		  List = curl_slist_append(List, s)
-		  Return List <> Nil
+		  Dim p As Ptr = curl_slist_append(List, s)
+		  If p <> Nil Then
+		    List = p
+		    Return True
+		  End If
 		End Function
 	#tag EndMethod
 
