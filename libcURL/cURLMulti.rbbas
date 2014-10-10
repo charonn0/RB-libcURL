@@ -10,7 +10,7 @@ Class cURLMulti
 		  
 		  mLastError = curl_multi_add_handle(mHandle, Item.Handle)
 		  If mLastError = 0 Then
-		    If Instances.Count > 0 Then PerformTimer.Mode = Timer.ModeMultiple
+		    'If Instances.Count > 0 Then PerformTimer.Mode = Timer.ModeMultiple
 		    Instances.Value(Item.Handle) = Item
 		    Return True
 		  End If
