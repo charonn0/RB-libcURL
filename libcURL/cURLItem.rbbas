@@ -554,9 +554,11 @@ Class cURLItem
 		    End Select
 		    
 		  Case Variant.TypeBoolean
-		    mb = New MemoryBlock(1)
-		    mb.BooleanValue(0) = NewValue.BooleanValue
-		    MarshalledValue = mb
+		    If NewValue.BooleanValue Then
+		      Return Me.SetOption(OptionNumber, 1)
+		    Else
+		      Return Me.SetOption(OptionNumber, 0)
+		    End If
 		    
 		  Case Variant.TypePtr, Variant.TypeInteger
 		    MarshalledValue = NewValue.PtrValue
