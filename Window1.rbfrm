@@ -38,11 +38,11 @@ Begin Window Window1
       InitialParent   =   ""
       Italic          =   ""
       Left            =   473
-      LockBottom      =   ""
+      LockBottom      =   True
       LockedInPosition=   False
       LockLeft        =   True
       LockRight       =   ""
-      LockTop         =   True
+      LockTop         =   False
       Scope           =   0
       TabIndex        =   0
       TabPanelIndex   =   0
@@ -54,328 +54,6 @@ Begin Window Window1
       Underline       =   ""
       Visible         =   True
       Width           =   67
-   End
-   Begin TabPanel TabPanel1
-      AutoDeactivate  =   True
-      Bold            =   ""
-      Enabled         =   True
-      Height          =   543
-      HelpTag         =   ""
-      Index           =   -2147483648
-      InitialParent   =   ""
-      Italic          =   ""
-      Left            =   0
-      LockBottom      =   ""
-      LockedInPosition=   False
-      LockLeft        =   True
-      LockRight       =   ""
-      LockTop         =   True
-      Panels          =   ""
-      Scope           =   0
-      SmallTabs       =   ""
-      TabDefinition   =   "Main\rDebug and Headers"
-      TabIndex        =   2
-      TabPanelIndex   =   0
-      TabStop         =   True
-      TextFont        =   "System"
-      TextSize        =   0
-      TextUnit        =   0
-      Top             =   0
-      Underline       =   ""
-      Value           =   1
-      Visible         =   True
-      Width           =   879
-      Begin Listbox Headers
-         AutoDeactivate  =   True
-         AutoHideScrollbars=   True
-         Bold            =   ""
-         Border          =   True
-         ColumnCount     =   2
-         ColumnsResizable=   True
-         ColumnWidths    =   ""
-         DataField       =   ""
-         DataSource      =   ""
-         DefaultRowHeight=   -1
-         Enabled         =   True
-         EnableDrag      =   ""
-         EnableDragReorder=   ""
-         GridLinesHorizontal=   0
-         GridLinesVertical=   0
-         HasHeading      =   True
-         HeadingIndex    =   -1
-         Height          =   265
-         HelpTag         =   ""
-         Hierarchical    =   ""
-         Index           =   -2147483648
-         InitialParent   =   "TabPanel1"
-         InitialValue    =   "Header name	Header value"
-         Italic          =   ""
-         Left            =   9
-         LockBottom      =   ""
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   ""
-         LockTop         =   True
-         RequiresSelection=   ""
-         Scope           =   0
-         ScrollbarHorizontal=   ""
-         ScrollBarVertical=   True
-         SelectionType   =   0
-         TabIndex        =   0
-         TabPanelIndex   =   2
-         TabStop         =   True
-         TextFont        =   "System"
-         TextSize        =   0
-         TextUnit        =   0
-         Top             =   28
-         Underline       =   ""
-         UseFocusRing    =   True
-         Visible         =   True
-         Width           =   313
-         _ScrollWidth    =   -1
-      End
-      Begin Listbox Debug
-         AutoDeactivate  =   True
-         AutoHideScrollbars=   True
-         Bold            =   ""
-         Border          =   True
-         ColumnCount     =   2
-         ColumnsResizable=   True
-         ColumnWidths    =   "10%"
-         DataField       =   ""
-         DataSource      =   ""
-         DefaultRowHeight=   -1
-         Enabled         =   True
-         EnableDrag      =   ""
-         EnableDragReorder=   ""
-         GridLinesHorizontal=   0
-         GridLinesVertical=   0
-         HasHeading      =   True
-         HeadingIndex    =   -1
-         Height          =   265
-         HelpTag         =   ""
-         Hierarchical    =   ""
-         Index           =   -2147483648
-         InitialParent   =   "TabPanel1"
-         InitialValue    =   "Type	Debug Message"
-         Italic          =   ""
-         Left            =   334
-         LockBottom      =   ""
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   ""
-         LockTop         =   True
-         RequiresSelection=   ""
-         Scope           =   0
-         ScrollbarHorizontal=   ""
-         ScrollBarVertical=   True
-         SelectionType   =   0
-         TabIndex        =   1
-         TabPanelIndex   =   2
-         TabStop         =   True
-         TextFont        =   "System"
-         TextSize        =   0
-         TextUnit        =   0
-         Top             =   28
-         Underline       =   ""
-         UseFocusRing    =   True
-         Visible         =   True
-         Width           =   536
-         _ScrollWidth    =   -1
-      End
-      Begin Listbox Protocols
-         AutoDeactivate  =   True
-         AutoHideScrollbars=   True
-         Bold            =   ""
-         Border          =   True
-         ColumnCount     =   1
-         ColumnsResizable=   ""
-         ColumnWidths    =   ""
-         DataField       =   ""
-         DataSource      =   ""
-         DefaultRowHeight=   -1
-         Enabled         =   True
-         EnableDrag      =   ""
-         EnableDragReorder=   ""
-         GridLinesHorizontal=   0
-         GridLinesVertical=   0
-         HasHeading      =   True
-         HeadingIndex    =   -1
-         Height          =   226
-         HelpTag         =   ""
-         Hierarchical    =   ""
-         Index           =   -2147483648
-         InitialParent   =   "TabPanel1"
-         InitialValue    =   "Supported Protocols"
-         Italic          =   ""
-         Left            =   9
-         LockBottom      =   ""
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   ""
-         LockTop         =   True
-         RequiresSelection=   ""
-         Scope           =   0
-         ScrollbarHorizontal=   True
-         ScrollBarVertical=   True
-         SelectionType   =   0
-         TabIndex        =   2
-         TabPanelIndex   =   2
-         TabStop         =   True
-         TextFont        =   "System"
-         TextSize        =   0
-         TextUnit        =   0
-         Top             =   305
-         Underline       =   ""
-         UseFocusRing    =   True
-         Visible         =   True
-         Width           =   239
-         _ScrollWidth    =   -1
-      End
-      Begin TextArea Output
-         AcceptTabs      =   ""
-         Alignment       =   0
-         AutoDeactivate  =   True
-         AutomaticallyCheckSpelling=   True
-         BackColor       =   16777215
-         Bold            =   ""
-         Border          =   True
-         DataField       =   ""
-         DataSource      =   ""
-         Enabled         =   True
-         Format          =   ""
-         Height          =   513
-         HelpTag         =   ""
-         HideSelection   =   True
-         Index           =   -2147483648
-         InitialParent   =   "TabPanel1"
-         Italic          =   ""
-         Left            =   9
-         LimitText       =   0
-         LockBottom      =   True
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   True
-         LockTop         =   False
-         Mask            =   ""
-         Multiline       =   True
-         ReadOnly        =   ""
-         Scope           =   0
-         ScrollbarHorizontal=   ""
-         ScrollbarVertical=   True
-         Styled          =   True
-         TabIndex        =   0
-         TabPanelIndex   =   1
-         TabStop         =   True
-         Text            =   ""
-         TextColor       =   0
-         TextFont        =   "System"
-         TextSize        =   0
-         TextUnit        =   0
-         Top             =   30
-         Underline       =   ""
-         UseFocusRing    =   True
-         Visible         =   True
-         Width           =   861
-      End
-      Begin Listbox CurlInfo
-         AutoDeactivate  =   True
-         AutoHideScrollbars=   True
-         Bold            =   ""
-         Border          =   True
-         ColumnCount     =   2
-         ColumnsResizable=   ""
-         ColumnWidths    =   ""
-         DataField       =   ""
-         DataSource      =   ""
-         DefaultRowHeight=   -1
-         Enabled         =   True
-         EnableDrag      =   ""
-         EnableDragReorder=   ""
-         GridLinesHorizontal=   0
-         GridLinesVertical=   0
-         HasHeading      =   True
-         HeadingIndex    =   -1
-         Height          =   226
-         HelpTag         =   ""
-         Hierarchical    =   ""
-         Index           =   -2147483648
-         InitialParent   =   "TabPanel1"
-         InitialValue    =   "Info Name	Last request Value"
-         Italic          =   ""
-         Left            =   454
-         LockBottom      =   ""
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   ""
-         LockTop         =   True
-         RequiresSelection=   ""
-         Scope           =   0
-         ScrollbarHorizontal=   True
-         ScrollBarVertical=   True
-         SelectionType   =   0
-         TabIndex        =   3
-         TabPanelIndex   =   2
-         TabStop         =   True
-         TextFont        =   "System"
-         TextSize        =   0
-         TextUnit        =   0
-         Top             =   305
-         Underline       =   ""
-         UseFocusRing    =   True
-         Visible         =   True
-         Width           =   416
-         _ScrollWidth    =   -1
-      End
-      Begin Listbox Features
-         AutoDeactivate  =   True
-         AutoHideScrollbars=   True
-         Bold            =   ""
-         Border          =   True
-         ColumnCount     =   1
-         ColumnsResizable=   ""
-         ColumnWidths    =   ""
-         DataField       =   ""
-         DataSource      =   ""
-         DefaultRowHeight=   -1
-         Enabled         =   True
-         EnableDrag      =   ""
-         EnableDragReorder=   ""
-         GridLinesHorizontal=   0
-         GridLinesVertical=   0
-         HasHeading      =   True
-         HeadingIndex    =   -1
-         Height          =   226
-         HelpTag         =   ""
-         Hierarchical    =   ""
-         Index           =   -2147483648
-         InitialParent   =   "TabPanel1"
-         InitialValue    =   "Available Features"
-         Italic          =   ""
-         Left            =   260
-         LockBottom      =   ""
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   ""
-         LockTop         =   True
-         RequiresSelection=   ""
-         Scope           =   0
-         ScrollbarHorizontal=   True
-         ScrollBarVertical=   True
-         SelectionType   =   0
-         TabIndex        =   4
-         TabPanelIndex   =   2
-         TabStop         =   True
-         TextFont        =   "System"
-         TextSize        =   0
-         TextUnit        =   0
-         Top             =   305
-         Underline       =   ""
-         UseFocusRing    =   True
-         Visible         =   True
-         Width           =   182
-         _ScrollWidth    =   -1
-      End
    End
    Begin TextField TextField1
       AcceptTabs      =   ""
@@ -396,11 +74,11 @@ Begin Window Window1
       Italic          =   ""
       Left            =   0
       LimitText       =   0
-      LockBottom      =   ""
+      LockBottom      =   True
       LockedInPosition=   False
       LockLeft        =   True
       LockRight       =   ""
-      LockTop         =   True
+      LockTop         =   False
       Mask            =   ""
       Password        =   ""
       ReadOnly        =   ""
@@ -417,7 +95,7 @@ Begin Window Window1
       Underline       =   ""
       UseFocusRing    =   True
       Visible         =   True
-      Width           =   469
+      Width           =   371
    End
    Begin PushButton PushButton2
       AutoDeactivate  =   True
@@ -433,11 +111,11 @@ Begin Window Window1
       InitialParent   =   ""
       Italic          =   ""
       Left            =   545
-      LockBottom      =   ""
+      LockBottom      =   True
       LockedInPosition=   False
       LockLeft        =   True
       LockRight       =   ""
-      LockTop         =   True
+      LockTop         =   False
       Scope           =   0
       TabIndex        =   4
       TabPanelIndex   =   0
@@ -457,21 +135,373 @@ Begin Window Window1
       HelpTag         =   ""
       Index           =   -2147483648
       InitialParent   =   ""
-      Left            =   624
+      Left            =   618
+      LockBottom      =   True
+      LockedInPosition=   False
+      LockLeft        =   True
+      LockRight       =   True
+      LockTop         =   False
+      Maximum         =   100
+      Scope           =   0
+      TabPanelIndex   =   0
+      Top             =   543
+      Value           =   0
+      Visible         =   True
+      Width           =   252
+   End
+   Begin PushButton PushButton3
+      AutoDeactivate  =   True
+      Bold            =   ""
+      ButtonStyle     =   0
+      Cancel          =   ""
+      Caption         =   "Set Form Data"
+      Default         =   ""
+      Enabled         =   True
+      Height          =   22
+      HelpTag         =   ""
+      Index           =   -2147483648
+      InitialParent   =   ""
+      Italic          =   ""
+      Left            =   377
+      LockBottom      =   True
+      LockedInPosition=   False
+      LockLeft        =   True
+      LockRight       =   ""
+      LockTop         =   False
+      Scope           =   0
+      TabIndex        =   5
+      TabPanelIndex   =   0
+      TabStop         =   True
+      TextFont        =   "System"
+      TextSize        =   0
+      TextUnit        =   0
+      Top             =   543
+      Underline       =   ""
+      Visible         =   True
+      Width           =   91
+   End
+   Begin Listbox CurlInfo
+      AutoDeactivate  =   True
+      AutoHideScrollbars=   True
+      Bold            =   ""
+      Border          =   True
+      ColumnCount     =   2
+      ColumnsResizable=   True
+      ColumnWidths    =   "40%"
+      DataField       =   ""
+      DataSource      =   ""
+      DefaultRowHeight=   -1
+      Enabled         =   True
+      EnableDrag      =   ""
+      EnableDragReorder=   ""
+      GridLinesHorizontal=   0
+      GridLinesVertical=   0
+      HasHeading      =   True
+      HeadingIndex    =   -1
+      Height          =   179
+      HelpTag         =   ""
+      Hierarchical    =   ""
+      Index           =   -2147483648
+      InitialParent   =   ""
+      InitialValue    =   "Info Name	Last request Value"
+      Italic          =   ""
+      Left            =   0
+      LockBottom      =   False
+      LockedInPosition=   False
+      LockLeft        =   True
+      LockRight       =   False
+      LockTop         =   True
+      RequiresSelection=   ""
+      Scope           =   0
+      ScrollbarHorizontal=   True
+      ScrollBarVertical=   True
+      SelectionType   =   0
+      TabIndex        =   6
+      TabPanelIndex   =   0
+      TabStop         =   True
+      TextFont        =   "System"
+      TextSize        =   0
+      TextUnit        =   0
+      Top             =   229
+      Underline       =   ""
+      UseFocusRing    =   True
+      Visible         =   True
+      Width           =   438
+      _ScrollWidth    =   -1
+   End
+   Begin Listbox Features
+      AutoDeactivate  =   True
+      AutoHideScrollbars=   True
+      Bold            =   ""
+      Border          =   True
+      ColumnCount     =   1
+      ColumnsResizable=   ""
+      ColumnWidths    =   ""
+      DataField       =   ""
+      DataSource      =   ""
+      DefaultRowHeight=   -1
+      Enabled         =   True
+      EnableDrag      =   ""
+      EnableDragReorder=   ""
+      GridLinesHorizontal=   0
+      GridLinesVertical=   0
+      HasHeading      =   True
+      HeadingIndex    =   -1
+      Height          =   226
+      HelpTag         =   ""
+      Hierarchical    =   ""
+      Index           =   -2147483648
+      InitialParent   =   ""
+      InitialValue    =   "Available Features"
+      Italic          =   ""
+      Left            =   125
       LockBottom      =   ""
       LockedInPosition=   False
       LockLeft        =   True
       LockRight       =   ""
       LockTop         =   True
-      Maximum         =   100
+      RequiresSelection=   ""
       Scope           =   0
-      TabIndex        =   4
+      ScrollbarHorizontal=   True
+      ScrollBarVertical=   True
+      SelectionType   =   0
+      TabIndex        =   7
       TabPanelIndex   =   0
       TabStop         =   True
-      Top             =   543
-      Value           =   0
+      TextFont        =   "System"
+      TextSize        =   0
+      TextUnit        =   0
+      Top             =   0
+      Underline       =   ""
+      UseFocusRing    =   True
       Visible         =   True
-      Width           =   246
+      Width           =   110
+      _ScrollWidth    =   -1
+   End
+   Begin Listbox Protocols
+      AutoDeactivate  =   True
+      AutoHideScrollbars=   True
+      Bold            =   ""
+      Border          =   True
+      ColumnCount     =   1
+      ColumnsResizable=   ""
+      ColumnWidths    =   ""
+      DataField       =   ""
+      DataSource      =   ""
+      DefaultRowHeight=   -1
+      Enabled         =   True
+      EnableDrag      =   ""
+      EnableDragReorder=   ""
+      GridLinesHorizontal=   0
+      GridLinesVertical=   0
+      HasHeading      =   True
+      HeadingIndex    =   -1
+      Height          =   226
+      HelpTag         =   ""
+      Hierarchical    =   ""
+      Index           =   -2147483648
+      InitialParent   =   ""
+      InitialValue    =   "Supported Protocols"
+      Italic          =   ""
+      Left            =   0
+      LockBottom      =   ""
+      LockedInPosition=   False
+      LockLeft        =   True
+      LockRight       =   ""
+      LockTop         =   True
+      RequiresSelection=   ""
+      Scope           =   0
+      ScrollbarHorizontal=   True
+      ScrollBarVertical=   True
+      SelectionType   =   0
+      TabIndex        =   8
+      TabPanelIndex   =   0
+      TabStop         =   True
+      TextFont        =   "System"
+      TextSize        =   0
+      TextUnit        =   0
+      Top             =   0
+      Underline       =   ""
+      UseFocusRing    =   True
+      Visible         =   True
+      Width           =   122
+      _ScrollWidth    =   -1
+   End
+   Begin CheckBox CheckBox1
+      AutoDeactivate  =   True
+      Bold            =   ""
+      Caption         =   "Suppress data_in and data_out messages"
+      DataField       =   ""
+      DataSource      =   ""
+      Enabled         =   True
+      Height          =   20
+      HelpTag         =   ""
+      Index           =   -2147483648
+      InitialParent   =   ""
+      Italic          =   ""
+      Left            =   239
+      LockBottom      =   ""
+      LockedInPosition=   False
+      LockLeft        =   True
+      LockRight       =   ""
+      LockTop         =   True
+      Scope           =   0
+      State           =   1
+      TabIndex        =   9
+      TabPanelIndex   =   0
+      TabStop         =   True
+      TextFont        =   "System"
+      TextSize        =   0
+      TextUnit        =   0
+      Top             =   204
+      Underline       =   ""
+      Value           =   True
+      Visible         =   True
+      Width           =   356
+   End
+   Begin Listbox Debug
+      AutoDeactivate  =   True
+      AutoHideScrollbars=   True
+      Bold            =   ""
+      Border          =   True
+      ColumnCount     =   2
+      ColumnsResizable=   True
+      ColumnWidths    =   "10%"
+      DataField       =   ""
+      DataSource      =   ""
+      DefaultRowHeight=   -1
+      Enabled         =   True
+      EnableDrag      =   ""
+      EnableDragReorder=   ""
+      GridLinesHorizontal=   0
+      GridLinesVertical=   0
+      HasHeading      =   True
+      HeadingIndex    =   -1
+      Height          =   200
+      HelpTag         =   ""
+      Hierarchical    =   ""
+      Index           =   -2147483648
+      InitialParent   =   ""
+      InitialValue    =   "Type	Debug Message"
+      Italic          =   ""
+      Left            =   238
+      LockBottom      =   False
+      LockedInPosition=   False
+      LockLeft        =   True
+      LockRight       =   True
+      LockTop         =   True
+      RequiresSelection=   ""
+      Scope           =   0
+      ScrollbarHorizontal=   ""
+      ScrollBarVertical=   True
+      SelectionType   =   0
+      TabIndex        =   10
+      TabPanelIndex   =   0
+      TabStop         =   True
+      TextFont        =   "System"
+      TextSize        =   0
+      TextUnit        =   0
+      Top             =   0
+      Underline       =   ""
+      UseFocusRing    =   True
+      Visible         =   True
+      Width           =   641
+      _ScrollWidth    =   -1
+   End
+   Begin Listbox Headers
+      AutoDeactivate  =   True
+      AutoHideScrollbars=   True
+      Bold            =   ""
+      Border          =   True
+      ColumnCount     =   2
+      ColumnsResizable=   True
+      ColumnWidths    =   ""
+      DataField       =   ""
+      DataSource      =   ""
+      DefaultRowHeight=   -1
+      Enabled         =   True
+      EnableDrag      =   ""
+      EnableDragReorder=   ""
+      GridLinesHorizontal=   0
+      GridLinesVertical=   0
+      HasHeading      =   True
+      HeadingIndex    =   -1
+      Height          =   179
+      HelpTag         =   ""
+      Hierarchical    =   ""
+      Index           =   -2147483648
+      InitialParent   =   ""
+      InitialValue    =   "Header name	Header value"
+      Italic          =   ""
+      Left            =   441
+      LockBottom      =   False
+      LockedInPosition=   False
+      LockLeft        =   True
+      LockRight       =   True
+      LockTop         =   True
+      RequiresSelection=   ""
+      Scope           =   0
+      ScrollbarHorizontal=   ""
+      ScrollBarVertical=   True
+      SelectionType   =   0
+      TabIndex        =   11
+      TabPanelIndex   =   0
+      TabStop         =   True
+      TextFont        =   "System"
+      TextSize        =   0
+      TextUnit        =   0
+      Top             =   229
+      Underline       =   ""
+      UseFocusRing    =   True
+      Visible         =   True
+      Width           =   438
+      _ScrollWidth    =   -1
+   End
+   Begin TextArea Output
+      AcceptTabs      =   ""
+      Alignment       =   0
+      AutoDeactivate  =   True
+      AutomaticallyCheckSpelling=   True
+      BackColor       =   16777215
+      Bold            =   ""
+      Border          =   True
+      DataField       =   ""
+      DataSource      =   ""
+      Enabled         =   True
+      Format          =   ""
+      Height          =   124
+      HelpTag         =   ""
+      HideSelection   =   True
+      Index           =   -2147483648
+      InitialParent   =   ""
+      Italic          =   ""
+      Left            =   0
+      LimitText       =   0
+      LockBottom      =   True
+      LockedInPosition=   False
+      LockLeft        =   True
+      LockRight       =   True
+      LockTop         =   True
+      Mask            =   ""
+      Multiline       =   True
+      ReadOnly        =   ""
+      Scope           =   0
+      ScrollbarHorizontal=   ""
+      ScrollbarVertical=   True
+      Styled          =   True
+      TabIndex        =   12
+      TabPanelIndex   =   0
+      TabStop         =   True
+      Text            =   ""
+      TextColor       =   0
+      TextFont        =   "System"
+      TextSize        =   0
+      TextUnit        =   0
+      Top             =   412
+      Underline       =   ""
+      UseFocusRing    =   True
+      Visible         =   True
+      Width           =   879
    End
 End
 #tag EndWindow
@@ -517,6 +547,7 @@ End
 		Private Sub DebugMessageHandler(Sender As cURLItem, MessageType As libcURL.curl_infotype, data As String)
 		  'If MessageType <> libcURL.cURL_InfoType.Text Then
 		  #pragma Unused Sender
+		  If CheckBox1.Value And (MessageType = libcURL.curl_infotype.data_in Or MessageType = libcURL.curl_infotype.data_out) Then Return
 		  Dim ty As String
 		  Select Case MessageType
 		  Case libcURL.curl_infotype.data_in
@@ -566,7 +597,9 @@ End
 		  AddHandler curlget.HeaderReceived, WeakAddressOf HeaderReceivedHandler
 		  AddHandler curlget.Progress, WeakAddressOf ProgressHandler
 		  
+		  If FormValue <> Nil Then Call curlget.SetOption(libcURL.Opts.HTTPPOST, FormValue)
 		  Call curlget.SetOption(libcURL.Opts.FOLLOWLOCATION, True) ' Follow redirects automatically
+		  Call curlget.SetOption(libcURL.Opts.FAILONERROR, True) ' fail on server errors
 		  curlget.CA_ListFile = CA_File ' for SSL/TLS connections we must specify a list of acceptable certificate authorities
 		  curlget.URL = TextField1.Text
 		  Call multi.AddItem(curlget) ' by using a multistack a RB app will remain responsive during the transfer.
@@ -592,10 +625,12 @@ End
 
 	#tag Method, Flags = &h21
 		Private Function ProgressHandler(Sender As cURLItem, dlTotal As UInt64, dlnow As UInt64, ultotal As UInt64, ulnow As UInt64) As Integer
-		  #pragma Unused Sender
-		  #pragma Unused ultotal
-		  #pragma Unused ulnow
-		  ProgressBar1.Value = dlnow * 100 / dlTotal
+		  If ultotal > 0 Then
+		    ProgressBar1.Value = ulnow * 100 / ulTotal
+		  ElseIf dlTotal > 0 Then
+		    ProgressBar1.Value = dlnow * 100 / dlTotal
+		  End If
+		  
 		End Function
 	#tag EndMethod
 
@@ -603,7 +638,7 @@ End
 		Private Sub TransferCompleteHandler(Sender As cURLMulti, easyitem As cURLItem)
 		  #pragma Unused Sender
 		  Dim err As Integer = easyitem.LastError
-		  MsgBox(easyitem.URL + " completed with error code: " + Hex(err) + " (" + libcURL.FormatError(err) + ").")
+		  MsgBox(easyitem.URL + " completed with error code: " + Str(err) + " (" + libcURL.FormatError(err) + ").")
 		  CurlInfo.AddRow("EFFECTIVE_URL", easyitem.GetInfo(libcURL.Info.EFFECTIVE_URL))
 		  CurlInfo.AddRow("REDIRECT_COUNT", Str(easyitem.GetInfo(libcURL.Info.REDIRECT_COUNT).Int32Value))
 		  CurlInfo.AddRow("REDIRECT_URL", easyitem.GetInfo(libcURL.Info.REDIRECT_URL))
@@ -628,6 +663,10 @@ End
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
+		Private FormValue As libcURL.Form
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
 		Private multi As cURLMulti
 	#tag EndProperty
 
@@ -649,14 +688,22 @@ End
 		End Sub
 	#tag EndEvent
 #tag EndEvents
-#tag Events Protocols
+#tag Events PushButton2
 	#tag Event
-		Sub Open()
-		  Dim l() As String = libcURL.Version.Protocols
-		  l.Sort
-		  For i As Integer = 0 To UBound(l)
-		    Me.AddRow(l(i))
-		  Next
+		Sub Action()
+		  Dim g As FolderItem = GetSaveFolderItem("", "")
+		  SaveTo = BinaryStream.Create(g, True)
+		  DoPerform()
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events PushButton3
+	#tag Event
+		Sub Action()
+		  Dim f As libcURL.Form = FormGenerator.CreateForm
+		  If f <> Nil Then
+		    FormValue = f
+		  End If
 		End Sub
 	#tag EndEvent
 #tag EndEvents
@@ -679,12 +726,14 @@ End
 		End Sub
 	#tag EndEvent
 #tag EndEvents
-#tag Events PushButton2
+#tag Events Protocols
 	#tag Event
-		Sub Action()
-		  Dim g As FolderItem = GetSaveFolderItem("", "")
-		  SaveTo = BinaryStream.Create(g, True)
-		  DoPerform()
+		Sub Open()
+		  Dim l() As String = libcURL.Version.Protocols
+		  l.Sort
+		  For i As Integer = 0 To UBound(l)
+		    Me.AddRow(l(i))
+		  Next
 		End Sub
 	#tag EndEvent
 #tag EndEvents
