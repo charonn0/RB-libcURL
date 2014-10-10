@@ -44,7 +44,7 @@ Begin Window Window1
       LockRight       =   ""
       LockTop         =   False
       Scope           =   0
-      TabIndex        =   0
+      TabIndex        =   1
       TabPanelIndex   =   0
       TabStop         =   True
       TextFont        =   "System"
@@ -83,7 +83,7 @@ Begin Window Window1
       Password        =   ""
       ReadOnly        =   ""
       Scope           =   0
-      TabIndex        =   3
+      TabIndex        =   0
       TabPanelIndex   =   0
       TabStop         =   True
       Text            =   "ftp://anonymous:user@ftp.microsoft.com/"
@@ -117,7 +117,7 @@ Begin Window Window1
       LockRight       =   ""
       LockTop         =   False
       Scope           =   0
-      TabIndex        =   4
+      TabIndex        =   2
       TabPanelIndex   =   0
       TabStop         =   True
       TextFont        =   "System"
@@ -169,7 +169,7 @@ Begin Window Window1
       LockRight       =   ""
       LockTop         =   False
       Scope           =   0
-      TabIndex        =   5
+      TabIndex        =   3
       TabPanelIndex   =   0
       TabStop         =   True
       TextFont        =   "System"
@@ -216,7 +216,7 @@ Begin Window Window1
       ScrollbarHorizontal=   True
       ScrollBarVertical=   True
       SelectionType   =   0
-      TabIndex        =   6
+      TabIndex        =   8
       TabPanelIndex   =   0
       TabStop         =   True
       TextFont        =   "System"
@@ -265,7 +265,7 @@ Begin Window Window1
       ScrollbarHorizontal=   True
       ScrollBarVertical=   True
       SelectionType   =   0
-      TabIndex        =   7
+      TabIndex        =   5
       TabPanelIndex   =   0
       TabStop         =   True
       TextFont        =   "System"
@@ -314,7 +314,7 @@ Begin Window Window1
       ScrollbarHorizontal=   True
       ScrollBarVertical=   True
       SelectionType   =   0
-      TabIndex        =   8
+      TabIndex        =   4
       TabPanelIndex   =   0
       TabStop         =   True
       TextFont        =   "System"
@@ -347,7 +347,7 @@ Begin Window Window1
       LockTop         =   True
       Scope           =   0
       State           =   1
-      TabIndex        =   9
+      TabIndex        =   7
       TabPanelIndex   =   0
       TabStop         =   True
       TextFont        =   "System"
@@ -395,7 +395,7 @@ Begin Window Window1
       ScrollbarHorizontal=   ""
       ScrollBarVertical=   True
       SelectionType   =   0
-      TabIndex        =   10
+      TabIndex        =   6
       TabPanelIndex   =   0
       TabStop         =   True
       TextFont        =   "System"
@@ -444,7 +444,7 @@ Begin Window Window1
       ScrollbarHorizontal=   ""
       ScrollBarVertical=   True
       SelectionType   =   0
-      TabIndex        =   11
+      TabIndex        =   9
       TabPanelIndex   =   0
       TabStop         =   True
       TextFont        =   "System"
@@ -489,7 +489,7 @@ Begin Window Window1
       ScrollbarHorizontal=   ""
       ScrollbarVertical=   True
       Styled          =   True
-      TabIndex        =   12
+      TabIndex        =   10
       TabPanelIndex   =   0
       TabStop         =   True
       Text            =   ""
