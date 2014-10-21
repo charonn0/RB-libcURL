@@ -188,14 +188,18 @@ Class cURLItem
 		  ' DO NOT CALL THIS METHOD
 		  
 		  Dim sz As Integer = nmemb * size
-		  Dim data As String = RaiseEvent DataNeeded(sz)
-		  If data.LenB <= sz Then
-		    Dim mb As MemoryBlock = char
-		    mb.StringValue(0, sz) = LeftB(data, sz)
-		    Return data.LenB
+		  Dim mb As New MemoryBlock(sz)
+		  sz = RaiseEvent DataNeeded(mb)
+		  Dim out As MemoryBlock = char
+		  Select Case sz
+		  Case 0, CURL_READFUNC_ABORT, CURL_READFUNC_PAUSE
+		    Return sz
+		  Case Is > 0 
+		    out.StringValue(0, sz) = LeftB(mb, sz)
+		    Return sz
 		  Else
 		    Raise New OutOfBoundsException
-		  End If
+		  End Select
 		End Function
 	#tag EndMethod
 
@@ -713,7 +717,7 @@ Class cURLItem
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
-		Event DataNeeded(MaximumLen As Integer) As String
+		Event DataNeeded(Buffer As MemoryBlock) As Integer
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
