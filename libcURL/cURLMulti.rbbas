@@ -150,7 +150,7 @@ Class cURLMulti
 		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_remove_handle.html
-		  'https://github.com/charonn0/RB-libcURL/wiki/cURLMulti.RemoveItem
+		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLMulti.RemoveItem
 		  
 		  mLastError = curl_multi_remove_handle(mHandle, Item.Handle)
 		  If Instances.HasKey(Item.Handle) Then

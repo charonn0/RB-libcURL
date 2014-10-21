@@ -288,6 +288,9 @@ Protected Module libcURL
 	#tag Constant, Name = CURL_READFUNC_ABORT, Type = Double, Dynamic = False, Default = \"&h10000000", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = CURL_READFUNC_PAUSE, Type = Double, Dynamic = False, Default = \"&h10000001", Scope = Protected
+	#tag EndConstant
+
 
 	#tag Structure, Name = CURLMsg, Flags = &h1
 		msg As Integer
