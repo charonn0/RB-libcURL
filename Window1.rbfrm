@@ -526,9 +526,7 @@ End
 	#tag Method, Flags = &h21
 		Private Function CreateSocketHandler(Sender As cURLItem) As SocketCore
 		  #pragma Unused Sender
-		  Dim sock As New TCPSocket
-		  socks.Append(sock)
-		  Return sock
+		  Break ' doesn't work yet
 		End Function
 	#tag EndMethod
 
@@ -625,6 +623,7 @@ End
 
 	#tag Method, Flags = &h21
 		Private Function ProgressHandler(Sender As cURLItem, dlTotal As UInt64, dlnow As UInt64, ultotal As UInt64, ulnow As UInt64) As Integer
+		  #pragma Unused Sender
 		  If ultotal > 0 Then
 		    ProgressBar1.Value = ulnow * 100 / ulTotal
 		  ElseIf dlTotal > 0 Then
@@ -672,10 +671,6 @@ End
 
 	#tag Property, Flags = &h21
 		Private SaveTo As BinaryStream
-	#tag EndProperty
-
-	#tag Property, Flags = &h1
-		Protected Socks() As SocketCore
 	#tag EndProperty
 
 

@@ -60,6 +60,7 @@ Class cURLMulti
 		  Instances = New Dictionary
 		  PerformTimer = New Timer
 		  AddHandler PerformTimer.Action, WeakAddressOf PerformTimerHandler
+		  StackLock = New Semaphore
 		End Sub
 	#tag EndMethod
 
@@ -90,58 +91,100 @@ Class cURLMulti
 		  ' period with libcURL's best estimate of an optimum interval.
 		  '
 		  ' See:
-		  ' http://curl.haxx.se/libcurl/c/curl_multi_timeout.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLMulti.Perform
 		  
-		  Dim i As Integer
-		  mLastError = curl_multi_timeout(mHandle, i)
-		  If mLastError = 0 And i > 0 Then
+		  Dim i As Integer = QueryInterval
+		  If i > 0 Then
 		    PerformTimer.Period = i
-		  Else
-		    PerformTimer.Period = 1
+		  ElseIf i = 0 Then
+		    PerformTimer.Period = 1 ' immediately
+		  Else ' error
+		    Return
 		  End If
 		  PerformTimer.Mode = Timer.ModeMultiple
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h21
-		Private Sub PerformTimerHandler(Sender As Timer)
-		  ' This method handles the PerformTimer.Action event.
-		  ' On each run of the timer, checks to see whether any cURLItems have finished and calls the TransferComplete event if needed.
-		  ' Call cURLMulti.Perform to start the timer or update its interval.
+	#tag Method, Flags = &h0
+		Function PerformOnce() As Boolean
+		  ' Calling this method will call curl_multi_perform on the multistack once and read all messages emitted by libcURL during that operation.
+		  ' The TransferComplete event will be raised for any completed easy handles. This method must be called repeatedly until libcURL indicates
+		  ' that all transfers have completed.
 		  '
+		  ' Unlike cURLMulti.Perform, this method will run the transfers and raise events on the calling thread instead of always on the main thread.
+		  '
+		  ' If the stack is not being processed, begins processing the stack. If the stack is already being processed, raises an IllegalLockingException.
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_perform.html
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_info_read.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLMulti.TransferComplete
+		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLMulti.Perform
+		  StackLock.Signal
+		  Try
+		    Dim c As Integer
+		    mLastError = curl_multi_perform(mHandle, c) ' on exit, 'c' will contain the number of easy handles with unfinished business.
+		    If (mLastError = 0 Or mLastError = CURLM_CALL_MULTI_PERFORM) And (LastCount <> c Or c <> Instances.Count) Then
+		      LastCount = c
+		      Do
+		        Dim msg As CURLMsg = ReadNextMsg(c)
+		        If c > -1 Then
+		          Dim curl As cURLItem = Instances.Value(msg.easy_handle)
+		          
+		          Call Me.RemoveItem(curl)
+		          
+		          'msg.Data is the last error code for the easy handle
+		          Dim oi() As Introspection.PropertyInfo = Introspection.GetType(curl).GetProperties
+		          For x As Integer = 0 To UBound(oi)
+		            If oi(x).Name = "mLastError" Then oi(x).Value(curl) = Integer(msg.Data)
+		          Next
+		          
+		          RaiseEvent TransferComplete(curl)
+		          
+		        End If
+		      Loop Until c <= 0
+		    End If
+		    Return mLastError = 0
+		  Finally
+		    StackLock.Release
+		  End Try
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub PerformTimerHandler(Sender As Timer)
+		  ' This method handles the PerformTimer.Action event. It calls PerformOnce on the main thread.
 		  
-		  #pragma Unused Sender
-		  Dim c As Integer
-		  mLastError = curl_multi_perform(mHandle, c) ' on exit, 'c' will contain the number of easy handles with unfinished business.
-		  If (mLastError = 0 Or mLastError = CURLM_CALL_MULTI_PERFORM) And (LastCount <> c Or c <> Instances.Count) Then
-		    LastCount = c
-		    Do
-		      Dim mb As MemoryBlock = curl_multi_info_read(mHandle, c) ' on exit, 'c' will contain the number of messages remaining.
-		      If mb <> Nil Then
-		        Dim msg As CURLMsg
-		        msg.StringValue(TargetLittleEndian) = mb.StringValue(0, msg.Size)
-		        Dim curl As cURLItem = Instances.Value(msg.easy_handle)
-		        
-		        Call Me.RemoveItem(curl)
-		        
-		        'msg.Data is the last error code for the easy handle
-		        Dim oi() As Introspection.PropertyInfo = Introspection.GetType(curl).GetProperties
-		        For x As Integer = 0 To UBound(oi)
-		          If oi(x).Name = "mLastError" Then oi(x).Value(curl) = Integer(msg.Data)
-		        Next
-		        
-		        RaiseEvent TransferComplete(curl)
-		        
-		      End If
-		    Loop Until c = 0
-		  End If
+		  If Not Me.PerformOnce Then Sender.Mode = Timer.ModeOff
 		  
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function QueryInterval() As Integer
+		  ' Returns libcURL's best estimate for an optimum interval, in milliseconds, between calls to PerformOnce. An interval of 0 means
+		  ' that PerformOnce may be called immediately.
+		  ' http://curl.haxx.se/libcurl/c/curl_multi_timeout.html
+		  Dim i As Integer
+		  mLastError = curl_multi_timeout(mHandle, i)
+		  If mLastError = 0 Then
+		    Return i
+		  Else
+		    Return -1
+		  End If
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function ReadNextMsg(ByRef MsgsRemaining As Integer) As CURLMsg
+		  Dim mb As MemoryBlock = curl_multi_info_read(mHandle, MsgsRemaining)
+		  If mb <> Nil Then
+		    Dim msg As CURLMsg
+		    msg.StringValue(TargetLittleEndian) = mb.StringValue(0, msg.Size)
+		    Return msg
+		  ElseIf MsgsRemaining = 0 Then
+		    MsgsRemaining = -1
+		  End If
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -278,6 +321,10 @@ Class cURLMulti
 
 	#tag Property, Flags = &h21
 		Private PerformTimer As Timer
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private StackLock As Semaphore
 	#tag EndProperty
 
 
