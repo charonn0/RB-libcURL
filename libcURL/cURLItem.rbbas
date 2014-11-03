@@ -194,7 +194,7 @@ Class cURLItem
 		  Select Case sz
 		  Case 0, CURL_READFUNC_ABORT, CURL_READFUNC_PAUSE
 		    Return sz
-		  Case Is > 0 
+		  Case Is > 0
 		    out.StringValue(0, sz) = LeftB(mb, sz)
 		    Return sz
 		  Else

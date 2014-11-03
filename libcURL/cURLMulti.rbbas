@@ -10,7 +10,6 @@ Class cURLMulti
 		  
 		  mLastError = curl_multi_add_handle(mHandle, Item.Handle)
 		  If mLastError = 0 Then
-		    'If Instances.Count > 0 Then PerformTimer.Mode = Timer.ModeMultiple
 		    Instances.Value(Item.Handle) = Item
 		    Return True
 		  End If
@@ -109,7 +108,7 @@ Class cURLMulti
 		Function PerformOnce() As Boolean
 		  ' Calling this method will call curl_multi_perform on the multistack once and read all messages emitted by libcURL during that operation.
 		  ' The TransferComplete event will be raised for any completed easy handles. This method must be called repeatedly until libcURL indicates
-		  ' that all transfers have completed.
+		  ' that all transfers have completed. PerformOnce will return True until all transfers have completed.
 		  '
 		  ' Unlike cURLMulti.Perform, this method will run the transfers and raise events on the calling thread instead of always on the main thread.
 		  '
@@ -117,7 +116,8 @@ Class cURLMulti
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_perform.html
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_info_read.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLMulti.Perform
+		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLMulti.PerformOnce
+		  
 		  StackLock.Signal
 		  Try
 		    Dim c As Integer
@@ -142,10 +142,10 @@ Class cURLMulti
 		        End If
 		      Loop Until c <= 0
 		    End If
-		    Return mLastError = 0
 		  Finally
 		    StackLock.Release
 		  End Try
+		  Return (mLastError = 0 And Instances.Count > 0)
 		End Function
 	#tag EndMethod
 
@@ -281,25 +281,26 @@ Class cURLMulti
 
 
 	#tag Note, Name = Using this class
-		This class implements the curl_multi interface of libcURL. A curl_multi "stack" can manage 1 or more
-		cURLItems. Once all desired cURLItems have been added, you may call cURLMulti.Perform to begin the
-		transfer.
+		This class implements the curl_multi interface of libcURL. A cURLMulti instance can manage one or more cURLItems. 
+		See: http://curl.haxx.se/libcurl/c/libcurl-multi.html
 		
-		Calling cURLMulti.Perform will activate a timer which calls curl_multi_perform on the multistack until
-		there are no more items (i.e. all calls to AddItem must have a matching call to RemoveItem, for example 
-		in the TransferComplete event.)
+		Using cURLMulti allows us to use the cURLItem class asynchronously, either automatically on the main thread or 'manually' 
+		on a RB thread.
 		
-		cURLItems may be added and removed from the stack at any time. Once added, cURLMulti will maintain a (RB) 
-		reference to the cURLItem and you should not call any methods/set any properties on the cURLItem until
-		after removing it from the multistack with the RemoveItem method.
+		cURLItems may be added to the stack at any time. Once added, cURLMulti will maintain a (RB) reference to the cURLItem.
+		You should not call any methods/set any properties on the cURLItem until you receive its reference as the parameter to the 
+		TransferComplete event.
 		
-		A cURLItem added to a multistack will behave exactly as it would had it not been added, including raising
-		events in response to libcURL callback functions.
+		Once all desired cURLItems have been added, you may call Perform or PerformOnce to begin the transfer(s). 
 		
-		If the stack is not being processed, calling Perform will begin processing the stack. If the stack is already 
-		being processed calling Perform will update the PerformTimer period with libcURL's best estimate of an optimum interval. 
+		Calling PerformOnce executes curl_multi_perform once and processes all completed cURLItems. All cURLItem and cURLMulti events will be 
+		raised on the thread which calls PerformOnce. PerformOnce will not return until all event handlers have returned.
 		
-		Using a multistack allows single-threaded apps (like RB apps) to use libcURL in a non-blocking manner.
+		Calling Perform will activate a timer which calls PerformOnce on the main thread until there are no more items. Perform returns immediately.
+		 
+		
+		
+		
 	#tag EndNote
 
 
