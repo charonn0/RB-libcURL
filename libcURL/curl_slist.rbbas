@@ -24,7 +24,7 @@ Protected Class curl_slist
 		    Raise err
 		  End If
 		  
-		  If curl_global_init(CURL_GLOBAL_NOTHING) <> 0 Then Raise New cURLException(libcURL.Errors.INIT_FAILED)
+		  If curl_global_init(CURL_GLOBAL_DEFAULT) <> 0 Then Raise New cURLException(libcURL.Errors.INIT_FAILED)
 		  List = ListPtr
 		End Sub
 	#tag EndMethod

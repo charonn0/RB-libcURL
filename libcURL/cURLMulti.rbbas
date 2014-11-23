@@ -297,10 +297,6 @@ Class cURLMulti
 		raised on the thread which calls PerformOnce. PerformOnce will not return until all event handlers have returned.
 		
 		Calling Perform will activate a timer which calls PerformOnce on the main thread until there are no more items. Perform returns immediately.
-		 
-		
-		
-		
 	#tag EndNote
 
 

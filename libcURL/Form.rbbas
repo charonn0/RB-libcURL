@@ -48,7 +48,7 @@ Protected Class Form
 		    Raise err
 		  End If
 		  
-		  If curl_global_init(CURL_GLOBAL_NOTHING) <> 0 Then Raise New cURLException(libcURL.Errors.INIT_FAILED)
+		  If curl_global_init(CURL_GLOBAL_DEFAULT) <> 0 Then Raise New cURLException(libcURL.Errors.INIT_FAILED)
 		End Sub
 	#tag EndMethod
 
