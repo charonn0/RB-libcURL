@@ -279,6 +279,9 @@ Protected Module Opts
 	#tag Constant, Name = PROXYUSERPWD, Type = Double, Dynamic = False, Default = \"10006", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = PUT, Type = Double, Dynamic = False, Default = \"54", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = QUOTE, Type = Double, Dynamic = False, Default = \"10028", Scope = Protected
 	#tag EndConstant
 

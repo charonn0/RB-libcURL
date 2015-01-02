@@ -517,21 +517,21 @@ End
 		  Dim bs As BinaryStream = BinaryStream.Create(CA_File, True)
 		  bs.Write(DEFAULT_CA_INFO_PEM)
 		  bs.Close
-		  multi = New cURLMulti
+		  multi = New libcURL.cURLMulti
 		  AddHandler multi.TransferComplete, WeakAddressOf TransferCompleteHandler
 		End Sub
 	#tag EndEvent
 
 
 	#tag Method, Flags = &h21
-		Private Function CreateSocketHandler(Sender As cURLItem) As SocketCore
+		Private Function CreateSocketHandler(Sender As libcURL.cURLItem) As SocketCore
 		  #pragma Unused Sender
 		  Break ' doesn't work yet
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Sub DataAvailableHandler(Sender As cURLItem, NewData As String)
+		Private Sub DataAvailableHandler(Sender As libcURL.cURLItem, NewData As String)
 		  #pragma Unused Sender
 		  If SaveTo <> Nil Then
 		    SaveTo.Write(NewData)
@@ -542,7 +542,7 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Sub DebugMessageHandler(Sender As cURLItem, MessageType As libcURL.curl_infotype, data As String)
+		Private Sub DebugMessageHandler(Sender As libcURL.cURLItem, MessageType As libcURL.curl_infotype, data As String)
 		  'If MessageType <> libcURL.cURL_InfoType.Text Then
 		  #pragma Unused Sender
 		  If CheckBox1.Value And (MessageType = libcURL.curl_infotype.data_in Or MessageType = libcURL.curl_infotype.data_out) Then Return
@@ -572,7 +572,7 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Sub DisconnectedHandler(Sender As cURLItem)
+		Private Sub DisconnectedHandler(Sender As libcURL.cURLItem)
 		  #pragma Unused Sender
 		  Debug.AddRow("RB-libcURL", "Disconnected")
 		  
@@ -587,7 +587,7 @@ End
 		  Debug.DeleteAllRows
 		  CurlInfo.DeleteAllRows
 		  
-		  Dim curlget As New cURLItem
+		  Dim curlget As New libcURL.cURLItem
 		  AddHandler curlget.CreateSocket, WeakAddressOf CreateSocketHandler
 		  AddHandler curlget.DataAvailable, WeakAddressOf DataAvailableHandler
 		  AddHandler curlget.DebugMessage, WeakAddressOf DebugMessageHandler
@@ -607,7 +607,7 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Sub HeaderReceivedHandler(Sender As cURLItem, HeaderLine As String)
+		Private Sub HeaderReceivedHandler(Sender As libcURL.cURLItem, HeaderLine As String)
 		  #pragma Unused Sender
 		  Dim n, v As String
 		  If InStr(HeaderLine, ":") > 1 Then
@@ -622,7 +622,7 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Function ProgressHandler(Sender As cURLItem, dlTotal As UInt64, dlnow As UInt64, ultotal As UInt64, ulnow As UInt64) As Integer
+		Private Function ProgressHandler(Sender As libcURL.cURLItem, dlTotal As UInt64, dlnow As UInt64, ultotal As UInt64, ulnow As UInt64) As Integer
 		  #pragma Unused Sender
 		  If ultotal > 0 Then
 		    ProgressBar1.Value = ulnow * 100 / ulTotal
@@ -634,7 +634,7 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Sub TransferCompleteHandler(Sender As cURLMulti, easyitem As cURLItem)
+		Private Sub TransferCompleteHandler(Sender As libcURL.cURLMulti, easyitem As libcURL.cURLItem)
 		  #pragma Unused Sender
 		  Dim err As Integer = easyitem.LastError
 		  MsgBox(easyitem.URL + " completed with error code: " + Str(err) + " (" + libcURL.FormatError(err) + ").")
@@ -666,7 +666,7 @@ End
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private multi As cURLMulti
+		Private multi As libcURL.cURLMulti
 	#tag EndProperty
 
 	#tag Property, Flags = &h21

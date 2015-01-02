@@ -90,7 +90,7 @@ Protected Class Form
 		  Call frm.AddElement("file", f)
 		  Call frm.AddElement("username", "AzureDiamond")
 		  Call frm.AddElement("password", "hunter2")
-		  Dim sock As New cURLItem
+		  Dim sock As New libcURL.cURLItem
 		  Call sock.SetOption(libcURL.Opts.HTTPPOST, frm)
 		  Call sock.Perform("http://www.example.com/submit.php", 5)
 	#tag EndNote

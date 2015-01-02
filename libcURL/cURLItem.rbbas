@@ -1,5 +1,5 @@
 #tag Class
-Class cURLItem
+Protected Class cURLItem
 	#tag Method, Flags = &h0
 		Sub Close()
 		  ' cleans up the instance.
@@ -826,7 +826,7 @@ Class cURLItem
 			
 			For example:
 			
-			Dim curl As New cURLItem
+			Dim curl As New libcURL.cURLItem
 			curl.NetworkInterface = System.GetNetworkInterface(0)
 			MsgBox(curl.NetworkInterface.IPAddress))
 		#tag EndNote

@@ -1,7 +1,7 @@
 #tag Class
-Class cURLMulti
+Protected Class cURLMulti
 	#tag Method, Flags = &h0
-		Function AddItem(Item As cURLItem) As Boolean
+		Function AddItem(Item As libcURL.cURLItem) As Boolean
 		  ' Add a cURLItem to the multistack. The cURLItem should have all of its options already set and ready to go.
 		  '
 		  ' See:
@@ -77,6 +77,12 @@ Class cURLMulti
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function HasItem(EasyItem As libcURL.cURLItem) As Boolean
+		  Return Instances.HasKey(EasyItem.Handle)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function LastError() As Integer
 		  ' Returns the most recent curl error code for the multistack (but not for any cURLItems managed by the stack.)
 		  Return mLastError
@@ -112,7 +118,8 @@ Class cURLMulti
 		  '
 		  ' Unlike cURLMulti.Perform, this method will run the transfers and raise events on the calling thread instead of always on the main thread.
 		  '
-		  ' If the stack is not being processed, begins processing the stack. If the stack is already being processed, raises an IllegalLockingException.
+		  ' Calling this method again before a previous call to it has returned will raise an IllegalLockingException.
+		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_perform.html
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_info_read.html
@@ -134,7 +141,7 @@ Class cURLMulti
 		          'msg.Data is the last error code for the easy handle
 		          Dim oi() As Introspection.PropertyInfo = Introspection.GetType(curl).GetProperties
 		          For x As Integer = 0 To UBound(oi)
-		            If oi(x).Name = "mLastError" Then oi(x).Value(curl) = Integer(msg.Data)
+		            If oi(x).Name = "mLastError" Then oi(x).Value(curl) = Integer(msg.Data) ' I'm sorry you had to see that
 		          Next
 		          
 		          RaiseEvent TransferComplete(curl)
@@ -188,7 +195,7 @@ Class cURLMulti
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function RemoveItem(Item As cURLItem) As Boolean
+		Function RemoveItem(Item As libcURL.cURLItem) As Boolean
 		  ' Removes the passed cURLItem from the multistack. If there no more cURLItems then turns off the PerformTimer.
 		  '
 		  ' See:
@@ -276,7 +283,7 @@ Class cURLMulti
 
 
 	#tag Hook, Flags = &h0
-		Event TransferComplete(easyitem As cURLItem)
+		Event TransferComplete(easyitem As libcURL.cURLItem)
 	#tag EndHook
 
 

@@ -179,6 +179,17 @@ Protected Module libcURL
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
+		Protected Function Get(URL As String, TimeOut As Integer, ByRef Headers As InternetHeaders, ByRef StatusCode As Integer, Username As String = "", Password As String = "") As MemoryBlock
+		  Dim out As New MemoryBlock(0)
+		  Dim outs As New BinaryStream(out)
+		  Dim c As libcURL.cURLItem = libcURL.SynchronousHelpers.Get(URL, TimeOut, outs, Headers, Username, Password)
+		  StatusCode = c.LastError
+		  outs.Close
+		  Return out
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
 		Protected Function IsAvailable() As Boolean
 		  Static available As Boolean
 		  If Not available Then available = System.IsFunctionAvailable("curl_easy_init", "libcurl")
@@ -201,6 +212,35 @@ Protected Module libcURL
 		    Parsed.TotalSeconds = Parsed.TotalSeconds + count
 		    Return True
 		  End If
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function Post(FormData As Dictionary, URL As String, TimeOut As Integer, ByRef Headers As InternetHeaders, ByRef StatusCode As Integer, Username As String = "", Password As String = "") As MemoryBlock
+		  Dim out As New MemoryBlock(0)
+		  Dim outs As New BinaryStream(out)
+		  Dim frm As New libcURL.Form
+		  For Each item As String In FormData.Keys
+		    If Not frm.AddElement(item, FormData.Value(item)) Then Raise New cURLException(frm.LastError)
+		  Next
+		  Dim c As libcURL.cURLItem = libcURL.SynchronousHelpers.Post(frm, URL, TimeOut, outs, Headers, Username, Password)
+		  StatusCode = c.LastError
+		  outs.Close
+		  Return out
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function Put(File As FolderItem, URL As String, TimeOut As Integer, ByRef Headers As InternetHeaders, ByRef StatusCode As Integer, Username As String = "", Password As String = "") As MemoryBlock
+		  Dim out As New MemoryBlock(0)
+		  Dim outs As New BinaryStream(out)
+		  Dim instream As BinaryStream = BinaryStream.Open(File)
+		  
+		  Dim c As libcURL.cURLItem = libcURL.SynchronousHelpers.Put(URL, TimeOut, instream, outs, Headers, Username, Password)
+		  StatusCode = c.LastError
+		  outs.Close
+		  instream.Close
+		  Return out
 		End Function
 	#tag EndMethod
 
