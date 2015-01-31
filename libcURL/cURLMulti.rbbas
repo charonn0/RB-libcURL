@@ -3,16 +3,23 @@ Protected Class cURLMulti
 	#tag Method, Flags = &h0
 		Function AddItem(Item As libcURL.cURLItem) As Boolean
 		  ' Add a cURLItem to the multistack. The cURLItem should have all of its options already set and ready to go.
+		  ' You may not add an item while a call to PerformOnce has not yet returned. Doing so will raise an IllegalLockingException.
 		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_add_handle.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLMulti.AddItem
 		  
-		  mLastError = curl_multi_add_handle(mHandle, Item.Handle)
-		  If mLastError = 0 Then
-		    Instances.Value(Item.Handle) = Item
-		    Return True
-		  End If
+		  If Not StackLock.TryEnter Then Raise New IllegalLockingException
+		  Try
+		    mLastError = curl_multi_add_handle(mHandle, Item.Handle)
+		    If mLastError = 0 Then
+		      Instances.Value(Item.Handle) = Item
+		      StackLock.Leave
+		      Return True
+		    End If
+		  Finally
+		    StackLock.Leave
+		  End Try
 		End Function
 	#tag EndMethod
 
@@ -59,7 +66,7 @@ Protected Class cURLMulti
 		  Instances = New Dictionary
 		  PerformTimer = New Timer
 		  AddHandler PerformTimer.Action, WeakAddressOf PerformTimerHandler
-		  StackLock = New Semaphore
+		  StackLock = New CriticalSection
 		End Sub
 	#tag EndMethod
 
@@ -125,14 +132,14 @@ Protected Class cURLMulti
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_info_read.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLMulti.PerformOnce
 		  
-		  StackLock.Signal
+		  If Not StackLock.TryEnter Then Raise New IllegalLockingException
 		  Try
 		    Dim c As Integer
 		    mLastError = curl_multi_perform(mHandle, c) ' on exit, 'c' will contain the number of easy handles with unfinished business.
 		    If (mLastError = 0 Or mLastError = CURLM_CALL_MULTI_PERFORM) And (LastCount <> c Or c <> Instances.Count) Then
 		      LastCount = c
 		      Do
-		        Dim msg As CURLMsg = ReadNextMsg(c)
+		        Dim msg As CURLMsg = ReadNextMsg(c) ' on exit, 'c' will contain the number of messages remaining
 		        If c > -1 Then
 		          Dim curl As cURLItem = Instances.Value(msg.easy_handle)
 		          
@@ -150,7 +157,7 @@ Protected Class cURLMulti
 		      Loop Until c <= 0
 		    End If
 		  Finally
-		    StackLock.Release
+		    StackLock.Leave
 		  End Try
 		  Return (mLastError = 0 And Instances.Count > 0)
 		End Function
@@ -197,16 +204,22 @@ Protected Class cURLMulti
 	#tag Method, Flags = &h0
 		Function RemoveItem(Item As libcURL.cURLItem) As Boolean
 		  ' Removes the passed cURLItem from the multistack. If there no more cURLItems then turns off the PerformTimer.
+		  ' You may not remove an item while a call to PerformOnce has not yet returned. Doing so will raise an IllegalLockingException.
 		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_remove_handle.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLMulti.RemoveItem
 		  
-		  mLastError = curl_multi_remove_handle(mHandle, Item.Handle)
-		  If Instances.HasKey(Item.Handle) Then
-		    Instances.Remove(Item.Handle)
-		  End If
-		  If Instances.Count = 0 Then PerformTimer.Mode = Timer.ModeOff
+		  If Not StackLock.TryEnter Then Raise New IllegalLockingException
+		  Try
+		    mLastError = curl_multi_remove_handle(mHandle, Item.Handle)
+		    If Instances.HasKey(Item.Handle) Then
+		      Instances.Remove(Item.Handle)
+		    End If
+		    If Instances.Count = 0 Then PerformTimer.Mode = Timer.ModeOff
+		  Finally
+		    StackLock.Leave
+		  End Try
 		  Return mLastError = 0
 		End Function
 	#tag EndMethod
@@ -328,7 +341,7 @@ Protected Class cURLMulti
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private StackLock As Semaphore
+		Private StackLock As CriticalSection
 	#tag EndProperty
 
 
