@@ -157,7 +157,7 @@ Protected Class cURLItem
 		  Case libcURL.Opts.CURLSOCKTYPE_IPCXN
 		    Dim sock As SocketCore = RaiseEvent CreateSocket()
 		    If sock <> Nil Then
-		      Return sock.Handle
+		      Return sock.Handle ' Handle=0 until Listen or Connect are called :-\
 		    End If
 		  End Select
 		  
@@ -742,7 +742,8 @@ Protected Class cURLItem
 
 
 	#tag Note, Name = Using this class
-		This class provides basic access to the curl_easy API.
+		This class provides basic access to the curl_easy API. It is strongly recommended that you
+		familiarize yourself with libcURL, as this project is mostly glue code for libcURL's API.
 		
 		Create a new instance, then use the SetOption method to define what cURL will be doing.
 		
@@ -753,9 +754,26 @@ Protected Class cURLItem
 		      MsgBox("cURL error: " + Str(mcURL.LastError))
 		   End If
 		
-		SetOption accepts a Variant as the option value, but only Integers, Strings, and Booleans should be
-		used. SetOption will also accept the cURL delegates as new values but that is intended for internal use
-		only. Setting an option value to an unsupported type will raise a TypeMismatchException.
+		SetOption accepts a Variant as the option value, but only Boolean, Integer, Ptr, String, MemoryBlock, 
+		FolderItem, libcURL.Form, libcURL.curl_slist should be used. 
+		
+		Once all options are set, you may call the cURLItem.Perform method to initiate a synchronous (i.e. blocking)
+		transfer, or pass the cURLItem to a cURLMulti stack for asynchronous processing.
+		
+		Once the transfer has completed (successfully or not, and regardless of whether a cURLMulti stack was used,)
+		you may call cURLItem.GetInfo to retrieve various data about the transfer.
+		
+		For example, continuing the above code sample:
+		
+		   If Not mcURL.Perform("http://www.example.com/") Then
+		      MsgBox("cURL error: " + Str(mcURL.LastError))
+		   Else
+		      MsgBox("Transfer completed successfully with HTTP status: " + mcURL.GetInfo(libcURL.Info.RESPONSE_CODE)
+		   End If
+		
+		NOTE: 
+		In order to received downloaded data you must handle the DataAvailable event.
+		In order to provide upload data you must handle the DataNeeded event.
 	#tag EndNote
 
 

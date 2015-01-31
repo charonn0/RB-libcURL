@@ -191,6 +191,7 @@ Protected Module libcURL
 
 	#tag Method, Flags = &h1
 		Protected Function IsAvailable() As Boolean
+		  ' minimum libcURL 7.15.2 
 		  Static available As Boolean
 		  If Not available Then available = System.IsFunctionAvailable("curl_easy_init", "libcurl")
 		  Return available
