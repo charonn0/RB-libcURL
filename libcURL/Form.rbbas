@@ -52,8 +52,8 @@ Protected Class Form
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Sub Destructor()
+	#tag Method, Flags = &h21
+		Private Sub Destructor()
 		  If libcURL.IsAvailable Then
 		    If FirstItem <> Nil Then libcURL.curl_formfree(FirstItem)
 		    libcURL.curl_global_cleanup()

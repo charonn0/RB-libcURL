@@ -29,8 +29,8 @@ Protected Class curl_slist
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Sub Destructor()
+	#tag Method, Flags = &h21
+		Private Sub Destructor()
 		  If libcURL.IsAvailable Then
 		    If List <> Nil Then libcURL.curl_slist_free_all(List)
 		    libcURL.curl_global_cleanup()

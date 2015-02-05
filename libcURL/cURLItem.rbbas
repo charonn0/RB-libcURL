@@ -242,8 +242,8 @@ Protected Class cURLItem
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Sub Destructor()
+	#tag Method, Flags = &h21
+		Private Sub Destructor()
 		  ' Closes the instance and, if no more instances, cleans up libcURL
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_global_cleanup.html
@@ -525,8 +525,8 @@ Protected Class cURLItem
 		  ' an exception if an unsupported type is passed.
 		  
 		  ' NewValue may be a Boolean, Integer, Ptr, String, MemoryBlock, FolderItem, libcURL.Form, libcURL.curl_slist,
-		  ' or a Delegate matching cURLCallback, cURLCloseCallback, cURLDebugCallback, cURLOpenCallback, cURLProgressCallback,
-		  ' or cURLSSLInitCallback. Passing a Nil object will raise an exception unless the option explicitly accepts NULL.
+		  ' or a Delegate matching cURLCallback, cURLCloseCallback, cURLDebugCallback, cURLOpenCallback, or cURLProgressCallback.
+		  ' Passing a Nil object will raise an exception unless the option explicitly accepts NULL.
 		  
 		  ' If the option was set this method returns True. If it returns False the option was not set and the
 		  ' curl error number is stored in cURLItem.LastError.
