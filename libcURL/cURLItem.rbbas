@@ -84,6 +84,7 @@ Protected Class cURLItem
 		    If mHandle > 0 Then
 		      Instances.Value(mHandle) = New WeakRef(Me)
 		      InitCallbacks(Me)
+		      If CopyOpts.Verbose Then Me.Verbose = True
 		    Else
 		      Raise New cURLException(mLastError) ' Note that this is not the actual error number (there is none for this function)
 		    End If
