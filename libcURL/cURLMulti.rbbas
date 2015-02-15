@@ -63,8 +63,6 @@ Protected Class cURLMulti
 		    Raise New cURLException(libcURL.Errors.FAILED_INIT, True)
 		  End If
 		  Instances = New Dictionary
-		  PerformTimer = New Timer
-		  AddHandler PerformTimer.Action, WeakAddressOf PerformTimerHandler
 		  StackLock = New CriticalSection
 		End Sub
 	#tag EndMethod
@@ -104,6 +102,8 @@ Protected Class cURLMulti
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLMulti.Perform
 		  
+		  PerformTimer = New Timer
+		  AddHandler PerformTimer.Action, WeakAddressOf PerformTimerHandler
 		  Dim i As Integer = QueryInterval
 		  If i > 0 Then
 		    PerformTimer.Period = i
@@ -164,10 +164,14 @@ Protected Class cURLMulti
 
 	#tag Method, Flags = &h21
 		Private Sub PerformTimerHandler(Sender As Timer)
-		  ' This method handles the PerformTimer.Action event. It calls PerformOnce on the main thread.
+		  ' This method handles the PerformTimer.Action event. It calls PerformOnce on the main thread until PerformOnce returns False.
 		  
-		  If Not Me.PerformOnce Then Sender.Mode = Timer.ModeOff
+		  If Not Me.PerformOnce() Then Sender.Mode = Timer.ModeOff
 		  
+		Exception Err As RuntimeException
+		  If Err IsA EndException Or Err IsA ThreadEndException Then Raise Err
+		  If Sender <> Nil Then Sender.Mode = Timer.ModeOff
+		  Raise Err
 		End Sub
 	#tag EndMethod
 
