@@ -106,7 +106,7 @@ Private Module SynchronousHelpers
 	#tag Method, Flags = &h1
 		Protected Function Put(URL As String, TimeOut As Integer, InputStream As Readable, OutputStream As Writeable, ByRef Headers As InternetHeaders, Username As String, Password As String) As libcURL.cURLItem
 		  Dim cURL As libcURL.cURLItem = CreateItem(InputStream, OutputStream, Headers)
-		  If Not cURL.SetOption(libcURL.Opts.PUT, True) Then Raise New cURLException(cURL.LastError)
+		  If Not cURL.SetOption(libcURL.Opts.UPLOAD, True) Then Raise New cURLException(cURL.LastError)
 		  If Username <> "" Then cURL.Username = Username
 		  If Password <> "" Then cURL.Password = Password
 		  Call cURL.Perform(URL, TimeOut)
