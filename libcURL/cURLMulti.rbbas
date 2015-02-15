@@ -14,12 +14,11 @@ Protected Class cURLMulti
 		    mLastError = curl_multi_add_handle(mHandle, Item.Handle)
 		    If mLastError = 0 Then
 		      Instances.Value(Item.Handle) = Item
-		      StackLock.Leave
-		      Return True
 		    End If
 		  Finally
 		    StackLock.Leave
 		  End Try
+		  Return True
 		End Function
 	#tag EndMethod
 
