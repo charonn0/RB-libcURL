@@ -22,8 +22,11 @@ Protected Module Version
 
 	#tag Method, Flags = &h1
 		Protected Function Name() As String
-		  If Not libcURL.IsAvailable Then Return ""
-		  Dim p As MemoryBlock = curl_version()
+		  If Not System.IsFunctionAvailable("curl_version", "libcurl") Then Return ""
+		  Static p As MemoryBlock
+		  If p = Nil Then
+		     p = curl_version()
+		  End If
 		  Return p.CString(0)
 		End Function
 	#tag EndMethod
@@ -38,7 +41,7 @@ Protected Module Version
 	#tag Method, Flags = &h1
 		Protected Function Protocols() As String()
 		  Dim prots() As String
-		  If Not libcURL.IsAvailable Then Return prots
+		  If Not System.IsFunctionAvailable("curl_version", "libcurl") Then Return prots
 		  Dim ve As CURLVersion = libcURL.Version.Struct
 		  Dim p1 As Ptr = ve.Protocols.Ptr(0)
 		  Dim mb As MemoryBlock = p1
@@ -58,7 +61,7 @@ Protected Module Version
 
 	#tag Method, Flags = &h1
 		Protected Function Struct() As CURLVersion
-		  If libcURL.IsAvailable Then
+		  If System.IsFunctionAvailable("curl_version_info", "libcurl") Then
 		    If curl_global_init(CURL_GLOBAL_DEFAULT) = 0 Then
 		      Dim ve As MemoryBlock
 		      ve = curl_version_info(CURLVERSION_FOURTH)

@@ -150,10 +150,10 @@ Protected Module libcURL
 		  Select Case True
 		    
 		  Case Not libcURL.IsAvailable
-		    Return "libcURL is not available."
+		    Return "libcURL is not available or is an unsupported version."
 		    
 		  Case cURLError = libcURL.Errors.INIT_FAILED
-		    Return "Failed to create a new curl instance."
+		    Return "Unknown failure while constructing a cURL handle."
 		    
 		  Else
 		    Dim mb As MemoryBlock = curl_easy_strerror(cURLError)
@@ -180,6 +180,13 @@ Protected Module libcURL
 
 	#tag Method, Flags = &h1
 		Protected Function Get(URL As String, TimeOut As Integer, ByRef Headers As InternetHeaders, ByRef StatusCode As Integer, Username As String = "", Password As String = "") As MemoryBlock
+		  ' Synchronously performs a retrieval using protocol-appropriate semantics (http GET, ftp RETR, etc.)
+		  ' The protocol is inferred from the URL; explictly specify the protocol in the URL to avoid bad guesses.
+		  ' Pass a connection TimeOut interval (in seconds), or 0 to wait forever. Pass an InternetHeaders instance and
+		  ' an Integer by reference to contain the response headers (if any) and final result code (if any). Headers and
+		  ' StatusCode are mandatory and MUST NOT be Nil. Pass a username or password if a username and/or password will
+		  ' be required to complete the transfer. Returns a MemoryBlock containing any downloaded data.
+		  
 		  Dim out As New MemoryBlock(0)
 		  Dim outs As New BinaryStream(out)
 		  Dim c As libcURL.cURLItem = libcURL.SynchronousHelpers.Get(URL, TimeOut, outs, Headers, Username, Password)
@@ -191,9 +198,29 @@ Protected Module libcURL
 
 	#tag Method, Flags = &h1
 		Protected Function IsAvailable() As Boolean
-		  ' minimum libcURL 7.15.2 
+		  ' Returns True if libcURL is available and at least version 7.15.2
+		  Const MinMajor = 7
+		  Const MinMinor = 15
+		  Const MinPatch = 2
+		  
 		  Static available As Boolean
-		  If Not available Then available = System.IsFunctionAvailable("curl_easy_init", "libcurl")
+		  
+		  If Not available Then
+		    Select Case True
+		    Case Not System.IsFunctionAvailable("curl_easy_init", "libcurl")
+		      available = False
+		      
+		    Case libcURL.Version.MajorNumber > MinMajor
+		      available = True
+		      
+		    Case libcURL.Version.MajorNumber = MinMajor
+		      If libcURL.Version.MinorNumber > MinMinor Or _
+		        (libcURL.Version.MinorNumber = MinMinor And libcURL.Version.PatchNumber >= MinPatch) Then
+		        available = True
+		      End If
+		      
+		    End Select
+		  End If
 		  Return available
 		End Function
 	#tag EndMethod
@@ -218,6 +245,13 @@ Protected Module libcURL
 
 	#tag Method, Flags = &h1
 		Protected Function Post(FormData As Dictionary, URL As String, TimeOut As Integer, ByRef Headers As InternetHeaders, ByRef StatusCode As Integer, Username As String = "", Password As String = "") As MemoryBlock
+		  ' Synchronously POST the passed FormData via HTTP(S) using multipart/form-data encoding. The FormData dictionary
+		  ' contains NAME:VALUE pairs comprising HTML form elements. NAME is a string containing the form-element name; VALUE 
+		  ' may be a string or a FolderItem. Pass a connection TimeOut interval (in seconds), or 0 to wait forever. Pass an 
+		  ' InternetHeaders instance and an Integer by reference to contain the response headers (if any) and final result 
+		  ' code (if any). Headers and StatusCode are mandatory and MUST NOT be Nil. Pass a username or password if a Username 
+		  ' and/or Password will be required to complete the transfer. Returns a MemoryBlock containing any downloaded data.
+		  
 		  Dim out As New MemoryBlock(0)
 		  Dim outs As New BinaryStream(out)
 		  Dim frm As New libcURL.Form
@@ -233,6 +267,14 @@ Protected Module libcURL
 
 	#tag Method, Flags = &h1
 		Protected Function Put(File As FolderItem, URL As String, TimeOut As Integer, ByRef Headers As InternetHeaders, ByRef StatusCode As Integer, Username As String = "", Password As String = "") As MemoryBlock
+		  ' Synchronously uploads the passed FolderItem using protocol-appropriate semantics (http PUT, ftp STOR, etc.)
+		  ' The protocol is inferred from the URL; explictly specify the protocol in the URL to avoid bad guesses. The
+		  ' path part of the URL specifies the remote directory and file name to store the file under. Pass a connection 
+		  ' TimeOut interval (in seconds), or 0 to wait forever. Pass an InternetHeaders instance and an Integer by reference 
+		  ' to contain the response headers (if any) and final result code (if any). Headers and StatusCode are mandatory 
+		  ' and MUST NOT be Nil. Pass an username or password if a Username and/or Password will be required to complete 
+		  ' the transfer. Returns a MemoryBlock containing any downloaded data.
+		  
 		  Dim out As New MemoryBlock(0)
 		  Dim outs As New BinaryStream(out)
 		  Dim instream As BinaryStream = BinaryStream.Open(File)
@@ -247,6 +289,11 @@ Protected Module libcURL
 
 	#tag Method, Flags = &h1
 		Protected Function URLDecode(Data As String) As String
+		  ' Returns the decoded Data using percent encoding as defined in rfc2396
+		  ' See: 
+		  ' http://curl.haxx.se/libcurl/c/curl_easy_unescape.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLDecode
+		  
 		  If libcURL.IsAvailable Then
 		    If curl_global_init(CURL_GLOBAL_DEFAULT) = 0 Then
 		      Dim mHandle As Integer = curl_easy_init()
@@ -268,6 +315,11 @@ Protected Module libcURL
 
 	#tag Method, Flags = &h1
 		Protected Function URLEncode(Data As String) As String
+		  ' Returns the Data encoded using percent encoding as defined in rfc2396
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/curl_easy_escape.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLEncode
+		  
 		  If libcURL.IsAvailable Then
 		    If curl_global_init(CURL_GLOBAL_DEFAULT) = 0 Then
 		      Dim mHandle As Integer = curl_easy_init()
