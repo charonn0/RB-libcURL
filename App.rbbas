@@ -1,19 +1,6 @@
 #tag Class
 Protected Class App
 Inherits Application
-	#tag Event
-		Sub Open()
-		  Dim code As Integer
-		  Dim h As New InternetHeaders
-		  Dim form As New Dictionary
-		  form.Value("name") = "User1"
-		  form.Value("file") = GetOpenFolderItem("")
-		  Dim data As MemoryBlock = libcURL.Post(form, "http://192.168.1.4:8080/Create", 5, h, code)
-		  Break
-		End Sub
-	#tag EndEvent
-
-
 	#tag Constant, Name = kEditClear, Type = String, Dynamic = False, Default = \"&Delete", Scope = Public
 		#Tag Instance, Platform = Windows, Language = Default, Definition  = \"&Delete"
 		#Tag Instance, Platform = Linux, Language = Default, Definition  = \"&Delete"

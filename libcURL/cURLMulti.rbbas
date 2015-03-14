@@ -95,7 +95,7 @@ Protected Class cURLMulti
 
 	#tag Method, Flags = &h0
 		Sub Perform()
-		  ' Calling this method will activate a timer which calls curl_multi_perform on the multistack until the last item is Removed.
+		  ' Calling this method will activate a timer which calls PerformOnce on the multistack until the last item is Removed.
 		  ' If the stack is not being processed, begins processing the stack. If the stack is already being processed, updates the PerformTimer
 		  ' period with libcURL's best estimate of an optimum interval.
 		  '
