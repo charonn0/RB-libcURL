@@ -9,14 +9,14 @@ Protected Class cURLMulti
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_add_handle.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLMulti.AddItem
 		  
-		  If Not StackLock.TryEnter Then Raise New IllegalLockingException
+		  StackLock.Signal
 		  Try
 		    mLastError = curl_multi_add_handle(mHandle, Item.Handle)
 		    If mLastError = 0 Then
 		      Instances.Value(Item.Handle) = Item
 		    End If
 		  Finally
-		    StackLock.Leave
+		    StackLock.Release
 		  End Try
 		  Return True
 		End Function
@@ -60,10 +60,10 @@ Protected Class cURLMulti
 		  
 		  mHandle = curl_multi_init()
 		  If mHandle <= 0 Then
-		    Raise New cURLException(libcURL.Errors.FAILED_INIT, True)
+		    Raise New cURLException(libcURL.Errors.INIT_FAILED, True)
 		  End If
 		  Instances = New Dictionary
-		  StackLock = New CriticalSection
+		  StackLock = New Semaphore
 		End Sub
 	#tag EndMethod
 
@@ -102,8 +102,10 @@ Protected Class cURLMulti
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLMulti.Perform
 		  
-		  PerformTimer = New Timer
-		  AddHandler PerformTimer.Action, WeakAddressOf PerformTimerHandler
+		  If PerformTimer = Nil Then
+		    PerformTimer = New Timer
+		    AddHandler PerformTimer.Action, WeakAddressOf PerformTimerHandler
+		  End If
 		  Dim i As Integer = QueryInterval
 		  If i > 0 Then
 		    PerformTimer.Period = i
@@ -131,7 +133,7 @@ Protected Class cURLMulti
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_info_read.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLMulti.PerformOnce
 		  
-		  If Not StackLock.TryEnter Then Raise New IllegalLockingException
+		  StackLock.Signal
 		  Try
 		    Dim c As Integer
 		    mLastError = curl_multi_perform(mHandle, c) ' on exit, 'c' will contain the number of easy handles with unfinished business.
@@ -156,7 +158,7 @@ Protected Class cURLMulti
 		      Loop Until c <= 0
 		    End If
 		  Finally
-		    StackLock.Leave
+		    StackLock.Release
 		  End Try
 		  Return (mLastError = 0 And Instances.Count > 0)
 		End Function
@@ -213,7 +215,7 @@ Protected Class cURLMulti
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_remove_handle.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLMulti.RemoveItem
 		  
-		  If Not StackLock.TryEnter Then Raise New IllegalLockingException
+		  StackLock.Signal
 		  Try
 		    mLastError = curl_multi_remove_handle(mHandle, Item.Handle)
 		    If Instances.HasKey(Item.Handle) Then
@@ -221,7 +223,7 @@ Protected Class cURLMulti
 		    End If
 		    If Instances.Count = 0 Then PerformTimer.Mode = Timer.ModeOff
 		  Finally
-		    StackLock.Leave
+		    StackLock.Release
 		  End Try
 		  Return mLastError = 0
 		End Function
@@ -344,7 +346,7 @@ Protected Class cURLMulti
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private StackLock As CriticalSection
+		Private StackLock As Semaphore
 	#tag EndProperty
 
 
