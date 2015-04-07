@@ -651,24 +651,6 @@ Protected Class cURLItem
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Function Verbose() As Boolean
-		  Return mVerbose
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub Verbose(Assigns Verbosity As Boolean)
-		  ' Pass True to receive the DebugMessage event. The default is False
-		  ' See:
-		  ' http://curl.haxx.se/libcurl/c/curl_easy_setopt.html#CURLOPTVERBOSE
-		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Verbose
-		  
-		  If Not Me.SetOption(libcURL.Opts.VERBOSE, Verbosity) Then Raise New cURLException(mLastError)
-		  mVerbose = Verbosity
-		End Sub
-	#tag EndMethod
-
 	#tag Method, Flags = &h1
 		Protected Function Write(Text As String) As Integer
 		  ' Only available after calling SetOption(libcURL.Opts.CONNECT_ONLY, True)
@@ -961,6 +943,26 @@ Protected Class cURLItem
 			End Set
 		#tag EndSetter
 		Username As String
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  Return mVerbose
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  ' Pass True to receive the DebugMessage event. The default is False
+			  ' See:
+			  ' http://curl.haxx.se/libcurl/c/curl_easy_setopt.html#CURLOPTVERBOSE
+			  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Verbose
+			  
+			  If Not Me.SetOption(libcURL.Opts.VERBOSE, value) Then Raise New cURLException(mLastError)
+			  mVerbose = value
+			End Set
+		#tag EndSetter
+		Verbose As Boolean
 	#tag EndComputedProperty
 
 
