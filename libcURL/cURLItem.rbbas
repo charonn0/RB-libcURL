@@ -812,13 +812,14 @@ Protected Class cURLItem
 			  //The local port used to make the connection. This is decided upon by libcurl and the OS's network stack
 			  
 			  Return Me.GetInfo(libcURL.Info.LOCAL_PORT)
-			  'Dim mb As New MemoryBlock(4)
-			  'Me.GetInfo(libcURL.Info.LOCAL_PORT, mb)
-			  'If mLastError = 0 Then
-			  'Return mb.Int32Value(0)
-			  'End If
 			End Get
 		#tag EndGetter
+		#tag Setter
+			Set
+			  //local port to use
+			  If Not Me.SetOption(libcURL.Opts.LOCALPORT, value) Then Raise New cURLException(mLastError)
+			End Set
+		#tag EndSetter
 		LocalPort As Integer
 	#tag EndComputedProperty
 

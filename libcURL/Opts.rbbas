@@ -180,6 +180,9 @@ Protected Module Opts
 	#tag Constant, Name = KRBLEVEL, Type = Double, Dynamic = False, Default = \"10063", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = LOCALPORT, Type = Double, Dynamic = False, Default = \"139", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = MAIL_FROM, Type = Double, Dynamic = False, Default = \"10186", Scope = Protected
 	#tag EndConstant
 
