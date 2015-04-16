@@ -257,7 +257,7 @@ Protected Module libcURL
 		  Dim outstream As New BinaryStream(out)
 		  Dim frm As New libcURL.Form
 		  For Each item As String In FormData.Keys
-		    If Not frm.AddElement(item, FormData.Value(item)) Then Raise New cURLException(frm.LastError)
+		    If Not frm.AddElement(item, FormData.Value(item)) Then Raise New cURLException(frm)
 		  Next
 		  Dim c As libcURL.cURLItem = libcURL.SynchronousHelpers.Post(frm, URL, TimeOut, outstream, Headers, Username, Password)
 		  StatusCode = c.LastError

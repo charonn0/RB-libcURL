@@ -1,26 +1,28 @@
-#tag Class
-Protected Class cURLException
-Inherits RuntimeException
-	#tag Method, Flags = &h1000
-		Sub Constructor(ErrantItem As ErrorHandler)
-		  Me.ErrorNumber = ErrantItem.LastError
-		  If ErrantItem IsA libcURL.cURLMulti Then
-		    Me.Message = libcURL.FormatMultiError(Me.ErrorNumber)
-		  Else
-		    Me.Message = libcURL.FormatError(Me.ErrorNumber)
-		  End If
+#tag Interface
+Private Interface ErrorHandler
+	#tag Method, Flags = &h0
+		Function LastError() As Integer
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub LastError(Assigns NewError As Integer)
+		  
 		End Sub
 	#tag EndMethod
 
 
+	#tag Note, Name = About this Interface
+		This Interface is only accessible to code within the libcURL module. It allows code within the module (even other classes) to 
+		alter the internal LastError variable of an implementor object while preventing code from outside the module from tampering 
+		with things it oughtn't.
+		
+		It also allows a libcURL.cURLException to be constructed from the implementor object.
+	#tag EndNote
+
+
 	#tag ViewBehavior
-		#tag ViewProperty
-			Name="ErrorNumber"
-			Group="Behavior"
-			InitialValue="0"
-			Type="Integer"
-			InheritedFrom="RuntimeException"
-		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
 			Visible=true
@@ -34,13 +36,6 @@ Inherits RuntimeException
 			Group="Position"
 			InitialValue="0"
 			InheritedFrom="Object"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Message"
-			Group="Behavior"
-			Type="String"
-			EditorType="MultiLineEditor"
-			InheritedFrom="RuntimeException"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
@@ -62,5 +57,5 @@ Inherits RuntimeException
 			InheritedFrom="Object"
 		#tag EndViewProperty
 	#tag EndViewBehavior
-End Class
-#tag EndClass
+End Interface
+#tag EndInterface

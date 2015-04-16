@@ -1,5 +1,6 @@
 #tag Class
 Protected Class cURLMulti
+Implements ErrorHandler
 	#tag Method, Flags = &h0
 		Function AddItem(Item As libcURL.cURLItem) As Boolean
 		  ' Add a cURLItem to the multistack. The cURLItem should have all of its options already set and ready to go.
@@ -56,11 +57,12 @@ Protected Class cURLMulti
 		  End If
 		  
 		  mLastError = curl_global_init(CURL_GLOBAL_DEFAULT)
-		  If Me.LastError <> 0 Then Raise New cURLException(Me.LastError, True)
+		  If Me.LastError <> 0 Then Raise New cURLException(Me)
 		  
 		  mHandle = curl_multi_init()
 		  If mHandle <= 0 Then
-		    Raise New cURLException(libcURL.Errors.INIT_FAILED, True)
+		    mLastError = libcURL.Errors.INIT_FAILED
+		    Raise New cURLException(Me)
 		  End If
 		  Instances = New Dictionary
 		  StackLock = New Semaphore
@@ -88,9 +90,17 @@ Protected Class cURLMulti
 
 	#tag Method, Flags = &h0
 		Function LastError() As Integer
+		  // Part of the libcURL.ErrorHandler interface.
 		  ' Returns the most recent curl error code for the multistack (but not for any cURLItems managed by the stack.)
 		  Return mLastError
 		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub LastError(Assigns NewError As Integer)
+		  // Part of the libcURL.ErrorHandler interface.
+		  mLastError = NewError
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -147,11 +157,7 @@ Protected Class cURLMulti
 		          Call Me.RemoveItem(curl)
 		          
 		          'msg.Data is the last error code for the easy handle
-		          Dim oi() As Introspection.PropertyInfo = Introspection.GetType(curl).GetProperties
-		          For x As Integer = 0 To UBound(oi)
-		            If oi(x).Name = "mLastError" Then oi(x).Value(curl) = Integer(msg.Data) ' I'm sorry you had to see that
-		          Next
-		          
+		          ErrorHandler(curl).LastError = Integer(msg.Data)
 		          RaiseEvent TransferComplete(curl)
 		          
 		        End If

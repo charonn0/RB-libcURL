@@ -93,7 +93,7 @@ Private Module SynchronousHelpers
 	#tag Method, Flags = &h1
 		Protected Function Post(FormData As libcURL.Form, URL As String, TimeOut As Integer, OutputStream As Writeable, ByRef Headers As InternetHeaders, Username As String, Password As String) As libcURL.cURLItem
 		  Dim cURL As libcURL.cURLItem = CreateItem(Nil, OutputStream, Headers)
-		  If Not cURl.SetOption(libcURL.Opts.HTTPPOST, FormData) Then Raise New cURLException(cURL.LastError)
+		  If Not cURl.SetOption(libcURL.Opts.HTTPPOST, FormData) Then Raise New cURLException(cURL)
 		  If Username <> "" Then cURL.Username = Username
 		  If Password <> "" Then cURL.Password = Password
 		  Call cURL.Perform(URL, TimeOut)
@@ -106,7 +106,7 @@ Private Module SynchronousHelpers
 	#tag Method, Flags = &h1
 		Protected Function Put(URL As String, TimeOut As Integer, InputStream As Readable, OutputStream As Writeable, ByRef Headers As InternetHeaders, Username As String, Password As String) As libcURL.cURLItem
 		  Dim cURL As libcURL.cURLItem = CreateItem(InputStream, OutputStream, Headers)
-		  If Not cURL.SetOption(libcURL.Opts.UPLOAD, True) Then Raise New cURLException(cURL.LastError)
+		  If Not cURL.SetOption(libcURL.Opts.UPLOAD, True) Then Raise New cURLException(cURL)
 		  If Username <> "" Then cURL.Username = Username
 		  If Password <> "" Then cURL.Password = Password
 		  Call cURL.Perform(URL, TimeOut)

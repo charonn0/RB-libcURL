@@ -1,5 +1,6 @@
 #tag Class
 Protected Class Form
+Implements ErrorHandler
 	#tag Method, Flags = &h0
 		Function AddElement(Name As String, Value As Variant) As Boolean
 		  ' Adds the passed Value to the form using the specified name.
@@ -48,7 +49,10 @@ Protected Class Form
 		    Raise err
 		  End If
 		  
-		  If curl_global_init(CURL_GLOBAL_DEFAULT) <> 0 Then Raise New cURLException(libcURL.Errors.INIT_FAILED)
+		  If curl_global_init(CURL_GLOBAL_DEFAULT) <> 0 Then 
+		    mLastError = libcURL.Errors.INIT_FAILED
+		    Raise New cURLException(Me)
+		  End If
 		End Sub
 	#tag EndMethod
 
@@ -70,8 +74,16 @@ Protected Class Form
 
 	#tag Method, Flags = &h0
 		Function LastError() As Integer
+		  // Part of the libcURL.ErrorHandler interface.
 		  Return mLastError
 		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub LastError(Assigns NewError As Integer)
+		  // Part of the libcURL.ErrorHandler interface.
+		  mLastError = NewError
+		End Sub
 	#tag EndMethod
 
 

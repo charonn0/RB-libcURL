@@ -1,5 +1,6 @@
 #tag Class
 Protected Class cURLItem
+Implements ErrorHandler
 	#tag Method, Flags = &h0
 		Sub Close()
 		  ' cleans up the instance.
@@ -52,7 +53,7 @@ Protected Class cURLItem
 		    If mLastError = 0 Then
 		      Instances = New Dictionary
 		    Else
-		      Raise New cURLException(mLastError)
+		      Raise New cURLException(Me)
 		    End If
 		  End If
 		  
@@ -61,7 +62,8 @@ Protected Class cURLItem
 		    Instances.Value(mHandle) = New WeakRef(Me)
 		    InitCallbacks(Me)
 		  Else
-		    Raise New cURLException(libcURL.Errors.INIT_FAILED)
+		    mLastError = libcURL.Errors.INIT_FAILED
+		    Raise New cURLException(Me)
 		  End If
 		  
 		  ' by default, only raise the DebugMessage event if we're debugging
@@ -86,7 +88,7 @@ Protected Class cURLItem
 		      InitCallbacks(Me)
 		      If CopyOpts.Verbose Then Me.Verbose = True
 		    Else
-		      Raise New cURLException(mLastError) ' Note that this is not the actual error number (there is none for this function)
+		      Raise New cURLException(Me) ' Note that this is not the actual error number (there is none for this function)
 		    End If
 		  Else
 		    Raise New NilObjectException
@@ -337,42 +339,43 @@ Protected Class cURLItem
 		  ' This method sets up the callback functions for the passed instance of cURLItem
 		  
 		  #If RAISE_CREATE_SOCKET Then
-		    If Not Sender.SetOption(libcURL.Opts.OPENSOCKETDATA, Sender.Handle) Then Raise New cURLException(Sender.LastError)
-		    If Not Sender.SetOption(libcURL.Opts.OPENSOCKETFUNCTION, AddressOf OpenCallback) Then Raise New cURLException(Sender.LastError)
+		    If Not Sender.SetOption(libcURL.Opts.OPENSOCKETDATA, Sender.Handle) Then Raise New cURLException(Sender)
+		    If Not Sender.SetOption(libcURL.Opts.OPENSOCKETFUNCTION, AddressOf OpenCallback) Then Raise New cURLException(Sender)
 		  #endif
 		  
 		  If libcURL.Version.SSL Then
-		    If Not Sender.SetOption(libcURL.Opts.SSL_CTX_DATA, Sender.Handle) Then Raise New cURLException(Sender.LastError)
-		    If Not Sender.SetOption(libcURL.Opts.SSL_CTX_FUNCTION, AddressOf SSLInitCallback) Then Raise New cURLException(Sender.LastError)
+		    If Not Sender.SetOption(libcURL.Opts.SSL_CTX_DATA, Sender.Handle) Then Raise New cURLException(Sender)
+		    If Not Sender.SetOption(libcURL.Opts.SSL_CTX_FUNCTION, AddressOf SSLInitCallback) Then Raise New cURLException(Sender)
 		  End If
 		  
-		  If Not Sender.SetOption(libcURL.Opts.CLOSESOCKETDATA, Sender.Handle) Then Raise New cURLException(Sender.LastError)
-		  If Not Sender.SetOption(libcURL.Opts.CLOSESOCKETFUNCTION, AddressOf CloseCallback) Then Raise New cURLException(Sender.LastError)
+		  If Not Sender.SetOption(libcURL.Opts.CLOSESOCKETDATA, Sender.Handle) Then Raise New cURLException(Sender)
+		  If Not Sender.SetOption(libcURL.Opts.CLOSESOCKETFUNCTION, AddressOf CloseCallback) Then Raise New cURLException(Sender)
 		  
-		  If Not Sender.SetOption(libcURL.Opts.WRITEDATA, Sender.Handle) Then Raise New cURLException(Sender.LastError)
-		  If Not Sender.SetOption(libcURL.Opts.WRITEFUNCTION, AddressOf WriteCallback) Then Raise New cURLException(Sender.LastError)
+		  If Not Sender.SetOption(libcURL.Opts.WRITEDATA, Sender.Handle) Then Raise New cURLException(Sender)
+		  If Not Sender.SetOption(libcURL.Opts.WRITEFUNCTION, AddressOf WriteCallback) Then Raise New cURLException(Sender)
 		  
-		  If Not Sender.SetOption(libcURL.Opts.READDATA, Sender.Handle) Then Raise New cURLException(Sender.LastError)
-		  If Not Sender.SetOption(libcURL.Opts.READFUNCTION, AddressOf ReadCallback) Then Raise New cURLException(Sender.LastError)
+		  If Not Sender.SetOption(libcURL.Opts.READDATA, Sender.Handle) Then Raise New cURLException(Sender)
+		  If Not Sender.SetOption(libcURL.Opts.READFUNCTION, AddressOf ReadCallback) Then Raise New cURLException(Sender)
 		  
-		  If Not Sender.SetOption(libcURL.Opts.NOPROGRESS, False) Then Raise New cURLException(Sender.LastError)
+		  If Not Sender.SetOption(libcURL.Opts.NOPROGRESS, False) Then Raise New cURLException(Sender)
 		  If Sender.SetOption(libcURL.Opts.XFERINFOFUNCTION, AddressOf ProgressCallback) Then ' New versions
-		    If Not Sender.SetOption(libcURL.Opts.XFERINFODATA, Sender.Handle) Then Raise New cURLException(Sender.LastError)
+		    If Not Sender.SetOption(libcURL.Opts.XFERINFODATA, Sender.Handle) Then Raise New cURLException(Sender)
 		  Else ' old versions
-		    If Not Sender.SetOption(libcURL.Opts.PROGRESSDATA, Sender.Handle) Then Raise New cURLException(Sender.LastError)
-		    If Not Sender.SetOption(libcURL.Opts.PROGRESSFUNCTION, AddressOf ProgressCallback) Then Raise New cURLException(Sender.LastError)
+		    If Not Sender.SetOption(libcURL.Opts.PROGRESSDATA, Sender.Handle) Then Raise New cURLException(Sender)
+		    If Not Sender.SetOption(libcURL.Opts.PROGRESSFUNCTION, AddressOf ProgressCallback) Then Raise New cURLException(Sender)
 		  End If
 		  
-		  If Not Sender.SetOption(libcURL.Opts.HEADERDATA, Sender.Handle) Then Raise New cURLException(Sender.LastError)
-		  If Not Sender.SetOption(libcURL.Opts.HEADERFUNCTION, AddressOf HeaderCallback) Then Raise New cURLException(Sender.LastError)
+		  If Not Sender.SetOption(libcURL.Opts.HEADERDATA, Sender.Handle) Then Raise New cURLException(Sender)
+		  If Not Sender.SetOption(libcURL.Opts.HEADERFUNCTION, AddressOf HeaderCallback) Then Raise New cURLException(Sender)
 		  
-		  If Not Sender.SetOption(libcURL.Opts.DEBUGDATA, Sender.Handle) Then Raise New cURLException(Sender.LastError)
-		  If Not Sender.SetOption(libcURL.Opts.DEBUGFUNCTION, AddressOf DebugCallback) Then Raise New cURLException(Sender.LastError)
+		  If Not Sender.SetOption(libcURL.Opts.DEBUGDATA, Sender.Handle) Then Raise New cURLException(Sender)
+		  If Not Sender.SetOption(libcURL.Opts.DEBUGFUNCTION, AddressOf DebugCallback) Then Raise New cURLException(Sender)
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function LastError() As Integer
+		  // Part of the libcURL.ErrorHandler interface.
 		  ' All calls into libcURL that return an error code will update LastError
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Errors
@@ -380,6 +383,13 @@ Protected Class cURLItem
 		  
 		  Return mLastError
 		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub LastError(Assigns NewError As Integer)
+		  // Part of the libcURL.ErrorHandler interface.
+		  mLastError = NewError
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
@@ -438,10 +448,10 @@ Protected Class cURLItem
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Perform
 		  
 		  If URL <> "" Then
-		    If Not SetOption(libcURL.Opts.URL, URL) Then Raise New cURLException(mLastError)
+		    If Not SetOption(libcURL.Opts.URL, URL) Then Raise New cURLException(Me)
 		  End If
 		  If Timeout > 0 Then
-		    If Not SetOption(libcURL.Opts.TIMEOUT, Timeout) Then Raise New cURLException(mLastError)
+		    If Not SetOption(libcURL.Opts.TIMEOUT, Timeout) Then Raise New cURLException(Me)
 		  End If
 		  mLastError = curl_easy_perform(mHandle)
 		  Return mLastError = 0
@@ -778,7 +788,7 @@ Protected Class cURLItem
 		#tag Setter
 			Set
 			  mCA_ListFile = value
-			  If Not Me.SetOption(libcURL.Opts.CAINFO, value) Then Raise New cURLException(mLastError)
+			  If Not Me.SetOption(libcURL.Opts.CAINFO, value) Then Raise New cURLException(Me)
 			End Set
 		#tag EndSetter
 		CA_ListFile As FolderItem
@@ -799,7 +809,7 @@ Protected Class cURLItem
 		#tag Setter
 			Set
 			  //local port to use
-			  If Not Me.SetOption(libcURL.Opts.LOCALPORT, value) Then Raise New cURLException(mLastError)
+			  If Not Me.SetOption(libcURL.Opts.LOCALPORT, value) Then Raise New cURLException(Me)
 			End Set
 		#tag EndSetter
 		LocalPort As Integer
@@ -846,7 +856,7 @@ Protected Class cURLItem
 		#tag EndGetter
 		#tag Setter
 			Set
-			  If Not Me.SetOption(libcURL.Opts.NETINTERFACE, value.IPAddress) Then Raise New cURLException(mLastError)
+			  If Not Me.SetOption(libcURL.Opts.NETINTERFACE, value.IPAddress) Then Raise New cURLException(Me)
 			End Set
 		#tag EndSetter
 		NetworkInterface As NetworkInterface
@@ -859,7 +869,7 @@ Protected Class cURLItem
 		#tag Setter
 			Set
 			  //If the server will require a password, set it here. If the server doesn't require one, this property is ignored
-			  If Not Me.SetOption(libcURL.Opts.PASSWORD, value) Then Raise New cURLException(mLastError)
+			  If Not Me.SetOption(libcURL.Opts.PASSWORD, value) Then Raise New cURLException(Me)
 			End Set
 		#tag EndSetter
 		Password As String
@@ -884,7 +894,7 @@ Protected Class cURLItem
 		#tag Setter
 			Set
 			  //remote port.
-			  If Not Me.SetOption(libcURL.Opts.PORT, value) Then Raise New cURLException(mLastError)
+			  If Not Me.SetOption(libcURL.Opts.PORT, value) Then Raise New cURLException(Me)
 			End Set
 		#tag EndSetter
 		Port As Integer
@@ -915,7 +925,7 @@ Protected Class cURLItem
 			  ' Sets the URL for the next request.
 			  ' See: http://curl.haxx.se/libcurl/c/curl_easy_setopt.html#CURLOPTURL
 			  
-			  If Not SetOption(libcURL.Opts.URL, value) Then Raise New cURLException(mLastError)
+			  If Not SetOption(libcURL.Opts.URL, value) Then Raise New cURLException(Me)
 			End Set
 		#tag EndSetter
 		URL As String
@@ -926,7 +936,7 @@ Protected Class cURLItem
 			Set
 			  //Set your application's UserAgent string for protocols that support/require such. The default will be the output of cURLversion()
 			  
-			  If Not Me.SetOption(libcURL.Opts.USERAGENT, value) Then Raise New cURLException(mLastError)
+			  If Not Me.SetOption(libcURL.Opts.USERAGENT, value) Then Raise New cURLException(Me)
 			End Set
 		#tag EndSetter
 		UserAgent As String
@@ -939,7 +949,7 @@ Protected Class cURLItem
 		#tag Setter
 			Set
 			  //If the server will require a username, set it here. If the server doesn't require one, this property is ignored
-			  If Not Me.SetOption(libcURL.Opts.USERNAME, value) Then Raise New cURLException(mLastError)
+			  If Not Me.SetOption(libcURL.Opts.USERNAME, value) Then Raise New cURLException(Me)
 			End Set
 		#tag EndSetter
 		Username As String
@@ -958,7 +968,7 @@ Protected Class cURLItem
 			  ' http://curl.haxx.se/libcurl/c/curl_easy_setopt.html#CURLOPTVERBOSE
 			  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Verbose
 			  
-			  If Not Me.SetOption(libcURL.Opts.VERBOSE, value) Then Raise New cURLException(mLastError)
+			  If Not Me.SetOption(libcURL.Opts.VERBOSE, value) Then Raise New cURLException(Me)
 			  mVerbose = value
 			End Set
 		#tag EndSetter
@@ -1075,6 +1085,11 @@ Protected Class cURLItem
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Verbose"
+			Group="Behavior"
+			Type="Boolean"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class
