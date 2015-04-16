@@ -25,7 +25,7 @@ Protected Module Version
 		  If Not System.IsFunctionAvailable("curl_version", "libcurl") Then Return ""
 		  Static p As MemoryBlock
 		  If p = Nil Then
-		     p = curl_version()
+		    p = curl_version()
 		  End If
 		  Return p.CString(0)
 		End Function

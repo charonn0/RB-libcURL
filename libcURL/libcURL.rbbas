@@ -65,7 +65,7 @@ Protected Module libcURL
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h1
-		Protected Soft Declare Function curl_getdate Lib "libcurl" (sDate As CString, Reserved As Ptr) As Integer
+		Protected Soft Declare Function curl_getdate Lib "libcurl" (DateString As CString, Reserved As Ptr) As Integer
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h1
@@ -188,10 +188,11 @@ Protected Module libcURL
 		  ' be required to complete the transfer. Returns a MemoryBlock containing any downloaded data.
 		  
 		  Dim out As New MemoryBlock(0)
-		  Dim outs As New BinaryStream(out)
-		  Dim c As libcURL.cURLItem = libcURL.SynchronousHelpers.Get(URL, TimeOut, outs, Headers, Username, Password)
+		  Dim outstream As New BinaryStream(out)
+		  Dim c As libcURL.cURLItem = libcURL.SynchronousHelpers.Get(URL, TimeOut, outstream, Headers, Username, Password)
 		  StatusCode = c.LastError
-		  outs.Close
+		  outstream.Close
+		  c.Close
 		  Return out
 		End Function
 	#tag EndMethod
@@ -246,21 +247,22 @@ Protected Module libcURL
 	#tag Method, Flags = &h1
 		Protected Function Post(FormData As Dictionary, URL As String, TimeOut As Integer, ByRef Headers As InternetHeaders, ByRef StatusCode As Integer, Username As String = "", Password As String = "") As MemoryBlock
 		  ' Synchronously POST the passed FormData via HTTP(S) using multipart/form-data encoding. The FormData dictionary
-		  ' contains NAME:VALUE pairs comprising HTML form elements. NAME is a string containing the form-element name; VALUE 
-		  ' may be a string or a FolderItem. Pass a connection TimeOut interval (in seconds), or 0 to wait forever. Pass an 
-		  ' InternetHeaders instance and an Integer by reference to contain the response headers (if any) and final result 
-		  ' code (if any). Headers and StatusCode are mandatory and MUST NOT be Nil. Pass a username or password if a Username 
-		  ' and/or Password will be required to complete the transfer. Returns a MemoryBlock containing any downloaded data.
+		  ' contains NAME:VALUE pairs comprising HTML form elements. NAME is a string containing the form-element name; VALUE
+		  ' may be a string or a FolderItem. Pass a connection TimeOut interval (in seconds), or 0 to wait forever. Pass an
+		  ' InternetHeaders instance and an Integer by reference to contain the response headers (if any) and final result
+		  ' code (if any). Headers and StatusCode are mandatory and MUST NOT be Nil. Pass a username or password if a username
+		  ' and/or password will be required to complete the transfer. Returns a MemoryBlock containing any downloaded data.
 		  
 		  Dim out As New MemoryBlock(0)
-		  Dim outs As New BinaryStream(out)
+		  Dim outstream As New BinaryStream(out)
 		  Dim frm As New libcURL.Form
 		  For Each item As String In FormData.Keys
 		    If Not frm.AddElement(item, FormData.Value(item)) Then Raise New cURLException(frm.LastError)
 		  Next
-		  Dim c As libcURL.cURLItem = libcURL.SynchronousHelpers.Post(frm, URL, TimeOut, outs, Headers, Username, Password)
+		  Dim c As libcURL.cURLItem = libcURL.SynchronousHelpers.Post(frm, URL, TimeOut, outstream, Headers, Username, Password)
 		  StatusCode = c.LastError
-		  outs.Close
+		  outstream.Close
+		  c.Close
 		  Return out
 		End Function
 	#tag EndMethod
@@ -269,20 +271,21 @@ Protected Module libcURL
 		Protected Function Put(File As FolderItem, URL As String, TimeOut As Integer, ByRef Headers As InternetHeaders, ByRef StatusCode As Integer, Username As String = "", Password As String = "") As MemoryBlock
 		  ' Synchronously uploads the passed FolderItem using protocol-appropriate semantics (http PUT, ftp STOR, etc.)
 		  ' The protocol is inferred from the URL; explictly specify the protocol in the URL to avoid bad guesses. The
-		  ' path part of the URL specifies the remote directory and file name to store the file under. Pass a connection 
-		  ' TimeOut interval (in seconds), or 0 to wait forever. Pass an InternetHeaders instance and an Integer by reference 
-		  ' to contain the response headers (if any) and final result code (if any). Headers and StatusCode are mandatory 
-		  ' and MUST NOT be Nil. Pass an username or password if a Username and/or Password will be required to complete 
+		  ' path part of the URL specifies the remote directory and file name to store the file under. Pass a connection
+		  ' TimeOut interval (in seconds), or 0 to wait forever. Pass an InternetHeaders instance and an Integer by reference
+		  ' to contain the response headers (if any) and final result code (if any). Headers and StatusCode are mandatory
+		  ' and MUST NOT be Nil. Pass a username or password if a username and/or password will be required to complete
 		  ' the transfer. Returns a MemoryBlock containing any downloaded data.
 		  
 		  Dim out As New MemoryBlock(0)
-		  Dim outs As New BinaryStream(out)
+		  Dim outstream As New BinaryStream(out)
 		  Dim instream As BinaryStream = BinaryStream.Open(File)
 		  
-		  Dim c As libcURL.cURLItem = libcURL.SynchronousHelpers.Put(URL, TimeOut, instream, outs, Headers, Username, Password)
+		  Dim c As libcURL.cURLItem = libcURL.SynchronousHelpers.Put(URL, TimeOut, instream, outstream, Headers, Username, Password)
 		  StatusCode = c.LastError
-		  outs.Close
+		  outstream.Close
 		  instream.Close
+		  c.Close
 		  Return out
 		End Function
 	#tag EndMethod
@@ -290,7 +293,7 @@ Protected Module libcURL
 	#tag Method, Flags = &h1
 		Protected Function URLDecode(Data As String) As String
 		  ' Returns the decoded Data using percent encoding as defined in rfc2396
-		  ' See: 
+		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_unescape.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLDecode
 		  
