@@ -173,7 +173,7 @@ Protected Module libcURL
 		    Dim mb As MemoryBlock = curl_multi_strerror(cURLMultiError)
 		    Return mb.CString(0)
 		  Else
-		    Return "libcURL is not available."
+		    Return "libcURL is not available or is an unsupported version."
 		  End If
 		End Function
 	#tag EndMethod

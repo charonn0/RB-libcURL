@@ -52,7 +52,7 @@ Implements ErrorHandler
 		  
 		  If Not libcURL.IsAvailable Then
 		    Dim err As New PlatformNotSupportedException
-		    err.Message = "libcURL is not available."
+		    err.Message = "libcURL is not available or is an unsupported version."
 		    Raise err
 		  End If
 		  
