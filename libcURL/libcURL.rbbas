@@ -148,7 +148,6 @@ Protected Module libcURL
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.FormatError
 		  
 		  Select Case True
-		    
 		  Case Not libcURL.IsAvailable
 		    Return "libcURL is not available or is an unsupported version."
 		    
@@ -169,12 +168,17 @@ Protected Module libcURL
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_strerror.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.FormatMultiError
 		  
-		  If libcURL.IsAvailable Then
+		  Select Case True
+		  Case Not libcURL.IsAvailable
+		    Return "libcURL is not available or is an unsupported version."
+		    
+		  Case cURLError = libcURL.Errors.INIT_FAILED
+		    Return "Unknown failure while constructing a cURL multi handle."
+		    
+		  Else
 		    Dim mb As MemoryBlock = curl_multi_strerror(cURLMultiError)
 		    Return mb.CString(0)
-		  Else
-		    Return "libcURL is not available or is an unsupported version."
-		  End If
+		  End Select
 		End Function
 	#tag EndMethod
 
