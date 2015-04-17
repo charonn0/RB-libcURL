@@ -77,6 +77,7 @@ Implements ErrorHandler
 		Sub Constructor(CopyOpts As libcURL.cURLItem)
 		  ' Creates a new curl_easy handle by cloning the passed handle. The clone is independent of the original.
 		  ' This method does not initialize libcURL as it is assumed to have been initialized in CopyOpts.Constructor()
+		  ' If the handle cannot be duplicated an exception will be raised.
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_duphandle.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Constructor
@@ -88,7 +89,8 @@ Implements ErrorHandler
 		      InitCallbacks(Me)
 		      If CopyOpts.Verbose Then Me.Verbose = True
 		    Else
-		      Raise New cURLException(Me) ' Note that this is not the actual error number (there is none for this function)
+		      mLastError = libcURL.Errors.INIT_FAILED
+		      Raise New cURLException(Me)
 		    End If
 		  Else
 		    Raise New NilObjectException
@@ -535,8 +537,8 @@ Implements ErrorHandler
 		  ' a particular option (except Nil,) however it does enforce type safety of the value and will raise
 		  ' an exception if an unsupported type is passed.
 		  
-		  ' NewValue may be a Boolean, Integer, Ptr, String, MemoryBlock, FolderItem, libcURL.Form, libcURL.curl_slist,
-		  ' or a Delegate matching cURLCallback, cURLCloseCallback, cURLDebugCallback, cURLOpenCallback, or cURLProgressCallback.
+		  ' NewValue may be a Boolean, Integer, Ptr, String, MemoryBlock, FolderItem, libcURL.Form, libcURL.curl_slist;
+		  ' or, a Delegate matching cURLCallback, cURLCloseCallback, cURLDebugCallback, cURLOpenCallback, or cURLProgressCallback.
 		  ' Passing a Nil object will raise an exception unless the option explicitly accepts NULL.
 		  
 		  ' If the option was set this method returns True. If it returns False the option was not set and the
