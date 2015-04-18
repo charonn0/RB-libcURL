@@ -172,7 +172,7 @@ Protected Module libcURL
 		  Case Not libcURL.IsAvailable
 		    Return "libcURL is not available or is an unsupported version."
 		    
-		  Case cURLError = libcURL.Errors.INIT_FAILED
+		  Case cURLMultiError = libcURL.Errors.INIT_FAILED
 		    Return "Unknown failure while constructing a cURL multi handle."
 		    
 		  Else
