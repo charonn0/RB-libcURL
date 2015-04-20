@@ -600,6 +600,9 @@ End
 		  Call curlget.SetOption(libcURL.Opts.FAILONERROR, True) ' fail on server errors
 		  curlget.CA_ListFile = CA_File ' for SSL/TLS connections we must specify a list of acceptable certificate authorities
 		  curlget.URL = TextField1.Text
+		  multi.ShareCookies = True
+		  multi.ShareSSL = True
+		  multi.ShareDNSCache = True
 		  Call multi.AddItem(curlget) ' by using a multistack a RB app will remain responsive during the transfer.
 		  multi.Perform()
 		  

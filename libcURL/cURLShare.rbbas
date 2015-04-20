@@ -23,7 +23,7 @@ Inherits libcURL.cURLMulti
 		  // Constructor() -- From cURLMulti
 		  Super.Constructor()
 		  mShareHandle = curl_share_init()
-		  If mShareHandle = 0 Then 
+		  If mShareHandle = 0 Then
 		    mLastError = libcURL.Errors.INIT_FAILED
 		    Raise New cURLException(Me)
 		  End If
@@ -37,13 +37,10 @@ Inherits libcURL.cURLMulti
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Function SetOption(OptionNumber As Integer, NewValue As Variant) As Boolean
-		  If OptionNumber = libcURL.Opts.SHARE Then
-		    mLastError = curl_share_setopt(mShareHandle, OptionNumber, NewValue.PtrValue)
-		    Return mLastError = 0
-		  End If
-		  Return Super.SetOption(OptionNumber, NewValue)
+	#tag Method, Flags = &h1
+		Protected Function SetShareOption(OptionNumber As Integer, NewValue As Variant) As Boolean
+		  mLastError = curl_share_setopt(mShareHandle, OptionNumber, NewValue.PtrValue)
+		  Return mLastError = 0
 		End Function
 	#tag EndMethod
 
@@ -54,10 +51,85 @@ Inherits libcURL.cURLMulti
 	#tag EndMethod
 
 
+	#tag Note, Name = About this class
+		
+		s
+	#tag EndNote
+
+
+	#tag Property, Flags = &h21
+		Private mShareCookies As Boolean
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mShareDNSCache As Boolean
+	#tag EndProperty
+
 	#tag Property, Flags = &h1
 		Protected mShareHandle As Integer
 	#tag EndProperty
 
+	#tag Property, Flags = &h21
+		Private mShareSSL As Boolean
+	#tag EndProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  return mShareCookies
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  mShareCookies = value
+			  Dim shareoption As Integer
+			  If mShareCookies Then shareoption = CURLSHOPT_SHARE Else shareoption = CURLSHOPT_UNSHARE 
+			  If Not Me.SetShareOption(shareoption, CURL_LOCK_DATA_COOKIE) Then Raise New cURLException(Me)
+			End Set
+		#tag EndSetter
+		ShareCookies As Boolean
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  return ShareDNSCache
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  mShareDNSCache = value
+			  Dim shareoption As Integer
+			  If mShareDNSCache Then shareoption = CURLSHOPT_SHARE Else shareoption = CURLSHOPT_UNSHARE
+			  If Not Me.SetShareOption(shareoption, CURL_LOCK_DATA_DNS) Then Raise New cURLException(Me)
+			End Set
+		#tag EndSetter
+		ShareDNSCache As Boolean
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  return mShareSSL
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  mShareSSL = value
+			  Dim shareoption As Integer
+			  If mShareSSL Then shareoption = CURLSHOPT_SHARE Else shareoption = CURLSHOPT_UNSHARE
+			  If Not Me.SetShareOption(shareoption, CURL_LOCK_DATA_SSL_SESSION) Then Raise New cURLException(Me)
+			End Set
+		#tag EndSetter
+		ShareSSL As Boolean
+	#tag EndComputedProperty
+
+
+	#tag Constant, Name = CURLSHOPT_SHARE, Type = Double, Dynamic = False, Default = \"1", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = CURLSHOPT_UNSHARE, Type = Double, Dynamic = False, Default = \"2", Scope = Private
+	#tag EndConstant
 
 	#tag Constant, Name = CURL_LOCK_DATA_COOKIE, Type = Double, Dynamic = False, Default = \"2", Scope = Private
 	#tag EndConstant
