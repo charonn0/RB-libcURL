@@ -125,6 +125,22 @@ Protected Module libcURL
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Function curl_share_cleanup Lib "libcurl" (Handle As Integer) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Function curl_share_init Lib "libcurl" () As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Function curl_share_setopt Lib "libcurl" (Handle As Integer, Option As Integer, Value As Ptr) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Function curl_share_strerror Lib "libcurl" (errNo As Integer) As Ptr
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h21
 		Private Soft Declare Function curl_slist_append Lib "libcurl" (sList As Ptr, Data As CString) As Ptr
 	#tag EndExternalMethod
 
@@ -177,6 +193,27 @@ Protected Module libcURL
 		    
 		  Else
 		    Dim mb As MemoryBlock = curl_multi_strerror(cURLMultiError)
+		    Return mb.CString(0)
+		  End Select
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function FormatShareError(cURLShareError As Integer) As String
+		  ' Translates libcurl share error numbers to messages
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/curl_share_strerror.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.FormatShareError
+		  
+		  Select Case True
+		  Case Not libcURL.IsAvailable
+		    Return "libcURL is not available or is an unsupported version."
+		    
+		  Case cURLShareError = libcURL.Errors.INIT_FAILED
+		    Return "Unknown failure while constructing a cURL share handle."
+		    
+		  Else
+		    Dim mb As MemoryBlock = curl_share_strerror(cURLShareError)
 		    Return mb.CString(0)
 		  End Select
 		End Function

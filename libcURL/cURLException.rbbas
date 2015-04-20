@@ -4,11 +4,14 @@ Inherits RuntimeException
 	#tag Method, Flags = &h1000
 		Sub Constructor(ErrantItem As ErrorHandler)
 		  Me.ErrorNumber = ErrantItem.LastError
-		  If ErrantItem IsA libcURL.cURLMulti Then
+		  Select Case ErrantItem
+		  Case IsA libcURL.cURLShare
+		    Me.Message = libcURL.FormatShareError(Me.ErrorNumber)
+		  Case IsA libcURL.cURLMulti
 		    Me.Message = libcURL.FormatMultiError(Me.ErrorNumber)
 		  Else
 		    Me.Message = libcURL.FormatError(Me.ErrorNumber)
-		  End If
+		  End Select
 		End Sub
 	#tag EndMethod
 

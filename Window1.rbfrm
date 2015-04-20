@@ -517,7 +517,7 @@ End
 		  Dim bs As BinaryStream = BinaryStream.Create(CA_File, True)
 		  bs.Write(DEFAULT_CA_INFO_PEM)
 		  bs.Close
-		  multi = New libcURL.cURLMulti
+		  multi = New libcURL.cURLShare
 		  AddHandler multi.TransferComplete, WeakAddressOf TransferCompleteHandler
 		End Sub
 	#tag EndEvent
@@ -634,7 +634,7 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Sub TransferCompleteHandler(Sender As libcURL.cURLMulti, easyitem As libcURL.cURLItem)
+		Private Sub TransferCompleteHandler(Sender As libcURL.cURLShare, easyitem As libcURL.cURLItem)
 		  #pragma Unused Sender
 		  Dim err As Integer = easyitem.LastError
 		  MsgBox(easyitem.URL + " completed with error code: " + Str(err) + " (" + libcURL.FormatError(err) + ").")
@@ -666,7 +666,7 @@ End
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private multi As libcURL.cURLMulti
+		Private multi As libcURL.cURLShare
 	#tag EndProperty
 
 	#tag Property, Flags = &h21

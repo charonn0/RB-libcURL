@@ -318,6 +318,9 @@ Protected Module Opts
 	#tag Constant, Name = SEEKFUNCTION, Type = Double, Dynamic = False, Default = \"20167", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = SHARE, Type = Double, Dynamic = False, Default = \"10100", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = SOCKS5_GSSAPI_SERVICE, Type = Double, Dynamic = False, Default = \"10179", Scope = Protected
 	#tag EndConstant
 
