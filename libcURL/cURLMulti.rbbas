@@ -227,7 +227,7 @@ Implements ErrorHandler
 		    If Instances.HasKey(Item.Handle) Then
 		      Instances.Remove(Item.Handle)
 		    End If
-		    If Instances.Count = 0 Then PerformTimer.Mode = Timer.ModeOff
+		    If Instances.Count = 0 And PerformTimer <> Nil Then PerformTimer.Mode = Timer.ModeOff
 		  Finally
 		    StackLock.Release
 		  End Try
