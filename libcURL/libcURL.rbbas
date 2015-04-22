@@ -191,6 +191,9 @@ Protected Module libcURL
 		  Case cURLMultiError = libcURL.Errors.INIT_FAILED
 		    Return "Unknown failure while constructing a cURL multi handle."
 		    
+		  Case cURLMultiError = libcURL.Errors.ALREADY_ADDED
+		    Return "The added easy handle is already associated with a multi handle."
+		    
 		  Else
 		    Dim mb As MemoryBlock = curl_multi_strerror(cURLMultiError)
 		    Return mb.CString(0)
@@ -211,6 +214,9 @@ Protected Module libcURL
 		    
 		  Case cURLShareError = libcURL.Errors.INIT_FAILED
 		    Return "Unknown failure while constructing a cURL share handle."
+		    
+		  Case cURLShareError = libcURL.Errors.ALREADY_ADDED
+		    Return "The added easy handle is already associated with a multi handle."
 		    
 		  Else
 		    Dim mb As MemoryBlock = curl_share_strerror(cURLShareError)

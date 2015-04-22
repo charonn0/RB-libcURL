@@ -5,10 +5,16 @@ Implements ErrorHandler
 		Function AddItem(Item As libcURL.cURLItem) As Boolean
 		  ' Add a cURLItem to the multistack. The cURLItem should have all of its options already set and ready to go.
 		  ' You may not add an item while a call to PerformOnce has not yet returned. Doing so will raise an IllegalLockingException.
+		  ' A cURLItem may belong to only one cURLMulti object at a time. Passing an owned cURLItem will raise an exception.
 		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_add_handle.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLMulti.AddItem
+		  
+		  If mEasyHandles.IndexOf(Item.Handle) > -1 Then 
+		    mLastError = libcURL.Errors.ALREADY_ADDED
+		    Raise New cURLException(Me)
+		  End If
 		  
 		  StackLock.Signal
 		  Try
@@ -19,6 +25,7 @@ Implements ErrorHandler
 		  Finally
 		    StackLock.Release
 		  End Try
+		  mEasyHandles.Append(Item.Handle)
 		  Return True
 		End Function
 	#tag EndMethod
@@ -231,6 +238,8 @@ Implements ErrorHandler
 		  Finally
 		    StackLock.Release
 		  End Try
+		  Dim h As Integer = mEasyHandles.IndexOf(Item.Handle)
+		  If h > -1 Then mEasyHandles.Remove(h)
 		  Return mLastError = 0
 		End Function
 	#tag EndMethod
@@ -337,6 +346,10 @@ Implements ErrorHandler
 
 	#tag Property, Flags = &h21
 		Private LastCount As Integer = -1
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private Shared mEasyHandles() As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
