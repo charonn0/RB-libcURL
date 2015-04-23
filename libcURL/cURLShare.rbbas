@@ -5,7 +5,7 @@ Inherits libcURL.cURLMulti
 		Function AddItem(Item As libcURL.cURLItem) As Boolean
 		  ' Add an easy handle to share handle, then call the overridden AddItem method.
 		  '
-		  ' See: 
+		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/CURLOPT_SHARE.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLShare.AddItem
 		  
@@ -19,9 +19,9 @@ Inherits libcURL.cURLMulti
 		  ' Calls the overridden Close method, and then cleans up the share handle.
 		  ' Called automatically by the superclass destructor.
 		  
+		  Super.Close
 		  If mShareHandle <> 0 Then mLastError = curl_share_cleanup(mShareHandle)
 		  If mShareHandle <> 0 And mLastError = 0 Then mShareHandle = 0
-		  Super.Close
 		  
 		End Sub
 	#tag EndMethod
@@ -94,7 +94,7 @@ Inherits libcURL.cURLMulti
 			Set
 			  mShareCookies = value
 			  Dim shareoption As Integer
-			  If mShareCookies Then shareoption = CURLSHOPT_SHARE Else shareoption = CURLSHOPT_UNSHARE 
+			  If mShareCookies Then shareoption = CURLSHOPT_SHARE Else shareoption = CURLSHOPT_UNSHARE
 			  If Not Me.SetShareOption(shareoption, CURL_LOCK_DATA_COOKIE) Then Raise New cURLException(Me)
 			End Set
 		#tag EndSetter
@@ -173,6 +173,21 @@ Inherits libcURL.cURLMulti
 			Visible=true
 			Group="ID"
 			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="ShareCookies"
+			Group="Behavior"
+			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="ShareDNSCache"
+			Group="Behavior"
+			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="ShareSSL"
+			Group="Behavior"
+			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
