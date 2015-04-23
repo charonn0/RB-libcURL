@@ -3,6 +3,12 @@ Protected Class cURLShare
 Inherits libcURL.cURLMulti
 	#tag Method, Flags = &h0
 		Function AddItem(Item As libcURL.cURLItem) As Boolean
+		  ' Add an easy handle to share handle, then call the overridden AddItem method.
+		  '
+		  ' See: 
+		  ' http://curl.haxx.se/libcurl/c/CURLOPT_SHARE.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLShare.AddItem
+		  
 		  If Not Item.SetOption(libcURL.Opts.SHARE, Me) Then Raise New cURLException(Item)
 		  Return Super.AddItem(Item)
 		End Function
@@ -10,6 +16,9 @@ Inherits libcURL.cURLMulti
 
 	#tag Method, Flags = &h0
 		Sub Close()
+		  ' Calls the overridden Close method, and then cleans up the share handle.
+		  ' Called automatically by the superclass destructor.
+		  
 		  If mShareHandle <> 0 Then mLastError = curl_share_cleanup(mShareHandle)
 		  If mShareHandle <> 0 And mLastError = 0 Then mShareHandle = 0
 		  Super.Close
@@ -32,6 +41,8 @@ Inherits libcURL.cURLMulti
 
 	#tag Method, Flags = &h0
 		Function RemoveItem(Item As libcURL.cURLItem) As Boolean
+		  ' Remove an easy handle from share handle, then call the overridden RemoveItem method.
+		  ' See: http://curl.haxx.se/libcurl/c/CURLOPT_SHARE.html
 		  If Not Item.SetOption(libcURL.Opts.SHARE, Nil) Then Raise New cURLException(Item)
 		  Return Super.RemoveItem(Item)
 		End Function
