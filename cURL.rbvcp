@@ -5,6 +5,7 @@ Window=Window1;Window1.rbfrm;&h78794FFF;&h0;false
 Window=FormGenerator;FormGenerator.rbfrm;&h4CBCE7FF;&h0;false
 BuildSteps=Build Automation;Build Automation.rbbas;&h4A2D3FFF;&h0;false
 Module=libcURL;libcURL/libcURL.rbbas;&h1B9FF7FF;&h0;false
+Class=cURLHandle;libcURL/cURLHandle.rbbas;&h40F2C7FF;&h1B9FF7FF;false
 Class=cURLShare;libcURL/cURLShare.rbbas;&h539AFFF;&h1B9FF7FF;false
 Interface=ErrorHandler;libcURL/ErrorHandler.rbbas;&h4E0DAFFF;&h1B9FF7FF;false
 Module=SynchronousHelpers;libcURL/SynchronousHelpers.rbbas;&h5C3117FF;&h1B9FF7FF;false
