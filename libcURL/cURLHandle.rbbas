@@ -1,66 +1,36 @@
 #tag Class
 Protected Class cURLHandle
+Implements ErrorHandler
 	#tag Method, Flags = &h1
-		Protected Sub Constructor(Flags As Integer)
+		Protected Sub Constructor(GlobalInitFlags As Integer)
 		  If Not libcURL.IsAvailable Then
 		    Dim err As New PlatformNotSupportedException
 		    err.Message = "libcURL is not available or is an unsupported version."
 		    Raise err
 		  End If
 		  
-		  Select Case Flags
-		  Case CURL_GLOBAL_ALL
-		    If Not Win32Init Or Not SSLInit Then
-		      mLastError = curl_global_init(Flags)
-		      If mLastError <> 0 Then Return
-		      Win32Init = True
-		      SSLInit = True
-		      mInitCount = mInitCount + 1
-		    End If
-		     
-		  Case CURL_GLOBAL_WIN32
-		    If Not Win32Init Then
-		      mLastError = curl_global_init(Flags)
-		      If mLastError <> 0 Then Return
-		      Win32Init = True
-		      mInitCount = mInitCount + 1
-		    End If
-		    
-		  Case CURL_GLOBAL_SSL
-		    If Not SSLInit Then
-		      mLastError = curl_global_init(Flags)
-		      If mLastError <> 0 Then Return
-		      SSLInit = True
-		      mInitCount = mInitCount + 1
-		    End If
-		    
-		  Case CURL_GLOBAL_NOTHING
-		    If mInitCount = 0 Then
-		      mLastError = curl_global_init(Flags)
-		      If mLastError <> 0 Then Return
-		      mInitCount = mInitCount + 1
-		    End If
-		    
-		  End Select
-		  
-		  If mLastError = 0 Then mRefCount = mRefCount + 1
+		  If InitFlags = Nil Then InitFlags = New Dictionary
+		  If Not InitFlags.HasKey(GlobalInitFlags) Then
+		    mLastError = curl_global_init(GlobalInitFlags)
+		    If mLastError <> 0 Then Raise New cURLException(Me)
+		  End If
+		  InitFlags.Value(GlobalInitFlags) = InitFlags.Lookup(GlobalInitFlags, 0) + 1
+		  mRefCount = mRefCount + 1
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
 		Private Sub Destructor()
-		  If mInitCount > 0 Then mRefCount = mRefCount - 1
-		  If mRefCount <= 0 Then 
-		    For i As Integer = 0 To mInitCount
-		      If libcURL.IsAvailable Then curl_global_cleanup()
-		      'mInitCount = Max(mInitCount - 1, 0)
+		  If InitFlags.Count > 0 Then mRefCount = mRefCount - 1
+		  If mRefCount <= 0 Then
+		    For Each Flag As Integer In InitFlags.Keys
+		      For i As Integer = 1 To InitFlags.Value(Flag)
+		        If libcURL.IsAvailable Then curl_global_cleanup()
+		      Next
 		    Next
-		    Win32Init = False
-		    SSLInit = False
-		    NothingInit = False
-		    mInitCount = 0
-		    mRefCount = 0
+		    InitFlags = Nil
 		  End If
+		  
 		End Sub
 	#tag EndMethod
 
@@ -76,8 +46,8 @@ Protected Class cURLHandle
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Sub LastError(Assigns NewError As Integer)
+	#tag Method, Flags = &h21
+		Private Sub LastError(Assigns NewError As Integer)
 		  // Part of the libcURL.ErrorHandler interface.
 		  mLastError = NewError
 		End Sub
@@ -85,7 +55,7 @@ Protected Class cURLHandle
 
 
 	#tag Property, Flags = &h21
-		Private Shared mInitCount As Integer
+		Private Shared InitFlags As Dictionary
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
@@ -94,18 +64,6 @@ Protected Class cURLHandle
 
 	#tag Property, Flags = &h21
 		Private Shared mRefCount As Integer
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private Shared NothingInit As Boolean
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private Shared SSLInit As Boolean
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private Shared Win32Init As Boolean
 	#tag EndProperty
 
 
