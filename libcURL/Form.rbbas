@@ -1,5 +1,6 @@
 #tag Class
 Protected Class Form
+Inherits libcURL.cURLHandle
 Implements ErrorHandler
 	#tag Method, Flags = &h0
 		Function AddElement(Name As String, Value As Variant) As Boolean
@@ -40,17 +41,10 @@ Implements ErrorHandler
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Constructor()
-		  ' initialize libcURL just enough to handle form building
-		  
-		  If Not libcURL.IsAvailable Then
-		    Dim err As New PlatformNotSupportedException
-		    err.Message = "libcURL is not available or is an unsupported version."
-		    Raise err
-		  End If
-		  
-		  If curl_global_init(CURL_GLOBAL_DEFAULT) <> 0 Then 
-		    mLastError = libcURL.Errors.INIT_FAILED
+		Sub Constructor(GlobalInitFlags As Integer = libcURL.CURL_GLOBAL_NOTHING)
+		  ' initialize libcURL
+		  Super.Constructor(GlobalInitFlags)
+		  If mLastError <> 0 Then
 		    Raise New cURLException(Me)
 		  End If
 		End Sub
@@ -58,10 +52,9 @@ Implements ErrorHandler
 
 	#tag Method, Flags = &h21
 		Private Sub Destructor()
-		  If libcURL.IsAvailable Then
-		    If FirstItem <> Nil Then libcURL.curl_formfree(FirstItem)
-		    libcURL.curl_global_cleanup()
-		  End If
+		  If libcURL.IsAvailable And FirstItem <> Nil Then libcURL.curl_formfree(FirstItem)
+		  FirstItem = Nil
+		  LastItem = Nil
 		End Sub
 	#tag EndMethod
 
@@ -70,20 +63,6 @@ Implements ErrorHandler
 		  ' This method returns a Ptr to the form structure which can be passed back to libcURL
 		  Return FirstItem
 		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function LastError() As Integer
-		  // Part of the libcURL.ErrorHandler interface.
-		  Return mLastError
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Sub LastError(Assigns NewError As Integer)
-		  // Part of the libcURL.ErrorHandler interface.
-		  mLastError = NewError
-		End Sub
 	#tag EndMethod
 
 
@@ -114,10 +93,6 @@ Implements ErrorHandler
 
 	#tag Property, Flags = &h1
 		Protected LastItem As Ptr
-	#tag EndProperty
-
-	#tag Property, Flags = &h1
-		Protected mLastError As Integer
 	#tag EndProperty
 
 
