@@ -245,10 +245,7 @@ Implements ErrorHandler
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Destructor
 		  
 		  Me.Close()
-		  If Instances = Nil Or Instances.Count = 0 Then
-		    If libcURL.IsAvailable Then curl_global_cleanup()
-		    Instances = Nil
-		  End If
+		  If Instances <> Nil And Instances.Count = 0 Then Instances = Nil
 		End Sub
 	#tag EndMethod
 
