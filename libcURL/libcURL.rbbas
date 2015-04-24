@@ -218,7 +218,8 @@ Protected Module libcURL
 
 	#tag Method, Flags = &h1
 		Protected Function IsAvailable() As Boolean
-		  ' Returns True if libcURL is available and at least version 7.15.2
+		  ' Returns True if libcURL is available and at least version 7.15.2. Prior versions require that curl_global_init and
+		  ' curl_global_cleanup be called only once each, which we aren't doing.
 		  Const MinMajor = 7
 		  Const MinMinor = 15
 		  Const MinPatch = 2
@@ -227,7 +228,7 @@ Protected Module libcURL
 		  
 		  If Not available Then
 		    Select Case True
-		    Case Not System.IsFunctionAvailable("curl_easy_init", "libcurl")
+		    Case Not System.IsFunctionAvailable("curl_global_init", "libcurl")
 		      available = False
 		      
 		    Case libcURL.Version.MajorNumber > MinMajor
