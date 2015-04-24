@@ -1,5 +1,6 @@
 #tag Class
 Protected Class curl_slist
+Inherits libcURL.cURLHandle
 Implements ErrorHandler
 	#tag Method, Flags = &h0
 		Function Append(s As String) As Boolean
@@ -16,29 +17,18 @@ Implements ErrorHandler
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Constructor(ListPtr As Ptr = Nil)
-		  ' initialize libcURL just enough to handle list building
-		  
-		  If Not libcURL.IsAvailable Then
-		    Dim err As New PlatformNotSupportedException
-		    err.Message = "libcURL is not available or is an unsupported version."
-		    Raise err
-		  End If
-		  
-		  If curl_global_init(CURL_GLOBAL_DEFAULT) <> 0 Then 
-		    mLastError = libcURL.Errors.INIT_FAILED
-		    Raise New cURLException(Me)
-		  End If
+		Sub Constructor(ListPtr As Ptr = Nil, GlobalInitFlags As Integer = libcURL.CURL_GLOBAL_NOTHING)
+		  ' initialize libcURL
+		  Super.Constructor(GlobalInitFlags)
+		  If mLastError <> 0 Then Raise New cURLException(Me)
 		  List = ListPtr
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
 		Private Sub Destructor()
-		  If libcURL.IsAvailable Then
-		    If List <> Nil Then libcURL.curl_slist_free_all(List)
-		    libcURL.curl_global_cleanup()
-		  End If
+		  If libcURL.IsAvailable And List <> Nil Then libcURL.curl_slist_free_all(List)
+		  List = Nil
 		End Sub
 	#tag EndMethod
 
@@ -49,27 +39,9 @@ Implements ErrorHandler
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Function LastError() As Integer
-		  // Part of the libcURL.ErrorHandler interface.
-		  Return mLastError
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Sub LastError(Assigns NewError As Integer)
-		  // Part of the libcURL.ErrorHandler interface.
-		  mLastError = NewError
-		End Sub
-	#tag EndMethod
-
 
 	#tag Property, Flags = &h1
 		Protected List As Ptr
-	#tag EndProperty
-
-	#tag Property, Flags = &h1
-		Protected mLastError As Integer
 	#tag EndProperty
 
 
