@@ -163,17 +163,10 @@ Protected Module libcURL
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_strerror.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.FormatError
 		  
-		  Select Case True
-		  Case Not libcURL.IsAvailable
-		    Return "libcURL is not available or is an unsupported version."
-		    
-		  Case cURLError = libcURL.Errors.INIT_FAILED
-		    Return "Unknown failure while constructing a cURL handle."
-		    
-		  Else
-		    Dim mb As MemoryBlock = curl_easy_strerror(cURLError)
-		    Return mb.CString(0)
-		  End Select
+		  If Not libcURL.IsAvailable Then Return "libcURL is not available or is an unsupported version."
+		  Dim mb As MemoryBlock = curl_easy_strerror(cURLError)
+		  Return mb.CString(0)
+		  
 		End Function
 	#tag EndMethod
 
@@ -184,20 +177,10 @@ Protected Module libcURL
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_strerror.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.FormatMultiError
 		  
-		  Select Case True
-		  Case Not libcURL.IsAvailable
-		    Return "libcURL is not available or is an unsupported version."
-		    
-		  Case cURLMultiError = libcURL.Errors.INIT_FAILED
-		    Return "Unknown failure while constructing a cURL multi handle."
-		    
-		  Case cURLMultiError = libcURL.Errors.ALREADY_ADDED
-		    Return "The added easy handle is already associated with a multi handle."
-		    
-		  Else
-		    Dim mb As MemoryBlock = curl_multi_strerror(cURLMultiError)
-		    Return mb.CString(0)
-		  End Select
+		  If Not libcURL.IsAvailable Then Return "libcURL is not available or is an unsupported version."
+		  Dim mb As MemoryBlock = curl_multi_strerror(cURLMultiError)
+		  Return mb.CString(0)
+		  
 		End Function
 	#tag EndMethod
 
@@ -208,20 +191,9 @@ Protected Module libcURL
 		  ' http://curl.haxx.se/libcurl/c/curl_share_strerror.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.FormatShareError
 		  
-		  Select Case True
-		  Case Not libcURL.IsAvailable
-		    Return "libcURL is not available or is an unsupported version."
-		    
-		  Case cURLShareError = libcURL.Errors.INIT_FAILED
-		    Return "Unknown failure while constructing a cURL share handle."
-		    
-		  Case cURLShareError = libcURL.Errors.ALREADY_ADDED
-		    Return "The added easy handle is already associated with a multi handle."
-		    
-		  Else
-		    Dim mb As MemoryBlock = curl_share_strerror(cURLShareError)
-		    Return mb.CString(0)
-		  End Select
+		  If Not libcURL.IsAvailable Then Return "libcURL is not available or is an unsupported version."
+		  Dim mb As MemoryBlock = curl_share_strerror(cURLShareError)
+		  Return mb.CString(0)
 		End Function
 	#tag EndMethod
 

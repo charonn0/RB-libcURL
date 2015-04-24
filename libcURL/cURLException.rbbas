@@ -4,13 +4,25 @@ Inherits RuntimeException
 	#tag Method, Flags = &h1000
 		Sub Constructor(ErrantItem As ErrorHandler)
 		  Me.ErrorNumber = ErrantItem.LastError
-		  Select Case ErrantItem
-		  Case IsA libcURL.cURLShare
+		  Select Case True
+		  Case Not libcURL.IsAvailable
+		    Me.Message = "libcURL is not available or is an unsupported version."
+		    
+		  Case Me.ErrorNumber = libcURL.Errors.INIT_FAILED
+		    Me.Message = "Unknown failure while constructing a libcURL handle."
+		    
+		  Case Me.ErrorNumber = libcURL.Errors.ALREADY_ADDED
+		    Me.Message = "The added easy handle is already associated with a multi handle."
+		    
+		  Case ErrantItem IsA libcURL.cURLShare
 		    Me.Message = libcURL.FormatShareError(Me.ErrorNumber)
-		  Case IsA libcURL.cURLMulti
+		    
+		  Case ErrantItem IsA libcURL.cURLMulti
 		    Me.Message = libcURL.FormatMultiError(Me.ErrorNumber)
+		    
 		  Else
 		    Me.Message = libcURL.FormatError(Me.ErrorNumber)
+		    
 		  End Select
 		End Sub
 	#tag EndMethod
