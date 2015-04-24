@@ -79,6 +79,7 @@ Implements ErrorHandler
 	#tag Method, Flags = &h21
 		Private Sub Destructor()
 		  Me.Close
+		  If libcURL.IsAvailable Then curl_global_cleanup()
 		End Sub
 	#tag EndMethod
 
