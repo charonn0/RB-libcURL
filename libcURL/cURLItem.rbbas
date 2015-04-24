@@ -36,27 +36,16 @@ Implements ErrorHandler
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Constructor()
+		Sub Constructor(GlobalInitFlags As Integer = libcURL.CURL_GLOBAL_DEFAULT)
 		  ' Initializes libcURL if necessary and creates a new curl_easy handle
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_global_init.html
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_init.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Constructor
 		  
-		  If Not libcURL.IsAvailable Then
-		    Dim err As New PlatformNotSupportedException
-		    err.Message = "libcURL is not available or is an unsupported version."
-		    Raise err
-		  End If
-		  
-		  If Instances = Nil Then
-		    mLastError = curl_global_init(CURL_GLOBAL_DEFAULT)
-		    If mLastError = 0 Then
-		      Instances = New Dictionary
-		    Else
-		      Raise New cURLException(Me)
-		    End If
-		  End If
+		  Super.Constructor(GlobalInitFlags)
+		  If mLastError <> 0 Then Raise New cURLException(Me)
+		  If Instances = Nil Then Instances = New Dictionary
 		  
 		  mHandle = curl_easy_init()
 		  If mHandle > 0 Then
