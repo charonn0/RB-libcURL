@@ -1,5 +1,6 @@
 #tag Class
 Protected Class cURLItem
+Inherits libcURL.cURLHandle
 Implements ErrorHandler
 	#tag Method, Flags = &h0
 		Sub Close()
@@ -372,25 +373,6 @@ Implements ErrorHandler
 		  
 		  If Not Sender.SetOption(libcURL.Opts.DEBUGDATA, Sender.Handle) Then Raise New cURLException(Sender)
 		  If Not Sender.SetOption(libcURL.Opts.DEBUGFUNCTION, AddressOf DebugCallback) Then Raise New cURLException(Sender)
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function LastError() As Integer
-		  // Part of the libcURL.ErrorHandler interface.
-		  ' All calls into libcURL that return an error code will update LastError
-		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Errors
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.FormatError
-		  
-		  Return mLastError
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Sub LastError(Assigns NewError As Integer)
-		  // Part of the libcURL.ErrorHandler interface.
-		  mLastError = NewError
 		End Sub
 	#tag EndMethod
 
@@ -827,10 +809,6 @@ Implements ErrorHandler
 
 	#tag Property, Flags = &h1
 		Protected mHandle As Integer
-	#tag EndProperty
-
-	#tag Property, Flags = &h1
-		Protected mLastError As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
