@@ -22,6 +22,7 @@ Implements ErrorHandler
 		Private Shared Function CloseCallback(UserData As Integer, Socket As Integer) As Integer
 		  ' This method is invoked by libcURL. DO NOT CALL THIS METHOD
 		  
+		  #pragma X86CallingConvention CDecl
 		  #pragma Unused Socket ' socket is an OS socket reference
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
@@ -237,6 +238,7 @@ Implements ErrorHandler
 		Private Shared Function DebugCallback(Handle As Integer, info As curl_infotype, data As Ptr, size As Integer, UserData As Integer) As Integer
 		  ' This method is invoked by libcURL. DO NOT CALL THIS METHOD
 		  
+		  #pragma X86CallingConvention CDecl
 		  #pragma Unused Handle ' handle is the cURL handle of the instance
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil Then
@@ -327,6 +329,7 @@ Implements ErrorHandler
 		Private Shared Function HeaderCallback(char As Ptr, size As Integer, nmemb As Integer, UserData As Integer) As Integer
 		  ' This method is invoked by libcURL. DO NOT CALL THIS METHOD
 		  
+		  #pragma X86CallingConvention CDecl
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil Then
 		    Return cURLItem(curl.Value).curlHeader(char, size, nmemb)
@@ -398,6 +401,7 @@ Implements ErrorHandler
 		Private Shared Function OpenCallback(UserData As Integer, SocketType As Integer, Socket As Ptr) As Integer
 		  ' This method is invoked by libcURL. DO NOT CALL THIS METHOD
 		  
+		  #pragma X86CallingConvention CDecl
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl = Nil Then Return libcURL.Opts.CURL_SOCKET_BAD
 		  Return cURLItem(curl.Value).curlOpen(SocketType, Socket)
@@ -464,6 +468,7 @@ Implements ErrorHandler
 		Private Shared Function ProgressCallback(UserData As Integer, dlTotal As UInt64, dlnow As UInt64, ultotal As UInt64, ulnow As UInt64) As Integer
 		  ' This method is invoked by libcURL. DO NOT CALL THIS METHOD
 		  
+		  #pragma X86CallingConvention CDecl
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil Then
 		    Return cURLItem(curl.Value).curlProgress(dlTotal, dlnow, ultotal, ulnow)
@@ -504,8 +509,9 @@ Implements ErrorHandler
 	#tag Method, Flags = &h21
 		Private Shared Function ReadCallback(char As Ptr, size As Integer, nmemb As Integer, UserData As Integer) As Integer
 		  ' This method is invoked by libcURL. DO NOT CALL THIS METHOD
-		  
 		  // called when data is needed
+		  
+		  #pragma X86CallingConvention CDecl
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil Then
 		    Return cURLItem(curl.Value).curlRead(char, size, nmemb)
@@ -654,6 +660,7 @@ Implements ErrorHandler
 		Private Shared Function SSLInitCallback(Handle As Integer, SSLCTXStruct As Ptr, UserData As Integer) As Integer
 		  ' This method is invoked by libcURL. DO NOT CALL THIS METHOD
 		  
+		  #pragma X86CallingConvention CDecl
 		  #pragma Unused Handle ' Handle is the handle to the instance
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  Dim data As SSL_CTX
@@ -695,8 +702,9 @@ Implements ErrorHandler
 	#tag Method, Flags = &h21
 		Private Shared Function WriteCallback(char As Ptr, size As Integer, nmemb As Integer, UserData As Integer) As Integer
 		  ' This method is invoked by libcURL. DO NOT CALL THIS METHOD
-		  
 		  // Called when data is available
+		  
+		  #pragma X86CallingConvention CDecl
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil Then
 		    Return cURLItem(curl.Value).curlWrite(char, size, nmemb)
