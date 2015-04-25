@@ -1,5 +1,6 @@
 #tag Class
 Protected Class cURLItem
+Inherits libcURL.cURLHandle
 Implements ErrorHandler
 	#tag Method, Flags = &h0
 		Sub Close()
@@ -36,27 +37,16 @@ Implements ErrorHandler
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Constructor()
-		  ' Initializes libcURL if necessary and creates a new curl_easy handle
+		Sub Constructor(GlobalInitFlags As Integer = libcURL.CURL_GLOBAL_DEFAULT)
+		  ' Creates a new curl_easy handle
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_global_init.html
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_init.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Constructor
 		  
-		  If Not libcURL.IsAvailable Then
-		    Dim err As New PlatformNotSupportedException
-		    err.Message = "libcURL is not available or is an unsupported version."
-		    Raise err
-		  End If
-		  
-		  If Instances = Nil Then
-		    mLastError = curl_global_init(CURL_GLOBAL_DEFAULT)
-		    If mLastError = 0 Then
-		      Instances = New Dictionary
-		    Else
-		      Raise New cURLException(Me)
-		    End If
-		  End If
+		  Super.Constructor(GlobalInitFlags)
+		  If mLastError <> 0 Then Raise New cURLException(Me)
+		  If Instances = Nil Then Instances = New Dictionary
 		  
 		  mHandle = curl_easy_init()
 		  If mHandle > 0 Then
@@ -257,10 +247,7 @@ Implements ErrorHandler
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Destructor
 		  
 		  Me.Close()
-		  If Instances = Nil Or Instances.Count = 0 Then
-		    If libcURL.IsAvailable Then curl_global_cleanup()
-		    Instances = Nil
-		  End If
+		  If Instances <> Nil And Instances.Count = 0 Then Instances = Nil
 		End Sub
 	#tag EndMethod
 
@@ -375,25 +362,6 @@ Implements ErrorHandler
 		  
 		  If Not Sender.SetOption(libcURL.Opts.DEBUGDATA, Sender.Handle) Then Raise New cURLException(Sender)
 		  If Not Sender.SetOption(libcURL.Opts.DEBUGFUNCTION, AddressOf DebugCallback) Then Raise New cURLException(Sender)
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function LastError() As Integer
-		  // Part of the libcURL.ErrorHandler interface.
-		  ' All calls into libcURL that return an error code will update LastError
-		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Errors
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.FormatError
-		  
-		  Return mLastError
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Sub LastError(Assigns NewError As Integer)
-		  // Part of the libcURL.ErrorHandler interface.
-		  mLastError = NewError
 		End Sub
 	#tag EndMethod
 
@@ -835,10 +803,6 @@ Implements ErrorHandler
 
 	#tag Property, Flags = &h1
 		Protected mHandle As Integer
-	#tag EndProperty
-
-	#tag Property, Flags = &h1
-		Protected mLastError As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h21

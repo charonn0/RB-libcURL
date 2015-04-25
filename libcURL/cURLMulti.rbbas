@@ -1,5 +1,6 @@
 #tag Class
 Protected Class cURLMulti
+Inherits libcURL.cURLHandle
 Implements ErrorHandler
 	#tag Method, Flags = &h0
 		Function AddItem(Item As libcURL.cURLItem) As Boolean
@@ -11,7 +12,7 @@ Implements ErrorHandler
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_add_handle.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLMulti.AddItem
 		  
-		  If mEasyHandles.IndexOf(Item.Handle) > -1 Then 
+		  If mEasyHandles.IndexOf(Item.Handle) > -1 Then
 		    mLastError = libcURL.Errors.ALREADY_ADDED
 		    Raise New cURLException(Me)
 		  End If
@@ -49,7 +50,7 @@ Implements ErrorHandler
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Constructor()
+		Sub Constructor(GlobalInitFlags As Integer = libcURL.CURL_GLOBAL_DEFAULT)
 		  ' Creates a new multi stack
 		  
 		  ' See:
@@ -57,14 +58,8 @@ Implements ErrorHandler
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_init.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLMulti.Constructor
 		  
-		  If Not libcURL.IsAvailable Then
-		    Dim err As New PlatformNotSupportedException
-		    err.Message = "libcURL is not available or is an unsupported version."
-		    Raise err
-		  End If
-		  
-		  mLastError = curl_global_init(CURL_GLOBAL_DEFAULT)
-		  If Me.LastError <> 0 Then Raise New cURLException(Me)
+		  Super.Constructor(GlobalInitFlags)
+		  If mLastError <> 0 Then Raise New cURLException(Me)
 		  
 		  mHandle = curl_multi_init()
 		  If mHandle <= 0 Then
@@ -79,7 +74,6 @@ Implements ErrorHandler
 	#tag Method, Flags = &h21
 		Private Sub Destructor()
 		  Me.Close
-		  If libcURL.IsAvailable Then curl_global_cleanup()
 		End Sub
 	#tag EndMethod
 
@@ -94,21 +88,6 @@ Implements ErrorHandler
 		Function HasItem(EasyItem As libcURL.cURLItem) As Boolean
 		  Return Instances.HasKey(EasyItem.Handle)
 		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function LastError() As Integer
-		  // Part of the libcURL.ErrorHandler interface.
-		  ' Returns the most recent curl error code for the multistack (but not for any cURLItems managed by the stack.)
-		  Return mLastError
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Sub LastError(Assigns NewError As Integer)
-		  // Part of the libcURL.ErrorHandler interface.
-		  mLastError = NewError
-		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -355,10 +334,6 @@ Implements ErrorHandler
 
 	#tag Property, Flags = &h1
 		Protected mHandle As Integer
-	#tag EndProperty
-
-	#tag Property, Flags = &h1
-		Protected mLastError As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
