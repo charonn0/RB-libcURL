@@ -37,7 +37,7 @@ Implements ErrorHandler
 
 	#tag Method, Flags = &h0
 		Sub Constructor(GlobalInitFlags As Integer = libcURL.CURL_GLOBAL_DEFAULT)
-		  ' Initializes libcURL if necessary and creates a new curl_easy handle
+		  ' Creates a new curl_easy handle
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_global_init.html
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_init.html

@@ -3,6 +3,10 @@ Protected Class cURLHandle
 Implements ErrorHandler
 	#tag Method, Flags = &h1
 		Protected Sub Constructor(GlobalInitFlags As Integer)
+		  ' Initializes libcURL if necessary. GlobalInitFlags is one of the CURL_GLOBAL_* constants.
+		  ' This class keeps track of which flags have already been initialized, and only initializes
+		  ' libcURL if GlobalInitFlags is not among them.
+		  
 		  If Not libcURL.IsAvailable Then
 		    Dim err As New PlatformNotSupportedException
 		    err.Message = "libcURL is not available or is an unsupported version."
@@ -15,23 +19,26 @@ Implements ErrorHandler
 		    If mLastError <> 0 Then Raise New cURLException(Me)
 		  End If
 		  InitFlags.Value(GlobalInitFlags) = InitFlags.Lookup(GlobalInitFlags, 0) + 1
-		  mRefCount = mRefCount + 1
+		  mFlags = GlobalInitFlags
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
 		Private Sub Destructor()
-		  If InitFlags.Count > 0 Then mRefCount = mRefCount - 1
-		  If mRefCount <= 0 Then
-		    For Each Flag As Integer In InitFlags.Keys
-		      For i As Integer = 1 To InitFlags.Value(Flag)
-		        If libcURL.IsAvailable Then curl_global_cleanup()
-		      Next
-		    Next
-		    InitFlags = Nil
+		  InitFlags.Value(mFlags) = InitFlags.Value(mFlags) - 1
+		  If InitFlags.Value(mFlags) <= 0 Then 
+		    If libcURL.IsAvailable Then curl_global_cleanup()
+		    InitFlags.Remove(mFlags)
 		  End If
+		  If InitFlags.Count = 0 Then InitFlags = Nil
 		  
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function Flags() As Integer
+		  Return mFlags
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -58,12 +65,12 @@ Implements ErrorHandler
 		Private Shared InitFlags As Dictionary
 	#tag EndProperty
 
-	#tag Property, Flags = &h1
-		Protected mLastError As Integer
+	#tag Property, Flags = &h21
+		Private mFlags As Integer
 	#tag EndProperty
 
-	#tag Property, Flags = &h21
-		Private Shared mRefCount As Integer
+	#tag Property, Flags = &h1
+		Protected mLastError As Integer
 	#tag EndProperty
 
 
