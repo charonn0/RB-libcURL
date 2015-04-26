@@ -318,22 +318,15 @@ Protected Module libcURL
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_unescape.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLDecode
 		  
-		  If libcURL.IsAvailable Then
-		    If curl_global_init(CURL_GLOBAL_DEFAULT) = 0 Then
-		      Dim mHandle As Integer = curl_easy_init()
-		      If mHandle > 0 Then
-		        Dim InP As MemoryBlock = Data
-		        Dim outlen As Integer
-		        Dim p As Ptr = curl_easy_unescape(mHandle, InP, InP.Size, outlen)
-		        InP = p
-		        Dim ret As String = InP.StringValue(0, outlen)
-		        curl_free(p)
-		        curl_easy_cleanup(mHandle)
-		        curl_global_cleanup()
-		        Return ret
-		      End If
-		    End If
-		  End If
+		  Dim curl As New libcURL.cURLItem(CURL_GLOBAL_NOTHING)
+		  Dim InP As MemoryBlock = Data
+		  Dim outlen As Integer
+		  Dim p As Ptr = curl_easy_unescape(curl.Handle, InP, InP.Size, outlen)
+		  InP = p
+		  Dim ret As String = InP.StringValue(0, outlen)
+		  curl_free(p)
+		  Return ret
+		  
 		End Function
 	#tag EndMethod
 
@@ -344,21 +337,14 @@ Protected Module libcURL
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_escape.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLEncode
 		  
-		  If libcURL.IsAvailable Then
-		    If curl_global_init(CURL_GLOBAL_DEFAULT) = 0 Then
-		      Dim mHandle As Integer = curl_easy_init()
-		      If mHandle > 0 Then
-		        Dim InP As MemoryBlock = Data
-		        Dim p As Ptr = curl_easy_escape(mHandle, InP, InP.Size)
-		        InP = p
-		        Dim ret As String = InP.CString(0)
-		        curl_free(p)
-		        curl_easy_cleanup(mHandle)
-		        curl_global_cleanup()
-		        Return ret
-		      End If
-		    End If
-		  End If
+		  Dim curl As New libcURL.cURLItem(CURL_GLOBAL_NOTHING)
+		  Dim InP As MemoryBlock = Data
+		  Dim p As Ptr = curl_easy_escape(curl.Handle, InP, InP.Size)
+		  InP = p
+		  Dim ret As String = InP.CString(0)
+		  curl_free(p)
+		  Return ret
+		  
 		End Function
 	#tag EndMethod
 
