@@ -143,7 +143,9 @@ Begin Window Window1
       LockTop         =   False
       Maximum         =   100
       Scope           =   0
+      TabIndex        =   3
       TabPanelIndex   =   0
+      TabStop         =   True
       Top             =   543
       Value           =   0
       Visible         =   True
@@ -524,10 +526,10 @@ End
 
 
 	#tag Method, Flags = &h21
-		Private Function CreateSocketHandler(Sender As libcURL.cURLItem) As SocketCore
+		Private Sub CreateSocketHandler(Sender As libcURL.cURLItem, Socket As Integer)
 		  #pragma Unused Sender
-		  Break ' doesn't work yet
-		End Function
+		  Debug.AddRow("RB-libcURL", "Created socket " + Str(Socket))
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
@@ -572,9 +574,9 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Sub DisconnectedHandler(Sender As libcURL.cURLItem)
+		Private Sub DisconnectedHandler(Sender As libcURL.cURLItem, Socket As Integer)
 		  #pragma Unused Sender
-		  Debug.AddRow("RB-libcURL", "Disconnected")
+		  Debug.AddRow("RB-libcURL", "Socket " + Str(Socket) + " disconnected")
 		  
 		  
 		End Sub

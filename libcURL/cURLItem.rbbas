@@ -24,14 +24,13 @@ Implements ErrorHandler
 		  ' This method is invoked by libcURL. DO NOT CALL THIS METHOD
 		  
 		  #pragma X86CallingConvention CDecl
-		  #pragma Unused Socket ' socket is an OS socket reference
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl = Nil Then
 		    Break ' UserData does not refer to a valid instance!
 		    Return 1
 		  End If
-		  cURLItem(curl.Value).curlClose
+		  cURLItem(curl.Value).curlClose(socket)
 		  Return 0
 		End Function
 	#tag EndMethod
@@ -96,10 +95,10 @@ Implements ErrorHandler
 	#tag EndDelegateDeclaration
 
 	#tag Method, Flags = &h21
-		Private Sub curlClose()
+		Private Sub curlClose(Socket As Integer)
 		  ' This method is the intermediary between CloseCallback and the Disconnected event.
 		  ' DO NOT CALL THIS METHOD
-		  RaiseEvent Disconnected()
+		  RaiseEvent Disconnected(Socket)
 		End Sub
 	#tag EndMethod
 
@@ -136,35 +135,26 @@ Implements ErrorHandler
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Function curlOpen(SocketType As Integer, Socket As Ptr) As Integer
+		Private Function curlOpen(SocketType As Integer, Socket As Integer) As Integer
 		  ' This method is the intermediary between OpenCallback and the CreateSocket event.
 		  ' DO NOT CALL THIS METHOD
 		  
-		  #pragma Warning "Fix Me"
-		  ' This method is called whenever libcURL needs to create a new socket and gives
-		  ' us an opportunity to tinker with the raw socketry. However, we must return a
-		  ' valid OS-level socket descriptor otherwise nothing works. So, OpenCallback is
-		  ' not initialized at this time, this method is not executed and the CreateSocket
-		  ' event is not raised.
-		  
-		  Dim mb As MemoryBlock = Socket
-		  Dim t As curl_sockaddr
-		  t.StringValue(TargetLittleEndian) = mb.StringValue(0, t.Size)
+		  Const CURL_SOCKOPT_OK = 0
+		  Const CURL_SOCKOPT_BAD = 1
 		  
 		  Select Case SocketType
 		  Case libcURL.Opts.CURLSOCKTYPE_IPCXN
-		    Dim sock As SocketCore = RaiseEvent CreateSocket()
-		    If sock <> Nil Then
-		      Return sock.Handle ' Handle=0 until Listen or Connect are called :-\
-		    End If
+		    RaiseEvent CreateSocket(Socket)
+		    Return CURL_SOCKOPT_OK
+		    
 		  End Select
 		  
-		  Return libcURL.Opts.CURL_SOCKET_BAD
+		  Return CURL_SOCKOPT_BAD
 		End Function
 	#tag EndMethod
 
 	#tag DelegateDeclaration, Flags = &h21
-		Private Delegate Function cURLOpenCallback(UserData As Integer, SocketType As Integer, Socket As Ptr) As Integer
+		Private Delegate Function cURLOpenCallback(UserData As Integer, Socket As Integer, SocketType As Integer) As Integer
 	#tag EndDelegateDeclaration
 
 	#tag Method, Flags = &h21
@@ -332,10 +322,8 @@ Implements ErrorHandler
 		Protected Shared Sub InitCallbacks(Sender As libcURL.cURLItem)
 		  ' This method sets up the callback functions for the passed instance of cURLItem
 		  
-		  #If RAISE_CREATE_SOCKET Then
-		    If Not Sender.SetOption(libcURL.Opts.OPENSOCKETDATA, Sender.Handle) Then Raise New cURLException(Sender)
-		    If Not Sender.SetOption(libcURL.Opts.OPENSOCKETFUNCTION, AddressOf OpenCallback) Then Raise New cURLException(Sender)
-		  #endif
+		  If Not Sender.SetOption(libcURL.Opts.SOCKOPTDATA, Sender.Handle) Then Raise New cURLException(Sender)
+		  If Not Sender.SetOption(libcURL.Opts.SOCKOPTFUNCTION, AddressOf OpenCallback) Then Raise New cURLException(Sender)
 		  
 		  If libcURL.Version.SSL Then
 		    If Not Sender.SetOption(libcURL.Opts.SSL_CTX_DATA, Sender.Handle) Then Raise New cURLException(Sender)
@@ -368,7 +356,7 @@ Implements ErrorHandler
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Shared Function OpenCallback(UserData As Integer, SocketType As Integer, Socket As Ptr) As Integer
+		Private Shared Function OpenCallback(UserData As Integer, Socket As Integer, SocketType As Integer) As Integer
 		  ' This method is invoked by libcURL. DO NOT CALL THIS METHOD
 		  
 		  #pragma X86CallingConvention CDecl
@@ -686,7 +674,7 @@ Implements ErrorHandler
 
 
 	#tag Hook, Flags = &h0
-		Event CreateSocket() As SocketCore
+		Event CreateSocket(Socket As Integer)
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
@@ -702,7 +690,7 @@ Implements ErrorHandler
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
-		Event Disconnected()
+		Event Disconnected(Socket As Integer)
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
@@ -957,9 +945,6 @@ Implements ErrorHandler
 
 
 	#tag Constant, Name = GNUTLS_MAX_ALGORITHM_NUM, Type = Double, Dynamic = False, Default = \"16", Scope = Private
-	#tag EndConstant
-
-	#tag Constant, Name = RAISE_CREATE_SOCKET, Type = Boolean, Dynamic = False, Default = \"False", Scope = Private
 	#tag EndConstant
 
 
