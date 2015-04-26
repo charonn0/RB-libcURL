@@ -14,9 +14,9 @@ Implements ErrorHandler
 		  End If
 		  
 		  If InitFlags = Nil Then InitFlags = New Dictionary
-		  If Not InitFlags.HasKey(GlobalInitFlags) Then
-		    mLastError = curl_global_init(GlobalInitFlags)
-		    If mLastError <> 0 Then Raise New cURLException(Me)
+		  If Not InitFlags.HasKey(GlobalInitFlags) And curl_global_init(GlobalInitFlags) <> 0 Then
+		    mLastError = libcURL.Errors.INIT_FAILED
+		    Raise New cURLException(Me)
 		  End If
 		  InitFlags.Value(GlobalInitFlags) = InitFlags.Lookup(GlobalInitFlags, 0) + 1
 		  mFlags = GlobalInitFlags
@@ -25,8 +25,9 @@ Implements ErrorHandler
 
 	#tag Method, Flags = &h21
 		Private Sub Destructor()
+		  If InitFlags = Nil Then Return
 		  InitFlags.Value(mFlags) = InitFlags.Value(mFlags) - 1
-		  If InitFlags.Value(mFlags) <= 0 Then 
+		  If InitFlags.Value(mFlags) <= 0 Then
 		    If libcURL.IsAvailable Then curl_global_cleanup()
 		    InitFlags.Remove(mFlags)
 		  End If

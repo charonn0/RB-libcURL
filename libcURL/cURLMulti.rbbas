@@ -39,7 +39,7 @@ Implements ErrorHandler
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_cleanup.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLMulti.Close
 		  
-		  If libcURL.IsAvailable Then
+		  If Instances <> Nil And libcURL.IsAvailable Then
 		    For Each h As Integer In Instances.Keys
 		      Call Me.RemoveItem(Instances.Value(h))
 		    Next
