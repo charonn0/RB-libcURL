@@ -29,7 +29,7 @@ Inherits libcURL.cURLMulti
 	#tag Method, Flags = &h1000
 		Sub Constructor(GlobalInitFlags As Integer = libcURL.CURL_GLOBAL_DEFAULT)
 		  // Calling the overridden superclass constructor.
-		  // Constructor() -- From cURLMulti
+		  // Constructor(GlobalInitFlags As Integer) -- From libcURL.cURLMulti
 		  Super.Constructor(GlobalInitFlags)
 		  mShareHandle = curl_share_init()
 		  If mShareHandle = 0 Then

@@ -42,11 +42,10 @@ Implements ErrorHandler
 
 	#tag Method, Flags = &h0
 		Sub Constructor(GlobalInitFlags As Integer = libcURL.CURL_GLOBAL_NOTHING)
-		  ' initialize libcURL
+		  // Calling the overridden superclass constructor.
+		  // Constructor(GlobalInitFlags As Integer) -- From libcURL.cURLHandle
 		  Super.Constructor(GlobalInitFlags)
-		  If mLastError <> 0 Then
-		    Raise New cURLException(Me)
-		  End If
+		  If mLastError <> 0 Then Raise New cURLException(Me)
 		End Sub
 	#tag EndMethod
 

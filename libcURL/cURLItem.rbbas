@@ -44,6 +44,8 @@ Implements ErrorHandler
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_init.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Constructor
 		  
+		  // Calling the overridden superclass constructor.
+		  // Constructor(GlobalInitFlags As Integer) -- From libcURL.cURLHandle
 		  Super.Constructor(GlobalInitFlags)
 		  If mLastError <> 0 Then Raise New cURLException(Me)
 		  If Instances = Nil Then Instances = New Dictionary
