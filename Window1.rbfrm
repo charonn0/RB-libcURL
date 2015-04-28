@@ -143,9 +143,7 @@ Begin Window Window1
       LockTop         =   False
       Maximum         =   100
       Scope           =   0
-      TabIndex        =   3
       TabPanelIndex   =   0
-      TabStop         =   True
       Top             =   543
       Value           =   0
       Visible         =   True
@@ -512,13 +510,6 @@ End
 	#tag Event
 		Sub Open()
 		  Me.Title = libcURL.Version.Name
-		  
-		  'for SSL/TLS connections we must specify a file with a list of acceptable cartificate authorities
-		  ' We create a temp file and dump the DEFAULT_CA_INFO_PEM data into it for this purpose.
-		  CA_File = GetTemporaryFolderItem()
-		  Dim bs As BinaryStream = BinaryStream.Create(CA_File, True)
-		  bs.Write(DEFAULT_CA_INFO_PEM)
-		  bs.Close
 		  multi = New libcURL.cURLShare
 		  AddHandler multi.TransferComplete, WeakAddressOf TransferCompleteHandler
 		End Sub
@@ -600,7 +591,7 @@ End
 		  If FormValue <> Nil Then Call curlget.SetOption(libcURL.Opts.HTTPPOST, FormValue)
 		  Call curlget.SetOption(libcURL.Opts.FOLLOWLOCATION, True) ' Follow redirects automatically
 		  Call curlget.SetOption(libcURL.Opts.FAILONERROR, True) ' fail on server errors
-		  curlget.CA_ListFile = CA_File ' for SSL/TLS connections we must specify a list of acceptable certificate authorities
+		  curlget.CA_ListFile = libcURL.Default_CA_File ' for SSL/TLS connections we must specify a list of acceptable certificate authorities
 		  curlget.URL = TextField1.Text
 		  multi.ShareCookies = True
 		  multi.ShareSSL = True
@@ -661,10 +652,6 @@ End
 		End Sub
 	#tag EndMethod
 
-
-	#tag Property, Flags = &h1
-		Protected CA_File As FolderItem
-	#tag EndProperty
 
 	#tag Property, Flags = &h21
 		Private FormValue As libcURL.Form

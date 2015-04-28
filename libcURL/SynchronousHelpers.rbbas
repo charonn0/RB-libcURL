@@ -3,6 +3,7 @@ Private Module SynchronousHelpers
 	#tag Method, Flags = &h21
 		Private Function CreateItem(InputStream As Readable, OutputStream As Writeable, ByRef Headers As InternetHeaders) As libcURL.cURLItem
 		  Dim cURL As New libcURL.cURLItem
+		  cURL.CA_ListFile = libcURL.Default_CA_File
 		  AddHandler cURL.DebugMessage, AddressOf DebugMessageHandler
 		  AddHandler cURL.DataAvailable, AddressOf DataAvailableHandler
 		  AddHandler cURL.DataNeeded, AddressOf DataNeededHandler
