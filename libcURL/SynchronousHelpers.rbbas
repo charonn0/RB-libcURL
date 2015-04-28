@@ -3,6 +3,8 @@ Private Module SynchronousHelpers
 	#tag Method, Flags = &h21
 		Private Function CreateItem(InputStream As Readable, OutputStream As Writeable, ByRef Headers As InternetHeaders) As libcURL.cURLItem
 		  Dim cURL As New libcURL.cURLItem
+		  If Not cURL.SetOption(libcURL.Opts.FOLLOWLOCATION, True) Then Raise New cURLException(cURL) ' Follow redirects automatically
+		  If Not cURL.SetOption(libcURL.Opts.FAILONERROR, True) Then Raise New cURLException(cURL) ' fail on server errors
 		  cURL.CA_ListFile = libcURL.Default_CA_File
 		  AddHandler cURL.DebugMessage, AddressOf DebugMessageHandler
 		  AddHandler cURL.DataAvailable, AddressOf DataAvailableHandler
