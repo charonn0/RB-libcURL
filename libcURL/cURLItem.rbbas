@@ -39,7 +39,6 @@ Implements ErrorHandler
 		Sub Constructor(GlobalInitFlags As Integer = libcURL.CURL_GLOBAL_DEFAULT)
 		  ' Creates a new curl_easy handle
 		  ' See:
-		  ' http://curl.haxx.se/libcurl/c/curl_global_init.html
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_init.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Constructor
 		  
@@ -233,9 +232,8 @@ Implements ErrorHandler
 
 	#tag Method, Flags = &h21
 		Private Sub Destructor()
-		  ' Closes the instance and, if no more instances, cleans up libcURL
+		  ' Closes the instance.
 		  ' See:
-		  ' http://curl.haxx.se/libcurl/c/curl_global_cleanup.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Destructor
 		  
 		  Me.Close()

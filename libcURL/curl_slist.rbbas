@@ -18,6 +18,9 @@ Implements ErrorHandler
 
 	#tag Method, Flags = &h0
 		Sub Constructor(ListPtr As Ptr = Nil, GlobalInitFlags As Integer = libcURL.CURL_GLOBAL_NOTHING)
+		  ' Creates a linked list that is managed by libcURL. Pass a Ptr to the first item in an existing list,
+		  ' or Nil to create an empty list. 
+		  
 		  // Calling the overridden superclass constructor.
 		  // Constructor(GlobalInitFlags As Integer) -- From libcURL.cURLHandle
 		  Super.Constructor(GlobalInitFlags)

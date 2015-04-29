@@ -6,6 +6,9 @@ Implements ErrorHandler
 		  ' Initializes libcURL if necessary. GlobalInitFlags is one of the CURL_GLOBAL_* constants.
 		  ' This class keeps track of which flags have already been initialized, and only initializes
 		  ' libcURL if GlobalInitFlags is not among them.
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/curl_global_init.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLHandle.Constructor
 		  
 		  If Not libcURL.IsAvailable Then
 		    Dim err As New PlatformNotSupportedException
@@ -25,6 +28,12 @@ Implements ErrorHandler
 
 	#tag Method, Flags = &h21
 		Private Sub Destructor()
+		  ' Decrements the reference count for the instance's Flags. If the count reaches zero
+		  ' calls curl_global_cleanup.
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/curl_global_cleanup.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLHandle.Destructor
+		  
 		  If InitFlags = Nil Then Return
 		  InitFlags.Value(mFlags) = InitFlags.Value(mFlags) - 1
 		  If InitFlags.Value(mFlags) <= 0 Then
@@ -38,6 +47,10 @@ Implements ErrorHandler
 
 	#tag Method, Flags = &h1
 		Protected Function Flags() As Integer
+		  ' The global initialization flags that were passed to the instance Constructor
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLHandle.Flags
+		  
 		  Return mFlags
 		End Function
 	#tag EndMethod
@@ -47,8 +60,7 @@ Implements ErrorHandler
 		  // Part of the libcURL.ErrorHandler interface.
 		  ' All calls into libcURL that return an error code will update LastError
 		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Errors
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.FormatError
+		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLHandle.LastError
 		  
 		  Return mLastError
 		End Function
