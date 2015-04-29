@@ -33,7 +33,7 @@ Implements ErrorHandler
 		    err.Message = "Value does not exist or is a directory." ' bad file
 		  Else
 		    err = New TypeMismatchException
-		    err.Message = "Value is of unsupported type: " + Introspection.GetType(Value).Name ' bad type
+		    err.Message = "Value is of unsupported vartype: " + Str(ValueType) ' bad type
 		  End If
 		  Raise err
 		  

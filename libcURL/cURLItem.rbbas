@@ -595,7 +595,7 @@ Implements ErrorHandler
 		      
 		    Else
 		      Dim err As New TypeMismatchException
-		      err.Message = "NewValue is of unsupported type: " + Introspection.GetType(NewValue).Name
+		      err.Message = "NewValue is of unsupported type: " + Str(VarType(NewValue))
 		      Raise err
 		      
 		    End Select
