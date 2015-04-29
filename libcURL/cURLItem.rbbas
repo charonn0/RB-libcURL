@@ -89,10 +89,6 @@ Implements ErrorHandler
 		End Sub
 	#tag EndMethod
 
-	#tag DelegateDeclaration, Flags = &h21
-		Private Delegate Function cURLCallback(char As Ptr, size As Integer, nmemb As Integer, UserData As Integer) As Integer
-	#tag EndDelegateDeclaration
-
 	#tag Method, Flags = &h21
 		Private Sub curlClose(Socket As Integer)
 		  ' This method is the intermediary between CloseCallback and the Disconnected event.
@@ -132,6 +128,10 @@ Implements ErrorHandler
 		  Return sz
 		End Function
 	#tag EndMethod
+
+	#tag DelegateDeclaration, Flags = &h21
+		Private Delegate Function cURLIOCallback(char As Ptr, size As Integer, nmemb As Integer, UserData As Integer) As Integer
+	#tag EndDelegateDeclaration
 
 	#tag Method, Flags = &h21
 		Private Function curlOpen(SocketType As Integer, Socket As Integer) As Integer
@@ -500,7 +500,7 @@ Implements ErrorHandler
 		  ' an exception if an unsupported type is passed.
 		  
 		  ' NewValue may be a Boolean, Integer, Ptr, String, MemoryBlock, FolderItem, libcURL.Form, libcURL.curl_slist;
-		  ' or, a Delegate matching cURLCallback, cURLCloseCallback, cURLDebugCallback, cURLOpenCallback, or cURLProgressCallback.
+		  ' or, a Delegate matching cURLIOCallback, cURLCloseCallback, cURLDebugCallback, cURLOpenCallback, or cURLProgressCallback.
 		  ' Passing a Nil object will raise an exception unless the option explicitly accepts NULL.
 		  
 		  ' If the option was set this method returns True. If it returns False the option was not set and the
@@ -573,8 +573,8 @@ Implements ErrorHandler
 		      Dim p As cURLProgressCallback = NewValue
 		      MarshalledValue = p
 		      
-		    Case IsA cURLCallback
-		      Dim p As cURLCallback = NewValue
+		    Case IsA cURLIOCallback
+		      Dim p As cURLIOCallback = NewValue
 		      MarshalledValue = p
 		      
 		    Case IsA cURLDebugCallback
