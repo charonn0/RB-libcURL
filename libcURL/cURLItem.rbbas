@@ -28,19 +28,7 @@ Implements ErrorHandler
 		  If Instances = Nil Then Return 1
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl = Nil Then Return CURL_SOCKET_BAD
-		  cURLItem(curl.Value).curlClose(socket)
-		  #pragma Warning "Fix me"
-		  ' libcURL expects this callback to close the socket descriptor, otherwise it will be leaked.
-		  ' Coercing a C-style socket descriptor into a BinaryStream and calling Close() works, but
-		  ' probably shouldn't.
-		  Dim bs As BinaryStream
-		  #If TargetWin32 Then
-		    bs = New BinaryStream(Socket, BinaryStream.HandleTypeWin32Handle)
-		  #else
-		    bs = New BinaryStream(Socket, BinaryStream.HandleTypeFileNumber)
-		  #endif
-		  bs.Close
-		  Return CURL_SOCKOPT_OK
+		  Return cURLItem(curl.Value).curlClose(socket)
 		  
 		  Break ' UserData does not refer to a valid instance!
 		End Function
@@ -49,7 +37,7 @@ Implements ErrorHandler
 	#tag Method, Flags = &h0
 		Function ConnectionCount() As Integer
 		  ' Returns the number of sockets employed by the easy handle which have not yet disconnected.
-		  ' libcURL will attempt to reuse connections, so this may be greater-than zero even after a 
+		  ' libcURL will attempt to reuse connections, so this may be greater-than zero even after a
 		  ' transfer has completed.
 		  
 		  Return mConnectionCount
@@ -111,12 +99,28 @@ Implements ErrorHandler
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Sub curlClose(Socket As Integer)
+		Private Function curlClose(Socket As Integer) As Integer
 		  ' This method is the intermediary between CloseCallback and the Disconnected event.
 		  ' DO NOT CALL THIS METHOD
 		  mConnectionCount = mConnectionCount - 1
 		  RaiseEvent Disconnected(Socket)
-		End Sub
+		  
+		  #If TargetWin32 Then
+		    Declare Function closesocket Lib "Ws2_32" (SocketHandle As Integer) As Integer
+		    mLastError = closesocket(Socket)
+		  #else
+		    #pragma Warning "Fix me"
+		    ' libcURL expects this callback to close the socket descriptor, otherwise it will be leaked.
+		    ' Coercing a C-style socket descriptor into a BinaryStream and calling Close() works, but
+		    ' probably shouldn't.
+		    Dim bs As BinaryStream
+		    bs = New BinaryStream(Socket, BinaryStream.HandleTypeFileNumber)
+		    bs.Close
+		    mLastError = bs.LastErrorCode
+		  #endif
+		  Return CURL_SOCKOPT_OK
+		  
+		End Function
 	#tag EndMethod
 
 	#tag DelegateDeclaration, Flags = &h21
