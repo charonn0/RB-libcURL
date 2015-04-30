@@ -14,6 +14,7 @@ Implements ErrorHandler
 		    curl_easy_cleanup(mHandle)
 		    Instances.Remove(mHandle)
 		  End If
+		  mConnectionCount = 0
 		  mHandle = 0
 		  
 		End Sub
@@ -24,14 +25,34 @@ Implements ErrorHandler
 		  ' This method is invoked by libcURL. DO NOT CALL THIS METHOD
 		  
 		  #pragma X86CallingConvention CDecl
-		  If Instances = Nil Then Return 0
+		  If Instances = Nil Then Return 1
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl = Nil Then
-		    Break ' UserData does not refer to a valid instance!
-		    Return 1
-		  End If
+		  If curl = Nil Then Return CURL_SOCKET_BAD
 		  cURLItem(curl.Value).curlClose(socket)
-		  Return 0
+		  #pragma Warning "Fix me"
+		  ' libcURL expects this callback to close the socket descriptor, otherwise it will be leaked.
+		  ' Coercing a C-style socket descriptor into a BinaryStream and calling Close() works, but
+		  ' probably shouldn't.
+		  Dim bs As BinaryStream
+		  #If TargetWin32 Then
+		    bs = New BinaryStream(Socket, BinaryStream.HandleTypeWin32Handle)
+		  #else
+		    bs = New BinaryStream(Socket, BinaryStream.HandleTypeFileNumber)
+		  #endif
+		  bs.Close
+		  Return CURL_SOCKOPT_OK
+		  
+		  Break ' UserData does not refer to a valid instance!
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function ConnectionCount() As Integer
+		  ' Returns the number of sockets employed by the easy handle which have not yet disconnected.
+		  ' libcURL will attempt to reuse connections, so this may be greater-than zero even after a 
+		  ' transfer has completed.
+		  
+		  Return mConnectionCount
 		End Function
 	#tag EndMethod
 
@@ -93,6 +114,7 @@ Implements ErrorHandler
 		Private Sub curlClose(Socket As Integer)
 		  ' This method is the intermediary between CloseCallback and the Disconnected event.
 		  ' DO NOT CALL THIS METHOD
+		  mConnectionCount = mConnectionCount - 1
 		  RaiseEvent Disconnected(Socket)
 		End Sub
 	#tag EndMethod
@@ -144,6 +166,7 @@ Implements ErrorHandler
 		  Select Case SocketType
 		  Case libcURL.Opts.CURLSOCKTYPE_IPCXN
 		    RaiseEvent CreateSocket(Socket)
+		    mConnectionCount = mConnectionCount + 1
 		    Return CURL_SOCKOPT_OK
 		    
 		  End Select
@@ -221,6 +244,7 @@ Implements ErrorHandler
 		  
 		  #pragma X86CallingConvention CDecl
 		  #pragma Unused Handle ' handle is the cURL handle of the instance
+		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil Then
 		    Return cURLItem(curl.Value).curlDebug(info, data, size)
@@ -307,6 +331,7 @@ Implements ErrorHandler
 		  ' This method is invoked by libcURL. DO NOT CALL THIS METHOD
 		  
 		  #pragma X86CallingConvention CDecl
+		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil Then
 		    Return cURLItem(curl.Value).curlHeader(char, size, nmemb)
@@ -358,8 +383,9 @@ Implements ErrorHandler
 		  ' This method is invoked by libcURL. DO NOT CALL THIS METHOD
 		  
 		  #pragma X86CallingConvention CDecl
+		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl = Nil Then Return libcURL.Opts.CURL_SOCKET_BAD
+		  If curl = Nil Then Return CURL_SOCKET_BAD
 		  Return cURLItem(curl.Value).curlOpen(SocketType, Socket)
 		  
 		  Break ' UserData does not refer to a valid instance!
@@ -425,6 +451,7 @@ Implements ErrorHandler
 		  ' This method is invoked by libcURL. DO NOT CALL THIS METHOD
 		  
 		  #pragma X86CallingConvention CDecl
+		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil Then
 		    Return cURLItem(curl.Value).curlProgress(dlTotal, dlnow, ultotal, ulnow)
@@ -468,6 +495,7 @@ Implements ErrorHandler
 		  // called when data is needed
 		  
 		  #pragma X86CallingConvention CDecl
+		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil Then
 		    Return cURLItem(curl.Value).curlRead(char, size, nmemb)
@@ -618,6 +646,7 @@ Implements ErrorHandler
 		  
 		  #pragma X86CallingConvention CDecl
 		  #pragma Unused Handle ' Handle is the handle to the instance
+		  If Instances = Nil Then Return 1
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  Dim data As SSL_CTX
 		  Dim mb As MemoryBlock = SSLCTXStruct
@@ -661,6 +690,7 @@ Implements ErrorHandler
 		  // Called when data is available
 		  
 		  #pragma X86CallingConvention CDecl
+		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil Then
 		    Return cURLItem(curl.Value).curlWrite(char, size, nmemb)
@@ -787,6 +817,10 @@ Implements ErrorHandler
 
 	#tag Property, Flags = &h21
 		Private mCA_ListFile As FolderItem
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mConnectionCount As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
@@ -941,6 +975,12 @@ Implements ErrorHandler
 		Verbose As Boolean
 	#tag EndComputedProperty
 
+
+	#tag Constant, Name = CURL_SOCKET_BAD, Type = Double, Dynamic = False, Default = \"1", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURL_SOCKOPT_OK, Type = Double, Dynamic = False, Default = \"0", Scope = Protected
+	#tag EndConstant
 
 	#tag Constant, Name = GNUTLS_MAX_ALGORITHM_NUM, Type = Double, Dynamic = False, Default = \"16", Scope = Private
 	#tag EndConstant
