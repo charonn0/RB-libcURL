@@ -95,7 +95,7 @@ Inherits libcURL.cURLMulti
 			  mShareCookies = value
 			  Dim shareoption As Integer
 			  If mShareCookies Then shareoption = CURLSHOPT_SHARE Else shareoption = CURLSHOPT_UNSHARE
-			  If Not Me.SetShareOption(shareoption, CURL_LOCK_DATA_COOKIE) Then Raise New cURLException(Me)
+			  Call Me.SetShareOption(shareoption, CURL_LOCK_DATA_COOKIE)
 			End Set
 		#tag EndSetter
 		ShareCookies As Boolean
@@ -112,7 +112,7 @@ Inherits libcURL.cURLMulti
 			  mShareDNSCache = value
 			  Dim shareoption As Integer
 			  If mShareDNSCache Then shareoption = CURLSHOPT_SHARE Else shareoption = CURLSHOPT_UNSHARE
-			  If Not Me.SetShareOption(shareoption, CURL_LOCK_DATA_DNS) Then Raise New cURLException(Me)
+			  Call Me.SetShareOption(shareoption, CURL_LOCK_DATA_DNS)
 			End Set
 		#tag EndSetter
 		ShareDNSCache As Boolean
@@ -129,7 +129,7 @@ Inherits libcURL.cURLMulti
 			  mShareSSL = value
 			  Dim shareoption As Integer
 			  If mShareSSL Then shareoption = CURLSHOPT_SHARE Else shareoption = CURLSHOPT_UNSHARE
-			  If Not Me.SetShareOption(shareoption, CURL_LOCK_DATA_SSL_SESSION) Then Raise New cURLException(Me)
+			  Call Me.SetShareOption(shareoption, CURL_LOCK_DATA_SSL_SESSION)
 			End Set
 		#tag EndSetter
 		ShareSSL As Boolean
