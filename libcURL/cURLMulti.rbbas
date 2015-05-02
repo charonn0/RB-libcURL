@@ -54,7 +54,6 @@ Implements ErrorHandler
 		  ' Creates a new multi stack
 		  
 		  ' See:
-		  ' http://curl.haxx.se/libcurl/c/curl_global_init.html
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_init.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLMulti.Constructor
 		  
@@ -119,13 +118,14 @@ Implements ErrorHandler
 
 	#tag Method, Flags = &h0
 		Function PerformOnce() As Boolean
-		  ' Calling this method will call curl_multi_perform on the multistack once and read all messages emitted by libcURL during that operation.
-		  ' The TransferComplete event will be raised for any completed easy handles. This method must be called repeatedly until libcURL indicates
-		  ' that all transfers have completed. PerformOnce will return True until all transfers have completed.
+		  ' Calling this method will call curl_multi_perform on the multistack once and read all 
+		  ' messages emitted by libcURL during that operation. The TransferComplete event will be 
+		  ' raised for any completed easy handles. This method must be called repeatedly until libcURL 
+		  ' indicates that all transfers have completed. PerformOnce will return True until all transfers 
+		  ' have completed or an error occurs.
 		  '
-		  ' Unlike cURLMulti.Perform, this method will run the transfers and raise events on the calling thread instead of always on the main thread.
-		  '
-		  ' Calling this method again before a previous call to it has returned will raise an IllegalLockingException.
+		  ' Unlike cURLMulti.Perform, this method will run the transfers and raise events on the calling 
+		  ' thread instead of always on the main thread.
 		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_perform.html
@@ -155,7 +155,7 @@ Implements ErrorHandler
 		  Finally
 		    StackLock.Release
 		  End Try
-		  Return (mLastError = 0 And Instances.Count > 0)
+		  Return ((mLastError = 0 Or mLastError = CURLM_CALL_MULTI_PERFORM) And Instances.Count > 0)
 		End Function
 	#tag EndMethod
 
