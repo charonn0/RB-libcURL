@@ -158,16 +158,16 @@ Protected Module libcURL
 
 	#tag Method, Flags = &h1
 		Protected Function Default_CA_File() As FolderItem
-		  ' For SSL/TLS connections we must specify a file with a list of acceptable cartificate authorities
+		  ' For SSL/TLS connections we must specify a file with a list of acceptable certificate authorities
 		  ' We create a temp file and dump the DEFAULT_CA_INFO_PEM data into it for this purpose.
-		  Static Default_CA_File As FolderItem
-		  If Default_CA_File = Nil Then
-		    Default_CA_File = GetTemporaryFolderItem()
-		    Dim bs As BinaryStream = BinaryStream.Create(Default_CA_File, True)
+		  Static CA_File As FolderItem
+		  If CA_File = Nil Then
+		    CA_File = GetTemporaryFolderItem()
+		    Dim bs As BinaryStream = BinaryStream.Create(CA_File, True)
 		    bs.Write(DEFAULT_CA_INFO_PEM)
 		    bs.Close
 		  End If
-		  Return Default_CA_File
+		  Return CA_File
 		End Function
 	#tag EndMethod
 
