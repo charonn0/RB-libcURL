@@ -163,7 +163,11 @@ Implements ErrorHandler
 		Private Sub PerformTimerHandler(Sender As Timer)
 		  ' This method handles the PerformTimer.Action event. It calls PerformOnce on the main thread until PerformOnce returns False.
 		  
-		  If Not Me.PerformOnce() Then Sender.Mode = Timer.ModeOff
+		  If Not Me.PerformOnce() Then 
+		    Sender.Mode = Timer.ModeOff
+		  ElseIf Sender.Period > 50 Then
+		    Me.Perform() ' update interval
+		  End If
 		  
 		Exception Err As RuntimeException
 		  If Err IsA EndException Or Err IsA ThreadEndException Then Raise Err
