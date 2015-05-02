@@ -76,13 +76,13 @@ Implements ErrorHandler
 	#tag Method, Flags = &h0
 		Sub Constructor(CopyOpts As libcURL.cURLItem)
 		  ' Creates a new curl_easy handle by cloning the passed handle. The clone is independent of the original.
-		  ' This method does not initialize libcURL as it is assumed to have been initialized in CopyOpts.Constructor()
 		  ' If the handle cannot be duplicated an exception will be raised.
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_duphandle.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Constructor
 		  
 		  If CopyOpts <> Nil And CopyOpts.Handle > 0 Then
+		    Super.Constructor(CopyOpts.Flags)
 		    mHandle = curl_easy_duphandle(CopyOpts.Handle)
 		    If mHandle > 0 Then
 		      Instances.Value(mHandle) = New WeakRef(Me)
