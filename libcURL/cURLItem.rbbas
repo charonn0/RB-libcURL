@@ -164,7 +164,6 @@ Implements ErrorHandler
 		  ' This method is the intermediary between OpenCallback and the CreateSocket event.
 		  ' DO NOT CALL THIS METHOD
 		  
-		  Const CURL_SOCKOPT_OK = 0
 		  Const CURL_SOCKOPT_BAD = 1
 		  
 		  Select Case SocketType
@@ -186,9 +185,10 @@ Implements ErrorHandler
 	#tag Method, Flags = &h21
 		Private Function curlProgress(dlTotal As UInt64, dlnow As UInt64, ultotal As UInt64, ulnow As UInt64) As Integer
 		  ' This method is the intermediary between ProgressCallback and the Progress event.
+		  ' Return True from the Progress event to abort.
 		  ' DO NOT CALL THIS METHOD
 		  
-		  Return RaiseEvent Progress(dlTotal, dlnow, ultotal, ulnow)
+		  If RaiseEvent Progress(dlTotal, dlnow, ultotal, ulnow) Then Return 1
 		End Function
 	#tag EndMethod
 
@@ -730,7 +730,7 @@ Implements ErrorHandler
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
-		Event Progress(dlTotal As UInt64, dlnow As UInt64, ultotal As UInt64, ulnow As UInt64) As Integer
+		Event Progress(dlTotal As UInt64, dlnow As UInt64, ultotal As UInt64, ulnow As UInt64) As Boolean
 	#tag EndHook
 
 	#tag Hook, Flags = &h0

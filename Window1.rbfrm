@@ -143,7 +143,9 @@ Begin Window Window1
       LockTop         =   False
       Maximum         =   100
       Scope           =   0
+      TabIndex        =   3
       TabPanelIndex   =   0
+      TabStop         =   True
       Top             =   543
       Value           =   0
       Visible         =   True
@@ -618,7 +620,7 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Function ProgressHandler(Sender As libcURL.cURLItem, dlTotal As UInt64, dlnow As UInt64, ultotal As UInt64, ulnow As UInt64) As Integer
+		Private Function ProgressHandler(Sender As libcURL.cURLItem, dlTotal As UInt64, dlnow As UInt64, ultotal As UInt64, ulnow As UInt64) As Boolean
 		  #pragma Unused Sender
 		  If ultotal > 0 Then
 		    ProgressBar1.Value = ulnow * 100 / ulTotal
