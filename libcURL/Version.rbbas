@@ -61,16 +61,18 @@ Protected Module Version
 
 	#tag Method, Flags = &h1
 		Protected Function Struct() As CURLVersion
-		  If System.IsFunctionAvailable("curl_version_info", "libcurl") Then
+		  Static mStruct As CURLVersion
+		  Static init As Boolean
+		  If Not init And System.IsFunctionAvailable("curl_version_info", "libcurl") Then
+		    init = True
 		    If curl_global_init(CURL_GLOBAL_NOTHING) = 0 Then
 		      Dim ve As MemoryBlock
-		      ve = curl_version_info(CURLVERSION_FOURTH)
-		      Dim v As CURLVersion
-		      v.StringValue(TargetLittleEndian) = ve.StringValue(0, v.Size)
+		      ve = curl_version_info(CURLVERSION_FOURTH) ' do not try to replace with cURLHandle, which performs version checks
+		      mStruct.StringValue(TargetLittleEndian) = ve.StringValue(0, mStruct.Size)
 		      curl_global_cleanup()
-		      Return v
 		    End If
 		  End If
+		  If init Then Return mStruct
 		End Function
 	#tag EndMethod
 
