@@ -22,11 +22,11 @@ Implements ErrorHandler
 		    mLastError = curl_multi_add_handle(mHandle, Item.Handle)
 		    If mLastError = 0 Then
 		      Instances.Value(Item.Handle) = Item
+		      mEasyHandles.Append(Item.Handle)
 		    End If
 		  Finally
 		    StackLock.Release
 		  End Try
-		  mEasyHandles.Append(Item.Handle)
 		  Return True
 		End Function
 	#tag EndMethod
@@ -118,13 +118,13 @@ Implements ErrorHandler
 
 	#tag Method, Flags = &h0
 		Function PerformOnce() As Boolean
-		  ' Calling this method will call curl_multi_perform on the multistack once and read all 
-		  ' messages emitted by libcURL during that operation. The TransferComplete event will be 
-		  ' raised for any completed easy handles. This method must be called repeatedly until libcURL 
-		  ' indicates that all transfers have completed. PerformOnce will return True until all transfers 
+		  ' Calling this method will call curl_multi_perform on the multistack once and read all
+		  ' messages emitted by libcURL during that operation. The TransferComplete event will be
+		  ' raised for any completed easy handles. This method must be called repeatedly until libcURL
+		  ' indicates that all transfers have completed. PerformOnce will return True until all transfers
 		  ' have completed or an error occurs.
 		  '
-		  ' Unlike cURLMulti.Perform, this method will run the transfers and raise events on the calling 
+		  ' Unlike cURLMulti.Perform, this method will run the transfers and raise events on the calling
 		  ' thread instead of always on the main thread.
 		  '
 		  ' See:
@@ -163,7 +163,7 @@ Implements ErrorHandler
 		Private Sub PerformTimerHandler(Sender As Timer)
 		  ' This method handles the PerformTimer.Action event. It calls PerformOnce on the main thread until PerformOnce returns False.
 		  
-		  If Not Me.PerformOnce() Then 
+		  If Not Me.PerformOnce() Then
 		    Sender.Mode = Timer.ModeOff
 		  ElseIf Sender.Period > 50 Then
 		    Me.Perform() ' update interval
