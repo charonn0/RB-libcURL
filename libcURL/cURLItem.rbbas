@@ -627,7 +627,7 @@ Implements ErrorHandler
 		      
 		    Else
 		      Dim err As New TypeMismatchException
-		      err.Message = "NewValue is of unsupported type: " + Str(VarType(NewValue))
+		      err.Message = "NewValue is of unsupported type: " + Str(ValueType)
 		      Raise err
 		      
 		    End Select
