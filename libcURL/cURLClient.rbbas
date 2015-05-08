@@ -18,7 +18,6 @@ Class cURLClient
 		  EasyItem.CA_ListFile = libcURL.Default_CA_File
 		  If Not EasyItem.SetOption(libcURL.Opts.FOLLOWLOCATION, True) Then Raise New libcURL.cURLException(EasyItem) ' Follow redirects automatically
 		  If Not EasyItem.SetOption(libcURL.Opts.FAILONERROR, True) Then Raise New libcURL.cURLException(EasyItem) ' fail on server errors
-		  If Not MultiItem.AddItem(EasyItem) Then Raise New libcURL.cURLException(MultiItem)
 		End Sub
 	#tag EndMethod
 
@@ -32,14 +31,20 @@ Class cURLClient
 	#tag Method, Flags = &h21
 		Private Sub DataAvailableHandler(Sender As libcURL.cURLItem, NewData As String)
 		  #pragma Unused Sender
-		  If mDownload <> Nil Then mDownload.Write(NewData)
+		  If mDownload = Nil Then 
+		    mDownloadMB = New MemoryBlock(0)
+		    mDownload = New BinaryStream(mDownloadMB)
+		  End If
+		  mDownload.Write(NewData)
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
 		Private Function DataNeededHandler(Sender As libcURL.cURLItem, Buffer As MemoryBlock) As Integer
 		  #pragma Unused Sender
-		  If mUpload = Nil Then Return libcURL.CURL_READFUNC_ABORT
+		  If mUpload = Nil Then 
+		    Return libcURL.CURL_READFUNC_ABORT
+		  End If
 		  Dim data As MemoryBlock = mUpload.Read(Buffer.Size)
 		  Buffer.StringValue(0, data.Size) = data
 		  Return data.Size
@@ -69,19 +74,16 @@ Class cURLClient
 
 	#tag Method, Flags = &h0
 		Sub Get(URL As String, WriteTo As Writeable)
+		  ' Asynchronously performs a retrieval using protocol-appropriate semantics (http GET, ftp RETR, etc.)
+		  ' The protocol is inferred from the URL; explictly specify the protocol in the URL to avoid bad guesses.
+		  ' WriteTo is an object that implements the Writeable interface (e.g. BinaryStream). The downloaded data
+		  ' will be written to this object. When the download is complete, a reference to this object will be passed
+		  ' to the DownloadComplete event.
+		  
 		  EasyItem.URL = URL
 		  mDownload = WriteTo
 		  Me.Perform()
 		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function Get(URL As String, WriteTo As Writeable) As Integer
-		  Dim code As Integer
-		  mHeaders = New InternetHeaders
-		  WriteTo.Write(libcURL.Get(URL, 5, mHeaders, code))
-		  Return code
-		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -107,24 +109,21 @@ Class cURLClient
 
 	#tag Method, Flags = &h0
 		Sub Post(URL As String, FormData As Dictionary)
+		  ' Asynchronously POST the passed FormData via HTTP(S) using multipart/form-data encoding. The FormData dictionary
+		  ' contains NAME:VALUE pairs comprising HTML form elements. NAME is a string containing the form-element name; VALUE
+		  ' may be a string or a FolderItem.
+		  ' The protocol is inferred from the URL; explictly specify the protocol in the URL to avoid bad guesses.  When the POST 
+		  ' is complete, the UploadComplete event will be raised with a NIL parameter.
+		  
 		  EasyItem.URL = URL
-		  mForm = New libcURL.Form
+		  Dim f As libcURL.Form = New libcURL.Form
+		  mForm = f:FormData
 		  For Each item As String In FormData.Keys
-		    If Not mForm.AddElement(item, FormData.Value(item)) Then Raise New libcURL.cURLException(mForm)
+		    If Not f.AddElement(item, FormData.Value(item)) Then Raise New libcURL.cURLException(f)
 		  Next
-		  If Not EasyItem.SetOption(libcURL.Opts.HTTPPOST, mForm) Then Raise New libcURL.cURLException(EasyItem)
+		  If Not EasyItem.SetOption(libcURL.Opts.HTTPPOST, f) Then Raise New libcURL.cURLException(EasyItem)
 		  Me.Perform()
 		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function Post(URL As String, FormData As Dictionary, WriteTo As Writeable) As Integer
-		  Dim code As Integer
-		  mHeaders = New InternetHeaders
-		  WriteTo.Write(libcURL.Post(FormData, URL, 5, mHeaders, code))
-		  Return code
-		  
-		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
@@ -137,6 +136,12 @@ Class cURLClient
 
 	#tag Method, Flags = &h0
 		Sub Put(URL As String, ReadFrom As Readable)
+		  ' Asynchronously performs an upload using protocol-appropriate semantics (http PUT, ftp STOR, etc.)
+		  ' The protocol is inferred from the URL; explictly specify the protocol in the URL to avoid bad guesses. The
+		  ' path part of the URL specifies the remote directory and file name to store the file under. ReadFrom is an 
+		  ' object that implements the Readable interface (e.g. BinaryStream). The uploaded data will be read from this 
+		  ' object. When the upload is complete, a reference to this object will be passed to the UploadComplete event.
+		  
 		  EasyItem.URL = URL
 		  If Not EasyItem.SetOption(libcURL.Opts.UPLOAD, True) Then Raise New libcURL.cURLException(EasyItem)
 		  mUpload = ReadFrom
@@ -168,12 +173,23 @@ Class cURLClient
 		  Else
 		    Dim ulsize As Integer = easyitem.GetInfo(libcURL.Info.SIZE_UPLOAD).Int32Value
 		    Dim dlsize As Integer = easyitem.GetInfo(libcURL.Info.SIZE_DOWNLOAD).Int32Value
-		    If ulsize > 0 Then RaiseEvent UploadComplete(mUpload)
-		    If dlsize > 0 Then RaiseEvent DownloadComplete(mDownload)
+		    If mForm <> Nil Then
+		      Dim stream As BinaryStream = BinaryStream(mDownload)
+		      stream.Position = 0
+		      RaiseEvent POSTComplete(mForm.Right, stream)
+		    Else
+		      If ulsize > 0 Then RaiseEvent UploadComplete(mUpload)
+		      If dlsize > 0 Then RaiseEvent DownloadComplete(mDownload)
+		    End If
 		  End If
-		  ReDim ms_lists(-1) ' clean up any lists
-		  mForm = Nil '  clean up the form
-		  mHeaders = Nil '  clean up the headers
+		  
+		  'clean up
+		  ReDim ms_lists(-1) 
+		  mForm = Nil 
+		  mHeaders = Nil 
+		  mDownloadMB = Nil
+		  mUpload = Nil
+		  mDownload = Nil
 		End Sub
 	#tag EndMethod
 
@@ -191,6 +207,10 @@ Class cURLClient
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
+		Event POSTComplete(PostedForm As Dictionary, Output As Readable)
+	#tag EndHook
+
+	#tag Hook, Flags = &h0
 		Event Progress(dlTotal As UInt64, dlnow As UInt64, ultotal As UInt64, ulnow As UInt64) As Boolean
 	#tag EndHook
 
@@ -204,15 +224,15 @@ Class cURLClient
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private mActive As Boolean
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
 		Private mDownload As Writeable
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private mForm As libcURL.Form
+		Private mDownloadMB As MemoryBlock
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mForm As Pair
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
