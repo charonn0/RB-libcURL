@@ -104,7 +104,7 @@ Inherits libcURL.cURLMulti
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  return ShareDNSCache
+			  return mShareDNSCache
 			End Get
 		#tag EndGetter
 		#tag Setter
