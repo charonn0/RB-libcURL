@@ -142,11 +142,8 @@ Implements ErrorHandler
 		        Dim msg As CURLMsg = ReadNextMsg(c) ' on exit, 'c' will contain the number of messages remaining
 		        If c > -1 Then
 		          Dim curl As cURLItem = Instances.Value(msg.easy_handle)
-		          
 		          Call Me.RemoveItem(curl)
-		          
-		          'msg.Data is the last error code for the easy handle
-		          ErrorHandler(curl).LastError = Integer(msg.Data)
+		          ErrorHandler(curl).LastError = Integer(msg.Data) ' msg.Data is the last error code for the easy handle
 		          RaiseEvent TransferComplete(curl)
 		          
 		        End If

@@ -75,25 +75,24 @@ Implements ErrorHandler
 
 	#tag Method, Flags = &h0
 		Sub Constructor(CopyOpts As libcURL.cURLItem)
-		  ' Creates a new curl_easy handle by cloning the passed handle. The clone is independent of the original.
-		  ' If the handle cannot be duplicated an exception will be raised.
+		  ' Creates a new curl_easy handle by cloning the passed handle and all of its options. The clone is independent 
+		  ' of the original. If CopyOpts is Nil, its handle is invalid, or its handle cannot be duplicated an exception 
+		  ' will be raised. 
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_duphandle.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Constructor
 		  
-		  If CopyOpts <> Nil And CopyOpts.Handle > 0 Then
-		    Super.Constructor(CopyOpts.Flags)
-		    mHandle = curl_easy_duphandle(CopyOpts.Handle)
-		    If mHandle > 0 Then
-		      Instances.Value(mHandle) = New WeakRef(Me)
-		      InitCallbacks(Me)
-		      If CopyOpts.Verbose Then Me.Verbose = True
-		    Else
-		      mLastError = libcURL.Errors.INIT_FAILED
-		      Raise New cURLException(Me)
-		    End If
+		  If CopyOpts = Nil Or CopyOpts.Handle = 0 Then Raise New NilObjectException
+		  
+		  Super.Constructor(CopyOpts.Flags)
+		  mHandle = curl_easy_duphandle(CopyOpts.Handle)
+		  If mHandle > 0 Then
+		    Instances.Value(mHandle) = New WeakRef(Me)
+		    InitCallbacks(Me)
+		    If CopyOpts.Verbose Then Me.Verbose = True
 		  Else
-		    Raise New NilObjectException
+		    mLastError = libcURL.Errors.INIT_FAILED
+		    Raise New cURLException(Me)
 		  End If
 		End Sub
 	#tag EndMethod
