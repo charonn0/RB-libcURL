@@ -23,8 +23,6 @@ Inherits libcURL.cURLHandle
 		  // Calling the overridden superclass constructor.
 		  // Constructor(GlobalInitFlags As Integer) -- From libcURL.cURLHandle
 		  Super.Constructor(GlobalInitFlags)
-		  If Me.LastError <> 0 Then Raise New cURLException(Me)
-		  
 		  List = ListPtr
 		End Sub
 	#tag EndMethod

@@ -56,7 +56,6 @@ Inherits libcURL.cURLHandle
 		  // Calling the overridden superclass constructor.
 		  // Constructor(GlobalInitFlags As Integer) -- From libcURL.cURLHandle
 		  Super.Constructor(GlobalInitFlags)
-		  If Me.LastError <> 0 Then Raise New cURLException(Me)
 		  If Instances = Nil Then Instances = New Dictionary
 		  
 		  mHandle = curl_easy_init()
@@ -88,7 +87,7 @@ Inherits libcURL.cURLHandle
 		  
 		  Super.Constructor(CopyOpts.Flags)
 		  mHandle = curl_easy_duphandle(CopyOpts.Handle)
-		  If Me.Handle > 0 Then
+		  If mHandle > 0 Then
 		    Instances.Value(mHandle) = New WeakRef(Me)
 		    InitCallbacks(Me)
 		    If CopyOpts.Verbose Then Me.Verbose = True
