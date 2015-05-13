@@ -23,7 +23,7 @@ Inherits libcURL.cURLHandle
 		  // Calling the overridden superclass constructor.
 		  // Constructor(GlobalInitFlags As Integer) -- From libcURL.cURLHandle
 		  Super.Constructor(GlobalInitFlags)
-		  If mLastError <> 0 Then Raise New cURLException(Me)
+		  If Me.LastError <> 0 Then Raise New cURLException(Me)
 		  
 		  List = ListPtr
 		End Sub
@@ -37,9 +37,9 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Handle() As Ptr
+		Function Handle() As Integer
 		  ' This method returns a Ptr to the header list which can be passed back to libcURL
-		  Return List
+		  Return Integer(List)
 		End Function
 	#tag EndMethod
 

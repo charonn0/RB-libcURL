@@ -55,21 +55,20 @@ Protected Class cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function Handle() As Integer
+		  ' the multi handle
+		  Return mHandle
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function LastError() As Integer
-		  // Part of the libcURL.ErrorHandler interface.
 		  ' All calls into libcURL that return an error code will update LastError
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLHandle.LastError
 		  
 		  Return mLastError
 		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Sub LastError(Assigns NewError As Integer)
-		  // Part of the libcURL.ErrorHandler interface.
-		  mLastError = NewError
-		End Sub
 	#tag EndMethod
 
 
@@ -79,6 +78,10 @@ Protected Class cURLHandle
 
 	#tag Property, Flags = &h21
 		Private mFlags As Integer
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected mHandle As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h1

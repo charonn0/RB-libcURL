@@ -42,7 +42,7 @@ Inherits libcURL.cURLHandle
 		    For Each h As Integer In Instances.Keys
 		      Call Me.RemoveItem(Instances.Value(h))
 		    Next
-		    If mHandle <> 0 Then mLastError = curl_multi_cleanup(mHandle)
+		    If Me.Handle <> 0 Then mLastError = curl_multi_cleanup(mHandle)
 		  End If
 		  mHandle = 0
 		End Sub
@@ -59,10 +59,10 @@ Inherits libcURL.cURLHandle
 		  // Calling the overridden superclass constructor.
 		  // Constructor(GlobalInitFlags As Integer) -- From libcURL.cURLHandle
 		  Super.Constructor(GlobalInitFlags)
-		  If mLastError <> 0 Then Raise New cURLException(Me)
+		  If Me.LastError <> 0 Then Raise New cURLException(Me)
 		  
 		  mHandle = curl_multi_init()
-		  If mHandle <= 0 Then
+		  If Me.Handle <= 0 Then
 		    mLastError = libcURL.Errors.INIT_FAILED
 		    Raise New cURLException(Me)
 		  End If
@@ -75,13 +75,6 @@ Inherits libcURL.cURLHandle
 		Private Sub Destructor()
 		  Me.Close
 		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function Handle() As Integer
-		  ' the multi handle
-		  Return mHandle
-		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -142,7 +135,7 @@ Inherits libcURL.cURLHandle
 		        If c > -1 Then
 		          Dim curl As cURLItem = Instances.Value(msg.easy_handle)
 		          Call Me.RemoveItem(curl)
-		          curl.LastError = Integer(msg.Data) ' msg.Data is the last error code for the easy handle
+		          curl.mLastError = Integer(msg.Data) ' msg.Data is the last error code for the easy handle
 		          RaiseEvent TransferComplete(curl)
 		          
 		        End If
@@ -285,7 +278,7 @@ Inherits libcURL.cURLHandle
 		    Raise err
 		  End Select
 		  
-		  mLastError = curl_multi_setopt(Me.Handle, OptionNumber, MarshalledValue)
+		  mLastError = curl_multi_setopt(mHandle, OptionNumber, MarshalledValue)
 		  Return mLastError = 0
 		End Function
 	#tag EndMethod
@@ -326,10 +319,6 @@ Inherits libcURL.cURLHandle
 
 	#tag Property, Flags = &h21
 		Private Shared mEasyHandles() As Integer
-	#tag EndProperty
-
-	#tag Property, Flags = &h1
-		Protected mHandle As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h21

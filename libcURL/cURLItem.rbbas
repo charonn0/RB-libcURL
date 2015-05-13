@@ -9,7 +9,7 @@ Inherits libcURL.cURLHandle
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_cleanup.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Close
 		  
-		  If mHandle <> 0 Then
+		  If Me.Handle <> 0 Then
 		    curl_easy_cleanup(mHandle)
 		    Instances.Remove(mHandle)
 		  End If
@@ -53,11 +53,11 @@ Inherits libcURL.cURLHandle
 		  // Calling the overridden superclass constructor.
 		  // Constructor(GlobalInitFlags As Integer) -- From libcURL.cURLHandle
 		  Super.Constructor(GlobalInitFlags)
-		  If mLastError <> 0 Then Raise New cURLException(Me)
+		  If Me.LastError <> 0 Then Raise New cURLException(Me)
 		  If Instances = Nil Then Instances = New Dictionary
 		  
 		  mHandle = curl_easy_init()
-		  If mHandle > 0 Then
+		  If Me.Handle > 0 Then
 		    Instances.Value(mHandle) = New WeakRef(Me)
 		    InitCallbacks(Me)
 		  Else
@@ -85,7 +85,7 @@ Inherits libcURL.cURLHandle
 		  
 		  Super.Constructor(CopyOpts.Flags)
 		  mHandle = curl_easy_duphandle(CopyOpts.Handle)
-		  If mHandle > 0 Then
+		  If Me.Handle > 0 Then
 		    Instances.Value(mHandle) = New WeakRef(Me)
 		    InitCallbacks(Me)
 		    If CopyOpts.Verbose Then Me.Verbose = True
@@ -321,13 +321,6 @@ Inherits libcURL.cURLHandle
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Function Handle() As Integer
-		  ' The curl_easy handle.
-		  Return mHandle
-		End Function
-	#tag EndMethod
-
 	#tag Method, Flags = &h21
 		Private Shared Function HeaderCallback(char As Ptr, size As Integer, nmemb As Integer, UserData As Integer) As Integer
 		  ' This method is invoked by libcURL. DO NOT CALL THIS METHOD
@@ -484,8 +477,8 @@ Inherits libcURL.cURLHandle
 		    Return s
 		  Else
 		    Dim err As New IOException
-		    err.ErrorNumber = mLastError
-		    err.Message = libcURL.FormatError(mLastError)
+		    err.ErrorNumber = Me.LastError
+		    err.Message = libcURL.FormatError(Me.LastError)
 		    Raise err
 		  End If
 		End Function
@@ -589,11 +582,11 @@ Inherits libcURL.cURLHandle
 		      
 		    Case IsA libcURL.Form
 		      Dim f As libcURL.Form = NewValue
-		      MarshalledValue = f.Handle
+		      Return Me.SetOption(OptionNumber, f.Handle)
 		      
 		    Case IsA libcURL.curl_slist
 		      Dim f As libcURL.curl_slist = NewValue
-		      MarshalledValue = f.Handle
+		      Return Me.SetOption(OptionNumber, f.Handle)
 		      
 		    Case IsA libcURL.cURLShare
 		      Dim f As libcURL.cURLShare = NewValue
@@ -678,8 +671,8 @@ Inherits libcURL.cURLHandle
 		    Return byteswritten
 		  Else
 		    Dim err As New IOException
-		    err.ErrorNumber = mLastError
-		    err.Message = libcURL.FormatError(mLastError)
+		    err.ErrorNumber = Me.LastError
+		    err.Message = libcURL.FormatError(Me.LastError)
 		    Raise err
 		  End If
 		  
@@ -825,10 +818,6 @@ Inherits libcURL.cURLHandle
 		Private mConnectionCount As Integer
 	#tag EndProperty
 
-	#tag Property, Flags = &h1
-		Protected mHandle As Integer
-	#tag EndProperty
-
 	#tag Property, Flags = &h21
 		Private mVerbose As Boolean
 	#tag EndProperty
@@ -847,7 +836,7 @@ Inherits libcURL.cURLHandle
 		#tag Getter
 			Get
 			  Dim ip As String = Me.GetInfo(libcURL.Info.LOCAL_IP)
-			  If mLastError <> 0 Then Return Nil
+			  If Me.LastError <> 0 Then Return Nil
 			  For i As Integer = 0 To System.NetworkInterfaceCount - 1
 			    Dim iface As NetworkInterface = System.GetNetworkInterface(i)
 			    If iface.IPAddress = ip Then
