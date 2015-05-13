@@ -29,7 +29,7 @@ Inherits libcURL.cURLHandle
 		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA cURLItem Then
 		    Return cURLItem(curl.Value).curlClose(socket)
 		  End If
-		  Break
+		  
 		  Return CURL_SOCKET_BAD
 		  
 		  
