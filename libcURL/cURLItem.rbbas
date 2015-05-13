@@ -24,12 +24,15 @@ Inherits libcURL.cURLHandle
 		  ' This method is invoked by libcURL. DO NOT CALL THIS METHOD
 		  
 		  #pragma X86CallingConvention CDecl
-		  If Instances = Nil Then Return 1
+		  If Instances = Nil Then Return CURL_SOCKET_BAD
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl = Nil Then Return CURL_SOCKET_BAD
-		  Return cURLItem(curl.Value).curlClose(socket)
+		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA cURLItem Then
+		    Return cURLItem(curl.Value).curlClose(socket)
+		  End If
+		  Break
+		  Return CURL_SOCKET_BAD
 		  
-		  Break ' UserData does not refer to a valid instance!
+		  
 		End Function
 	#tag EndMethod
 
@@ -245,10 +248,10 @@ Inherits libcURL.cURLHandle
 		  ' This method is invoked by libcURL. DO NOT CALL THIS METHOD
 		  
 		  #pragma X86CallingConvention CDecl
-		  #pragma Unused Handle ' handle is the cURL handle of the instance
+		  #pragma Unused Handle ' handle is the cURL handle of the instance, which we stored in UserData already
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil Then
+		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA cURLItem Then
 		    Return cURLItem(curl.Value).curlDebug(info, data, size)
 		  End If
 		  
@@ -328,7 +331,7 @@ Inherits libcURL.cURLHandle
 		  #pragma X86CallingConvention CDecl
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil Then
+		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA cURLItem Then
 		    Return cURLItem(curl.Value).curlHeader(char, size, nmemb)
 		  End If
 		  
@@ -380,10 +383,12 @@ Inherits libcURL.cURLHandle
 		  #pragma X86CallingConvention CDecl
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl = Nil Then Return CURL_SOCKET_BAD
-		  Return cURLItem(curl.Value).curlOpen(SocketType, Socket)
+		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA cURLItem Then
+		    Return cURLItem(curl.Value).curlOpen(SocketType, Socket)
+		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
+		  Return CURL_SOCKET_BAD
 		End Function
 	#tag EndMethod
 
@@ -448,7 +453,7 @@ Inherits libcURL.cURLHandle
 		  #pragma X86CallingConvention CDecl
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil Then
+		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA cURLItem Then
 		    Return cURLItem(curl.Value).curlProgress(dlTotal, dlnow, ultotal, ulnow)
 		  End If
 		  
@@ -492,7 +497,7 @@ Inherits libcURL.cURLHandle
 		  #pragma X86CallingConvention CDecl
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil Then
+		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA cURLItem Then
 		    Return cURLItem(curl.Value).curlRead(char, size, nmemb)
 		  End If
 		  
@@ -646,11 +651,11 @@ Inherits libcURL.cURLHandle
 		  Dim data As SSL_CTX
 		  Dim mb As MemoryBlock = SSLCTXStruct
 		  data.StringValue(TargetLittleEndian) = mb.StringValue(0, SSL_CTX.Size)
-		  If curl = Nil Then
-		    Break ' UserData does not refer to a valid instance!
-		    Return 1
+		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA cURLItem Then
+		    Return cURLItem(curl.Value).curlSSLInit(SSLCTXStruct)
 		  End If
-		  Return cURLItem(curl.Value).curlSSLInit(SSLCTXStruct)
+		  Break ' UserData does not refer to a valid instance!
+		  Return 1
 		End Function
 	#tag EndMethod
 
@@ -687,7 +692,7 @@ Inherits libcURL.cURLHandle
 		  #pragma X86CallingConvention CDecl
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil Then
+		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA cURLItem Then
 		    Return cURLItem(curl.Value).curlWrite(char, size, nmemb)
 		  End If
 		  
