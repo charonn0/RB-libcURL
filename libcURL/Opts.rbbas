@@ -144,6 +144,15 @@ Protected Module Opts
 	#tag Constant, Name = FOLLOWLOCATION, Type = Double, Dynamic = False, Default = \"52", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = FTPMETHOD_MULTICWD, Type = Double, Dynamic = False, Default = \"1", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = FTPMETHOD_NOCWD, Type = Double, Dynamic = False, Default = \"2", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = FTPMETHOD_SINGLECWD, Type = Double, Dynamic = False, Default = \"3", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = FTPPORT, Type = Double, Dynamic = False, Default = \"10017", Scope = Protected
 	#tag EndConstant
 
@@ -151,6 +160,9 @@ Protected Module Opts
 	#tag EndConstant
 
 	#tag Constant, Name = FTP_ALTERNATIVE_TO_USER, Type = Double, Dynamic = False, Default = \"10147", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = FTP_FILEMETHOD, Type = Double, Dynamic = False, Default = \"138", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = HEADERDATA, Type = Double, Dynamic = False, Default = \"10029", Scope = Protected
@@ -382,6 +394,21 @@ Protected Module Opts
 	#tag EndConstant
 
 	#tag Constant, Name = USERNAME, Type = Double, Dynamic = False, Default = \"10173", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = USE_SSL, Type = Double, Dynamic = False, Default = \"119", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = USE_SSL_ALL, Type = Double, Dynamic = False, Default = \"3", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = USE_SSL_CONTROL, Type = Double, Dynamic = False, Default = \"2", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = USE_SSL_NONE, Type = Double, Dynamic = False, Default = \"0", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = USE_SSL_TRY, Type = Double, Dynamic = False, Default = \"1", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = VERBOSE, Type = Double, Dynamic = False, Default = \"41", Scope = Protected
