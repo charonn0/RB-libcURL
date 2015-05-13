@@ -31,7 +31,7 @@ Class cURLClient
 	#tag Method, Flags = &h21
 		Private Sub DataAvailableHandler(Sender As libcURL.cURLItem, NewData As String)
 		  #pragma Unused Sender
-		  If mDownload = Nil Then 
+		  If mDownload = Nil Then
 		    mDownloadMB = New MemoryBlock(0)
 		    mDownload = New BinaryStream(mDownloadMB)
 		  End If
@@ -42,7 +42,7 @@ Class cURLClient
 	#tag Method, Flags = &h21
 		Private Function DataNeededHandler(Sender As libcURL.cURLItem, Buffer As MemoryBlock) As Integer
 		  #pragma Unused Sender
-		  If mUpload = Nil Then 
+		  If mUpload = Nil Then
 		    Return libcURL.CURL_READFUNC_ABORT
 		  End If
 		  Dim data As MemoryBlock = mUpload.Read(Buffer.Size)
@@ -92,6 +92,12 @@ Class cURLClient
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function GetStatusCode() As Integer
+		  Return Easyitem.GetInfo(libcURL.Info.RESPONSE_CODE).Int32Value
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h21
 		Private Sub HeaderReceivedHandler(Sender As libcURL.cURLItem, HeaderLine As String)
 		  #pragma Unused Sender
@@ -102,6 +108,7 @@ Class cURLClient
 
 	#tag Method, Flags = &h1
 		Protected Sub Perform()
+		  mHeaders = Nil
 		  If Not MultiItem.AddItem(EasyItem) Then Raise New libcURL.cURLException(MultiItem)
 		  MultiItem.Perform()
 		End Sub
@@ -112,7 +119,7 @@ Class cURLClient
 		  ' Asynchronously POST the passed FormData via HTTP(S) using multipart/form-data encoding. The FormData dictionary
 		  ' contains NAME:VALUE pairs comprising HTML form elements. NAME is a string containing the form-element name; VALUE
 		  ' may be a string or a FolderItem.
-		  ' The protocol is inferred from the URL; explictly specify the protocol in the URL to avoid bad guesses.  When the POST 
+		  ' The protocol is inferred from the URL; explictly specify the protocol in the URL to avoid bad guesses.  When the POST
 		  ' is complete, the UploadComplete event will be raised with a NIL parameter.
 		  
 		  EasyItem.URL = URL
@@ -138,8 +145,8 @@ Class cURLClient
 		Sub Put(URL As String, ReadFrom As Readable)
 		  ' Asynchronously performs an upload using protocol-appropriate semantics (http PUT, ftp STOR, etc.)
 		  ' The protocol is inferred from the URL; explictly specify the protocol in the URL to avoid bad guesses. The
-		  ' path part of the URL specifies the remote directory and file name to store the file under. ReadFrom is an 
-		  ' object that implements the Readable interface (e.g. BinaryStream). The uploaded data will be read from this 
+		  ' path part of the URL specifies the remote directory and file name to store the file under. ReadFrom is an
+		  ' object that implements the Readable interface (e.g. BinaryStream). The uploaded data will be read from this
 		  ' object. When the upload is complete, a reference to this object will be passed to the UploadComplete event.
 		  
 		  EasyItem.URL = URL
@@ -184,9 +191,8 @@ Class cURLClient
 		  End If
 		  
 		  'clean up
-		  ReDim ms_lists(-1) 
-		  mForm = Nil 
-		  mHeaders = Nil 
+		  ReDim ms_lists(-1)
+		  mForm = Nil
 		  mDownloadMB = Nil
 		  mUpload = Nil
 		  mDownload = Nil

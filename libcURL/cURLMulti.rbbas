@@ -27,7 +27,7 @@ Implements ErrorHandler
 		  Finally
 		    StackLock.Release
 		  End Try
-		  Return True
+		  Return mLastError = 0
 		End Function
 	#tag EndMethod
 
@@ -183,11 +183,7 @@ Implements ErrorHandler
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_timeout.html
 		  Dim i As Integer
 		  mLastError = curl_multi_timeout(mHandle, i)
-		  If mLastError = 0 Then
-		    Return i
-		  Else
-		    Return -1
-		  End If
+		  If mLastError = 0 Then Return i Else Return -1
 		  
 		End Function
 	#tag EndMethod
@@ -217,9 +213,7 @@ Implements ErrorHandler
 		  StackLock.Signal
 		  Try
 		    mLastError = curl_multi_remove_handle(mHandle, Item.Handle)
-		    If Instances.HasKey(Item.Handle) Then
-		      Instances.Remove(Item.Handle)
-		    End If
+		    If Instances.HasKey(Item.Handle) Then Instances.Remove(Item.Handle)
 		    If Instances.Count = 0 And PerformTimer <> Nil Then PerformTimer.Mode = Timer.ModeOff
 		  Finally
 		    StackLock.Release
