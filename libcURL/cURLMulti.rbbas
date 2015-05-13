@@ -1,7 +1,6 @@
 #tag Class
 Protected Class cURLMulti
 Inherits libcURL.cURLHandle
-Implements ErrorHandler
 	#tag Method, Flags = &h0
 		Function AddItem(Item As libcURL.cURLItem) As Boolean
 		  ' Add a cURLItem to the multistack. The cURLItem should have all of its options already set and ready to go.
@@ -143,7 +142,7 @@ Implements ErrorHandler
 		        If c > -1 Then
 		          Dim curl As cURLItem = Instances.Value(msg.easy_handle)
 		          Call Me.RemoveItem(curl)
-		          ErrorHandler(curl).LastError = Integer(msg.Data) ' msg.Data is the last error code for the easy handle
+		          curl.LastError = Integer(msg.Data) ' msg.Data is the last error code for the easy handle
 		          RaiseEvent TransferComplete(curl)
 		          
 		        End If

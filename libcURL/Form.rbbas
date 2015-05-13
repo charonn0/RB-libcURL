@@ -1,7 +1,6 @@
 #tag Class
 Protected Class Form
 Inherits libcURL.cURLHandle
-Implements ErrorHandler
 	#tag Method, Flags = &h0
 		Function AddElement(Name As String, Value As Variant) As Boolean
 		  ' Adds the passed Value to the form using the specified name.

@@ -1,6 +1,5 @@
 #tag Class
 Protected Class cURLHandle
-Implements ErrorHandler
 	#tag Method, Flags = &h1
 		Protected Sub Constructor(GlobalInitFlags As Integer)
 		  ' Initializes libcURL if necessary. GlobalInitFlags is one of the CURL_GLOBAL_* constants.
@@ -66,8 +65,8 @@ Implements ErrorHandler
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h21
-		Private Sub LastError(Assigns NewError As Integer)
+	#tag Method, Flags = &h1
+		Protected Sub LastError(Assigns NewError As Integer)
 		  // Part of the libcURL.ErrorHandler interface.
 		  mLastError = NewError
 		End Sub

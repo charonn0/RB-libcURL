@@ -1,7 +1,6 @@
 #tag Class
 Protected Class cURLItem
 Inherits libcURL.cURLHandle
-Implements ErrorHandler
 	#tag Method, Flags = &h0
 		Sub Close()
 		  ' cleans up the instance.
@@ -75,9 +74,9 @@ Implements ErrorHandler
 
 	#tag Method, Flags = &h0
 		Sub Constructor(CopyOpts As libcURL.cURLItem)
-		  ' Creates a new curl_easy handle by cloning the passed handle and all of its options. The clone is independent 
-		  ' of the original. If CopyOpts is Nil, its handle is invalid, or its handle cannot be duplicated an exception 
-		  ' will be raised. 
+		  ' Creates a new curl_easy handle by cloning the passed handle and all of its options. The clone is independent
+		  ' of the original. If CopyOpts is Nil, its handle is invalid, or its handle cannot be duplicated an exception
+		  ' will be raised.
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_duphandle.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Constructor

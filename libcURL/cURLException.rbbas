@@ -2,7 +2,7 @@
 Protected Class cURLException
 Inherits RuntimeException
 	#tag Method, Flags = &h1000
-		Sub Constructor(ErrantItem As ErrorHandler)
+		Sub Constructor(ErrantItem As libcURL.cURLHandle)
 		  Me.ErrorNumber = ErrantItem.LastError
 		  Select Case True
 		  Case Not libcURL.IsAvailable
