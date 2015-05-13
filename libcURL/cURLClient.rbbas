@@ -73,6 +73,22 @@ Class cURLClient
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function Get(URL As String) As Boolean
+		  ' Synchronously performs a retrieval using protocol-appropriate semantics (http GET, ftp RETR, etc.)
+		  ' The protocol is inferred from the URL; explictly specify the protocol in the URL to avoid bad guesses.
+		  ' This method is synchronous in that it will not return until the transfer completes, but is asynchronous
+		  ' in that only the calling thread is blocked. 
+		  
+		  EasyItem.URL = URL
+		  mDownload = Nil
+		  mDownloadMB = Nil
+		  mUpload = Nil
+		  Return Me.Perform
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub Get(URL As String, WriteTo As Writeable)
 		  ' Asynchronously performs a retrieval using protocol-appropriate semantics (http GET, ftp RETR, etc.)
 		  ' The protocol is inferred from the URL; explictly specify the protocol in the URL to avoid bad guesses.
@@ -84,6 +100,24 @@ Class cURLClient
 		  mDownload = WriteTo
 		  Me.Perform()
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function GetDownloadedData() As MemoryBlock
+		  If mDownloadMB <> Nil Then Return mDownloadMB
+		  Dim data As New MemoryBlock(0)
+		  If mDownload = Nil Then Return data
+		  If Not mDownload IsA BinaryStream Then Return data
+		  Dim bs As BinaryStream = BinaryStream(mDownload)
+		  bs.Position = 0
+		  Dim out As New BinaryStream(data)
+		  While Not bs.EOF
+		    out.Write(bs.Read(64))
+		  Wend
+		  out.Close
+		  bs.Position = bs.Length
+		  Return data
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -106,12 +140,29 @@ Class cURLClient
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function LastError() As Integer
+		  Return EasyItem.LastError
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h1
 		Protected Sub Perform()
 		  mHeaders = Nil
 		  If Not MultiItem.AddItem(EasyItem) Then Raise New libcURL.cURLException(MultiItem)
 		  MultiItem.Perform()
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function Perform() As Boolean
+		  mHeaders = Nil
+		  If Not MultiItem.AddItem(EasyItem) Then Raise New libcURL.cURLException(MultiItem)
+		  While MultiItem.PerformOnce()
+		    App.YieldToNextThread
+		  Wend
+		  Return EasyItem.LastError = 0
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -131,6 +182,30 @@ Class cURLClient
 		  If Not EasyItem.SetOption(libcURL.Opts.HTTPPOST, f) Then Raise New libcURL.cURLException(EasyItem)
 		  Me.Perform()
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Post(URL As String, FormData As Dictionary) As Boolean
+		  ' Asynchronously POST the passed FormData via HTTP(S) using multipart/form-data encoding. The FormData dictionary
+		  ' contains NAME:VALUE pairs comprising HTML form elements. NAME is a string containing the form-element name; VALUE
+		  ' may be a string or a FolderItem.
+		  ' This method is synchronous in that it will not return until the transfer completes, but is asynchronous
+		  ' in that only the calling thread is blocked.
+		  
+		  mDownload = Nil
+		  mDownloadMB = Nil
+		  mUpload = Nil
+		  mForm = Nil
+		  
+		  EasyItem.URL = URL
+		  Dim f As libcURL.Form = New libcURL.Form
+		  mForm = f:FormData
+		  For Each item As String In FormData.Keys
+		    If Not f.AddElement(item, FormData.Value(item)) Then Raise New libcURL.cURLException(f)
+		  Next
+		  If Not EasyItem.SetOption(libcURL.Opts.HTTPPOST, f) Then Raise New libcURL.cURLException(EasyItem)
+		  Return Me.Perform
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
@@ -154,6 +229,23 @@ Class cURLClient
 		  mUpload = ReadFrom
 		  Me.Perform()
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Put(URL As String, ReadFrom As Readable) As Boolean
+		  ' Asynchronously performs an upload using protocol-appropriate semantics (http PUT, ftp STOR, etc.)
+		  ' The protocol is inferred from the URL; explictly specify the protocol in the URL to avoid bad guesses. 
+		  ' This method is synchronous in that it will not return until the transfer completes, but is asynchronous
+		  ' in that only the calling thread is blocked.
+		  
+		  mDownload = Nil
+		  mDownloadMB = Nil
+		  
+		  EasyItem.URL = URL
+		  If Not EasyItem.SetOption(libcURL.Opts.UPLOAD, True) Then Raise New libcURL.cURLException(EasyItem)
+		  mUpload = ReadFrom
+		  Return Me.Perform
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -193,7 +285,7 @@ Class cURLClient
 		  'clean up
 		  ReDim ms_lists(-1)
 		  mForm = Nil
-		  mDownloadMB = Nil
+		  'mDownloadMB = Nil
 		  mUpload = Nil
 		  mDownload = Nil
 		End Sub

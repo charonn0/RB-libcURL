@@ -12,7 +12,7 @@ Inherits RuntimeException
 		    Me.Message = "Unknown failure while constructing a libcURL handle."
 		    
 		  Case Me.ErrorNumber = libcURL.Errors.ALREADY_ADDED
-		    Me.Message = "The added easy handle is already associated with a multi handle."
+		    Me.Message = "The easy handle is already associated with a multi handle."
 		    
 		  Case ErrantItem IsA libcURL.cURLShare
 		    Me.Message = libcURL.FormatShareError(Me.ErrorNumber)
