@@ -14,7 +14,7 @@ Inherits libcURL.cURLHandle
 		  If mEasyHandles.IndexOf(Item.Handle) > -1 Then
 		    mLastError = libcURL.Errors.ALREADY_ADDED
 		  Else
-		    StackLock.Signal
+		    StackLock.Enter
 		    Try
 		      mLastError = curl_multi_add_handle(mHandle, Item.Handle)
 		      If mLastError = 0 Then
@@ -22,7 +22,7 @@ Inherits libcURL.cURLHandle
 		        mEasyHandles.Append(Item.Handle)
 		      End If
 		    Finally
-		      StackLock.Release
+		      StackLock.Leave
 		    End Try
 		  End If
 		  Return mLastError = 0
@@ -65,7 +65,7 @@ Inherits libcURL.cURLHandle
 		    Raise New cURLException(Me)
 		  End If
 		  Instances = New Dictionary
-		  StackLock = New Semaphore
+		  StackLock = New CriticalSection
 		End Sub
 	#tag EndMethod
 
@@ -122,7 +122,7 @@ Inherits libcURL.cURLHandle
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_info_read.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLMulti.PerformOnce
 		  
-		  StackLock.Signal
+		  StackLock.Enter
 		  Try
 		    Dim c As Integer
 		    mLastError = curl_multi_perform(mHandle, c) ' on exit, 'c' will contain the number of easy handles with unfinished business.
@@ -140,7 +140,7 @@ Inherits libcURL.cURLHandle
 		      Loop Until c <= 0
 		    End If
 		  Finally
-		    StackLock.Release
+		    StackLock.Leave
 		  End Try
 		  Return ((mLastError = 0 Or mLastError = CURLM_CALL_MULTI_PERFORM) And Instances.Count > 0)
 		End Function
@@ -197,13 +197,13 @@ Inherits libcURL.cURLHandle
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_remove_handle.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLMulti.RemoveItem
 		  
-		  StackLock.Signal
+		  StackLock.Enter
 		  Try
 		    mLastError = curl_multi_remove_handle(mHandle, Item.Handle)
 		    If Instances.HasKey(Item.Handle) Then Instances.Remove(Item.Handle)
 		    If Instances.Count = 0 And PerformTimer <> Nil Then PerformTimer.Mode = Timer.ModeOff
 		  Finally
-		    StackLock.Release
+		    StackLock.Leave
 		  End Try
 		  Dim h As Integer = mEasyHandles.IndexOf(Item.Handle)
 		  If h > -1 Then mEasyHandles.Remove(h)
@@ -324,7 +324,7 @@ Inherits libcURL.cURLHandle
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private StackLock As Semaphore
+		Private StackLock As CriticalSection
 	#tag EndProperty
 
 
