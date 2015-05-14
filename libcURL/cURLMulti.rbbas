@@ -5,7 +5,7 @@ Inherits libcURL.cURLHandle
 		Function AddItem(Item As libcURL.cURLItem) As Boolean
 		  ' Add a cURLItem to the multistack. The cURLItem should have all of its options already set and ready to go.
 		  ' You may not add an item while a call to PerformOnce has not yet returned. Doing so will raise an IllegalLockingException.
-		  ' A cURLItem may belong to only one cURLMulti object at a time. Passing an owned cURLItem will raise an exception.
+		  ' A cURLItem may belong to only one cURLMulti object at a time. Passing an owned cURLItem will fail.
 		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_add_handle.html
@@ -13,19 +13,18 @@ Inherits libcURL.cURLHandle
 		  
 		  If mEasyHandles.IndexOf(Item.Handle) > -1 Then
 		    mLastError = libcURL.Errors.ALREADY_ADDED
-		    Raise New cURLException(Me)
+		  Else
+		    StackLock.Signal
+		    Try
+		      mLastError = curl_multi_add_handle(mHandle, Item.Handle)
+		      If mLastError = 0 Then
+		        Instances.Value(Item.Handle) = Item
+		        mEasyHandles.Append(Item.Handle)
+		      End If
+		    Finally
+		      StackLock.Release
+		    End Try
 		  End If
-		  
-		  StackLock.Signal
-		  Try
-		    mLastError = curl_multi_add_handle(mHandle, Item.Handle)
-		    If mLastError = 0 Then
-		      Instances.Value(Item.Handle) = Item
-		      mEasyHandles.Append(Item.Handle)
-		    End If
-		  Finally
-		    StackLock.Release
-		  End Try
 		  Return mLastError = 0
 		End Function
 	#tag EndMethod
