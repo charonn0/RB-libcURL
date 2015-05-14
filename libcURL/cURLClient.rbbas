@@ -306,6 +306,8 @@ Class cURLClient
 		  mForm = Nil
 		  mUpload = Nil
 		  mDownload = Nil
+		  If Not EasyItem.SetOption(libcURL.Opts.UPLOAD, False) Then Raise New libcURL.cURLException(EasyItem)
+		  If Not EasyItem.SetOption(libcURL.Opts.HTTPGET, True) Then Raise New libcURL.cURLException(EasyItem)
 		End Sub
 	#tag EndMethod
 
