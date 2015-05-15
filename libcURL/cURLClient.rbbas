@@ -286,7 +286,7 @@ Class cURLClient
 	#tag Method, Flags = &h21
 		Private Sub TransferCompleteHandler(Sender As libcURL.cURLMulti, Item As libcURL.cURLItem)
 		  #pragma Unused Sender
-		  If mDownload <> Nil And mDownload IsA BinaryStream Then BinaryStream(mDownload).Close
+		  If mDownload <> Nil And mDownload IsA BinaryStream And mDownloadMB <> Nil Then BinaryStream(mDownload).Close
 		  Dim status As Integer = Item.LastError
 		  If status <> 0 Then
 		    RaiseEvent Error(status)
