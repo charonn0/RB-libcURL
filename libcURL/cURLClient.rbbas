@@ -149,12 +149,8 @@ Class cURLClient
 		Protected Sub Perform()
 		  If mPerforming Then Raise New IllegalLockingException Else mPerforming = True
 		  mHeaders = Nil
-		  Try
-		    If Not MultiItem.AddItem(EasyItem) Then Raise New libcURL.cURLException(MultiItem)
-		    MultiItem.Perform()
-		  Finally
-		    mPerforming = False
-		  End Try
+		  If Not MultiItem.AddItem(EasyItem) Then Raise New libcURL.cURLException(MultiItem)
+		  MultiItem.Perform()
 		End Sub
 	#tag EndMethod
 
@@ -162,14 +158,10 @@ Class cURLClient
 		Protected Function Perform() As Boolean
 		  If mPerforming Then Raise New IllegalLockingException Else mPerforming = True
 		  mHeaders = Nil
-		  Try
-		    If Not MultiItem.AddItem(EasyItem) Then Raise New libcURL.cURLException(MultiItem)
-		    While MultiItem.PerformOnce()
-		      App.YieldToNextThread
-		    Wend
-		  Finally
-		    mPerforming = False
-		  End Try
+		  If Not MultiItem.AddItem(EasyItem) Then Raise New libcURL.cURLException(MultiItem)
+		  While MultiItem.PerformOnce()
+		    App.YieldToNextThread
+		  Wend
 		  Return EasyItem.LastError = 0
 		End Function
 	#tag EndMethod
@@ -291,13 +283,13 @@ Class cURLClient
 		  If status <> 0 Then
 		    RaiseEvent Error(status)
 		  Else
-		    Dim ulsize As Integer = easyitem.GetInfo(libcURL.Info.SIZE_UPLOAD).Int32Value
-		    Dim dlsize As Integer = easyitem.GetInfo(libcURL.Info.SIZE_DOWNLOAD).Int32Value
 		    If mForm <> Nil Then
 		      RaiseEvent POSTComplete()
 		    Else
-		      If ulsize > 0 Then RaiseEvent UploadComplete()
-		      If dlsize > 0 Then RaiseEvent DownloadComplete()
+		      Dim ulsize As Integer = easyitem.GetInfo(libcURL.Info.SIZE_UPLOAD).Int32Value
+		      Dim dlsize As Integer = easyitem.GetInfo(libcURL.Info.SIZE_DOWNLOAD).Int32Value
+		      If ulsize > 0 Then RaiseEvent UploadComplete(ulsize)
+		      If dlsize > 0 Then RaiseEvent DownloadComplete(dlsize)
 		    End If
 		  End If
 		  
@@ -308,6 +300,7 @@ Class cURLClient
 		  mDownload = Nil
 		  If Not EasyItem.SetOption(libcURL.Opts.UPLOAD, False) Then Raise New libcURL.cURLException(EasyItem)
 		  If Not EasyItem.SetOption(libcURL.Opts.HTTPGET, True) Then Raise New libcURL.cURLException(EasyItem)
+		  mPerforming = False
 		End Sub
 	#tag EndMethod
 
@@ -317,7 +310,7 @@ Class cURLClient
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
-		Event DownloadComplete()
+		Event DownloadComplete(BytesRead As Integer)
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
@@ -333,7 +326,7 @@ Class cURLClient
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
-		Event UploadComplete()
+		Event UploadComplete(BytesWritten As Integer)
 	#tag EndHook
 
 
