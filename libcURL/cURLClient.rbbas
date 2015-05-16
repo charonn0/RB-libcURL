@@ -147,18 +147,16 @@ Class cURLClient
 
 	#tag Method, Flags = &h1
 		Protected Sub Perform()
-		  If mPerforming Then Raise New IllegalLockingException Else mPerforming = True
-		  mHeaders = Nil
 		  If Not MultiItem.AddItem(EasyItem) Then Raise New libcURL.cURLException(MultiItem)
+		  mHeaders = Nil
 		  MultiItem.Perform()
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
 		Protected Function Perform() As Boolean
-		  If mPerforming Then Raise New IllegalLockingException Else mPerforming = True
-		  mHeaders = Nil
 		  If Not MultiItem.AddItem(EasyItem) Then Raise New libcURL.cURLException(MultiItem)
+		  mHeaders = Nil
 		  While MultiItem.PerformOnce()
 		    App.YieldToNextThread
 		  Wend
@@ -300,7 +298,7 @@ Class cURLClient
 		  mDownload = Nil
 		  If Not EasyItem.SetOption(libcURL.Opts.UPLOAD, False) Then Raise New libcURL.cURLException(EasyItem)
 		  If Not EasyItem.SetOption(libcURL.Opts.HTTPGET, True) Then Raise New libcURL.cURLException(EasyItem)
-		  mPerforming = False
+		  
 		End Sub
 	#tag EndMethod
 
@@ -348,10 +346,6 @@ Class cURLClient
 
 	#tag Property, Flags = &h21
 		Private mHeaders As InternetHeaders
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private mPerforming As Boolean
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
