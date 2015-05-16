@@ -591,7 +591,6 @@ End
 		  
 		  If FormValue <> Nil Then Call curlget.SetOption(libcURL.Opts.HTTPPOST, FormValue)
 		  Call curlget.SetOption(libcURL.Opts.FOLLOWLOCATION, True) ' Follow redirects automatically
-		  Call curlget.SetOption(libcURL.Opts.REDIR_PROTOCOLS, libcURL.Opts.CURLPROTO_HTTP Or libcURL.Opts.CURLPROTO_HTTPS) ' Restrict redirects to HTTP(S)
 		  Call curlget.SetOption(libcURL.Opts.FAILONERROR, True) ' fail on server errors
 		  curlget.CA_ListFile = libcURL.Default_CA_File ' for SSL/TLS connections we must specify a list of acceptable certificate authorities
 		  curlget.URL = TextField1.Text
