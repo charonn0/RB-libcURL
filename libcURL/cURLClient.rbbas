@@ -149,6 +149,9 @@ Class cURLClient
 		Protected Sub Perform()
 		  If Not MultiItem.AddItem(EasyItem) Then Raise New libcURL.cURLException(MultiItem)
 		  mHeaders = Nil
+		  If s_list <> Nil Then
+		    If Not EasyItem.SetOption(libcURL.Opts.HTTPHEADER, s_list) Then Raise New libcURL.cURLException(EasyItem)
+		  End If
 		  MultiItem.Perform()
 		End Sub
 	#tag EndMethod
@@ -157,6 +160,9 @@ Class cURLClient
 		Protected Function Perform() As Boolean
 		  If Not MultiItem.AddItem(EasyItem) Then Raise New libcURL.cURLException(MultiItem)
 		  mHeaders = Nil
+		  If s_list <> Nil Then
+		    If Not EasyItem.SetOption(libcURL.Opts.HTTPHEADER, s_list) Then Raise New libcURL.cURLException(EasyItem)
+		  End If
 		  While MultiItem.PerformOnce()
 		    App.YieldToNextThread
 		  Wend
@@ -260,15 +266,16 @@ Class cURLClient
 
 	#tag Method, Flags = &h0
 		Sub SetRequestHeaders(Headers As InternetHeaders)
-		  Dim h As libcURL.curl_slist
 		  If Headers <> Nil Then
-		    h = New libcURL.curl_slist
+		    If s_list = Nil Then s_list = New libcURL.curl_slist
 		    For i As Integer = 0 To Headers.Count - 1
-		      Call h.Append(Headers.Name(i) + ": " + Headers.Value(Headers.Name(i)))
+		      Call s_list.Append(Headers.Name(i) + ": " + Headers.Value(Headers.Name(i)))
 		    Next
-		    ms_lists.Append(h)
+		  Else
+		    If Not EasyItem.SetOption(libcURL.Opts.HTTPHEADER, Nil) Then Raise New libcURL.cURLException(EasyItem)
+		    s_list = Nil
 		  End If
-		  If Not EasyItem.SetOption(libcURL.Opts.HTTPHEADER, h) Then Raise New libcURL.cURLException(EasyItem)
+		  
 		  
 		End Sub
 	#tag EndMethod
@@ -292,7 +299,6 @@ Class cURLClient
 		  End If
 		  
 		  'clean up
-		  ReDim ms_lists(-1)
 		  mForm = Nil
 		  mUpload = Nil
 		  mDownload = Nil
@@ -348,16 +354,16 @@ Class cURLClient
 		Private mHeaders As InternetHeaders
 	#tag EndProperty
 
-	#tag Property, Flags = &h21
-		Private ms_lists() As libcURL.curl_slist
-	#tag EndProperty
-
 	#tag Property, Flags = &h1
 		Protected MultiItem As libcURL.cURLMulti
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
 		Private mUpload As Readable
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private s_list As libcURL.curl_slist
 	#tag EndProperty
 
 
