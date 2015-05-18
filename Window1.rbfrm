@@ -143,7 +143,9 @@ Begin Window Window1
       LockTop         =   False
       Maximum         =   100
       Scope           =   0
+      TabIndex        =   3
       TabPanelIndex   =   0
+      TabStop         =   True
       Top             =   543
       Value           =   0
       Visible         =   True
@@ -706,7 +708,7 @@ End
 		  If libcURL.Version.KERBEROS4 Then Me.AddRow("kerberos auth is supported")
 		  If libcURL.Version.IPV6 Then Me.AddRow("IPv6-enabled")
 		  If libcURL.Version.LARGEFILE Then Me.AddRow("supports files bigger than 2GB")
-		  If libcURL.Version.LIBZ Then Me.AddRow("libz features are present")
+		  If libcURL.Version.LibZ.IsAvailable Then Me.AddRow("libz features are present")
 		  If libcURL.Version.NTLM Then Me.AddRow("NTLM auth is supported")
 		  If libcURL.Version.SPNEGO Then Me.AddRow("SPNEGO auth")
 		  If libcURL.Version.SSL Then Me.AddRow("SSL options are present")

@@ -240,23 +240,7 @@ Protected Module libcURL
 		  Const MinPatch = 2
 		  
 		  Static available As Boolean
-		  
-		  If Not available Then
-		    Select Case True
-		    Case Not System.IsFunctionAvailable("curl_global_init", "libcurl")
-		      available = False
-		      
-		    Case libcURL.Version.MajorNumber > MinMajor
-		      available = True
-		      
-		    Case libcURL.Version.MajorNumber = MinMajor
-		      If libcURL.Version.MinorNumber > MinMinor Or _
-		        (libcURL.Version.MinorNumber = MinMinor And libcURL.Version.PatchNumber >= MinPatch) Then
-		        available = True
-		      End If
-		      
-		    End Select
-		  End If
+		  If Not available Then available = libcURL.Version.IsAtLeast(MinMajor, MinMinor, MinPatch)
 		  Return available
 		End Function
 	#tag EndMethod
