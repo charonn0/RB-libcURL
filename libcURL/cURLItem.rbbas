@@ -825,6 +825,76 @@ Inherits libcURL.cURLHandle
 		CA_ListFile As FolderItem
 	#tag EndComputedProperty
 
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  return mCookieJar
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  If Not Me.SetOption(libcURL.Opts.COOKIEFILE, value) Then Raise New cURLException(Me)
+			  If Not Me.SetOption(libcURL.Opts.COOKIEJAR, value) Then Raise New cURLException(Me)
+			  mCookieJar = value
+			End Set
+		#tag EndSetter
+		CookieJar As FolderItem
+	#tag EndComputedProperty
+
+	#tag Property, Flags = &h21
+		Private Shared ErrorBuffers As Dictionary
+	#tag EndProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  return mFailOnServerError
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  If Not Me.SetOption(libcURL.Opts.FAILONERROR, value) Then Raise New cURLException(Me)
+			  mFailOnServerError = value
+			End Set
+		#tag EndSetter
+		FailOnServerError As Boolean
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  Return mFollowRedirects
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  ' Pass True to follow HTTP redirects automatically. The default is False
+			  ' See:
+			  ' http://curl.haxx.se/libcurl/c/curl_easy_setopt.html#CURLOPTFOLLOWLOCATION
+			  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.FollowRedirects
+			  
+			  If Not Me.SetOption(libcURL.Opts.FOLLOWLOCATION, value) Then Raise New cURLException(Me)
+			  mFollowRedirects = value
+			End Set
+		#tag EndSetter
+		FollowRedirects As Boolean
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  return mHTTPVersion
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  If Not Me.SetOption(libcURL.Opts.HTTPVERSION, value) Then Raise New cURLException(Me)
+			  mHTTPVersion = value
+			End Set
+		#tag EndSetter
+		HTTPVersion As Integer
+	#tag EndComputedProperty
+
 	#tag Property, Flags = &h21
 		Private Shared Instances As Dictionary
 	#tag EndProperty
@@ -852,6 +922,22 @@ Inherits libcURL.cURLHandle
 
 	#tag Property, Flags = &h21
 		Private mConnectionCount As Integer
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mCookieJar As FolderItem
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mFailOnServerError As Boolean
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mFollowRedirects As Boolean
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mHTTPVersion As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -1010,6 +1096,18 @@ Inherits libcURL.cURLHandle
 	#tag EndConstant
 
 	#tag Constant, Name = GNUTLS_MAX_ALGORITHM_NUM, Type = Double, Dynamic = False, Default = \"16", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = HTTP_VERSION_1_0, Type = Double, Dynamic = False, Default = \"1", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = HTTP_VERSION_1_1, Type = Double, Dynamic = False, Default = \"2", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = HTTP_VERSION_2_0, Type = Double, Dynamic = False, Default = \"3", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = HTTP_VERSION_NONE, Type = Double, Dynamic = False, Default = \"0", Scope = Public
 	#tag EndConstant
 
 

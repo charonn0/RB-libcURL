@@ -30,6 +30,9 @@ Protected Module Opts
 	#tag Constant, Name = COOKIELIST, Type = Double, Dynamic = False, Default = \"10135", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = COOKIESESSION, Type = Double, Dynamic = False, Default = \"96", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = CRLFILE, Type = Double, Dynamic = False, Default = \"10169", Scope = Protected
 	#tag EndConstant
 
@@ -138,6 +141,9 @@ Protected Module Opts
 	#tag Constant, Name = EGDSOCKET, Type = Double, Dynamic = False, Default = \"10077", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = ERRORBUFFER, Type = Double, Dynamic = False, Default = \"10010", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = FAILONERROR, Type = Double, Dynamic = False, Default = \"45", Scope = Protected
 	#tag EndConstant
 
@@ -180,6 +186,9 @@ Protected Module Opts
 	#tag Constant, Name = HTTPPOST, Type = Double, Dynamic = False, Default = \"10024", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = HTTPVERSION, Type = Double, Dynamic = False, Default = \"84", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = ISSUERCERT, Type = Double, Dynamic = False, Default = \"10170", Scope = Protected
 	#tag EndConstant
 
@@ -193,6 +202,9 @@ Protected Module Opts
 	#tag EndConstant
 
 	#tag Constant, Name = MAIL_FROM, Type = Double, Dynamic = False, Default = \"10186", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = MAIL_RCPT, Type = Double, Dynamic = False, Default = \"10187", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = MAXREDIRS, Type = Double, Dynamic = False, Default = \"68", Scope = Protected

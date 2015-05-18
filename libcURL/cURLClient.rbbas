@@ -16,8 +16,8 @@ Class cURLClient
 		  
 		  mEasyItem.UserAgent = libcURL.Version.Name
 		  mEasyItem.CA_ListFile = libcURL.Default_CA_File
-		  If Not Me.SetOption(libcURL.Opts.FOLLOWLOCATION, True) Then Raise New libcURL.cURLException(mEasyItem) ' Follow redirects automatically
-		  If Not Me.SetOption(libcURL.Opts.FAILONERROR, True) Then Raise New libcURL.cURLException(mEasyItem) ' fail on server errors
+		  mEasyItem.FailOnServerError = True
+		  mEasyItem.FollowRedirects = True
 		End Sub
 	#tag EndMethod
 

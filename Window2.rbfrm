@@ -597,6 +597,8 @@ End
 #tag Events Debug
 	#tag Event
 		Function ConstructContextualMenu(base as MenuItem, x as Integer, y as Integer) As Boolean
+		  #pragma Unused X
+		  #pragma Unused Y
 		  base.Append(New MenuItem("Clear log"))
 		  Return True
 		End Function

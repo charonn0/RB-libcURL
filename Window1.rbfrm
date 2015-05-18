@@ -143,9 +143,7 @@ Begin Window Window1
       LockTop         =   False
       Maximum         =   100
       Scope           =   0
-      TabIndex        =   3
       TabPanelIndex   =   0
-      TabStop         =   True
       Top             =   543
       Value           =   0
       Visible         =   True
@@ -592,8 +590,8 @@ End
 		  AddHandler curlget.Progress, WeakAddressOf ProgressHandler
 		  
 		  If FormValue <> Nil Then Call curlget.SetOption(libcURL.Opts.HTTPPOST, FormValue)
-		  Call curlget.SetOption(libcURL.Opts.FOLLOWLOCATION, True) ' Follow redirects automatically
-		  Call curlget.SetOption(libcURL.Opts.FAILONERROR, True) ' fail on server errors
+		  curlget.FollowRedirects = True
+		  curlget.FailOnServerError = True
 		  curlget.CA_ListFile = libcURL.Default_CA_File ' for SSL/TLS connections we must specify a list of acceptable certificate authorities
 		  curlget.URL = TextField1.Text
 		  multi.ShareCookies = True
