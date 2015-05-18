@@ -24,192 +24,6 @@ Begin Window Window2
    Title           =   "cURLClient Demo"
    Visible         =   True
    Width           =   600
-   Begin PushButton PushButton1
-      AutoDeactivate  =   True
-      Bold            =   ""
-      ButtonStyle     =   0
-      Cancel          =   ""
-      Caption         =   "Get"
-      Default         =   ""
-      Enabled         =   True
-      Height          =   22
-      HelpTag         =   ""
-      Index           =   -2147483648
-      InitialParent   =   ""
-      Italic          =   ""
-      Left            =   7
-      LockBottom      =   ""
-      LockedInPosition=   False
-      LockLeft        =   True
-      LockRight       =   ""
-      LockTop         =   True
-      Scope           =   0
-      TabIndex        =   0
-      TabPanelIndex   =   0
-      TabStop         =   True
-      TextFont        =   "System"
-      TextSize        =   0
-      TextUnit        =   0
-      Top             =   8
-      Underline       =   ""
-      Visible         =   True
-      Width           =   80
-   End
-   Begin PushButton PushButton2
-      AutoDeactivate  =   True
-      Bold            =   ""
-      ButtonStyle     =   0
-      Cancel          =   ""
-      Caption         =   "Get Threaded"
-      Default         =   ""
-      Enabled         =   True
-      Height          =   22
-      HelpTag         =   ""
-      Index           =   -2147483648
-      InitialParent   =   ""
-      Italic          =   ""
-      Left            =   99
-      LockBottom      =   ""
-      LockedInPosition=   False
-      LockLeft        =   True
-      LockRight       =   ""
-      LockTop         =   True
-      Scope           =   0
-      TabIndex        =   1
-      TabPanelIndex   =   0
-      TabStop         =   True
-      TextFont        =   "System"
-      TextSize        =   0
-      TextUnit        =   0
-      Top             =   8
-      Underline       =   ""
-      Visible         =   True
-      Width           =   80
-   End
-   Begin PushButton PushButton3
-      AutoDeactivate  =   True
-      Bold            =   ""
-      ButtonStyle     =   0
-      Cancel          =   ""
-      Caption         =   "Put"
-      Default         =   ""
-      Enabled         =   True
-      Height          =   22
-      HelpTag         =   ""
-      Index           =   -2147483648
-      InitialParent   =   ""
-      Italic          =   ""
-      Left            =   7
-      LockBottom      =   ""
-      LockedInPosition=   False
-      LockLeft        =   True
-      LockRight       =   ""
-      LockTop         =   True
-      Scope           =   0
-      TabIndex        =   2
-      TabPanelIndex   =   0
-      TabStop         =   True
-      TextFont        =   "System"
-      TextSize        =   0
-      TextUnit        =   0
-      Top             =   34
-      Underline       =   ""
-      Visible         =   True
-      Width           =   80
-   End
-   Begin PushButton PushButton4
-      AutoDeactivate  =   True
-      Bold            =   ""
-      ButtonStyle     =   0
-      Cancel          =   ""
-      Caption         =   "Put Threaded"
-      Default         =   ""
-      Enabled         =   True
-      Height          =   22
-      HelpTag         =   ""
-      Index           =   -2147483648
-      InitialParent   =   ""
-      Italic          =   ""
-      Left            =   99
-      LockBottom      =   ""
-      LockedInPosition=   False
-      LockLeft        =   True
-      LockRight       =   ""
-      LockTop         =   True
-      Scope           =   0
-      TabIndex        =   3
-      TabPanelIndex   =   0
-      TabStop         =   True
-      TextFont        =   "System"
-      TextSize        =   0
-      TextUnit        =   0
-      Top             =   34
-      Underline       =   ""
-      Visible         =   True
-      Width           =   80
-   End
-   Begin PushButton PushButton5
-      AutoDeactivate  =   True
-      Bold            =   ""
-      ButtonStyle     =   0
-      Cancel          =   ""
-      Caption         =   "Post"
-      Default         =   ""
-      Enabled         =   True
-      Height          =   22
-      HelpTag         =   ""
-      Index           =   -2147483648
-      InitialParent   =   ""
-      Italic          =   ""
-      Left            =   7
-      LockBottom      =   ""
-      LockedInPosition=   False
-      LockLeft        =   True
-      LockRight       =   ""
-      LockTop         =   True
-      Scope           =   0
-      TabIndex        =   4
-      TabPanelIndex   =   0
-      TabStop         =   True
-      TextFont        =   "System"
-      TextSize        =   0
-      TextUnit        =   0
-      Top             =   59
-      Underline       =   ""
-      Visible         =   True
-      Width           =   80
-   End
-   Begin PushButton PushButton6
-      AutoDeactivate  =   True
-      Bold            =   ""
-      ButtonStyle     =   0
-      Cancel          =   ""
-      Caption         =   "Post Threaded"
-      Default         =   ""
-      Enabled         =   True
-      Height          =   22
-      HelpTag         =   ""
-      Index           =   -2147483648
-      InitialParent   =   ""
-      Italic          =   ""
-      Left            =   99
-      LockBottom      =   ""
-      LockedInPosition=   False
-      LockLeft        =   True
-      LockRight       =   ""
-      LockTop         =   True
-      Scope           =   0
-      TabIndex        =   5
-      TabPanelIndex   =   0
-      TabStop         =   True
-      TextFont        =   "System"
-      TextSize        =   0
-      TextUnit        =   0
-      Top             =   59
-      Underline       =   ""
-      Visible         =   True
-      Width           =   80
-   End
    Begin cURLClient Client
       Height          =   32
       Index           =   -2147483648
@@ -237,7 +51,7 @@ Begin Window Window2
       HelpTag         =   ""
       Index           =   -2147483648
       Italic          =   ""
-      Left            =   207
+      Left            =   258
       LimitText       =   0
       LockBottom      =   ""
       LockedInPosition=   False
@@ -256,11 +70,11 @@ Begin Window Window2
       TextFont        =   "System"
       TextSize        =   0
       TextUnit        =   0
-      Top             =   8
+      Top             =   12
       Underline       =   ""
       UseFocusRing    =   True
       Visible         =   True
-      Width           =   380
+      Width           =   335
    End
    Begin TextArea TextArea1
       AcceptTabs      =   ""
@@ -274,12 +88,12 @@ Begin Window Window2
       DataSource      =   ""
       Enabled         =   True
       Format          =   ""
-      Height          =   325
+      Height          =   174
       HelpTag         =   ""
       HideSelection   =   True
       Index           =   -2147483648
       Italic          =   ""
-      Left            =   207
+      Left            =   7
       LimitText       =   0
       LockBottom      =   ""
       LockedInPosition=   False
@@ -301,11 +115,11 @@ Begin Window Window2
       TextFont        =   "System"
       TextSize        =   0
       TextUnit        =   0
-      Top             =   42
+      Top             =   220
       Underline       =   ""
       UseFocusRing    =   True
       Visible         =   True
-      Width           =   380
+      Width           =   586
    End
    Begin Thread GetThread
       Height          =   32
@@ -343,14 +157,14 @@ Begin Window Window2
       Top             =   437
       Width           =   32
    End
-   Begin ProgressBar ProgressBar1
+   Begin ProgressBar ProgressUpload
       AutoDeactivate  =   True
       Enabled         =   True
-      Height          =   20
+      Height          =   7
       HelpTag         =   ""
       Index           =   -2147483648
       InitialParent   =   ""
-      Left            =   7
+      Left            =   258
       LockBottom      =   ""
       LockedInPosition=   False
       LockLeft        =   True
@@ -359,10 +173,10 @@ Begin Window Window2
       Maximum         =   100
       Scope           =   0
       TabPanelIndex   =   0
-      Top             =   376
+      Top             =   46
       Value           =   0
       Visible         =   True
-      Width           =   586
+      Width           =   335
    End
    Begin Listbox Debug
       AutoDeactivate  =   True
@@ -382,14 +196,14 @@ Begin Window Window2
       GridLinesVertical=   0
       HasHeading      =   True
       HeadingIndex    =   -1
-      Height          =   245
+      Height          =   122
       HelpTag         =   ""
       Hierarchical    =   ""
       Index           =   -2147483648
       InitialParent   =   ""
       InitialValue    =   "Type	Debug Message"
       Italic          =   ""
-      Left            =   7
+      Left            =   4
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   True
@@ -406,44 +220,282 @@ Begin Window Window2
       TextFont        =   "System"
       TextSize        =   0
       TextUnit        =   0
-      Top             =   122
+      Top             =   86
       Underline       =   ""
       UseFocusRing    =   True
       Visible         =   True
-      Width           =   194
+      Width           =   596
       _ScrollWidth    =   -1
    End
-   Begin CheckBox CheckBox1
+   Begin TabPanel TabPanel1
       AutoDeactivate  =   True
       Bold            =   ""
-      Caption         =   "GET uses stream"
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
-      Height          =   20
+      Height          =   85
       HelpTag         =   ""
       Index           =   -2147483648
       InitialParent   =   ""
       Italic          =   ""
-      Left            =   7
+      Left            =   4
       LockBottom      =   ""
       LockedInPosition=   False
       LockLeft        =   True
       LockRight       =   ""
       LockTop         =   True
+      Panels          =   ""
       Scope           =   0
-      State           =   0
-      TabIndex        =   9
+      SmallTabs       =   ""
+      TabDefinition   =   "GET\rPUT\rPOST"
+      TabIndex        =   10
       TabPanelIndex   =   0
       TabStop         =   True
       TextFont        =   "System"
       TextSize        =   0
       TextUnit        =   0
-      Top             =   84
+      Top             =   0
       Underline       =   ""
-      Value           =   False
+      Value           =   2
       Visible         =   True
-      Width           =   172
+      Width           =   246
+      Begin PushButton PushButton1
+         AutoDeactivate  =   True
+         Bold            =   ""
+         ButtonStyle     =   0
+         Cancel          =   ""
+         Caption         =   "Get"
+         Default         =   ""
+         Enabled         =   True
+         Height          =   22
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel1"
+         Italic          =   ""
+         Left            =   9
+         LockBottom      =   ""
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   ""
+         LockTop         =   True
+         Scope           =   0
+         TabIndex        =   0
+         TabPanelIndex   =   1
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   33
+         Underline       =   ""
+         Visible         =   True
+         Width           =   80
+      End
+      Begin PushButton PushButton2
+         AutoDeactivate  =   True
+         Bold            =   ""
+         ButtonStyle     =   0
+         Cancel          =   ""
+         Caption         =   "Get Threaded"
+         Default         =   ""
+         Enabled         =   True
+         Height          =   22
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel1"
+         Italic          =   ""
+         Left            =   101
+         LockBottom      =   ""
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   ""
+         LockTop         =   True
+         Scope           =   0
+         TabIndex        =   1
+         TabPanelIndex   =   1
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   33
+         Underline       =   ""
+         Visible         =   True
+         Width           =   80
+      End
+      Begin CheckBox CheckBox1
+         AutoDeactivate  =   True
+         Bold            =   ""
+         Caption         =   "GET uses stream"
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel1"
+         Italic          =   ""
+         Left            =   11
+         LockBottom      =   ""
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   ""
+         LockTop         =   True
+         Scope           =   0
+         State           =   0
+         TabIndex        =   2
+         TabPanelIndex   =   1
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   58
+         Underline       =   ""
+         Value           =   False
+         Visible         =   True
+         Width           =   172
+      End
+      Begin PushButton PushButton3
+         AutoDeactivate  =   True
+         Bold            =   ""
+         ButtonStyle     =   0
+         Cancel          =   ""
+         Caption         =   "Put"
+         Default         =   ""
+         Enabled         =   True
+         Height          =   22
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel1"
+         Italic          =   ""
+         Left            =   11
+         LockBottom      =   ""
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   ""
+         LockTop         =   True
+         Scope           =   0
+         TabIndex        =   0
+         TabPanelIndex   =   2
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   31
+         Underline       =   ""
+         Visible         =   True
+         Width           =   80
+      End
+      Begin PushButton PushButton4
+         AutoDeactivate  =   True
+         Bold            =   ""
+         ButtonStyle     =   0
+         Cancel          =   ""
+         Caption         =   "Put Threaded"
+         Default         =   ""
+         Enabled         =   True
+         Height          =   22
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel1"
+         Italic          =   ""
+         Left            =   103
+         LockBottom      =   ""
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   ""
+         LockTop         =   True
+         Scope           =   0
+         TabIndex        =   1
+         TabPanelIndex   =   2
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   31
+         Underline       =   ""
+         Visible         =   True
+         Width           =   80
+      End
+      Begin PushButton PushButton5
+         AutoDeactivate  =   True
+         Bold            =   ""
+         ButtonStyle     =   0
+         Cancel          =   ""
+         Caption         =   "Post"
+         Default         =   ""
+         Enabled         =   True
+         Height          =   22
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel1"
+         Italic          =   ""
+         Left            =   11
+         LockBottom      =   ""
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   ""
+         LockTop         =   True
+         Scope           =   0
+         TabIndex        =   0
+         TabPanelIndex   =   3
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   31
+         Underline       =   ""
+         Visible         =   True
+         Width           =   80
+      End
+      Begin PushButton PushButton6
+         AutoDeactivate  =   True
+         Bold            =   ""
+         ButtonStyle     =   0
+         Cancel          =   ""
+         Caption         =   "Post Threaded"
+         Default         =   ""
+         Enabled         =   True
+         Height          =   22
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel1"
+         Italic          =   ""
+         Left            =   103
+         LockBottom      =   ""
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   ""
+         LockTop         =   True
+         Scope           =   0
+         TabIndex        =   1
+         TabPanelIndex   =   3
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   31
+         Underline       =   ""
+         Visible         =   True
+         Width           =   80
+      End
+   End
+   Begin ProgressBar ProgressDownload
+      AutoDeactivate  =   True
+      Enabled         =   True
+      Height          =   7
+      HelpTag         =   ""
+      Index           =   -2147483648
+      InitialParent   =   ""
+      Left            =   258
+      LockBottom      =   ""
+      LockedInPosition=   False
+      LockLeft        =   True
+      LockRight       =   ""
+      LockTop         =   True
+      Maximum         =   100
+      Scope           =   0
+      TabPanelIndex   =   0
+      Top             =   58
+      Value           =   0
+      Visible         =   True
+      Width           =   335
    End
 End
 #tag EndWindow
@@ -451,58 +503,6 @@ End
 #tag WindowCode
 #tag EndWindowCode
 
-#tag Events PushButton1
-	#tag Event
-		Sub Action()
-		  Dim bs As BinaryStream
-		  If CheckBox1.Value Then
-		    Dim f As FolderItem = GetSaveFolderItem("", "")
-		    bs = BinaryStream.Create(f, True)
-		  End If
-		  Client.Get(TextField1.Text, bs)
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events PushButton2
-	#tag Event
-		Sub Action()
-		  GetThread.Run
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events PushButton3
-	#tag Event
-		Sub Action()
-		  Dim f As FolderItem = GetOpenFolderItem("")
-		  Dim bs As BinaryStream = BinaryStream.Open(f)
-		  Client.Put(TextField1.Text, bs)
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events PushButton4
-	#tag Event
-		Sub Action()
-		  PutThread.Run
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events PushButton5
-	#tag Event
-		Sub Action()
-		  Dim form As New Dictionary
-		  form.Value("Username") = "User1"
-		  form.Value("Password") = "P@ss"
-		  Client.Post(TextField1.Text, form)
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events PushButton6
-	#tag Event
-		Sub Action()
-		  PostThread.Run
-		End Sub
-	#tag EndEvent
-#tag EndEvents
 #tag Events Client
 	#tag Event
 		Sub DownloadComplete(BytesRead As Integer)
@@ -517,11 +517,9 @@ End
 	#tag EndEvent
 	#tag Event
 		Function Progress(dlTotal As UInt64, dlnow As UInt64, ultotal As UInt64, ulnow As UInt64) As Boolean
-		  If dlTotal > ultotal Then
-		    ProgressBar1.Value = dlnow * 100 / dlTotal
-		  Else
-		    ProgressBar1.Value = ulnow * 100 / ulTotal
-		  End If
+		  ProgressDownload.Value = dlnow * 100 / dlTotal
+		  ProgressUpload.Value = ulnow * 100 / ulTotal
+		  
 		End Function
 	#tag EndEvent
 	#tag Event
@@ -593,6 +591,58 @@ End
 		  If Not Client.Post(TextField1.Text, form) Then
 		    MsgBox("Error")
 		  End If
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events PushButton1
+	#tag Event
+		Sub Action()
+		  Dim bs As BinaryStream
+		  If CheckBox1.Value Then
+		    Dim f As FolderItem = GetSaveFolderItem("", "")
+		    bs = BinaryStream.Create(f, True)
+		  End If
+		  Client.Get(TextField1.Text, bs)
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events PushButton2
+	#tag Event
+		Sub Action()
+		  GetThread.Run
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events PushButton3
+	#tag Event
+		Sub Action()
+		  Dim f As FolderItem = GetOpenFolderItem("")
+		  Dim bs As BinaryStream = BinaryStream.Open(f)
+		  Client.Put(TextField1.Text, bs)
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events PushButton4
+	#tag Event
+		Sub Action()
+		  PutThread.Run
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events PushButton5
+	#tag Event
+		Sub Action()
+		  Dim form As New Dictionary
+		  form.Value("Username") = "User1"
+		  form.Value("Password") = "P@ss"
+		  Client.Post(TextField1.Text, form)
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events PushButton6
+	#tag Event
+		Sub Action()
+		  PostThread.Run
 		End Sub
 	#tag EndEvent
 #tag EndEvents
