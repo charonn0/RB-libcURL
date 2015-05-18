@@ -365,8 +365,8 @@ Protected Module libcURL
 
 
 	#tag Note, Name = Copying
-		libcURL Copyright (c) 1996 - 2014, Daniel Stenberg, <daniel@haxx.se>.
-		RB-libcURL Copyright (c)2014 Andrew Lambert, <andrew@boredomsoft.org>.
+		libcURL Copyright (c) 1996 - 2015, Daniel Stenberg, <daniel@haxx.se>.
+		RB-libcURL Copyright (c)2014-15 Andrew Lambert, <andrew@boredomsoft.org>.
 		 
 		All rights reserved.
 		 

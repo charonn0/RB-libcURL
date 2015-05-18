@@ -73,14 +73,31 @@ Class cURLClient
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Get(URL As String) As Boolean
-		  ' Synchronously performs a retrieval using protocol-appropriate semantics (http GET, ftp RETR, etc.)
+		Sub Get(URL As String, WriteTo As Writeable = Nil)
+		  ' Asynchronously performs a retrieval using protocol-appropriate semantics (http GET, ftp RETR, etc.)
 		  ' The protocol is inferred from the URL; explictly specify the protocol in the URL to avoid bad guesses.
-		  ' This method is synchronous in that it will not return until the transfer completes, but is asynchronous
-		  ' in that only the calling thread is blocked.
+		  ' WriteTo is an optional Writeable object (e.g. BinaryStream); downloaded data will be written to this 
+		  ' object directly. If WriteTo is Nil then use the GetDownloadedData method to get any downloaded data.
+		  ' The transfer will be performed on the event loop (main thread).
 		  
 		  EasyItem.URL = URL
-		  mDownload = Nil
+		  mDownload = WriteTo
+		  mDownloadMB = Nil
+		  Me.Perform()
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Get(URL As String, WriteTo As Writeable = Nil) As Boolean
+		  ' Synchronously performs a retrieval using protocol-appropriate semantics (http GET, ftp RETR, etc.)
+		  ' The protocol is inferred from the URL; explictly specify the protocol in the URL to avoid bad guesses.
+		  ' WriteTo is an optional Writeable object (e.g. BinaryStream); downloaded data will be written to this
+		  ' object directly. If WriteTo is Nil then use the GetDownloadedData method to get any downloaded data.
+		  ' This method will block the calling thread until the transfer completes. All events will be raised
+		  ' on the calling thread.
+		  
+		  EasyItem.URL = URL
+		  mDownload = WriteTo
 		  mDownloadMB = Nil
 		  mUpload = Nil
 		  Return Me.Perform
@@ -89,21 +106,12 @@ Class cURLClient
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Get(URL As String, WriteTo As Writeable = Nil)
-		  ' Asynchronously performs a retrieval using protocol-appropriate semantics (http GET, ftp RETR, etc.)
-		  ' The protocol is inferred from the URL; explictly specify the protocol in the URL to avoid bad guesses.
-		  ' WriteTo is an object that implements the Writeable interface (e.g. BinaryStream). The downloaded data
-		  ' will be written to this object. When the download is complete, a reference to this object will be passed
-		  ' to the DownloadComplete event.
-		  
-		  EasyItem.URL = URL
-		  mDownload = WriteTo
-		  Me.Perform()
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Function GetDownloadedData() As MemoryBlock
+		  ' Returns a MemoryBlock containing all data which was downloaded during the most recent transfer.
+		  ' If you passed a Writeable object to any of the transfer methods (get, post, put) then this
+		  ' method will return an empty MemoryBlock (not Nil) as the data will have been downloaded into 
+		  ' the Writeable object directly.
+		  
 		  If mDownloadMB <> Nil Then Return mDownloadMB
 		  Dim data As New MemoryBlock(0)
 		  If mDownload = Nil Or Not mDownload IsA BinaryStream Then Return data
@@ -111,7 +119,7 @@ Class cURLClient
 		  bs.Position = 0
 		  Dim out As New BinaryStream(data)
 		  While Not bs.EOF
-		    out.Write(bs.Read(64))
+		    out.Write(bs.Read(1024))
 		  Wend
 		  out.Close
 		  bs.Position = bs.Length
@@ -121,12 +129,18 @@ Class cURLClient
 
 	#tag Method, Flags = &h0
 		Function GetResponseHeaders() As InternetHeaders
+		  ' Returns an InternetHeaders object containing all protocol headers received from the server
+		  ' during the most recent transfer. If no headers were received, returns Nil.
+		  
 		  Return mHeaders
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function GetStatusCode() As Integer
+		  ' Returns a protocol-specific status code for the most recent transfer. If the transfer
+		  ' involved several status codes (FTP anything, HTTP redirects, etc.) then only the most
+		  ' recent code is returned.
 		  Return Easyitem.GetInfo(libcURL.Info.RESPONSE_CODE).Int32Value
 		End Function
 	#tag EndMethod
@@ -147,6 +161,8 @@ Class cURLClient
 
 	#tag Method, Flags = &h1
 		Protected Sub Perform()
+		  ' Perform the transfer on the main thread/event loop.
+		  
 		  If Not MultiItem.AddItem(EasyItem) Then Raise New libcURL.cURLException(MultiItem)
 		  mHeaders = Nil
 		  If s_list <> Nil Then
@@ -158,6 +174,8 @@ Class cURLClient
 
 	#tag Method, Flags = &h1
 		Protected Function Perform() As Boolean
+		  ' Perform the transfer on the calling thread.
+		  
 		  If Not MultiItem.AddItem(EasyItem) Then Raise New libcURL.cURLException(MultiItem)
 		  mHeaders = Nil
 		  If s_list <> Nil Then
@@ -171,12 +189,17 @@ Class cURLClient
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Post(URL As String, FormData As Dictionary)
+		Sub Post(URL As String, FormData As Dictionary, WriteTo As Writeable = Nil)
 		  ' Asynchronously POST the passed FormData via HTTP(S) using multipart/form-data encoding. The FormData dictionary
 		  ' contains NAME:VALUE pairs comprising HTML form elements. NAME is a string containing the form-element name; VALUE
-		  ' may be a string or a FolderItem.
+		  ' may be a string or a FolderItem. 
 		  ' The protocol is inferred from the URL; explictly specify the protocol in the URL to avoid bad guesses.
+		  ' WriteTo is an optional Writeable object (e.g. BinaryStream); downloaded data will be written to this
+		  ' object directly. If WriteTo is Nil then use the GetDownloadedData method to get any downloaded data.
+		  ' The transfer will be performed on the event loop (main thread).
 		  
+		  mDownload = WriteTo
+		  mDownloadMB = Nil
 		  EasyItem.URL = URL
 		  mForm = New libcURL.Form
 		  For Each item As String In FormData.Keys
@@ -188,14 +211,16 @@ Class cURLClient
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Post(URL As String, FormData As Dictionary) As Boolean
+		Function Post(URL As String, FormData As Dictionary, WriteTo As Writeable = Nil) As Boolean
 		  ' Asynchronously POST the passed FormData via HTTP(S) using multipart/form-data encoding. The FormData dictionary
 		  ' contains NAME:VALUE pairs comprising HTML form elements. NAME is a string containing the form-element name; VALUE
 		  ' may be a string or a FolderItem.
-		  ' This method is synchronous in that it will not return until the transfer completes, but is asynchronous
-		  ' in that only the calling thread is blocked.
+		  ' WriteTo is an optional Writeable object (e.g. BinaryStream); downloaded data will be written to this
+		  ' object directly. If WriteTo is Nil then use the GetDownloadedData method to get any downloaded data.
+		  ' This method will block the calling thread until the transfer completes. All events will be raised
+		  ' on the calling thread.
 		  
-		  mDownload = Nil
+		  mDownload = WriteTo
 		  mDownloadMB = Nil
 		  mUpload = Nil
 		  mForm = Nil
@@ -219,47 +244,53 @@ Class cURLClient
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Put(URL As String, Data As MemoryBlock)
+		Sub Put(URL As String, Data As MemoryBlock, WriteTo As Writeable = Nil)
 		  Dim bs As New BinaryStream(Data)
-		  Me.Put(URL, bs)
+		  Me.Put(URL, bs, WriteTo)
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Put(URL As String, Data As MemoryBlock) As Boolean
+		Function Put(URL As String, Data As MemoryBlock, WriteTo As Writeable = Nil) As Boolean
 		  Dim bs As New BinaryStream(Data)
-		  Return Me.Put(URL, bs)
+		  Return Me.Put(URL, bs, WriteTo)
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Put(URL As String, ReadFrom As Readable)
+		Sub Put(URL As String, ReadFrom As Readable, WriteTo As Writeable = Nil)
 		  ' Asynchronously performs an upload using protocol-appropriate semantics (http PUT, ftp STOR, etc.)
 		  ' The protocol is inferred from the URL; explictly specify the protocol in the URL to avoid bad guesses. The
-		  ' path part of the URL specifies the remote directory and file name to store the file under. ReadFrom is an
-		  ' object that implements the Readable interface (e.g. BinaryStream). The uploaded data will be read from this
-		  ' object. When the upload is complete, a reference to this object will be passed to the UploadComplete event.
+		  ' path part of the URL specifies the remote directory and file name to store the file under. 
+		  ' ReadFrom is an object that implements the Readable interface (e.g. BinaryStream). The uploaded data will be 
+		  ' read from this object. 
+		  ' WriteTo is an optional Writeable object (e.g. BinaryStream); downloaded data will be written to this
+		  ' object directly. If WriteTo is Nil then use the GetDownloadedData method to get any downloaded data.
+		  ' The transfer will be performed on the event loop (main thread).
 		  
 		  EasyItem.URL = URL
 		  If Not EasyItem.SetOption(libcURL.Opts.UPLOAD, True) Then Raise New libcURL.cURLException(EasyItem)
 		  mUpload = ReadFrom
+		  mDownload = WriteTo
+		  mDownloadMB = Nil
 		  Me.Perform()
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Put(URL As String, ReadFrom As Readable) As Boolean
+		Function Put(URL As String, ReadFrom As Readable, WriteTo As Writeable = Nil) As Boolean
 		  ' Asynchronously performs an upload using protocol-appropriate semantics (http PUT, ftp STOR, etc.)
 		  ' The protocol is inferred from the URL; explictly specify the protocol in the URL to avoid bad guesses.
-		  ' This method is synchronous in that it will not return until the transfer completes, but is asynchronous
-		  ' in that only the calling thread is blocked.
-		  
-		  mDownload = Nil
-		  mDownloadMB = Nil
+		  ' WriteTo is an optional Writeable object (e.g. BinaryStream); downloaded data will be written to this
+		  ' object directly. If WriteTo is Nil then use the GetDownloadedData method to get any downloaded data.
+		  ' This method will block the calling thread until the transfer completes. All events will be raised
+		  ' on the calling thread.
 		  
 		  EasyItem.URL = URL
 		  If Not EasyItem.SetOption(libcURL.Opts.UPLOAD, True) Then Raise New libcURL.cURLException(EasyItem)
 		  mUpload = ReadFrom
+		  mDownload = WriteTo
+		  mDownloadMB = Nil
 		  Return Me.Perform
 		End Function
 	#tag EndMethod
@@ -301,7 +332,7 @@ Class cURLClient
 		  'clean up
 		  mForm = Nil
 		  mUpload = Nil
-		  mDownload = Nil
+		  
 		  If Not EasyItem.SetOption(libcURL.Opts.UPLOAD, False) Then Raise New libcURL.cURLException(EasyItem)
 		  If Not EasyItem.SetOption(libcURL.Opts.HTTPGET, True) Then Raise New libcURL.cURLException(EasyItem)
 		  
@@ -332,6 +363,26 @@ Class cURLClient
 	#tag Hook, Flags = &h0
 		Event UploadComplete(BytesWritten As Integer)
 	#tag EndHook
+
+
+	#tag Note, Name = Using this class
+		This class provides synchronous and asynchronous transfers with full support for RB/Xojo threads. Transfers are initiated
+		by calling one of the transfer methods: Get, Post, and Put. Despite the HTTP-specific names, Get and Put can be used to tranfer 
+		files over any protocol libcURL supports.
+		
+		There are two versions of each method: synchronous and asynchronous. When dealing with libcURL and REALbasic, a major issue
+		comes up with threading. RB/Xojo threads, being platform-generic abstractions, are not the sort of threads that libcURL understands. 
+		What's more, the sort of threads that libcURL does understand happens to be the only such thread in any RB application: the main
+		thread itself. The practical upshot being that using libcURL on a RB thread wasn't very useful, and using libcURL at all meant
+		that your entire application stopped responding for the duration of the transfer. This class is a solution to this problem.
+		
+		The synchronous versions of the transfer methods will perform the entire transfer on the calling thread, and then return a
+		Boolean indicating success (True) or failure (False). The asynchronous versions will activate a Timer that performs a little
+		bit of the transfer on every run of the event loop. Both versions will raise events, and both versions can ignore the events
+		by using the GetDownloadedData, GetResponseHeaders, and GetStatusCode methods.
+		
+		
+	#tag EndNote
 
 
 	#tag Property, Flags = &h1
