@@ -221,11 +221,12 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Function cURLSeek(Offset As Integer, Origin As Integer) As Integer
+		Private Function curlSeek(Offset As Integer, Origin As Integer) As Integer
 		  ' This method is the intermediary between SeekCallback and the SeekStream event.
 		  ' DO NOT CALL THIS METHOD
 		  #pragma Unused Origin
-		  Return RaiseEvent SeekStream(Offset)
+		  If RaiseEvent SeekStream(Offset) Then Return 0
+		  Return 2 ' fail seek, but libcURL can try to work around it.
 		End Function
 	#tag EndMethod
 
@@ -769,7 +770,7 @@ Inherits libcURL.cURLHandle
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
-		Event SeekStream(Offset As Integer) As Integer
+		Event SeekStream(Offset As Integer) As Boolean
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
@@ -1177,6 +1178,21 @@ Inherits libcURL.cURLHandle
 
 	#tag ViewBehavior
 		#tag ViewProperty
+			Name="FailOnServerError"
+			Group="Behavior"
+			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="FollowRedirects"
+			Group="Behavior"
+			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="HTTPVersion"
+			Group="Behavior"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
@@ -1237,6 +1253,11 @@ Inherits libcURL.cURLHandle
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="UseErrorBuffer"
+			Group="Behavior"
+			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="UserAgent"
