@@ -594,6 +594,23 @@ End
 		End Sub
 	#tag EndEvent
 #tag EndEvents
+#tag Events Debug
+	#tag Event
+		Function ConstructContextualMenu(base as MenuItem, x as Integer, y as Integer) As Boolean
+		  base.Append(New MenuItem("Clear log"))
+		  Return True
+		End Function
+	#tag EndEvent
+	#tag Event
+		Function ContextualMenuAction(hitItem as MenuItem) As Boolean
+		  Select Case hitItem.Text
+		  Case "Clear log"
+		    Me.DeleteAllRows
+		    Return True
+		  End Select
+		End Function
+	#tag EndEvent
+#tag EndEvents
 #tag Events PushButton1
 	#tag Event
 		Sub Action()
