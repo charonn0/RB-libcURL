@@ -12,6 +12,10 @@ Inherits libcURL.cURLHandle
 		  If Me.Handle <> 0 Then
 		    curl_easy_cleanup(mHandle)
 		    Instances.Remove(mHandle)
+		    If ErrorBuffers <> Nil And ErrorBuffers.HasKey(mHandle) Then
+		      ErrorBuffers.Remove(mHandle)
+		      If ErrorBuffers.Count = 0 Then ErrorBuffers = Nil
+		    End If
 		  End If
 		  mConnectionCount = 0
 		  mHandle = 0
@@ -66,7 +70,6 @@ Inherits libcURL.cURLHandle
 		    mLastError = libcURL.Errors.INIT_FAILED
 		    Raise New cURLException(Me)
 		  End If
-		  
 		  ' by default, only raise the DebugMessage event if we're debugging
 		  #If DebugBuild Then
 		    Me.Verbose = True
@@ -276,6 +279,15 @@ Inherits libcURL.cURLHandle
 		  Me.Close()
 		  If Instances <> Nil And Instances.Count = 0 Then Instances = Nil
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function ErrorBuffer() As String
+		  If ErrorBuffers <> Nil And ErrorBuffers.HasKey(mHandle) Then
+		    Dim data As MemoryBlock = ErrorBuffers.Lookup(Me.Handle, Nil)
+		    If data <> Nil Then Return data.CString(0)
+		  End If
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -1042,6 +1054,30 @@ Inherits libcURL.cURLHandle
 			End Set
 		#tag EndSetter
 		URL As String
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  Return ErrorBuffers <> Nil And ErrorBuffers.HasKey(Me.Handle)
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  If value Then
+			    Dim Data As New MemoryBlock(256)
+			    If Not Me.SetOption(libcURL.Opts.ERRORBUFFER, Data) Then Raise New cURLException(Me)
+			    If ErrorBuffers = Nil Then ErrorBuffers = New Dictionary
+			    ErrorBuffers.Value(Me.Handle) = Data
+			  ElseIf ErrorBuffers <> Nil And ErrorBuffers.HasKey(Me.Handle) Then
+			    If Not Me.SetOption(libcURL.Opts.ERRORBUFFER, Nil) Then Raise New cURLException(Me)
+			    ErrorBuffers.Remove(Me.Handle)
+			  End If
+			  
+			  
+			End Set
+		#tag EndSetter
+		UseErrorBuffer As Boolean
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
