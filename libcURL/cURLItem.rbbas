@@ -218,6 +218,15 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
+		Private Function cURLSeek(Offset As Integer, Origin As Integer) As Integer
+		  ' This method is the intermediary between SeekCallback and the SeekStream event.
+		  ' DO NOT CALL THIS METHOD
+		  #pragma Unused Origin
+		  Return RaiseEvent SeekStream(Offset)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
 		Private Function curlSSLInit(SSLCTX As Ptr) As Integer
 		  ' This method is the intermediary between InitSSLCallback and the SSLInit event.
 		  ' DO NOT CALL THIS METHOD
@@ -372,6 +381,10 @@ Inherits libcURL.cURLHandle
 		  
 		  If Not Sender.SetOption(libcURL.Opts.DEBUGDATA, Sender.Handle) Then Raise New cURLException(Sender)
 		  If Not Sender.SetOption(libcURL.Opts.DEBUGFUNCTION, AddressOf DebugCallback) Then Raise New cURLException(Sender)
+		  
+		  If Not Sender.SetOption(libcURL.Opts.SEEKDATA, Sender.Handle) Then Raise New cURLException(Sender)
+		  If Not Sender.SetOption(libcURL.Opts.SEEKFUNCTION, AddressOf SeekCallback) Then Raise New cURLException(Sender)
+		  
 		End Sub
 	#tag EndMethod
 
@@ -517,6 +530,21 @@ Inherits libcURL.cURLHandle
 		  Me.Verbose = mVerbose
 		  
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Shared Function SeekCallback(Userdata As Integer, Offset As Integer, Origin As Integer) As Integer
+		  ' This method is invoked by libcURL. DO NOT CALL THIS METHOD
+		  
+		  #pragma X86CallingConvention CDecl
+		  If Instances = Nil Then Return 0
+		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
+		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA cURLItem Then
+		    Return cURLItem(curl.Value).curlSeek(Offset, Origin)
+		  End If
+		  
+		  Break ' UserData does not refer to a valid instance!
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -726,6 +754,10 @@ Inherits libcURL.cURLHandle
 
 	#tag Hook, Flags = &h0
 		Event Progress(dlTotal As UInt64, dlnow As UInt64, ultotal As UInt64, ulnow As UInt64) As Boolean
+	#tag EndHook
+
+	#tag Hook, Flags = &h0
+		Event SeekStream(Offset As Integer) As Integer
 	#tag EndHook
 
 	#tag Hook, Flags = &h0

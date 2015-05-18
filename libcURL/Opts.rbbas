@@ -324,6 +324,9 @@ Protected Module Opts
 	#tag Constant, Name = RTSP_TRANSPORT, Type = Double, Dynamic = False, Default = \"10192", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = SEEKDATA, Type = Double, Dynamic = False, Default = \"10168", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = SEEKFUNCTION, Type = Double, Dynamic = False, Default = \"20167", Scope = Protected
 	#tag EndConstant
 
