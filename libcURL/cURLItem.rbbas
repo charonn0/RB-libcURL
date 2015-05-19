@@ -12,10 +12,7 @@ Inherits libcURL.cURLHandle
 		  If Me.Handle <> 0 Then
 		    curl_easy_cleanup(mHandle)
 		    Instances.Remove(mHandle)
-		    If ErrorBuffers <> Nil And ErrorBuffers.HasKey(mHandle) Then
-		      ErrorBuffers.Remove(mHandle)
-		      If ErrorBuffers.Count = 0 Then ErrorBuffers = Nil
-		    End If
+		    mErrorBuffer = Nil
 		  End If
 		  mConnectionCount = 0
 		  mHandle = 0
@@ -284,10 +281,7 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Function ErrorBuffer() As String
-		  If ErrorBuffers <> Nil And ErrorBuffers.HasKey(mHandle) Then
-		    Dim data As MemoryBlock = ErrorBuffers.Lookup(Me.Handle, Nil)
-		    If data <> Nil Then Return data.CString(0)
-		  End If
+		  If mErrorBuffer <> Nil Then Return mErrorBuffer.CString(0)
 		End Function
 	#tag EndMethod
 
@@ -854,10 +848,6 @@ Inherits libcURL.cURLHandle
 		CookieJar As FolderItem
 	#tag EndComputedProperty
 
-	#tag Property, Flags = &h21
-		Private Shared ErrorBuffers As Dictionary
-	#tag EndProperty
-
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
@@ -939,6 +929,10 @@ Inherits libcURL.cURLHandle
 
 	#tag Property, Flags = &h21
 		Private mCookieJar As FolderItem
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mErrorBuffer As MemoryBlock
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -1060,22 +1054,17 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  Return ErrorBuffers <> Nil And ErrorBuffers.HasKey(Me.Handle)
+			  Return mErrorBuffer <> Nil And mErrorBuffer.Size > 0
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
 			  If value Then
-			    Dim Data As New MemoryBlock(256)
-			    If Not Me.SetOption(libcURL.Opts.ERRORBUFFER, Data) Then Raise New cURLException(Me)
-			    If ErrorBuffers = Nil Then ErrorBuffers = New Dictionary
-			    ErrorBuffers.Value(Me.Handle) = Data
-			  ElseIf ErrorBuffers <> Nil And ErrorBuffers.HasKey(Me.Handle) Then
-			    If Not Me.SetOption(libcURL.Opts.ERRORBUFFER, Nil) Then Raise New cURLException(Me)
-			    ErrorBuffers.Remove(Me.Handle)
+			    mErrorBuffer = New MemoryBlock(256)
+			  Else
+			    mErrorBuffer = Nil
 			  End If
-			  
-			  
+			  If Not Me.SetOption(libcURL.Opts.ERRORBUFFER, mErrorBuffer) Then Raise New cURLException(Me)
 			End Set
 		#tag EndSetter
 		UseErrorBuffer As Boolean
@@ -1100,6 +1089,7 @@ Inherits libcURL.cURLHandle
 			Set
 			  //If the server will require a username, set it here. If the server doesn't require one, this property is ignored
 			  If Not Me.SetOption(libcURL.Opts.USERNAME, value) Then Raise New cURLException(Me)
+			  mUsername = value
 			End Set
 		#tag EndSetter
 		Username As String
