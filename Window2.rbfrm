@@ -550,15 +550,15 @@ End
 		End Sub
 	#tag EndEvent
 	#tag Event
-		Sub UploadComplete(BytesWritten As Integer)
-		  TextArea1.Text = Me.GetDownloadedData()
-		  MsgBox("Upload completed (" + Str(BytesWritten) + " bytes) with status: " + Str(Me.GetStatusCode))
-		End Sub
-	#tag EndEvent
-	#tag Event
 		Sub POSTComplete()
 		  TextArea1.Text = Me.GetDownloadedData()
 		  MsgBox("POST completed with status: " + Str(Me.GetStatusCode))
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Sub UploadComplete(BytesWritten As Integer)
+		  TextArea1.Text = Me.GetDownloadedData()
+		  MsgBox("Upload completed (" + Str(BytesWritten) + " bytes) with status: " + Str(Me.GetStatusCode))
 		End Sub
 	#tag EndEvent
 #tag EndEvents
