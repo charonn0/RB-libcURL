@@ -22,6 +22,7 @@ Class=cURLClient;libcURL/cURLClient.rbbas;&h79E307FF;&h1B9FF7FF;false
 Window=Window2;Window2.rbfrm;&h23A0FFF;&h0;false
 Module=Version;libcURL/Version/Version.rbbas;&h44617FFF;&h1B9FF7FF;false
 Module=LibZ;libcURL/Version/LibZ.rbbas;&h1E9EA7FF;&h44617FFF;false
+Class=cURLManager;libcURL/cURLManager.rbbas;&h531D2FFF;&h1B9FF7FF;false
 DefaultWindow=Window1
 MajorVersion=1
 MinorVersion=0

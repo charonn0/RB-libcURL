@@ -249,6 +249,9 @@ Protected Module Opts
 	#tag Constant, Name = NETRC_FILE, Type = Double, Dynamic = False, Default = \"10118", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = NOBODY, Type = Double, Dynamic = False, Default = \"44", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = NOPROGRESS, Type = Double, Dynamic = False, Default = \"43", Scope = Protected
 	#tag EndConstant
 

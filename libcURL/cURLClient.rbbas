@@ -1,74 +1,23 @@
 #tag Class
 Class cURLClient
-	#tag Method, Flags = &h0
-		Sub Constructor()
-		  mEasyItem = New libcURL.cURLItem
-		  AddHandler mEasyItem.CreateSocket, WeakAddressOf CreateSocketHandler
-		  AddHandler mEasyItem.DataAvailable, WeakAddressOf DataAvailableHandler
-		  AddHandler mEasyItem.DataNeeded, WeakAddressOf DataNeededHandler
-		  AddHandler mEasyItem.DebugMessage, WeakAddressOf DebugMessageHandler
-		  AddHandler mEasyItem.Disconnected, WeakAddressOf DisconnectedHandler
-		  AddHandler mEasyItem.HeaderReceived, WeakAddressOf HeaderReceivedHandler
-		  AddHandler mEasyItem.Progress, WeakAddressOf ProgressHandler
-		  
-		  mMultiItem = New libcURL.cURLMulti
-		  AddHandler mMultiItem.TransferComplete, WeakAddressOf TransferCompleteHandler
-		  
-		  mEasyItem.UserAgent = libcURL.Version.Name
-		  mEasyItem.CA_ListFile = libcURL.Default_CA_File
-		  mEasyItem.FailOnServerError = True
-		  mEasyItem.FollowRedirects = True
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Sub CreateSocketHandler(Sender As libcURL.cURLItem, Socket As Integer)
-		  #pragma Unused Sender
-		  #pragma Unused Socket
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Sub DataAvailableHandler(Sender As libcURL.cURLItem, NewData As String)
-		  #pragma Unused Sender
-		  If mDownload = Nil Then
-		    mDownloadMB = New MemoryBlock(0)
-		    mDownload = New BinaryStream(mDownloadMB)
+Inherits libcURL.cURLManager
+	#tag Event
+		Sub TransferComplete(BytesRead As Integer, BytesWritten As Integer)
+		  If mPost Then
+		    RaiseEvent POSTComplete()
+		  Else
+		    If BytesWritten > 0 Then RaiseEvent UploadComplete(BytesWritten)
+		    If BytesRead > 0 Then RaiseEvent DownloadComplete(BytesRead)
 		  End If
-		  mDownload.Write(NewData)
 		End Sub
-	#tag EndMethod
+	#tag EndEvent
 
-	#tag Method, Flags = &h21
-		Private Function DataNeededHandler(Sender As libcURL.cURLItem, Buffer As MemoryBlock) As Integer
-		  #pragma Unused Sender
-		  If mUpload = Nil Then
-		    Return libcURL.CURL_READFUNC_ABORT
-		  End If
-		  Dim data As MemoryBlock = mUpload.Read(Buffer.Size)
-		  Buffer.StringValue(0, data.Size) = data
-		  Return data.Size
-		End Function
-	#tag EndMethod
 
-	#tag Method, Flags = &h21
-		Private Sub DebugMessageHandler(Sender As libcURL.cURLItem, MessageType As libcURL.curl_infotype, data As String)
-		  #pragma Unused Sender
-		  RaiseEvent DebugMessage(MessageType, data)
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Sub Destructor()
-		  mMultiItem = Nil
-		  mEasyItem = Nil
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Sub DisconnectedHandler(Sender As libcURL.cURLItem, Socket As Integer)
-		  #pragma Unused Sender
-		  #pragma Unused Socket
+	#tag Method, Flags = &h1
+		Protected Sub Cleanup()
+		  mPost = False
+		  Super.CleanUp()
+		  
 		End Sub
 	#tag EndMethod
 
@@ -80,10 +29,8 @@ Class cURLClient
 		  ' object directly. If WriteTo is Nil then use the GetDownloadedData method to get any downloaded data.
 		  ' The transfer will be performed on the event loop (main thread).
 		  
-		  mEasyItem.URL = URL
-		  mDownload = WriteTo
-		  mDownloadMB = Nil
-		  Me.Perform()
+		  Me.Cleanup()
+		  Me.Perform(URL, Nil, WriteTo)
 		End Sub
 	#tag EndMethod
 
@@ -96,101 +43,34 @@ Class cURLClient
 		  ' This method will block the calling thread until the transfer completes. All events will be raised
 		  ' on the calling thread.
 		  
-		  mEasyItem.URL = URL
-		  mDownload = WriteTo
-		  mDownloadMB = Nil
-		  mUpload = Nil
-		  Return Me.Perform
+		  Me.Cleanup()
+		  Return Me.Perform(URL, Nil, WriteTo)
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function GetDownloadedData() As MemoryBlock
-		  ' Returns a MemoryBlock containing all data which was downloaded during the most recent transfer.
-		  ' If you passed a Writeable object to any of the transfer methods (get, post, put) then this
-		  ' method will return an empty MemoryBlock (not Nil) as the data will have been downloaded into
-		  ' the Writeable object directly.
+		Sub Head(URL As String)
+		  ' Asynchronously performs a headers-only operation using protocol-appropriate semantics (http HEAD, etc.)
+		  ' The protocol is inferred from the URL; explictly specify the protocol in the URL to avoid bad guesses.
+		  ' The transfer will be performed on the event loop (main thread).
 		  
-		  If mDownloadMB <> Nil Then Return mDownloadMB
-		  Dim data As New MemoryBlock(0)
-		  If mDownload = Nil Or Not mDownload IsA BinaryStream Then Return data
-		  Dim bs As BinaryStream = BinaryStream(mDownload)
-		  bs.Position = 0
-		  Dim out As New BinaryStream(data)
-		  While Not bs.EOF
-		    out.Write(bs.Read(1024))
-		  Wend
-		  out.Close
-		  bs.Position = bs.Length
-		  Return data
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Function GetInfo(InfoType As Integer) As Variant
-		  If mEasyItem <> Nil Then Return mEasyItem.GetInfo(InfoType)
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function GetResponseHeaders() As InternetHeaders
-		  ' Returns an InternetHeaders object containing all protocol headers received from the server
-		  ' during the most recent transfer. If no headers were received, returns Nil.
-		  
-		  Return mHeaders
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function GetStatusCode() As Integer
-		  ' Returns a protocol-specific status code for the most recent transfer. If the transfer
-		  ' involved several status codes (FTP anything, HTTP redirects, etc.) then only the most
-		  ' recent code is returned.
-		  Return Me.GetInfo(libcURL.Info.RESPONSE_CODE).Int32Value
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Sub HeaderReceivedHandler(Sender As libcURL.cURLItem, HeaderLine As String)
-		  #pragma Unused Sender
-		  If mHeaders = Nil Then mHeaders = New InternetHeaders
-		  mHeaders.AppendHeader(NthField(HeaderLine, ": ", 1), NthField(HeaderLine, ": ", 2))
+		  Me.Cleanup()
+		  Call Me.SetOption(libcURL.Opts.NOBODY, True)
+		  Me.Perform(URL, Nil, Nil)
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function LastError() As Integer
-		  Return mEasyItem.LastError
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Sub Perform()
-		  ' Perform the transfer on the main thread/event loop.
+		Function Head(URL As String) As Boolean
+		  ' Synchronously performs a headers-only operation using protocol-appropriate semantics (http HEAD, etc.)
+		  ' The protocol is inferred from the URL; explictly specify the protocol in the URL to avoid bad guesses.
+		  ' This method will block the calling thread until the transfer completes. All events will be raised
+		  ' on the calling thread.
 		  
-		  If Not mMultiItem.AddItem(mEasyItem) Then Raise New libcURL.cURLException(mMultiItem)
-		  mHeaders = Nil
-		  If s_list <> Nil Then
-		    If Not Me.SetOption(libcURL.Opts.HTTPHEADER, s_list) Then Raise New libcURL.cURLException(mEasyItem)
-		  End If
-		  mMultiItem.Perform()
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Function Perform() As Boolean
-		  ' Perform the transfer on the calling thread.
-		  
-		  If Not mMultiItem.AddItem(mEasyItem) Then Raise New libcURL.cURLException(mMultiItem)
-		  mHeaders = Nil
-		  If s_list <> Nil Then
-		    If Not Me.SetOption(libcURL.Opts.HTTPHEADER, s_list) Then Raise New libcURL.cURLException(mEasyItem)
-		  End If
-		  While mMultiItem.PerformOnce()
-		    App.YieldToNextThread
-		  Wend
-		  Return mEasyItem.LastError = 0
+		  Me.Cleanup()
+		  Call Me.SetOption(libcURL.Opts.NOBODY, True)
+		  Return Me.Perform(URL, Nil, Nil)
 		End Function
 	#tag EndMethod
 
@@ -204,15 +84,10 @@ Class cURLClient
 		  ' object directly. If WriteTo is Nil then use the GetDownloadedData method to get any downloaded data.
 		  ' The transfer will be performed on the event loop (main thread).
 		  
-		  mDownload = WriteTo
-		  mDownloadMB = Nil
-		  mEasyItem.URL = URL
-		  mForm = New libcURL.Form
-		  For Each item As String In FormData.Keys
-		    If Not mForm.AddElement(item, FormData.Value(item)) Then Raise New libcURL.cURLException(mForm)
-		  Next
-		  If Not Me.SetOption(libcURL.Opts.HTTPPOST, mForm) Then Raise New libcURL.cURLException(mEasyItem)
-		  Me.Perform()
+		  Me.Cleanup()
+		  Me.SetFormData(FormData)
+		  mPost = True
+		  Me.Perform(URL, Nil, WriteTo)
 		End Sub
 	#tag EndMethod
 
@@ -226,26 +101,10 @@ Class cURLClient
 		  ' This method will block the calling thread until the transfer completes. All events will be raised
 		  ' on the calling thread.
 		  
-		  mDownload = WriteTo
-		  mDownloadMB = Nil
-		  mUpload = Nil
-		  mForm = Nil
-		  
-		  mEasyItem.URL = URL
-		  mForm = New libcURL.Form
-		  For Each item As String In FormData.Keys
-		    If Not mForm.AddElement(item, FormData.Value(item)) Then Raise New libcURL.cURLException(mForm)
-		  Next
-		  If Not Me.SetOption(libcURL.Opts.HTTPPOST, mForm) Then Raise New libcURL.cURLException(mEasyItem)
-		  Return Me.Perform
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Function ProgressHandler(Sender As libcURL.cURLItem, dlTotal As UInt64, dlnow As UInt64, ultotal As UInt64, ulnow As UInt64) As Boolean
-		  #pragma Unused Sender
-		  'If ulnow > 0 or ultotal > 0 Then Break
-		  Return RaiseEvent Progress(dlTotal, dlnow, ultotal, ulnow)
+		  Me.Cleanup()
+		  Me.SetFormData(FormData)
+		  mPost = True
+		  Return Me.Perform(URL, Nil, WriteTo)
 		End Function
 	#tag EndMethod
 
@@ -274,12 +133,9 @@ Class cURLClient
 		  ' object directly. If WriteTo is Nil then use the GetDownloadedData method to get any downloaded data.
 		  ' The transfer will be performed on the event loop (main thread).
 		  
-		  mEasyItem.URL = URL
-		  If Not Me.SetOption(libcURL.Opts.UPLOAD, True) Then Raise New libcURL.cURLException(mEasyItem)
-		  mUpload = ReadFrom
-		  mDownload = WriteTo
-		  mDownloadMB = Nil
-		  Me.Perform()
+		  Me.Cleanup()
+		  Me.UploadMode = True
+		  Me.Perform(URL, ReadFrom, WriteTo)
 		End Sub
 	#tag EndMethod
 
@@ -292,84 +148,19 @@ Class cURLClient
 		  ' This method will block the calling thread until the transfer completes. All events will be raised
 		  ' on the calling thread.
 		  
-		  mEasyItem.URL = URL
-		  If Not Me.SetOption(libcURL.Opts.UPLOAD, True) Then Raise New libcURL.cURLException(mEasyItem)
-		  mUpload = ReadFrom
-		  mDownload = WriteTo
-		  mDownloadMB = Nil
-		  Return Me.Perform
+		  Me.Cleanup()
+		  Me.UploadMode = True
+		  Return Me.Perform(URL, ReadFrom, WriteTo)
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Function SetOption(OptionNumber As Integer, NewValue As Variant) As Boolean
-		  If mEasyItem <> Nil Then Return mEasyItem.SetOption(OptionNumber, NewValue)
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub SetRequestHeaders(Headers As InternetHeaders)
-		  If Headers <> Nil Then
-		    If s_list = Nil Then s_list = New libcURL.curl_slist
-		    For i As Integer = 0 To Headers.Count - 1
-		      Call s_list.Append(Headers.Name(i) + ": " + Headers.Value(Headers.Name(i)))
-		    Next
-		  Else
-		    If Not Me.SetOption(libcURL.Opts.HTTPHEADER, Nil) Then Raise New libcURL.cURLException(mEasyItem)
-		    s_list = Nil
-		  End If
-		  
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Sub TransferCompleteHandler(Sender As libcURL.cURLMulti, Item As libcURL.cURLItem)
-		  #pragma Unused Sender
-		  If mDownload <> Nil And mDownload IsA BinaryStream And mDownloadMB <> Nil Then BinaryStream(mDownload).Close
-		  Dim status As Integer = Item.LastError
-		  If status <> 0 Then
-		    RaiseEvent Error(status)
-		  Else
-		    If mForm <> Nil Then
-		      RaiseEvent POSTComplete()
-		    Else
-		      Dim ulsize As Integer = Me.GetInfo(libcURL.Info.SIZE_UPLOAD).Int32Value
-		      Dim dlsize As Integer = Me.GetInfo(libcURL.Info.SIZE_DOWNLOAD).Int32Value
-		      If ulsize > 0 Then RaiseEvent UploadComplete(ulsize)
-		      If dlsize > 0 Then RaiseEvent DownloadComplete(dlsize)
-		    End If
-		  End If
-		  
-		  'clean up
-		  mForm = Nil
-		  mUpload = Nil
-		  
-		  If Not Me.SetOption(libcURL.Opts.UPLOAD, False) Then Raise New libcURL.cURLException(mEasyItem)
-		  If Not Me.SetOption(libcURL.Opts.HTTPGET, True) Then Raise New libcURL.cURLException(mEasyItem)
-		  
-		End Sub
-	#tag EndMethod
-
-
-	#tag Hook, Flags = &h0
-		Event DebugMessage(MessageType As libcURL.curl_infotype, data As String)
-	#tag EndHook
 
 	#tag Hook, Flags = &h0
 		Event DownloadComplete(BytesRead As Integer)
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
-		Event Error(cURLCode As Integer)
-	#tag EndHook
-
-	#tag Hook, Flags = &h0
 		Event POSTComplete()
-	#tag EndHook
-
-	#tag Hook, Flags = &h0
-		Event Progress(dlTotal As UInt64, dlnow As UInt64, ultotal As UInt64, ulnow As UInt64) As Boolean
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
@@ -396,35 +187,7 @@ Class cURLClient
 
 
 	#tag Property, Flags = &h21
-		Private mDownload As Writeable
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private mDownloadMB As MemoryBlock
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private mEasyItem As libcURL.cURLItem
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private mForm As libcURL.Form
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private mHeaders As InternetHeaders
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private mMultiItem As libcURL.cURLMulti
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private mUpload As Readable
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private s_list As libcURL.curl_slist
+		Private mPost As Boolean
 	#tag EndProperty
 
 

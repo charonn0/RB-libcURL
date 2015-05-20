@@ -948,6 +948,14 @@ Inherits libcURL.cURLHandle
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
+		Private mPassword As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mUsername As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
 		Private mVerbose As Boolean
 	#tag EndProperty
 
@@ -986,10 +994,16 @@ Inherits libcURL.cURLHandle
 		#tag Note
 			The password to be supplied to the remote host if the underlying protocol requires/allows users to log on.
 		#tag EndNote
+		#tag Getter
+			Get
+			  Return mPassword
+			End Get
+		#tag EndGetter
 		#tag Setter
 			Set
 			  //If the server will require a password, set it here. If the server doesn't require one, this property is ignored
 			  If Not Me.SetOption(libcURL.Opts.PASSWORD, value) Then Raise New cURLException(Me)
+			  mPassword = value
 			End Set
 		#tag EndSetter
 		Password As String
@@ -1085,6 +1099,11 @@ Inherits libcURL.cURLHandle
 		#tag Note
 			The username to be supplied to the remote host if the underlying protocol requires/allows users to log on.
 		#tag EndNote
+		#tag Getter
+			Get
+			  Return mUsername
+			End Get
+		#tag EndGetter
 		#tag Setter
 			Set
 			  //If the server will require a username, set it here. If the server doesn't require one, this property is ignored
