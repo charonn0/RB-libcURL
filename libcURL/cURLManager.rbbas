@@ -281,6 +281,20 @@ Protected Class cURLManager
 		CA_ListFile As FolderItem
 	#tag EndComputedProperty
 
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  return mEasyItem.CookieJar
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  mEasyItem.CookieJar = value
+			End Set
+		#tag EndSetter
+		CookieJar As FolderItem
+	#tag EndComputedProperty
+
 	#tag Property, Flags = &h21
 		Private mDownload As Writeable
 	#tag EndProperty
@@ -459,6 +473,21 @@ Protected Class cURLManager
 			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
+			Name="Password"
+			Group="Behavior"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Port"
+			Group="Behavior"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="RemoteIP"
+			Group="Behavior"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
@@ -470,6 +499,16 @@ Protected Class cURLManager
 			Group="Position"
 			InitialValue="0"
 			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="UploadMode"
+			Group="Behavior"
+			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Username"
+			Group="Behavior"
+			Type="String"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

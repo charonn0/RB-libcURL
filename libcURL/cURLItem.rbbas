@@ -584,7 +584,8 @@ Inherits libcURL.cURLHandle
 		      libcURL.Opts.POSTQUOTE, libcURL.Opts.PREQUOTE, libcURL.Opts.FTP_ACCOUNT, libcURL.Opts.RTSP_SESSION_ID, libcURL.Opts.RANGE, _
 		      libcURL.Opts.CUSTOMREQUEST, libcURL.Opts.DNS_INTERFACE, libcURL.Opts.DNS_LOCAL_IP4, libcURL.Opts.DNS_LOCAL_IP6, libcURL.Opts.KRBLEVEL, _
 		      libcURL.Opts.CLOSESOCKETFUNCTION, libcURL.Opts.DEBUGFUNCTION, libcURL.Opts.HEADERFUNCTION, libcURL.Opts.OPENSOCKETFUNCTION, _
-		      libcURL.Opts.PROGRESSFUNCTION, libcURL.Opts.READFUNCTION, libcURL.Opts.SSL_CTX_FUNCTION, libcURL.Opts.WRITEFUNCTION, libcURL.Opts.SHARE
+		      libcURL.Opts.PROGRESSFUNCTION, libcURL.Opts.READFUNCTION, libcURL.Opts.SSL_CTX_FUNCTION, libcURL.Opts.WRITEFUNCTION, libcURL.Opts.SHARE, _
+		      libcURL.Opts.COOKIEJAR, libcURL.Opts.COOKIEFILE
 		      ' These option numbers explicitly accept NULL. Refer to the curl documentation on the individual option numbers for details.
 		      MarshalledValue = Nil
 		    Else
@@ -840,8 +841,18 @@ Inherits libcURL.cURLHandle
 		#tag EndGetter
 		#tag Setter
 			Set
-			  If Not Me.SetOption(libcURL.Opts.COOKIEFILE, value) Then Raise New cURLException(Me)
-			  If Not Me.SetOption(libcURL.Opts.COOKIEJAR, value) Then Raise New cURLException(Me)
+			  Select Case True
+			  Case value = Nil, value.Directory
+			    If Not Me.SetOption(libcURL.Opts.COOKIEFILE, Nil) Then Raise New cURLException(Me)
+			    If Not Me.SetOption(libcURL.Opts.COOKIEJAR, Nil) Then Raise New cURLException(Me)
+			    
+			  Case value.Exists ' existing file
+			    If Not Me.SetOption(libcURL.Opts.COOKIEFILE, value) Then Raise New cURLException(Me)
+			    
+			  Else
+			    If Not Me.SetOption(libcURL.Opts.COOKIEJAR, value) Then Raise New cURLException(Me)
+			    
+			  End Select
 			  mCookieJar = value
 			End Set
 		#tag EndSetter
