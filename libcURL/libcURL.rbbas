@@ -394,13 +394,6 @@ Protected Module libcURL
 	#tag EndConstant
 
 
-	#tag Structure, Name = CURLMsg, Flags = &h1
-		msg As Integer
-		  easy_handle As Integer
-		Data As Ptr
-	#tag EndStructure
-
-
 	#tag Enum, Name = curl_infotype, Flags = &h1
 		text
 		  header_in

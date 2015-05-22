@@ -307,8 +307,8 @@ Inherits libcURL.cURLHandle
 	#tag EndNote
 
 
-	#tag Property, Flags = &h1
-		Protected Instances As Dictionary
+	#tag Property, Flags = &h21
+		Private Instances As Dictionary
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -330,6 +330,13 @@ Inherits libcURL.cURLHandle
 
 	#tag Constant, Name = CURLM_CALL_MULTI_PERFORM, Type = Double, Dynamic = False, Default = \"-1", Scope = Private
 	#tag EndConstant
+
+
+	#tag Structure, Name = CURLMsg, Flags = &h21
+		msg As Integer
+		  easy_handle As Integer
+		Data As Ptr
+	#tag EndStructure
 
 
 	#tag ViewBehavior
