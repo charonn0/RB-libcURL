@@ -60,7 +60,7 @@ Inherits libcURL.cURLHandle
 		  If Instances = Nil Then Instances = New Dictionary
 		  
 		  mHandle = curl_easy_init()
-		  If Me.Handle > 0 Then
+		  If mHandle > 0 Then
 		    Instances.Value(mHandle) = New WeakRef(Me)
 		    InitCallbacks(Me)
 		  Else
