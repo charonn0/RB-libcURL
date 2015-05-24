@@ -18,16 +18,16 @@ Protected Class cURLManager
 	#tag Method, Flags = &h0
 		Sub Constructor()
 		  mEasyItem = New libcURL.cURLItem
-		  AddHandler mEasyItem.CreateSocket, WeakAddressOf CreateSocketHandler
-		  AddHandler mEasyItem.DataAvailable, WeakAddressOf DataAvailableHandler
-		  AddHandler mEasyItem.DataNeeded, WeakAddressOf DataNeededHandler
-		  AddHandler mEasyItem.DebugMessage, WeakAddressOf DebugMessageHandler
-		  AddHandler mEasyItem.Disconnected, WeakAddressOf DisconnectedHandler
-		  AddHandler mEasyItem.HeaderReceived, WeakAddressOf HeaderReceivedHandler
-		  AddHandler mEasyItem.Progress, WeakAddressOf ProgressHandler
+		  AddHandler mEasyItem.CreateSocket, WeakAddressOf _CreateSocketHandler
+		  AddHandler mEasyItem.DataAvailable, WeakAddressOf _DataAvailableHandler
+		  AddHandler mEasyItem.DataNeeded, WeakAddressOf _DataNeededHandler
+		  AddHandler mEasyItem.DebugMessage, WeakAddressOf _DebugMessageHandler
+		  AddHandler mEasyItem.Disconnected, WeakAddressOf _DisconnectedHandler
+		  AddHandler mEasyItem.HeaderReceived, WeakAddressOf _HeaderReceivedHandler
+		  AddHandler mEasyItem.Progress, WeakAddressOf _ProgressHandler
 		  
 		  mMultiItem = New libcURL.cURLMulti
-		  AddHandler mMultiItem.TransferComplete, WeakAddressOf TransferCompleteHandler
+		  AddHandler mMultiItem.TransferComplete, WeakAddressOf _TransferCompleteHandler
 		  mEasyItem.UserAgent = libcURL.Version.Name
 		  mEasyItem.CA_ListFile = libcURL.Default_CA_File
 		  mEasyItem.FailOnServerError = True
@@ -36,53 +36,9 @@ Protected Class cURLManager
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Sub CreateSocketHandler(Sender As libcURL.cURLItem, Socket As Integer)
-		  #pragma Unused Sender
-		  #pragma Unused Socket
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Sub DataAvailableHandler(Sender As libcURL.cURLItem, NewData As String)
-		  #pragma Unused Sender
-		  If mDownload = Nil Then
-		    mDownloadMB = New MemoryBlock(0)
-		    mDownload = New BinaryStream(mDownloadMB)
-		  End If
-		  mDownload.Write(NewData)
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Function DataNeededHandler(Sender As libcURL.cURLItem, Buffer As MemoryBlock) As Integer
-		  #pragma Unused Sender
-		  If mUpload = Nil Then
-		    Return libcURL.CURL_READFUNC_ABORT
-		  End If
-		  Dim data As MemoryBlock = mUpload.Read(Buffer.Size)
-		  Buffer.StringValue(0, data.Size) = data
-		  Return data.Size
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Sub DebugMessageHandler(Sender As libcURL.cURLItem, MessageType As libcURL.curl_infotype, data As String)
-		  #pragma Unused Sender
-		  RaiseEvent DebugMessage(MessageType, data)
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
 		Private Sub Destructor()
 		  mMultiItem = Nil
 		  mEasyItem = Nil
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Sub DisconnectedHandler(Sender As libcURL.cURLItem, Socket As Integer)
-		  #pragma Unused Sender
-		  #pragma Unused Socket
 		End Sub
 	#tag EndMethod
 
@@ -132,14 +88,6 @@ Protected Class cURLManager
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h21
-		Private Sub HeaderReceivedHandler(Sender As libcURL.cURLItem, HeaderLine As String)
-		  #pragma Unused Sender
-		  If mHeaders = Nil Then mHeaders = New InternetHeaders
-		  mHeaders.AppendHeader(NthField(HeaderLine, ": ", 1), NthField(HeaderLine, ": ", 2))
-		End Sub
-	#tag EndMethod
-
 	#tag Method, Flags = &h0
 		Function LastError() As Integer
 		  Return mEasyItem.LastError
@@ -187,16 +135,8 @@ Protected Class cURLManager
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h21
-		Private Function ProgressHandler(Sender As libcURL.cURLItem, dlTotal As UInt64, dlnow As UInt64, ultotal As UInt64, ulnow As UInt64) As Boolean
-		  #pragma Unused Sender
-		  'If ulnow > 0 or ultotal > 0 Then Break
-		  Return RaiseEvent Progress(dlTotal, dlnow, ultotal, ulnow)
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Sub SetFormData(FormData As Dictionary)
+	#tag Method, Flags = &h0
+		Sub SetFormData(FormData As Dictionary)
 		  mForm = New libcURL.Form
 		  For Each item As String In FormData.Keys
 		    If Not mForm.AddElement(item, FormData.Value(item)) Then Raise New libcURL.cURLException(mForm)
@@ -228,7 +168,67 @@ Protected Class cURLManager
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Sub TransferCompleteHandler(Sender As libcURL.cURLMulti, Item As libcURL.cURLItem)
+		Private Sub _CreateSocketHandler(Sender As libcURL.cURLItem, Socket As Integer)
+		  #pragma Unused Sender
+		  #pragma Unused Socket
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub _DataAvailableHandler(Sender As libcURL.cURLItem, NewData As String)
+		  #pragma Unused Sender
+		  If mDownload = Nil Then
+		    mDownloadMB = New MemoryBlock(0)
+		    mDownload = New BinaryStream(mDownloadMB)
+		  End If
+		  mDownload.Write(NewData)
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Function _DataNeededHandler(Sender As libcURL.cURLItem, Buffer As MemoryBlock) As Integer
+		  #pragma Unused Sender
+		  If mUpload = Nil Then
+		    Return libcURL.CURL_READFUNC_ABORT
+		  End If
+		  Dim data As MemoryBlock = mUpload.Read(Buffer.Size)
+		  Buffer.StringValue(0, data.Size) = data
+		  Return data.Size
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub _DebugMessageHandler(Sender As libcURL.cURLItem, MessageType As libcURL.curl_infotype, data As String)
+		  #pragma Unused Sender
+		  RaiseEvent DebugMessage(MessageType, data)
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub _DisconnectedHandler(Sender As libcURL.cURLItem, Socket As Integer)
+		  #pragma Unused Sender
+		  #pragma Unused Socket
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub _HeaderReceivedHandler(Sender As libcURL.cURLItem, HeaderLine As String)
+		  #pragma Unused Sender
+		  If mHeaders = Nil Then mHeaders = New InternetHeaders
+		  mHeaders.AppendHeader(NthField(HeaderLine, ": ", 1), NthField(HeaderLine, ": ", 2))
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Function _ProgressHandler(Sender As libcURL.cURLItem, dlTotal As UInt64, dlnow As UInt64, ultotal As UInt64, ulnow As UInt64) As Boolean
+		  #pragma Unused Sender
+		  'If ulnow > 0 or ultotal > 0 Then Break
+		  Return RaiseEvent Progress(dlTotal, dlnow, ultotal, ulnow)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub _TransferCompleteHandler(Sender As libcURL.cURLMulti, Item As libcURL.cURLItem)
 		  #pragma Unused Sender
 		  If mDownload <> Nil And mDownload IsA BinaryStream And mDownloadMB <> Nil Then BinaryStream(mDownload).Close
 		  Dim status As Integer = Item.LastError
@@ -476,6 +476,7 @@ Protected Class cURLManager
 			Name="Password"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Port"
@@ -486,6 +487,7 @@ Protected Class cURLManager
 			Name="RemoteIP"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
@@ -509,6 +511,7 @@ Protected Class cURLManager
 			Name="Username"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

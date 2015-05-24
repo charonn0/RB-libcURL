@@ -28,7 +28,7 @@ Inherits libcURL.cURLHandle
 		  If Instances = Nil Then Return CURL_SOCKET_BAD
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA cURLItem Then
-		    Return cURLItem(curl.Value).curlClose(socket)
+		    Return cURLItem(curl.Value)._curlClose(socket)
 		  End If
 		  
 		  Return CURL_SOCKET_BAD
@@ -98,159 +98,29 @@ Inherits libcURL.cURLHandle
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h21
-		Private Function curlClose(Socket As Integer) As Integer
-		  ' This method is the intermediary between CloseCallback and the Disconnected event.
-		  ' DO NOT CALL THIS METHOD
-		  mConnectionCount = mConnectionCount - 1
-		  RaiseEvent Disconnected(Socket)
-		  
-		  #If TargetWin32 Then
-		    Declare Function closesocket Lib "Ws2_32" (SocketHandle As Integer) As Integer
-		    mLastError = closesocket(Socket)
-		  #else
-		    #pragma Warning "Fix me"
-		    ' libcURL expects this callback to close the socket descriptor, otherwise it will be leaked.
-		    ' Coercing a C-style socket descriptor into a BinaryStream and calling Close() works, but
-		    ' probably shouldn't.
-		    Dim bs As BinaryStream
-		    bs = New BinaryStream(Socket, BinaryStream.HandleTypeFileNumber)
-		    bs.Close
-		    mLastError = bs.LastErrorCode
-		  #endif
-		  Return CURL_SOCKOPT_OK
-		  
-		End Function
-	#tag EndMethod
-
 	#tag DelegateDeclaration, Flags = &h21
 		Private Delegate Function cURLCloseCallback(UserData As Integer, cURLSocket As Integer) As Integer
 	#tag EndDelegateDeclaration
-
-	#tag Method, Flags = &h21
-		Private Function curlDebug(info As curl_infotype, data As Ptr, Size As Integer) As Integer
-		  ' This method is the intermediary between DebugCallback and the DebugMessage event.
-		  ' DO NOT CALL THIS METHOD
-		  Dim mb As MemoryBlock = data
-		  Dim s As String = mb.StringValue(0, size)
-		  RaiseEvent DebugMessage(info, s)
-		  Return size
-		End Function
-	#tag EndMethod
 
 	#tag DelegateDeclaration, Flags = &h21
 		Private Delegate Function cURLDebugCallback(Handle As Integer, info As curl_infotype, data As Ptr, size As Integer, UserData As Integer) As Integer
 	#tag EndDelegateDeclaration
 
-	#tag Method, Flags = &h21
-		Private Function curlHeader(char As Ptr, size As Integer, nmemb As Integer) As Integer
-		  ' This method is the intermediary between HeaderCallback and the HeaderReceived event.
-		  ' DO NOT CALL THIS METHOD
-		  
-		  Dim sz As Integer = nmemb * size
-		  Dim data As MemoryBlock = char
-		  Dim s As String = data.StringValue(0, sz)
-		  RaiseEvent HeaderReceived(s)
-		  Return sz
-		End Function
-	#tag EndMethod
-
 	#tag DelegateDeclaration, Flags = &h21
 		Private Delegate Function cURLIOCallback(char As Ptr, size As Integer, nmemb As Integer, UserData As Integer) As Integer
 	#tag EndDelegateDeclaration
-
-	#tag Method, Flags = &h21
-		Private Function curlOpen(SocketType As Integer, Socket As Integer) As Integer
-		  ' This method is the intermediary between OpenCallback and the CreateSocket event.
-		  ' DO NOT CALL THIS METHOD
-		  
-		  Const CURL_SOCKOPT_BAD = 1
-		  
-		  Select Case SocketType
-		  Case libcURL.Opts.CURLSOCKTYPE_IPCXN
-		    RaiseEvent CreateSocket(Socket)
-		    mConnectionCount = mConnectionCount + 1
-		    Return CURL_SOCKOPT_OK
-		    
-		  End Select
-		  
-		  Return CURL_SOCKOPT_BAD
-		End Function
-	#tag EndMethod
 
 	#tag DelegateDeclaration, Flags = &h21
 		Private Delegate Function cURLOpenCallback(UserData As Integer, Socket As Integer, SocketType As Integer) As Integer
 	#tag EndDelegateDeclaration
 
-	#tag Method, Flags = &h21
-		Private Function curlProgress(dlTotal As UInt64, dlnow As UInt64, ultotal As UInt64, ulnow As UInt64) As Integer
-		  ' This method is the intermediary between ProgressCallback and the Progress event.
-		  ' Return True from the Progress event to abort.
-		  ' DO NOT CALL THIS METHOD
-		  
-		  If RaiseEvent Progress(dlTotal, dlnow, ultotal, ulnow) Then Return 1
-		End Function
-	#tag EndMethod
-
 	#tag DelegateDeclaration, Flags = &h21
 		Private Delegate Function cURLProgressCallback(UserData As Integer, dlTotal As UInt64, dlnow As UInt64, ultotal As UInt64, ulnow As UInt64) As Integer
 	#tag EndDelegateDeclaration
 
-	#tag Method, Flags = &h21
-		Private Function curlRead(char As Ptr, size As Integer, nmemb As Integer) As Integer
-		  ' This method is the intermediary between ReadCallback and the DataNeeded event.
-		  ' DO NOT CALL THIS METHOD
-		  
-		  Dim sz As Integer = nmemb * size
-		  Dim mb As New MemoryBlock(sz)
-		  sz = RaiseEvent DataNeeded(mb)
-		  Dim out As MemoryBlock = char
-		  Select Case sz
-		  Case 0, CURL_READFUNC_ABORT, CURL_READFUNC_PAUSE
-		    Return sz
-		  Case Is > 0
-		    out.StringValue(0, sz) = LeftB(mb, sz)
-		    Return sz
-		  Else
-		    Raise New OutOfBoundsException
-		  End Select
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Function curlSeek(Offset As Integer, Origin As Integer) As Integer
-		  ' This method is the intermediary between SeekCallback and the SeekStream event.
-		  ' DO NOT CALL THIS METHOD
-		  #pragma Unused Origin
-		  If RaiseEvent SeekStream(Offset) Then Return 0
-		  Return 2 ' fail seek, but libcURL can try to work around it.
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Function curlSSLInit(SSLCTX As Ptr) As Integer
-		  ' This method is the intermediary between InitSSLCallback and the SSLInit event.
-		  ' DO NOT CALL THIS METHOD
-		  
-		  Return RaiseEvent SSLInit(SSLCTX)
-		End Function
-	#tag EndMethod
-
 	#tag DelegateDeclaration, Flags = &h21
 		Private Delegate Function cURLSSLInitCallback(Handle As Integer, SSLCTXStruct As Ptr, UserData As Integer) As Integer
 	#tag EndDelegateDeclaration
-
-	#tag Method, Flags = &h21
-		Private Function curlWrite(char As Ptr, size As Integer, nmemb As Integer) As Integer
-		  ' This method is the intermediary between WriteCallback and the DataAvailable event.
-		  ' DO NOT CALL THIS METHOD
-		  
-		  Dim mb As MemoryBlock = char
-		  Dim s As String = mb.StringValue(0, nmemb * size)
-		  RaiseEvent DataAvailable(s)
-		  Return nmemb * size
-		End Function
-	#tag EndMethod
 
 	#tag Method, Flags = &h21
 		Private Shared Function DebugCallback(Handle As Integer, info As curl_infotype, data As Ptr, size As Integer, UserData As Integer) As Integer
@@ -261,7 +131,7 @@ Inherits libcURL.cURLHandle
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA cURLItem Then
-		    Return cURLItem(curl.Value).curlDebug(info, data, size)
+		    Return cURLItem(curl.Value)._curlDebug(info, data, size)
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
@@ -347,7 +217,7 @@ Inherits libcURL.cURLHandle
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA cURLItem Then
-		    Return cURLItem(curl.Value).curlHeader(char, size, nmemb)
+		    Return cURLItem(curl.Value)._curlHeader(char, size, nmemb)
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
@@ -403,7 +273,7 @@ Inherits libcURL.cURLHandle
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA cURLItem Then
-		    Return cURLItem(curl.Value).curlOpen(SocketType, Socket)
+		    Return cURLItem(curl.Value)._curlOpen(SocketType, Socket)
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
@@ -473,15 +343,15 @@ Inherits libcURL.cURLHandle
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA cURLItem Then
-		    Return cURLItem(curl.Value).curlProgress(dlTotal, dlnow, ultotal, ulnow)
+		    Return cURLItem(curl.Value)._curlProgress(dlTotal, dlnow, ultotal, ulnow)
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Function Read(Count As Integer, encoding As TextEncoding = Nil) As String
+	#tag Method, Flags = &h0
+		Function Read(Count As Integer, encoding As TextEncoding = Nil) As String
 		  ' Only available after calling SetOption(libcURL.Opts.CONNECT_ONLY, True)
 		  ' Once Perform returns you may Read from the easy_handle by calling this method
 		  ' See:
@@ -517,7 +387,7 @@ Inherits libcURL.cURLHandle
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA cURLItem Then
-		    Return cURLItem(curl.Value).curlRead(char, size, nmemb)
+		    Return cURLItem(curl.Value)._curlRead(char, size, nmemb)
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
@@ -547,7 +417,7 @@ Inherits libcURL.cURLHandle
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA cURLItem Then
-		    Return cURLItem(curl.Value).curlSeek(Offset, Origin)
+		    Return cURLItem(curl.Value)._curlSeek(Offset, Origin)
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
@@ -687,15 +557,15 @@ Inherits libcURL.cURLHandle
 		  Dim mb As MemoryBlock = SSLCTXStruct
 		  data.StringValue(TargetLittleEndian) = mb.StringValue(0, SSL_CTX.Size)
 		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA cURLItem Then
-		    Return cURLItem(curl.Value).curlSSLInit(SSLCTXStruct)
+		    Return cURLItem(curl.Value)._curlSSLInit(SSLCTXStruct)
 		  End If
 		  Break ' UserData does not refer to a valid instance!
 		  Return 1
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Function Write(Text As String) As Integer
+	#tag Method, Flags = &h0
+		Function Write(Text As String) As Integer
 		  ' Only available after calling SetOption(libcURL.Opts.CONNECT_ONLY, True)
 		  ' Once Perform returns you may Write to the easy_handle by calling this method
 		  ' If the write succeeded this method returns then number of bytes actually written.
@@ -728,10 +598,139 @@ Inherits libcURL.cURLHandle
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA cURLItem Then
-		    Return cURLItem(curl.Value).curlWrite(char, size, nmemb)
+		    Return cURLItem(curl.Value)._curlWrite(char, size, nmemb)
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Function _curlClose(Socket As Integer) As Integer
+		  ' This method is the intermediary between CloseCallback and the Disconnected event.
+		  ' DO NOT CALL THIS METHOD
+		  mConnectionCount = mConnectionCount - 1
+		  RaiseEvent Disconnected(Socket)
+		  
+		  #If TargetWin32 Then
+		    Declare Function closesocket Lib "Ws2_32" (SocketHandle As Integer) As Integer
+		    mLastError = closesocket(Socket)
+		  #else
+		    #pragma Warning "Fix me"
+		    ' libcURL expects this callback to close the socket descriptor, otherwise it will be leaked.
+		    ' Coercing a C-style socket descriptor into a BinaryStream and calling Close() works, but
+		    ' probably shouldn't.
+		    Dim bs As BinaryStream
+		    bs = New BinaryStream(Socket, BinaryStream.HandleTypeFileNumber)
+		    bs.Close
+		    mLastError = bs.LastErrorCode
+		  #endif
+		  Return CURL_SOCKOPT_OK
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Function _curlDebug(info As curl_infotype, data As Ptr, Size As Integer) As Integer
+		  ' This method is the intermediary between DebugCallback and the DebugMessage event.
+		  ' DO NOT CALL THIS METHOD
+		  Dim mb As MemoryBlock = data
+		  Dim s As String = mb.StringValue(0, size)
+		  RaiseEvent DebugMessage(info, s)
+		  Return size
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Function _curlHeader(char As Ptr, size As Integer, nmemb As Integer) As Integer
+		  ' This method is the intermediary between HeaderCallback and the HeaderReceived event.
+		  ' DO NOT CALL THIS METHOD
+		  
+		  Dim sz As Integer = nmemb * size
+		  Dim data As MemoryBlock = char
+		  Dim s As String = data.StringValue(0, sz)
+		  RaiseEvent HeaderReceived(s)
+		  Return sz
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Function _curlOpen(SocketType As Integer, Socket As Integer) As Integer
+		  ' This method is the intermediary between OpenCallback and the CreateSocket event.
+		  ' DO NOT CALL THIS METHOD
+		  
+		  Const CURL_SOCKOPT_BAD = 1
+		  
+		  Select Case SocketType
+		  Case libcURL.Opts.CURLSOCKTYPE_IPCXN, libcURL.Opts.CURLSOCKTYPE_ACCEPT
+		    RaiseEvent CreateSocket(Socket)
+		    mConnectionCount = mConnectionCount + 1
+		    Return CURL_SOCKOPT_OK
+		  End Select
+		  
+		  Return CURL_SOCKOPT_BAD
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Function _curlProgress(dlTotal As UInt64, dlnow As UInt64, ultotal As UInt64, ulnow As UInt64) As Integer
+		  ' This method is the intermediary between ProgressCallback and the Progress event.
+		  ' Return True from the Progress event to abort.
+		  ' DO NOT CALL THIS METHOD
+		  
+		  If RaiseEvent Progress(dlTotal, dlnow, ultotal, ulnow) Then Return 1
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Function _curlRead(char As Ptr, size As Integer, nmemb As Integer) As Integer
+		  ' This method is the intermediary between ReadCallback and the DataNeeded event.
+		  ' DO NOT CALL THIS METHOD
+		  
+		  Dim sz As Integer = nmemb * size
+		  Dim mb As New MemoryBlock(sz)
+		  sz = RaiseEvent DataNeeded(mb)
+		  Dim out As MemoryBlock = char
+		  Select Case sz
+		  Case 0, CURL_READFUNC_ABORT, CURL_READFUNC_PAUSE
+		    Return sz
+		  Case Is > 0
+		    out.StringValue(0, sz) = LeftB(mb, sz)
+		    Return sz
+		  Else
+		    Raise New OutOfBoundsException
+		  End Select
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Function _curlSeek(Offset As Integer, Origin As Integer) As Integer
+		  ' This method is the intermediary between SeekCallback and the SeekStream event.
+		  ' DO NOT CALL THIS METHOD
+		  #pragma Unused Origin
+		  If RaiseEvent SeekStream(Offset) Then Return 0
+		  Return 2 ' fail seek, but libcURL can try to work around it.
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Function _curlSSLInit(SSLCTX As Ptr) As Integer
+		  ' This method is the intermediary between InitSSLCallback and the SSLInit event.
+		  ' DO NOT CALL THIS METHOD
+		  
+		  Return RaiseEvent SSLInit(SSLCTX)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Function _curlWrite(char As Ptr, size As Integer, nmemb As Integer) As Integer
+		  ' This method is the intermediary between WriteCallback and the DataAvailable event.
+		  ' DO NOT CALL THIS METHOD
+		  
+		  Dim mb As MemoryBlock = char
+		  Dim s As String = mb.StringValue(0, nmemb * size)
+		  RaiseEvent DataAvailable(s)
+		  Return nmemb * size
 		End Function
 	#tag EndMethod
 

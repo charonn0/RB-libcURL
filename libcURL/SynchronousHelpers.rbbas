@@ -6,10 +6,10 @@ Private Module SynchronousHelpers
 		  If Not cURL.SetOption(libcURL.Opts.FOLLOWLOCATION, True) Then Raise New cURLException(cURL) ' Follow redirects automatically
 		  If Not cURL.SetOption(libcURL.Opts.FAILONERROR, True) Then Raise New cURLException(cURL) ' fail on server errors
 		  cURL.CA_ListFile = libcURL.Default_CA_File
-		  AddHandler cURL.DebugMessage, AddressOf DebugMessageHandler
-		  AddHandler cURL.DataAvailable, AddressOf DataAvailableHandler
-		  AddHandler cURL.DataNeeded, AddressOf DataNeededHandler
-		  AddHandler cURL.HeaderReceived, AddressOf HeaderReceivedHandler
+		  AddHandler cURL.DebugMessage, AddressOf _DebugMessageHandler
+		  AddHandler cURL.DataAvailable, AddressOf _DataAvailableHandler
+		  AddHandler cURL.DataNeeded, AddressOf _DataNeededHandler
+		  AddHandler cURL.HeaderReceived, AddressOf _HeaderReceivedHandler
 		  
 		  Dim d As New Dictionary
 		  d.Value("Input") = InputStream
@@ -18,51 +18,6 @@ Private Module SynchronousHelpers
 		  Transfers.Value(cURL) = d
 		  Return cURL
 		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Sub DataAvailableHandler(Sender As cURLItem, NewData As String)
-		  Dim d As Dictionary = Transfers.Lookup(Sender, Nil)
-		  If d = Nil Then Return
-		  Dim w As Writeable = d.Value("Output")
-		  w.Write(NewData)
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Function DataNeededHandler(Sender As cURLItem, Buffer As MemoryBlock) As Integer
-		  Dim d As Dictionary = Transfers.Lookup(Sender, Nil)
-		  If d = Nil Then Return 0
-		  Dim r As Readable = d.Value("Input")
-		  Dim data As MemoryBlock = r.Read(Buffer.Size)
-		  Buffer.StringValue(0, data.Size) = data
-		  Return data.Size
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Sub DebugMessageHandler(Sender As cURLItem, MessageType As libcURL.curl_infotype, data As String)
-		  Dim ty As String
-		  Select Case MessageType
-		  Case libcURL.curl_infotype.data_in
-		    ty = "Data In"
-		  Case libcURL.curl_infotype.data_out
-		    ty = "Data Out"
-		  Case libcURL.curl_infotype.header_in
-		    ty = "Header In"
-		  Case libcURL.curl_infotype.header_out
-		    ty = "Header Out"
-		  Case libcURL.curl_infotype.info_end
-		    ty = "Info End"
-		  Case libcURL.curl_infotype.ssl_in
-		    ty = "SSL In"
-		  Case libcURL.curl_infotype.ssl_out
-		    ty = "SSL Out"
-		  Case libcURL.curl_infotype.text
-		    ty = "Text"
-		  End Select
-		  System.DebugLog("(" + Str(Sender.Handle) + ") RB-libcURL(" + ty + "): " + data)
-		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
@@ -75,22 +30,6 @@ Private Module SynchronousHelpers
 		  Return cURL
 		  
 		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Sub HeaderReceivedHandler(Sender As cURLItem, HeaderLine As String)
-		  Dim n, v As String
-		  If InStr(HeaderLine, ":") > 1 Then
-		    n = NthField(HeaderLine, ":", 1)
-		    v = Replace(HeaderLine, n + ":", "")
-		  Else
-		    n = HeaderLine.Trim
-		  End If
-		  Dim d As Dictionary = Transfers.Lookup(Sender, Nil)
-		  If d = Nil Then Return
-		  Dim h As InternetHeaders = d.Value("Headers")
-		  If n.Trim <> "" Or v.Trim <> "" Then h.AppendHeader(n, v)
-		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
@@ -118,6 +57,67 @@ Private Module SynchronousHelpers
 		  
 		  
 		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub _DataAvailableHandler(Sender As cURLItem, NewData As String)
+		  Dim d As Dictionary = Transfers.Lookup(Sender, Nil)
+		  If d = Nil Then Return
+		  Dim w As Writeable = d.Value("Output")
+		  w.Write(NewData)
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Function _DataNeededHandler(Sender As cURLItem, Buffer As MemoryBlock) As Integer
+		  Dim d As Dictionary = Transfers.Lookup(Sender, Nil)
+		  If d = Nil Then Return 0
+		  Dim r As Readable = d.Value("Input")
+		  Dim data As MemoryBlock = r.Read(Buffer.Size)
+		  Buffer.StringValue(0, data.Size) = data
+		  Return data.Size
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub _DebugMessageHandler(Sender As cURLItem, MessageType As libcURL.curl_infotype, data As String)
+		  Dim ty As String
+		  Select Case MessageType
+		  Case libcURL.curl_infotype.data_in
+		    ty = "Data In"
+		  Case libcURL.curl_infotype.data_out
+		    ty = "Data Out"
+		  Case libcURL.curl_infotype.header_in
+		    ty = "Header In"
+		  Case libcURL.curl_infotype.header_out
+		    ty = "Header Out"
+		  Case libcURL.curl_infotype.info_end
+		    ty = "Info End"
+		  Case libcURL.curl_infotype.ssl_in
+		    ty = "SSL In"
+		  Case libcURL.curl_infotype.ssl_out
+		    ty = "SSL Out"
+		  Case libcURL.curl_infotype.text
+		    ty = "Text"
+		  End Select
+		  System.DebugLog("(" + Str(Sender.Handle) + ") RB-libcURL(" + ty + "): " + data)
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub _HeaderReceivedHandler(Sender As cURLItem, HeaderLine As String)
+		  Dim n, v As String
+		  If InStr(HeaderLine, ":") > 1 Then
+		    n = NthField(HeaderLine, ":", 1)
+		    v = Replace(HeaderLine, n + ":", "")
+		  Else
+		    n = HeaderLine.Trim
+		  End If
+		  Dim d As Dictionary = Transfers.Lookup(Sender, Nil)
+		  If d = Nil Then Return
+		  Dim h As InternetHeaders = d.Value("Headers")
+		  If n.Trim <> "" Or v.Trim <> "" Then h.AppendHeader(n, v)
+		End Sub
 	#tag EndMethod
 
 
