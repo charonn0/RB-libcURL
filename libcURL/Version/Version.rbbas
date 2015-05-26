@@ -15,7 +15,7 @@ Protected Module Version
 		  Case Not System.IsFunctionAvailable("curl_global_init", "libcurl")
 		    available = False
 		    
-		  Case MajorNumber > Minor
+		  Case MajorNumber > Major
 		    available = True
 		    
 		  Case MajorNumber = Major
