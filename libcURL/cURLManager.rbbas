@@ -103,8 +103,8 @@ Protected Class cURLManager
 		  mDownload = WriteTo
 		  mDownloadMB = Nil
 		  mUpload = ReadFrom
-		  If s_list <> Nil Then
-		    If Not Me.SetOption(libcURL.Opts.HTTPHEADER, s_list) Then Raise New libcURL.cURLException(mEasyItem)
+		  If mRequestHeaders <> Nil Then
+		    If Not Me.SetOption(libcURL.Opts.HTTPHEADER, mRequestHeaders) Then Raise New libcURL.cURLException(mEasyItem)
 		  End If
 		  
 		  If Not mMultiItem.AddItem(mEasyItem) Then Raise New libcURL.cURLException(mMultiItem)
@@ -122,8 +122,8 @@ Protected Class cURLManager
 		  mDownload = WriteTo
 		  mDownloadMB = Nil
 		  mUpload = ReadFrom
-		  If s_list <> Nil Then
-		    If Not Me.SetOption(libcURL.Opts.HTTPHEADER, s_list) Then Raise New libcURL.cURLException(mEasyItem)
+		  If mRequestHeaders <> Nil Then
+		    If Not Me.SetOption(libcURL.Opts.HTTPHEADER, mRequestHeaders) Then Raise New libcURL.cURLException(mEasyItem)
 		  End If
 		  
 		  If Not mMultiItem.AddItem(mEasyItem) Then Raise New libcURL.cURLException(mMultiItem)
@@ -412,10 +412,6 @@ Protected Class cURLManager
 		#tag EndGetter
 		RemoteIP As String
 	#tag EndComputedProperty
-
-	#tag Property, Flags = &h21
-		Private s_list As libcURL.curl_slist
-	#tag EndProperty
 
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter

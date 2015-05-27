@@ -33,6 +33,9 @@ Protected Module Opts
 	#tag Constant, Name = COOKIESESSION, Type = Double, Dynamic = False, Default = \"96", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = COPYPOSTFIELDS, Type = Double, Dynamic = False, Default = \"10165", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = CRLFILE, Type = Double, Dynamic = False, Default = \"10169", Scope = Protected
 	#tag EndConstant
 
