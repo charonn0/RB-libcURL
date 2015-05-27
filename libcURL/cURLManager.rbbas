@@ -144,12 +144,27 @@ Protected Class cURLManager
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub SetFormData(FormData As Dictionary)
-		  mForm = New libcURL.Form
-		  For Each item As String In FormData.Keys
-		    If Not mForm.AddElement(item, FormData.Value(item)) Then Raise New libcURL.cURLException(mForm)
-		  Next
-		  If Not Me.SetOption(libcURL.Opts.HTTPPOST, mForm) Then Raise New libcURL.cURLException(mEasyItem)
+		Sub SetFormData(FormData As Dictionary, Multipart As Boolean = True)
+		  Select Case True
+		  Case FormData = Nil And mForm <> Nil
+		    If Not Me.SetOption(libcURL.Opts.HTTPPOST, Nil) Then Raise New libcURL.cURLException(mEasyItem)
+		    mForm = Nil
+		    
+		  Case Multipart And FormData <> Nil
+		    mForm = New libcURL.Form
+		    For Each item As String In FormData.Keys
+		      If Not mForm.AddElement(item, FormData.Value(item)) Then Raise New libcURL.cURLException(mForm)
+		    Next
+		    If Not Me.SetOption(libcURL.Opts.HTTPPOST, mForm) Then Raise New libcURL.cURLException(mEasyItem)
+		    
+		  Case FormData <> Nil
+		    Dim data() As String
+		    For Each key As String in FormData.Keys
+		      data.Append(URLEncode(Key) + "=" + URLEncode(FormData.Value(key)))
+		    Next
+		    If Not mEasyItem.SetOption(libcURL.Opts.COPYPOSTFIELDS, Join(data, "&")) Then Raise New libcURL.cURLException(mEasyItem)
+		    
+		  End Select
 		End Sub
 	#tag EndMethod
 
@@ -312,8 +327,8 @@ Protected Class cURLManager
 		Private mDownloadMB As MemoryBlock
 	#tag EndProperty
 
-	#tag Property, Flags = &h21
-		Private mEasyItem As libcURL.cURLItem
+	#tag Property, Flags = &h1
+		Protected mEasyItem As libcURL.cURLItem
 	#tag EndProperty
 
 	#tag Property, Flags = &h21

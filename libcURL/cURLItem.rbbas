@@ -324,12 +324,8 @@ Inherits libcURL.cURLHandle
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_perform.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Perform
 		  
-		  If URL <> "" Then
-		    If Not SetOption(libcURL.Opts.URL, URL) Then Raise New cURLException(Me)
-		  End If
-		  If Timeout > 0 Then
-		    If Not SetOption(libcURL.Opts.TIMEOUT, Timeout) Then Raise New cURLException(Me)
-		  End If
+		  If URL <> "" Then Me.URL = URL
+		  If Timeout > 0 Then Me.TimeOut = Timeout
 		  mLastError = curl_easy_perform(mHandle)
 		  Return mLastError = 0
 		End Function
@@ -962,6 +958,10 @@ Inherits libcURL.cURLHandle
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
+		Private mTimeOut As Integer = 0
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
 		Private mUsername As String
 	#tag EndProperty
 
@@ -1054,6 +1054,21 @@ Inherits libcURL.cURLHandle
 			End Get
 		#tag EndGetter
 		RemoteIP As String
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  return mTimeOut
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  If Not Me.SetOption(libcURL.Opts.TIMEOUT, value) Then Raise New cURLException(Me)
+			  mTimeOut = value
+			End Set
+		#tag EndSetter
+		TimeOut As Integer
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
