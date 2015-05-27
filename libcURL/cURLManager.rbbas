@@ -8,6 +8,8 @@ Protected Class cURLManager
 		  ' Me.SetOption(...)
 		  ' Me.SetOption(...)
 		  ' Me.Perform
+		  
+		  mIsTransferComplete = False
 		  Me.UploadMode = False
 		  If Not Me.SetOption(libcURL.Opts.HTTPGET, True) Then Raise New libcURL.cURLException(mEasyItem)
 		  mUpload = Nil
@@ -85,6 +87,12 @@ Protected Class cURLManager
 		  ' involved several status codes (FTP anything, HTTP redirects, etc.) then only the most
 		  ' recent code is returned.
 		  Return Me.GetInfo(libcURL.Info.RESPONSE_CODE).Int32Value
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function IsTransferComplete() As Boolean
+		  Return mIsTransferComplete
 		End Function
 	#tag EndMethod
 
@@ -237,6 +245,7 @@ Protected Class cURLManager
 		  Else
 		    RaiseEvent TransferComplete(Me.GetInfo(libcURL.Info.SIZE_DOWNLOAD).Int32Value, Me.GetInfo(libcURL.Info.SIZE_UPLOAD).Int32Value)
 		  End If
+		  mIsTransferComplete = True
 		End Sub
 	#tag EndMethod
 
@@ -317,6 +326,10 @@ Protected Class cURLManager
 
 	#tag Property, Flags = &h21
 		Private mHeaders As InternetHeaders
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mIsTransferComplete As Boolean
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
