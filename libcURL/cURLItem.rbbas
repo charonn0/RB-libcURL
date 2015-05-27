@@ -806,13 +806,8 @@ Inherits libcURL.cURLHandle
 
 	#tag ComputedProperty, Flags = &h0
 		#tag Note
+			
 			Sets the PEM file containing one or more certificate authorities libcURL should trust to verify the peer with.
-			The included DEFAULT_CA_INFO_PEM file contains the default CA list for Mozilla products.
-			
-			To generate an updated Mozilla CA file use one of these two scripts
-			
-			VBScript: https://github.com/bagder/curl/blob/master/lib/mk-ca-bundle.vbs
-			Perl: https://github.com/bagder/curl/blob/master/lib/mk-ca-bundle.pl
 		#tag EndNote
 		#tag Getter
 			Get

@@ -158,8 +158,13 @@ Protected Module libcURL
 
 	#tag Method, Flags = &h1
 		Protected Function Default_CA_File() As FolderItem
-		  ' For SSL/TLS connections we must specify a file with a list of acceptable certificate authorities
-		  ' We create a temp file and dump the DEFAULT_CA_INFO_PEM data into it for this purpose.
+		  ' For SSL/TLS connections we must specify a file with a list of acceptable certificate authorities to verify the peer with.
+		  ' This method dumps the the default CA list for Mozilla products (included as DEFAULT_CA_INFO_PEM) into a temp file and 
+		  ' returns it. 
+		  ' To generate an updated CA file use one of these two scripts:
+		  '    VBScript: https://github.com/bagder/curl/blob/master/lib/mk-ca-bundle.vbs
+		  '        Perl: https://github.com/bagder/curl/blob/master/lib/mk-ca-bundle.pl
+		  
 		  Static CA_File As FolderItem
 		  If CA_File = Nil Then
 		    CA_File = GetTemporaryFolderItem()
