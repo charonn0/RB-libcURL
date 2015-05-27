@@ -29,9 +29,11 @@ Begin Window Window2
       Index           =   -2147483648
       Left            =   7
       LockedInPosition=   False
+      Port            =   ""
       Scope           =   0
       TabPanelIndex   =   0
       Top             =   437
+      UploadMode      =   ""
       Width           =   32
    End
    Begin TextField TextField1
@@ -505,12 +507,6 @@ End
 
 #tag Events Client
 	#tag Event
-		Sub DownloadComplete(BytesRead As Integer)
-		  TextArea1.Text = Me.GetDownloadedData()
-		  MsgBox("Download completed (" + Str(BytesRead) + " bytes) with status: " + Str(Me.GetStatusCode))
-		End Sub
-	#tag EndEvent
-	#tag Event
 		Sub Error(cURLCode As Integer)
 		  MsgBox("cURL error " + Str(cURLCode) + ": " + libcURL.FormatError(cURLCode))
 		End Sub
@@ -550,15 +546,9 @@ End
 		End Sub
 	#tag EndEvent
 	#tag Event
-		Sub POSTComplete()
+		Sub TransferComplete(BytesRead As Integer, BytesWritten As Integer)
 		  TextArea1.Text = Me.GetDownloadedData()
-		  MsgBox("POST completed with status: " + Str(Me.GetStatusCode))
-		End Sub
-	#tag EndEvent
-	#tag Event
-		Sub UploadComplete(BytesWritten As Integer)
-		  TextArea1.Text = Me.GetDownloadedData()
-		  MsgBox("Upload completed (" + Str(BytesWritten) + " bytes) with status: " + Str(Me.GetStatusCode))
+		  MsgBox("transfer completed (" + Str(BytesWritten) + " bytes written, " + Str(BytesRead) +" bytes read) with status: " + Str(Me.GetStatusCode))
 		End Sub
 	#tag EndEvent
 #tag EndEvents

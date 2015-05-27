@@ -1,26 +1,6 @@
 #tag Class
 Class cURLClient
 Inherits libcURL.cURLManager
-	#tag Event
-		Sub TransferComplete(BytesRead As Integer, BytesWritten As Integer)
-		  If mPost Then
-		    RaiseEvent POSTComplete()
-		  Else
-		    If BytesWritten > 0 Then RaiseEvent UploadComplete(BytesWritten)
-		    If BytesRead > 0 Then RaiseEvent DownloadComplete(BytesRead)
-		  End If
-		End Sub
-	#tag EndEvent
-
-
-	#tag Method, Flags = &h1
-		Protected Sub Cleanup()
-		  mPost = False
-		  Super.CleanUp()
-		  
-		End Sub
-	#tag EndMethod
-
 	#tag Method, Flags = &h0
 		Sub Get(URL As String, WriteTo As Writeable = Nil)
 		  ' Asynchronously performs a retrieval using protocol-appropriate semantics (http GET, ftp RETR, etc.)
@@ -86,7 +66,6 @@ Inherits libcURL.cURLManager
 		  
 		  Me.Cleanup()
 		  Me.SetFormData(FormData)
-		  mPost = True
 		  Me.Perform(URL, Nil, WriteTo)
 		End Sub
 	#tag EndMethod
@@ -103,7 +82,6 @@ Inherits libcURL.cURLManager
 		  
 		  Me.Cleanup()
 		  Me.SetFormData(FormData)
-		  mPost = True
 		  Return Me.Perform(URL, Nil, WriteTo)
 		End Function
 	#tag EndMethod
@@ -155,19 +133,6 @@ Inherits libcURL.cURLManager
 	#tag EndMethod
 
 
-	#tag Hook, Flags = &h0
-		Event DownloadComplete(BytesRead As Integer)
-	#tag EndHook
-
-	#tag Hook, Flags = &h0
-		Event POSTComplete()
-	#tag EndHook
-
-	#tag Hook, Flags = &h0
-		Event UploadComplete(BytesWritten As Integer)
-	#tag EndHook
-
-
 	#tag Note, Name = Using this class
 		This class provides synchronous and asynchronous transfers with full support for RB/Xojo threads. Transfers are initiated
 		by calling one of the transfer methods: Get, Post, and Put. Despite the HTTP-specific names, Get and Put can be used to tranfer 
@@ -184,11 +149,6 @@ Inherits libcURL.cURLManager
 		bit of the transfer on every run of the event loop. Both versions will raise events, and both versions can ignore the events
 		by using the GetDownloadedData, GetResponseHeaders, and GetStatusCode methods.
 	#tag EndNote
-
-
-	#tag Property, Flags = &h21
-		Private mPost As Boolean
-	#tag EndProperty
 
 
 	#tag ViewBehavior
