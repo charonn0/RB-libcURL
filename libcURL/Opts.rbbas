@@ -96,6 +96,9 @@ Protected Module Opts
 	#tag Constant, Name = FTP_ALTERNATIVE_TO_USER, Type = Double, Dynamic = False, Default = \"10147", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = FTP_CREATE_MISSING_DIRS, Type = Double, Dynamic = False, Default = \"110", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = FTP_FILEMETHOD, Type = Double, Dynamic = False, Default = \"138", Scope = Protected
 	#tag EndConstant
 
