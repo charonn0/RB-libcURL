@@ -18,6 +18,13 @@ Protected Class cURLManager
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub Close()
+		  mMultiItem = Nil
+		  mEasyItem = Nil
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub Constructor()
 		  mEasyItem = New libcURL.cURLItem
 		  AddHandler mEasyItem.CreateSocket, WeakAddressOf _CreateSocketHandler
@@ -39,8 +46,7 @@ Protected Class cURLManager
 
 	#tag Method, Flags = &h21
 		Private Sub Destructor()
-		  mMultiItem = Nil
-		  mEasyItem = Nil
+		  Me.Close()
 		End Sub
 	#tag EndMethod
 
