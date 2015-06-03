@@ -29,6 +29,16 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h21
 		Private Sub Destructor()
+		  Me.Free()
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Free()
+		  ' Frees the list.
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.curl_slist.Free
+		  
 		  If libcURL.IsAvailable And List <> Nil Then libcURL.curl_slist_free_all(List)
 		  List = Nil
 		End Sub
