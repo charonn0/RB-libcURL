@@ -37,6 +37,7 @@ Inherits libcURL.cURLHandle
 		Sub Free()
 		  ' Frees the list.
 		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/curl_slist_free_all.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.curl_slist.Free
 		  
 		  If libcURL.IsAvailable And List <> Nil Then libcURL.curl_slist_free_all(List)
