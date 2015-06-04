@@ -34,6 +34,7 @@ Protected Class cURLManager
 		  AddHandler mEasyItem.Disconnected, WeakAddressOf _DisconnectedHandler
 		  AddHandler mEasyItem.HeaderReceived, WeakAddressOf _HeaderReceivedHandler
 		  AddHandler mEasyItem.Progress, WeakAddressOf _ProgressHandler
+		  AddHandler mEasyItem.SeekStream, WeakAddressOf _SeekStreamHandler
 		  
 		  mMultiItem = New libcURL.cURLMulti
 		  AddHandler mMultiItem.TransferComplete, WeakAddressOf _TransferCompleteHandler
@@ -253,6 +254,17 @@ Protected Class cURLManager
 		  #pragma Unused Sender
 		  'If ulnow > 0 or ultotal > 0 Then Break
 		  Return RaiseEvent Progress(dlTotal, dlnow, ultotal, ulnow)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Function _SeekStreamHandler(Sender As libcURL.cURLItem, Offset As Integer, Origin As Integer) As Boolean
+		  #pragma Unused Sender
+		  #pragma Unused Origin
+		  If mUpload <> Nil And mUpload IsA BinaryStream Then
+		    BinaryStream(mUpload).Position = Offset
+		    Return True
+		  End If
 		End Function
 	#tag EndMethod
 
