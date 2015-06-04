@@ -703,8 +703,8 @@ Inherits libcURL.cURLHandle
 		Private Function _curlSeek(Offset As Integer, Origin As Integer) As Integer
 		  ' This method is the intermediary between SeekCallback and the SeekStream event.
 		  ' DO NOT CALL THIS METHOD
-		  #pragma Unused Origin
-		  If RaiseEvent SeekStream(Offset) Then Return 0
+		  
+		  If RaiseEvent SeekStream(Offset, Origin) Then Return 0
 		  Return 2 ' fail seek, but libcURL can try to work around it.
 		End Function
 	#tag EndMethod
@@ -760,7 +760,7 @@ Inherits libcURL.cURLHandle
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
-		Event SeekStream(Offset As Integer) As Boolean
+		Event SeekStream(Offset As Integer, Origin As Integer) As Boolean
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
@@ -806,7 +806,6 @@ Inherits libcURL.cURLHandle
 
 	#tag ComputedProperty, Flags = &h0
 		#tag Note
-			
 			Sets the PEM file containing one or more certificate authorities libcURL should trust to verify the peer with.
 		#tag EndNote
 		#tag Getter
@@ -1269,6 +1268,11 @@ Inherits libcURL.cURLHandle
 			Visible=true
 			Group="ID"
 			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="TimeOut"
+			Group="Behavior"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
