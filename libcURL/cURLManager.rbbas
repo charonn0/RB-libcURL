@@ -205,14 +205,15 @@ Protected Class cURLManager
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Sub _DataAvailableHandler(Sender As libcURL.cURLItem, NewData As String)
+		Private Function _DataAvailableHandler(Sender As libcURL.cURLItem, NewData As String) As Integer
 		  #pragma Unused Sender
 		  If mDownload = Nil Then
 		    mDownloadMB = New MemoryBlock(0)
 		    mDownload = New BinaryStream(mDownloadMB)
 		  End If
 		  mDownload.Write(NewData)
-		End Sub
+		  Return NewData.LenB
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h21

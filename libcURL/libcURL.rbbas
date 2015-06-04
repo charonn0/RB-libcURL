@@ -159,8 +159,8 @@ Protected Module libcURL
 	#tag Method, Flags = &h1
 		Protected Function Default_CA_File() As FolderItem
 		  ' For SSL/TLS connections we must specify a file with a list of acceptable certificate authorities to verify the peer with.
-		  ' This method dumps the the default CA list for Mozilla products (included as DEFAULT_CA_INFO_PEM) into a temp file and 
-		  ' returns it. 
+		  ' This method dumps the the default CA list for Mozilla products (included as DEFAULT_CA_INFO_PEM) into a temp file and
+		  ' returns it.
 		  ' To generate an updated CA file use one of these two scripts:
 		  '    VBScript: https://github.com/bagder/curl/blob/master/lib/mk-ca-bundle.vbs
 		  '        Perl: https://github.com/bagder/curl/blob/master/lib/mk-ca-bundle.pl
@@ -396,6 +396,9 @@ Protected Module libcURL
 	#tag EndConstant
 
 	#tag Constant, Name = CURL_READFUNC_PAUSE, Type = Double, Dynamic = False, Default = \"&h10000001", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURL_WRITEFUNC_PAUSE, Type = Double, Dynamic = False, Default = \"CURL_READFUNC_PAUSE", Scope = Protected
 	#tag EndConstant
 
 

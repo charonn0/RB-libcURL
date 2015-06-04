@@ -721,8 +721,8 @@ Inherits libcURL.cURLHandle
 		  
 		  Dim mb As MemoryBlock = char
 		  Dim s As String = mb.StringValue(0, nmemb * size)
-		  RaiseEvent DataAvailable(s)
-		  Return nmemb * size
+		  Return RaiseEvent DataAvailable(s)
+		  
 		End Function
 	#tag EndMethod
 
@@ -732,7 +732,7 @@ Inherits libcURL.cURLHandle
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
-		Event DataAvailable(NewData As String)
+		Event DataAvailable(NewData As String) As Integer
 	#tag EndHook
 
 	#tag Hook, Flags = &h0

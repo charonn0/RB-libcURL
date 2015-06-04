@@ -60,12 +60,13 @@ Private Module SynchronousHelpers
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Sub _DataAvailableHandler(Sender As cURLItem, NewData As String)
+		Private Function _DataAvailableHandler(Sender As cURLItem, NewData As String) As Integer
 		  Dim d As Dictionary = Transfers.Lookup(Sender, Nil)
-		  If d = Nil Then Return
+		  If d = Nil Then Return 0
 		  Dim w As Writeable = d.Value("Output")
 		  w.Write(NewData)
-		End Sub
+		  Return NewData.LenB
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
