@@ -262,8 +262,11 @@ Protected Class cURLManager
 		  #pragma Unused Sender
 		  #pragma Unused Origin
 		  If mUpload <> Nil And mUpload IsA BinaryStream Then
-		    BinaryStream(mUpload).Position = Offset
-		    Return True
+		    Dim bs As BinaryStream = BinaryStream(mUpload)
+		    If bs.Length <= Offset And Offset > 0 Then 
+		      bs.Position = Offset
+		      Return bs.Position = Offset
+		    End If
 		  End If
 		End Function
 	#tag EndMethod
