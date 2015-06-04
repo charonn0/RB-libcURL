@@ -282,28 +282,13 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Pause(PauseUpload As Boolean = True, PauseDownload As Boolean = True) As Boolean
+		Function Pause(Mask As Integer = CURLPAUSE_ALL) As Boolean
 		  ' Pauses or unpauses uploads and/or downloads
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_pause.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Pause
 		  
-		  Dim pU, pD As Integer
-		  pU = ShiftLeft(1, 2)
-		  pD = ShiftLeft(0, 1)
-		  
-		  Dim mask As Integer
-		  If PauseUpload And PauseDownload Then
-		    mask = pU Or pD
-		  ElseIf PauseUpload Xor PauseDownload Then
-		    If PauseUpload Then
-		      mask = pU
-		    Else
-		      mask = pD
-		    End If
-		  End If
-		  
-		  mLastError = curl_easy_pause(mHandle, mask)
+		  mLastError = curl_easy_pause(mHandle, Mask)
 		  Return mLastError = 0
 		End Function
 	#tag EndMethod
@@ -403,6 +388,17 @@ Inherits libcURL.cURLHandle
 		  Me.Verbose = mVerbose
 		  
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Resume(Mask As Integer = CURLPAUSE_CONT) As Boolean
+		  ' Resumes uploads and/or downloads
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/curl_easy_pause.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Resume
+		  
+		  Return Me.Pause(mask)
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
@@ -1153,6 +1149,18 @@ Inherits libcURL.cURLHandle
 		Verbose As Boolean
 	#tag EndComputedProperty
 
+
+	#tag Constant, Name = CURLPAUSE_ALL, Type = Double, Dynamic = False, Default = \"5", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = CURLPAUSE_CONT, Type = Double, Dynamic = False, Default = \"0", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = CURLPAUSE_RECV, Type = Double, Dynamic = False, Default = \"1", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = CURLPAUSE_SEND, Type = Double, Dynamic = False, Default = \"4", Scope = Public
+	#tag EndConstant
 
 	#tag Constant, Name = CURL_SOCKET_BAD, Type = Double, Dynamic = False, Default = \"1", Scope = Protected
 	#tag EndConstant
