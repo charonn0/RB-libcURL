@@ -236,13 +236,14 @@ End
 		Sub Open()
 		  Me.Left = Window(1).Left + (Window(1).Width - Me.Width) / 2
 		  Me.Top = Window(1).Top + (Window(1).Height - Me.Height) / 2
+		  
 		End Sub
 	#tag EndEvent
 
 
 	#tag Method, Flags = &h0
-		Function CreateForm() As libcURL.MultipartForm
-		  Me.Form = New libcURL.MultipartForm
+		Function CreateForm() As Dictionary
+		  Form = New Dictionary
 		  HTTPForm.DeleteAllRows
 		  Self.ShowModal()
 		  Return Form
@@ -251,7 +252,7 @@ End
 
 
 	#tag Property, Flags = &h1
-		Protected Form As libcURL.MultipartForm
+		Protected Form As Dictionary
 	#tag EndProperty
 
 
@@ -281,9 +282,9 @@ End
 		  For i As Integer = 0 To HTTPForm.ListCount - 1
 		    If HTTPForm.RowTag(i) <> Nil And HTTPForm.RowTag(i) IsA FolderItem Then
 		      Dim f As FolderItem = HTTPForm.RowTag(i)
-		      Call Form.AddElement(HTTPForm.Cell(i, 0), f)
+		      Form.Value(HTTPForm.Cell(i, 0)) = f
 		    Else
-		      Call Form.AddElement(HTTPForm.Cell(i, 0), HTTPForm.Cell(i, 1))
+		      Form.Value(HTTPForm.Cell(i, 0)) = HTTPForm.Cell(i, 1)
 		    End If
 		  Next
 		  
