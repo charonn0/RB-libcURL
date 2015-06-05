@@ -17,7 +17,7 @@ Inherits RuntimeException
 		  Case Me.ErrorNumber = libcURL.Errors.FEATURE_UNAVAILABLE
 		    Me.Message = "This feature is not available in the installed version of libcURL."
 		    
-		  Case ErrantItem IsA libcURL.cURLShare
+		  Case ErrantItem IsA libcURL.ShareHandle
 		    Me.Message = libcURL.FormatShareError(Me.ErrorNumber)
 		    
 		  Case ErrantItem IsA libcURL.cURLMulti

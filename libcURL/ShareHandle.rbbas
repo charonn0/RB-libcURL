@@ -1,5 +1,5 @@
 #tag Class
-Protected Class cURLShare
+Protected Class ShareHandle
 Inherits libcURL.cURLMulti
 	#tag Method, Flags = &h0
 		Function AddItem(Item As libcURL.cURLItem) As Boolean
@@ -7,7 +7,7 @@ Inherits libcURL.cURLMulti
 		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/CURLOPT_SHARE.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLShare.AddItem
+		  ' https://github.com/charonn0/RB-libcURL/wiki/ShareHandle.AddItem
 		  
 		  If Not Item.SetOption(libcURL.Opts.SHARE, Me) Then Raise New cURLException(Item)
 		  Return Super.AddItem(Item)

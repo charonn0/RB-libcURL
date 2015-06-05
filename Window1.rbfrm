@@ -513,7 +513,7 @@ End
 		Sub Open()
 		  Window2.Show
 		  Me.Title = libcURL.Version.Name
-		  multi = New libcURL.cURLShare
+		  multi = New libcURL.ShareHandle
 		  AddHandler multi.TransferComplete, WeakAddressOf TransferCompleteHandler
 		End Sub
 	#tag EndEvent
@@ -634,7 +634,7 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Sub TransferCompleteHandler(Sender As libcURL.cURLShare, easyitem As libcURL.cURLItem)
+		Private Sub TransferCompleteHandler(Sender As libcURL.ShareHandle, easyitem As libcURL.cURLItem)
 		  #pragma Unused Sender
 		  Dim err As Integer = easyitem.LastError
 		  MsgBox(easyitem.URL + " completed with error code: " + Str(err) + " (" + libcURL.FormatError(err) + ").")
@@ -662,7 +662,7 @@ End
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private multi As libcURL.cURLShare
+		Private multi As libcURL.ShareHandle
 	#tag EndProperty
 
 	#tag Property, Flags = &h21

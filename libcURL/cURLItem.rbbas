@@ -495,8 +495,8 @@ Inherits libcURL.cURLHandle
 		      Dim f As libcURL.ListPtr = NewValue
 		      Return Me.SetOption(OptionNumber, f.Handle)
 		      
-		    Case IsA libcURL.cURLShare
-		      Dim f As libcURL.cURLShare = NewValue
+		    Case IsA libcURL.ShareHandle
+		      Dim f As libcURL.ShareHandle = NewValue
 		      Return Me.SetOption(OptionNumber, f.ShareHandle)
 		      
 		    Case IsA cURLProgressCallback
