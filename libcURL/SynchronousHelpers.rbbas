@@ -33,7 +33,7 @@ Private Module SynchronousHelpers
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function Post(FormData As libcURL.Form, URL As String, TimeOut As Integer, OutputStream As Writeable, ByRef Headers As InternetHeaders, Username As String, Password As String) As libcURL.cURLItem
+		Protected Function Post(FormData As libcURL.MultipartForm, URL As String, TimeOut As Integer, OutputStream As Writeable, ByRef Headers As InternetHeaders, Username As String, Password As String) As libcURL.cURLItem
 		  Dim cURL As libcURL.cURLItem = CreateItem(Nil, OutputStream, Headers)
 		  If Not cURl.SetOption(libcURL.Opts.HTTPPOST, FormData) Then Raise New cURLException(cURL)
 		  If Username <> "" Then cURL.Username = Username

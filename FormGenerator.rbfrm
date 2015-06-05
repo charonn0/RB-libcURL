@@ -241,8 +241,8 @@ End
 
 
 	#tag Method, Flags = &h0
-		Function CreateForm() As libcURL.Form
-		  Me.Form = New libcURL.Form
+		Function CreateForm() As libcURL.MultipartForm
+		  Me.Form = New libcURL.MultipartForm
 		  HTTPForm.DeleteAllRows
 		  Self.ShowModal()
 		  Return Form
@@ -251,7 +251,7 @@ End
 
 
 	#tag Property, Flags = &h1
-		Protected Form As libcURL.Form
+		Protected Form As libcURL.MultipartForm
 	#tag EndProperty
 
 

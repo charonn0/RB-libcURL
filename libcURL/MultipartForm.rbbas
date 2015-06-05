@@ -1,5 +1,5 @@
 #tag Class
-Protected Class Form
+Protected Class MultipartForm
 Inherits libcURL.cURLHandle
 	#tag Method, Flags = &h0
 		Function AddElement(Name As String, Value As Variant) As Boolean
@@ -8,7 +8,7 @@ Inherits libcURL.cURLHandle
 		  ' including Nil, will raise an exception.
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_formadd.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Form.AddElement
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm.AddElement
 		  
 		  Dim ValueType As Integer = VarType(Value)
 		  Select Case ValueType ' marshal the value
@@ -73,7 +73,7 @@ Inherits libcURL.cURLHandle
 		
 		e.g.
 		
-		  Dim frm As New libcURL.Form
+		  Dim frm As New libcURL.MultipartForm
 		  Dim f FolderItem //assume a valid & extant file
 		  Call frm.AddElement("file", f)
 		  Call frm.AddElement("username", "AzureDiamond")

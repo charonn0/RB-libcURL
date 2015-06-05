@@ -280,7 +280,7 @@ Protected Module libcURL
 		  
 		  Dim out As New MemoryBlock(0)
 		  Dim outstream As New BinaryStream(out)
-		  Dim frm As New libcURL.Form
+		  Dim frm As New libcURL.MultipartForm
 		  For Each item As String In FormData.Keys
 		    If Not frm.AddElement(item, FormData.Value(item)) Then Raise New cURLException(frm)
 		  Next

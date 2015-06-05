@@ -158,7 +158,7 @@ Protected Class cURLManager
 		    mForm = Nil
 		    
 		  Case Multipart And FormData <> Nil
-		    mForm = New libcURL.Form
+		    mForm = New libcURL.MultipartForm
 		    For Each item As String In FormData.Keys
 		      If Not mForm.AddElement(item, FormData.Value(item)) Then Raise New libcURL.cURLException(mForm)
 		    Next
@@ -264,7 +264,7 @@ Protected Class cURLManager
 		  #pragma Unused Origin
 		  If mUpload <> Nil And mUpload IsA BinaryStream Then
 		    Dim bs As BinaryStream = BinaryStream(mUpload)
-		    If bs.Length <= Offset And Offset > 0 Then 
+		    If bs.Length <= Offset And Offset > 0 Then
 		      bs.Position = Offset
 		      Return bs.Position = Offset
 		    End If
@@ -358,7 +358,7 @@ Protected Class cURLManager
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private mForm As libcURL.Form
+		Private mForm As libcURL.MultipartForm
 	#tag EndProperty
 
 	#tag Property, Flags = &h21

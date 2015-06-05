@@ -143,7 +143,9 @@ Begin Window Window1
       LockTop         =   False
       Maximum         =   100
       Scope           =   0
+      TabIndex        =   3
       TabPanelIndex   =   0
+      TabStop         =   True
       Top             =   543
       Value           =   0
       Visible         =   True
@@ -656,7 +658,7 @@ End
 
 
 	#tag Property, Flags = &h21
-		Private FormValue As libcURL.Form
+		Private FormValue As libcURL.MultipartForm
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -689,7 +691,7 @@ End
 #tag Events PushButton3
 	#tag Event
 		Sub Action()
-		  Dim f As libcURL.Form = FormGenerator.CreateForm
+		  Dim f As libcURL.MultipartForm = FormGenerator.CreateForm
 		  If f <> Nil Then
 		    FormValue = f
 		  End If

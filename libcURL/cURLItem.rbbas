@@ -428,7 +428,7 @@ Inherits libcURL.cURLHandle
 		  ' a particular option (except Nil,) however it does enforce type safety of the value and will raise
 		  ' an exception if an unsupported type is passed.
 		  
-		  ' NewValue may be a Boolean, Integer, Ptr, String, MemoryBlock, FolderItem, libcURL.Form, libcURL.curl_slist;
+		  ' NewValue may be a Boolean, Integer, Ptr, String, MemoryBlock, FolderItem, libcURL.MultipartForm, libcURL.curl_slist;
 		  ' or, a Delegate matching cURLIOCallback, cURLCloseCallback, cURLDebugCallback, cURLOpenCallback, or cURLProgressCallback.
 		  ' Passing a Nil object will raise an exception unless the option explicitly accepts NULL.
 		  
@@ -487,8 +487,8 @@ Inherits libcURL.cURLHandle
 		      mb = FolderItem(NewValue).AbsolutePath + Chr(0)
 		      MarshalledValue = mb
 		      
-		    Case IsA libcURL.Form
-		      Dim f As libcURL.Form = NewValue
+		    Case IsA libcURL.MultipartForm
+		      Dim f As libcURL.MultipartForm = NewValue
 		      Return Me.SetOption(OptionNumber, f.Handle)
 		      
 		    Case IsA libcURL.curl_slist
@@ -788,7 +788,7 @@ Inherits libcURL.cURLHandle
 		   End If
 		
 		SetOption accepts a Variant as the option value, but only Boolean, Integer, Ptr, String, MemoryBlock, 
-		FolderItem, libcURL.Form, libcURL.curl_slist should be used. 
+		FolderItem, libcURL.MultipartForm, libcURL.curl_slist should be used. 
 		
 		Once all options are set, you may call the cURLItem.Perform method to initiate a synchronous (i.e. blocking)
 		transfer, or pass the cURLItem to a cURLMulti stack for asynchronous processing.
