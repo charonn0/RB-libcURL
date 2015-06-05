@@ -1,13 +1,13 @@
 #tag Class
-Protected Class curl_slist
+Protected Class ListPtr
 Inherits libcURL.cURLHandle
 	#tag Method, Flags = &h0
 		Function Append(s As String) As Boolean
 		  ' Appends the passed string to the list. If the List is NULL it will be created.
 		  ' See:
-		  ' http://curl.haxx.se/libcurl/c/curl_slist_append.html
+		  ' http://curl.haxx.se/libcurl/c/ListPtr_append.html
 		  
-		  Dim p As Ptr = curl_slist_append(List, s)
+		  Dim p As Ptr = ListPtr_append(List, s)
 		  If p <> Nil Then
 		    List = p
 		    Return True
@@ -37,10 +37,10 @@ Inherits libcURL.cURLHandle
 		Sub Free()
 		  ' Frees the list.
 		  ' See:
-		  ' http://curl.haxx.se/libcurl/c/curl_slist_free_all.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.curl_slist.Free
+		  ' http://curl.haxx.se/libcurl/c/ListPtr_free_all.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ListPtr.Free
 		  
-		  If libcURL.IsAvailable And List <> Nil Then libcURL.curl_slist_free_all(List)
+		  If libcURL.IsAvailable And List <> Nil Then libcURL.ListPtr_free_all(List)
 		  List = Nil
 		End Sub
 	#tag EndMethod

@@ -198,7 +198,7 @@ Inherits libcURL.cURLHandle
 		    mb = New MemoryBlock(4)
 		    mb.Ptr(0) = p
 		    mLastError = curl_easy_getinfo(mHandle, InfoType, mb)
-		    If mLastError = 0 Then Return New libcURL.curl_slist(p)
+		    If mLastError = 0 Then Return New libcURL.ListPtr(p)
 		    
 		  Else
 		    Dim err As New TypeMismatchException
@@ -428,7 +428,7 @@ Inherits libcURL.cURLHandle
 		  ' a particular option (except Nil,) however it does enforce type safety of the value and will raise
 		  ' an exception if an unsupported type is passed.
 		  
-		  ' NewValue may be a Boolean, Integer, Ptr, String, MemoryBlock, FolderItem, libcURL.MultipartForm, libcURL.curl_slist;
+		  ' NewValue may be a Boolean, Integer, Ptr, String, MemoryBlock, FolderItem, libcURL.MultipartForm, libcURL.ListPtr;
 		  ' or, a Delegate matching cURLIOCallback, cURLCloseCallback, cURLDebugCallback, cURLOpenCallback, or cURLProgressCallback.
 		  ' Passing a Nil object will raise an exception unless the option explicitly accepts NULL.
 		  
@@ -491,8 +491,8 @@ Inherits libcURL.cURLHandle
 		      Dim f As libcURL.MultipartForm = NewValue
 		      Return Me.SetOption(OptionNumber, f.Handle)
 		      
-		    Case IsA libcURL.curl_slist
-		      Dim f As libcURL.curl_slist = NewValue
+		    Case IsA libcURL.ListPtr
+		      Dim f As libcURL.ListPtr = NewValue
 		      Return Me.SetOption(OptionNumber, f.Handle)
 		      
 		    Case IsA libcURL.cURLShare
@@ -788,7 +788,7 @@ Inherits libcURL.cURLHandle
 		   End If
 		
 		SetOption accepts a Variant as the option value, but only Boolean, Integer, Ptr, String, MemoryBlock, 
-		FolderItem, libcURL.MultipartForm, libcURL.curl_slist should be used. 
+		FolderItem, libcURL.MultipartForm, libcURL.ListPtr should be used. 
 		
 		Once all options are set, you may call the cURLItem.Perform method to initiate a synchronous (i.e. blocking)
 		transfer, or pass the cURLItem to a cURLMulti stack for asynchronous processing.

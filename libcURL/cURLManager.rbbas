@@ -184,7 +184,7 @@ Protected Class cURLManager
 	#tag Method, Flags = &h0
 		Sub SetRequestHeaders(Headers As InternetHeaders)
 		  If Headers <> Nil Then
-		    If mRequestHeaders = Nil Then mRequestHeaders = New libcURL.curl_slist
+		    If mRequestHeaders = Nil Then mRequestHeaders = New libcURL.ListPtr
 		    For i As Integer = 0 To Headers.Count - 1
 		      Call mRequestHeaders.Append(Headers.Name(i) + ": " + Headers.Value(Headers.Name(i)))
 		    Next
@@ -374,7 +374,7 @@ Protected Class cURLManager
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private mRequestHeaders As libcURL.curl_slist
+		Private mRequestHeaders As libcURL.ListPtr
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
