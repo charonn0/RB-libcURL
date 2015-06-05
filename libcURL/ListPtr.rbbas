@@ -7,7 +7,7 @@ Inherits libcURL.cURLHandle
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/ListPtr_append.html
 		  
-		  Dim p As Ptr = ListPtr_append(List, s)
+		  Dim p As Ptr = curl_slist_append(List, s)
 		  If p <> Nil Then
 		    List = p
 		    Return True
@@ -40,7 +40,7 @@ Inherits libcURL.cURLHandle
 		  ' http://curl.haxx.se/libcurl/c/ListPtr_free_all.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ListPtr.Free
 		  
-		  If libcURL.IsAvailable And List <> Nil Then libcURL.ListPtr_free_all(List)
+		  If libcURL.IsAvailable And List <> Nil Then libcURL.curl_slist_free_all(List)
 		  List = Nil
 		End Sub
 	#tag EndMethod
