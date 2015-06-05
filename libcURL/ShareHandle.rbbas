@@ -2,7 +2,7 @@
 Protected Class ShareHandle
 Inherits libcURL.MultiHandle
 	#tag Method, Flags = &h0
-		Function AddItem(Item As libcURL.cURLItem) As Boolean
+		Function AddItem(Item As libcURL.EasyHandle) As Boolean
 		  ' Add an easy handle to share handle, then call the overridden AddItem method.
 		  '
 		  ' See:
@@ -40,7 +40,7 @@ Inherits libcURL.MultiHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function RemoveItem(Item As libcURL.cURLItem) As Boolean
+		Function RemoveItem(Item As libcURL.EasyHandle) As Boolean
 		  ' Remove an easy handle from share handle, then call the overridden RemoveItem method.
 		  ' See: http://curl.haxx.se/libcurl/c/CURLOPT_SHARE.html
 		  If Not Item.SetOption(libcURL.Opts.SHARE, Nil) Then Raise New cURLException(Item)

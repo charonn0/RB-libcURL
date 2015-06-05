@@ -1,5 +1,5 @@
 #tag Class
-Protected Class cURLItem
+Protected Class EasyHandle
 Inherits libcURL.cURLHandle
 	#tag Method, Flags = &h0
 		Sub Close()
@@ -7,7 +7,7 @@ Inherits libcURL.cURLHandle
 		  ' called automatically by the class destructor.
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_cleanup.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Close
+		  ' https://github.com/charonn0/RB-libcURL/wiki/EasyHandle.Close
 		  
 		  If Me.Handle <> 0 Then
 		    curl_easy_cleanup(mHandle)
@@ -27,8 +27,8 @@ Inherits libcURL.cURLHandle
 		  #pragma X86CallingConvention CDecl
 		  If Instances = Nil Then Return CURL_SOCKET_BAD
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA cURLItem Then
-		    Return cURLItem(curl.Value)._curlClose(socket)
+		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
+		    Return EasyHandle(curl.Value)._curlClose(socket)
 		  End If
 		  
 		  Return CURL_SOCKET_BAD
@@ -52,7 +52,7 @@ Inherits libcURL.cURLHandle
 		  ' Creates a new curl_easy handle
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_init.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Constructor
+		  ' https://github.com/charonn0/RB-libcURL/wiki/EasyHandle.Constructor
 		  
 		  // Calling the overridden superclass constructor.
 		  // Constructor(GlobalInitFlags As Integer) -- From libcURL.cURLHandle
@@ -75,13 +75,13 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Constructor(CopyOpts As libcURL.cURLItem)
+		Sub Constructor(CopyOpts As libcURL.EasyHandle)
 		  ' Creates a new curl_easy handle by cloning the passed handle and all of its options. The clone is independent
 		  ' of the original. If CopyOpts is Nil, its handle is invalid, or its handle cannot be duplicated an exception
 		  ' will be raised.
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_duphandle.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Constructor
+		  ' https://github.com/charonn0/RB-libcURL/wiki/EasyHandle.Constructor
 		  
 		  If CopyOpts = Nil Or CopyOpts.Handle = 0 Then Raise New NilObjectException
 		  
@@ -130,8 +130,8 @@ Inherits libcURL.cURLHandle
 		  #pragma Unused Handle ' handle is the cURL handle of the instance, which we stored in UserData already
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA cURLItem Then
-		    Return cURLItem(curl.Value)._curlDebug(info, data, size)
+		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
+		    Return EasyHandle(curl.Value)._curlDebug(info, data, size)
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
@@ -142,7 +142,7 @@ Inherits libcURL.cURLHandle
 		Private Sub Destructor()
 		  ' Closes the instance.
 		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Destructor
+		  ' https://github.com/charonn0/RB-libcURL/wiki/EasyHandle.Destructor
 		  
 		  Me.Close()
 		  If Instances <> Nil And Instances.Count = 0 Then Instances = Nil
@@ -164,7 +164,7 @@ Inherits libcURL.cURLHandle
 		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_getinfo.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.GetInfo
+		  ' https://github.com/charonn0/RB-libcURL/wiki/EasyHandle.GetInfo
 		  
 		  Dim mb As MemoryBlock
 		  
@@ -216,8 +216,8 @@ Inherits libcURL.cURLHandle
 		  #pragma X86CallingConvention CDecl
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA cURLItem Then
-		    Return cURLItem(curl.Value)._curlHeader(char, size, nmemb)
+		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
+		    Return EasyHandle(curl.Value)._curlHeader(char, size, nmemb)
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
@@ -225,8 +225,8 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Shared Sub InitCallbacks(Sender As libcURL.cURLItem)
-		  ' This method sets up the callback functions for the passed instance of cURLItem
+		Protected Shared Sub InitCallbacks(Sender As libcURL.EasyHandle)
+		  ' This method sets up the callback functions for the passed instance of EasyHandle
 		  
 		  If Not Sender.SetOption(libcURL.Opts.SOCKOPTDATA, Sender.Handle) Then Raise New cURLException(Sender)
 		  If Not Sender.SetOption(libcURL.Opts.SOCKOPTFUNCTION, AddressOf OpenCallback) Then Raise New cURLException(Sender)
@@ -272,8 +272,8 @@ Inherits libcURL.cURLHandle
 		  #pragma X86CallingConvention CDecl
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA cURLItem Then
-		    Return cURLItem(curl.Value)._curlOpen(SocketType, Socket)
+		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
+		    Return EasyHandle(curl.Value)._curlOpen(SocketType, Socket)
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
@@ -286,7 +286,7 @@ Inherits libcURL.cURLHandle
 		  ' Pauses or unpauses uploads and/or downloads
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_pause.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Pause
+		  ' https://github.com/charonn0/RB-libcURL/wiki/EasyHandle.Pause
 		  
 		  mLastError = curl_easy_pause(mHandle, Mask)
 		  Return mLastError = 0
@@ -295,19 +295,19 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Function Perform(URL As String = "", Timeout As Integer = 0) As Boolean
-		  ' Tells libcURL to perform the transfer. Pass a URL if you have not specified one already using cURLItem.URL.
+		  ' Tells libcURL to perform the transfer. Pass a URL if you have not specified one already using EasyHandle.URL.
 		  ' Pass an integer representing how long libcURL should wait, in seconds, before giving up the connection
 		  ' attempt. The default is to wait forever.
 		  '
 		  ' This method is a blocking function: it will not return (and your application will stop responding) until the
-		  ' transfer completes. For non-blocking transfers use the MultiHandle class to manage the cURLItem.
+		  ' transfer completes. For non-blocking transfers use the MultiHandle class to manage the EasyHandle.
 		  '
-		  ' If this method returns true the transfer completed without error. Otherwise, check cURLItem.LastError for the
+		  ' If this method returns true the transfer completed without error. Otherwise, check EasyHandle.LastError for the
 		  ' error code.
 		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_perform.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Perform
+		  ' https://github.com/charonn0/RB-libcURL/wiki/EasyHandle.Perform
 		  
 		  If URL <> "" Then Me.URL = URL
 		  If Timeout > 0 Then Me.TimeOut = Timeout
@@ -323,8 +323,8 @@ Inherits libcURL.cURLHandle
 		  #pragma X86CallingConvention CDecl
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA cURLItem Then
-		    Return cURLItem(curl.Value)._curlProgress(dlTotal, dlnow, ultotal, ulnow)
+		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
+		    Return EasyHandle(curl.Value)._curlProgress(dlTotal, dlnow, ultotal, ulnow)
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
@@ -337,7 +337,7 @@ Inherits libcURL.cURLHandle
 		  ' Once Perform returns you may Read from the easy_handle by calling this method
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_recv.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Read
+		  ' https://github.com/charonn0/RB-libcURL/wiki/EasyHandle.Read
 		  
 		  If Not libcURL.Version.IsAtLeast(7, 18, 2) Then
 		    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
@@ -372,8 +372,8 @@ Inherits libcURL.cURLHandle
 		  #pragma X86CallingConvention CDecl
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA cURLItem Then
-		    Return cURLItem(curl.Value)._curlRead(char, size, nmemb)
+		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
+		    Return EasyHandle(curl.Value)._curlRead(char, size, nmemb)
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
@@ -385,7 +385,7 @@ Inherits libcURL.cURLHandle
 		  ' Resets the curl_easy handle to a pristine state. You may reuse the handle immediately.
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_reset.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Reset
+		  ' https://github.com/charonn0/RB-libcURL/wiki/EasyHandle.Reset
 		  
 		  curl_easy_reset(mHandle)
 		  mLastError = 0
@@ -400,7 +400,7 @@ Inherits libcURL.cURLHandle
 		  ' Resumes uploads and/or downloads
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_pause.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Resume
+		  ' https://github.com/charonn0/RB-libcURL/wiki/EasyHandle.Resume
 		  
 		  Return Me.Pause(mask)
 		End Function
@@ -413,8 +413,8 @@ Inherits libcURL.cURLHandle
 		  #pragma X86CallingConvention CDecl
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA cURLItem Then
-		    Return cURLItem(curl.Value)._curlSeek(Offset, Origin)
+		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
+		    Return EasyHandle(curl.Value)._curlSeek(Offset, Origin)
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
@@ -433,11 +433,11 @@ Inherits libcURL.cURLHandle
 		  ' Passing a Nil object will raise an exception unless the option explicitly accepts NULL.
 		  
 		  ' If the option was set this method returns True. If it returns False the option was not set and the
-		  ' curl error number is stored in cURLItem.LastError.
+		  ' curl error number is stored in EasyHandle.LastError.
 		  
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_setopt.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.SetOption
+		  ' https://github.com/charonn0/RB-libcURL/wiki/EasyHandle.SetOption
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Opts
 		  
 		  Dim MarshalledValue As Ptr
@@ -553,8 +553,8 @@ Inherits libcURL.cURLHandle
 		  Dim data As SSL_CTX
 		  Dim mb As MemoryBlock = SSLCTXStruct
 		  data.StringValue(TargetLittleEndian) = mb.StringValue(0, SSL_CTX.Size)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA cURLItem Then
-		    Return cURLItem(curl.Value)._curlSSLInit(SSLCTXStruct)
+		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
+		    Return EasyHandle(curl.Value)._curlSSLInit(SSLCTXStruct)
 		  End If
 		  Break ' UserData does not refer to a valid instance!
 		  Return 1
@@ -569,7 +569,7 @@ Inherits libcURL.cURLHandle
 		  ' If the write failed an IOException will be raised.
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_send.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Write
+		  ' https://github.com/charonn0/RB-libcURL/wiki/EasyHandle.Write
 		  
 		  If Not libcURL.Version.IsAtLeast(7, 18, 2) Then
 		    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
@@ -599,8 +599,8 @@ Inherits libcURL.cURLHandle
 		  #pragma X86CallingConvention CDecl
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA cURLItem Then
-		    Return cURLItem(curl.Value)._curlWrite(char, size, nmemb)
+		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
+		    Return EasyHandle(curl.Value)._curlWrite(char, size, nmemb)
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
@@ -782,7 +782,7 @@ Inherits libcURL.cURLHandle
 		
 		For example, setting the user-agent string:
 		
-		   Dim mcURL As New libcURL.cURLItem
+		   Dim mcURL As New libcURL.EasyHandle
 		   If Not mcURL.SetOption(libcURL.Opts.USERAGENT, "Bob's download manager/5.1") Then
 		      MsgBox("cURL error: " + Str(mcURL.LastError))
 		   End If
@@ -790,11 +790,11 @@ Inherits libcURL.cURLHandle
 		SetOption accepts a Variant as the option value, but only Boolean, Integer, Ptr, String, MemoryBlock, 
 		FolderItem, libcURL.MultipartForm, libcURL.ListPtr should be used. 
 		
-		Once all options are set, you may call the cURLItem.Perform method to initiate a synchronous (i.e. blocking)
-		transfer, or pass the cURLItem to a MultiHandle stack for asynchronous processing.
+		Once all options are set, you may call the EasyHandle.Perform method to initiate a synchronous (i.e. blocking)
+		transfer, or pass the EasyHandle to a MultiHandle stack for asynchronous processing.
 		
 		Once the transfer has completed (successfully or not, and regardless of whether a MultiHandle stack was used,)
-		you may call cURLItem.GetInfo to retrieve various data about the transfer.
+		you may call EasyHandle.GetInfo to retrieve various data about the transfer.
 		
 		For example, continuing the above code sample:
 		
@@ -880,7 +880,7 @@ Inherits libcURL.cURLHandle
 			  ' Pass True to follow HTTP redirects automatically. The default is False
 			  ' See:
 			  ' http://curl.haxx.se/libcurl/c/curl_easy_setopt.html#CURLOPTFOLLOWLOCATION
-			  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.FollowRedirects
+			  ' https://github.com/charonn0/RB-libcURL/wiki/EasyHandle.FollowRedirects
 			  
 			  If Not Me.SetOption(libcURL.Opts.FOLLOWLOCATION, value) Then Raise New cURLException(Me)
 			  mFollowRedirects = value
@@ -976,7 +976,7 @@ Inherits libcURL.cURLHandle
 			
 			For example:
 			
-			Dim curl As New libcURL.cURLItem
+			Dim curl As New libcURL.EasyHandle
 			curl.NetworkInterface = System.GetNetworkInterface(0)
 			MsgBox(curl.NetworkInterface.IPAddress))
 		#tag EndNote
@@ -1150,7 +1150,7 @@ Inherits libcURL.cURLHandle
 			  ' Pass True to receive the DebugMessage event. The default is False
 			  ' See:
 			  ' http://curl.haxx.se/libcurl/c/curl_easy_setopt.html#CURLOPTVERBOSE
-			  ' https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Verbose
+			  ' https://github.com/charonn0/RB-libcURL/wiki/EasyHandle.Verbose
 			  
 			  If Not Me.SetOption(libcURL.Opts.VERBOSE, value) Then Raise New cURLException(Me)
 			  mVerbose = value

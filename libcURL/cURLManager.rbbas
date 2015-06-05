@@ -26,7 +26,7 @@ Protected Class cURLManager
 
 	#tag Method, Flags = &h0
 		Sub Constructor()
-		  mEasyItem = New libcURL.cURLItem
+		  mEasyItem = New libcURL.EasyHandle
 		  AddHandler mEasyItem.CreateSocket, WeakAddressOf _CreateSocketHandler
 		  AddHandler mEasyItem.DataAvailable, WeakAddressOf _DataAvailableHandler
 		  AddHandler mEasyItem.DataNeeded, WeakAddressOf _DataNeededHandler
@@ -198,14 +198,14 @@ Protected Class cURLManager
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Sub _CreateSocketHandler(Sender As libcURL.cURLItem, Socket As Integer)
+		Private Sub _CreateSocketHandler(Sender As libcURL.EasyHandle, Socket As Integer)
 		  #pragma Unused Sender
 		  #pragma Unused Socket
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Function _DataAvailableHandler(Sender As libcURL.cURLItem, NewData As String) As Integer
+		Private Function _DataAvailableHandler(Sender As libcURL.EasyHandle, NewData As String) As Integer
 		  #pragma Unused Sender
 		  If mDownload = Nil Then
 		    mDownloadMB = New MemoryBlock(0)
@@ -217,7 +217,7 @@ Protected Class cURLManager
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Function _DataNeededHandler(Sender As libcURL.cURLItem, Buffer As MemoryBlock) As Integer
+		Private Function _DataNeededHandler(Sender As libcURL.EasyHandle, Buffer As MemoryBlock) As Integer
 		  #pragma Unused Sender
 		  If mUpload = Nil Then
 		    Return libcURL.CURL_READFUNC_ABORT
@@ -229,21 +229,21 @@ Protected Class cURLManager
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Sub _DebugMessageHandler(Sender As libcURL.cURLItem, MessageType As libcURL.curl_infotype, data As String)
+		Private Sub _DebugMessageHandler(Sender As libcURL.EasyHandle, MessageType As libcURL.curl_infotype, data As String)
 		  #pragma Unused Sender
 		  RaiseEvent DebugMessage(MessageType, data)
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Sub _DisconnectedHandler(Sender As libcURL.cURLItem, Socket As Integer)
+		Private Sub _DisconnectedHandler(Sender As libcURL.EasyHandle, Socket As Integer)
 		  #pragma Unused Sender
 		  #pragma Unused Socket
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Sub _HeaderReceivedHandler(Sender As libcURL.cURLItem, HeaderLine As String)
+		Private Sub _HeaderReceivedHandler(Sender As libcURL.EasyHandle, HeaderLine As String)
 		  #pragma Unused Sender
 		  If mHeaders = Nil Then mHeaders = New InternetHeaders
 		  mHeaders.AppendHeader(NthField(HeaderLine, ": ", 1), NthField(HeaderLine, ": ", 2))
@@ -251,7 +251,7 @@ Protected Class cURLManager
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Function _ProgressHandler(Sender As libcURL.cURLItem, dlTotal As UInt64, dlnow As UInt64, ultotal As UInt64, ulnow As UInt64) As Boolean
+		Private Function _ProgressHandler(Sender As libcURL.EasyHandle, dlTotal As UInt64, dlnow As UInt64, ultotal As UInt64, ulnow As UInt64) As Boolean
 		  #pragma Unused Sender
 		  'If ulnow > 0 or ultotal > 0 Then Break
 		  Return RaiseEvent Progress(dlTotal, dlnow, ultotal, ulnow)
@@ -259,7 +259,7 @@ Protected Class cURLManager
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Function _SeekStreamHandler(Sender As libcURL.cURLItem, Offset As Integer, Origin As Integer) As Boolean
+		Private Function _SeekStreamHandler(Sender As libcURL.EasyHandle, Offset As Integer, Origin As Integer) As Boolean
 		  #pragma Unused Sender
 		  #pragma Unused Origin
 		  If mUpload <> Nil And mUpload IsA BinaryStream Then
@@ -273,7 +273,7 @@ Protected Class cURLManager
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Sub _TransferCompleteHandler(Sender As libcURL.MultiHandle, Item As libcURL.cURLItem)
+		Private Sub _TransferCompleteHandler(Sender As libcURL.MultiHandle, Item As libcURL.EasyHandle)
 		  #pragma Unused Sender
 		  If mDownload <> Nil And mDownload IsA BinaryStream And mDownloadMB <> Nil Then BinaryStream(mDownload).Close
 		  Dim status As Integer = Item.LastError
@@ -350,7 +350,7 @@ Protected Class cURLManager
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected mEasyItem As libcURL.cURLItem
+		Protected mEasyItem As libcURL.EasyHandle
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -392,7 +392,7 @@ Protected Class cURLManager
 			
 			For example:
 			
-			Dim curl As New libcURL.cURLItem
+			Dim curl As New libcURL.EasyHandle
 			curl.NetworkInterface = System.GetNetworkInterface(0)
 			MsgBox(curl.NetworkInterface.IPAddress))
 		#tag EndNote

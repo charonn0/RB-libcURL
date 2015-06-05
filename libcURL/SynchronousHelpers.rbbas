@@ -1,8 +1,8 @@
 #tag Module
 Private Module SynchronousHelpers
 	#tag Method, Flags = &h21
-		Private Function CreateItem(InputStream As Readable, OutputStream As Writeable, ByRef Headers As InternetHeaders) As libcURL.cURLItem
-		  Dim cURL As New libcURL.cURLItem
+		Private Function CreateItem(InputStream As Readable, OutputStream As Writeable, ByRef Headers As InternetHeaders) As libcURL.EasyHandle
+		  Dim cURL As New libcURL.EasyHandle
 		  If Not cURL.SetOption(libcURL.Opts.FOLLOWLOCATION, True) Then Raise New cURLException(cURL) ' Follow redirects automatically
 		  If Not cURL.SetOption(libcURL.Opts.FAILONERROR, True) Then Raise New cURLException(cURL) ' fail on server errors
 		  cURL.CA_ListFile = libcURL.Default_CA_File
@@ -21,8 +21,8 @@ Private Module SynchronousHelpers
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function Get(URL As String, TimeOut As Integer, OutputStream As Writeable, ByRef Headers As InternetHeaders, Username As String, Password As String) As libcURL.cURLItem
-		  Dim cURL As libcURL.cURLItem = CreateItem(Nil, OutputStream, Headers)
+		Protected Function Get(URL As String, TimeOut As Integer, OutputStream As Writeable, ByRef Headers As InternetHeaders, Username As String, Password As String) As libcURL.EasyHandle
+		  Dim cURL As libcURL.EasyHandle = CreateItem(Nil, OutputStream, Headers)
 		  If Username <> "" Then cURL.Username = Username
 		  If Password <> "" Then cURL.Password = Password
 		  Call cURL.Perform(URL, TimeOut)
@@ -33,8 +33,8 @@ Private Module SynchronousHelpers
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function Post(FormData As libcURL.MultipartForm, URL As String, TimeOut As Integer, OutputStream As Writeable, ByRef Headers As InternetHeaders, Username As String, Password As String) As libcURL.cURLItem
-		  Dim cURL As libcURL.cURLItem = CreateItem(Nil, OutputStream, Headers)
+		Protected Function Post(FormData As libcURL.MultipartForm, URL As String, TimeOut As Integer, OutputStream As Writeable, ByRef Headers As InternetHeaders, Username As String, Password As String) As libcURL.EasyHandle
+		  Dim cURL As libcURL.EasyHandle = CreateItem(Nil, OutputStream, Headers)
 		  If Not cURl.SetOption(libcURL.Opts.HTTPPOST, FormData) Then Raise New cURLException(cURL)
 		  If Username <> "" Then cURL.Username = Username
 		  If Password <> "" Then cURL.Password = Password
@@ -46,8 +46,8 @@ Private Module SynchronousHelpers
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function Put(URL As String, TimeOut As Integer, InputStream As Readable, OutputStream As Writeable, ByRef Headers As InternetHeaders, Username As String, Password As String) As libcURL.cURLItem
-		  Dim cURL As libcURL.cURLItem = CreateItem(InputStream, OutputStream, Headers)
+		Protected Function Put(URL As String, TimeOut As Integer, InputStream As Readable, OutputStream As Writeable, ByRef Headers As InternetHeaders, Username As String, Password As String) As libcURL.EasyHandle
+		  Dim cURL As libcURL.EasyHandle = CreateItem(InputStream, OutputStream, Headers)
 		  If Not cURL.SetOption(libcURL.Opts.UPLOAD, True) Then Raise New cURLException(cURL)
 		  If Username <> "" Then cURL.Username = Username
 		  If Password <> "" Then cURL.Password = Password
@@ -60,7 +60,7 @@ Private Module SynchronousHelpers
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Function _DataAvailableHandler(Sender As cURLItem, NewData As String) As Integer
+		Private Function _DataAvailableHandler(Sender As EasyHandle, NewData As String) As Integer
 		  Dim d As Dictionary = Transfers.Lookup(Sender, Nil)
 		  If d = Nil Then Return 0
 		  Dim w As Writeable = d.Value("Output")
@@ -70,7 +70,7 @@ Private Module SynchronousHelpers
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Function _DataNeededHandler(Sender As cURLItem, Buffer As MemoryBlock) As Integer
+		Private Function _DataNeededHandler(Sender As EasyHandle, Buffer As MemoryBlock) As Integer
 		  Dim d As Dictionary = Transfers.Lookup(Sender, Nil)
 		  If d = Nil Then Return 0
 		  Dim r As Readable = d.Value("Input")
@@ -81,7 +81,7 @@ Private Module SynchronousHelpers
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Sub _DebugMessageHandler(Sender As cURLItem, MessageType As libcURL.curl_infotype, data As String)
+		Private Sub _DebugMessageHandler(Sender As EasyHandle, MessageType As libcURL.curl_infotype, data As String)
 		  Dim ty As String
 		  Select Case MessageType
 		  Case libcURL.curl_infotype.data_in
@@ -106,7 +106,7 @@ Private Module SynchronousHelpers
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Sub _HeaderReceivedHandler(Sender As cURLItem, HeaderLine As String)
+		Private Sub _HeaderReceivedHandler(Sender As EasyHandle, HeaderLine As String)
 		  Dim n, v As String
 		  If InStr(HeaderLine, ":") > 1 Then
 		    n = NthField(HeaderLine, ":", 1)

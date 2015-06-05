@@ -68,7 +68,7 @@ Inherits libcURL.cURLHandle
 		Use the AddElement method to add a form element to the form. Form elements may be
 		either strings or folderitems (for uploading)
 		
-		Once the form is constructed you can pass it to the cURLItem.SetOption method using
+		Once the form is constructed you can pass it to the EasyHandle.SetOption method using
 		libcURL.Opts.HTTPPOST as the option number.
 		
 		e.g.
@@ -78,7 +78,7 @@ Inherits libcURL.cURLHandle
 		  Call frm.AddElement("file", f)
 		  Call frm.AddElement("username", "AzureDiamond")
 		  Call frm.AddElement("password", "hunter2")
-		  Dim sock As New libcURL.cURLItem
+		  Dim sock As New libcURL.EasyHandle
 		  Call sock.SetOption(libcURL.Opts.HTTPPOST, frm)
 		  Call sock.Perform("http://www.example.com/submit.php", 5)
 	#tag EndNote

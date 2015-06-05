@@ -2,10 +2,10 @@
 Protected Class MultiHandle
 Inherits libcURL.cURLHandle
 	#tag Method, Flags = &h0
-		Function AddItem(Item As libcURL.cURLItem) As Boolean
-		  ' Add a cURLItem to the multistack. The cURLItem should have all of its options already set and ready to go.
+		Function AddItem(Item As libcURL.EasyHandle) As Boolean
+		  ' Add a EasyHandle to the multistack. The EasyHandle should have all of its options already set and ready to go.
 		  ' You may not add an item while a call to PerformOnce has not yet returned. Doing so will raise an IllegalLockingException.
-		  ' A cURLItem may belong to only one MultiHandle object at a time. Passing an owned cURLItem will fail.
+		  ' A EasyHandle may belong to only one MultiHandle object at a time. Passing an owned EasyHandle will fail.
 		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_add_handle.html
@@ -31,7 +31,7 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Sub Close()
-		  ' Removes all remaining cURLItems from the stack and then destroys the stack.
+		  ' Removes all remaining EasyHandles from the stack and then destroys the stack.
 		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_cleanup.html
@@ -76,7 +76,7 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function HasItem(EasyItem As libcURL.cURLItem) As Boolean
+		Function HasItem(EasyItem As libcURL.EasyHandle) As Boolean
 		  Return Instances.HasKey(EasyItem.Handle)
 		End Function
 	#tag EndMethod
@@ -131,7 +131,7 @@ Inherits libcURL.cURLHandle
 		      Do
 		        Dim msg As CURLMsg = ReadNextMsg(c) ' on exit, 'c' will contain the number of messages remaining
 		        If c > -1 Then
-		          Dim curl As cURLItem = Instances.Value(msg.easy_handle)
+		          Dim curl As EasyHandle = Instances.Value(msg.easy_handle)
 		          Call Me.RemoveItem(curl)
 		          curl.mLastError = Integer(msg.Data) ' msg.Data is the last error code for the easy handle
 		          RaiseEvent TransferComplete(curl)
@@ -193,8 +193,8 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function RemoveItem(Item As libcURL.cURLItem) As Boolean
-		  ' Removes the passed cURLItem from the multistack. If there no more cURLItems then turns off the PerformTimer.
+		Function RemoveItem(Item As libcURL.EasyHandle) As Boolean
+		  ' Removes the passed EasyHandle from the multistack. If there no more EasyHandles then turns off the PerformTimer.
 		  ' You may not remove an item while a call to PerformOnce has not yet returned. Doing so will raise an IllegalLockingException.
 		  '
 		  ' See:
@@ -292,24 +292,24 @@ Inherits libcURL.cURLHandle
 
 
 	#tag Hook, Flags = &h0
-		Event TransferComplete(easyitem As libcURL.cURLItem)
+		Event TransferComplete(easyitem As libcURL.EasyHandle)
 	#tag EndHook
 
 
 	#tag Note, Name = Using this class
-		This class implements the curl_multi interface of libcURL. A MultiHandle instance can manage one or more cURLItems. 
+		This class implements the curl_multi interface of libcURL. A MultiHandle instance can manage one or more EasyHandles. 
 		See: http://curl.haxx.se/libcurl/c/libcurl-multi.html
 		
-		Using MultiHandle allows us to use the cURLItem class asynchronously, either automatically on the main thread or 'manually' 
+		Using MultiHandle allows us to use the EasyHandle class asynchronously, either automatically on the main thread or 'manually' 
 		on a RB thread.
 		
-		cURLItems may be added to the stack at any time. Once added, MultiHandle will maintain a (RB) reference to the cURLItem.
-		You should not call any methods/set any properties on the cURLItem until you receive its reference as the parameter to the 
+		EasyHandles may be added to the stack at any time. Once added, MultiHandle will maintain a (RB) reference to the EasyHandle.
+		You should not call any methods/set any properties on the EasyHandle until you receive its reference as the parameter to the 
 		TransferComplete event.
 		
-		Once all desired cURLItems have been added, you may call Perform or PerformOnce to begin the transfer(s). 
+		Once all desired EasyHandles have been added, you may call Perform or PerformOnce to begin the transfer(s). 
 		
-		Calling PerformOnce executes curl_multi_perform once and processes all completed cURLItems. All cURLItem and MultiHandle events will be 
+		Calling PerformOnce executes curl_multi_perform once and processes all completed EasyHandles. All EasyHandle and MultiHandle events will be 
 		raised on the thread which calls PerformOnce. PerformOnce will not return until all event handlers have returned.
 		
 		Calling Perform will activate a timer which calls PerformOnce on the main thread until there are no more items. Perform returns immediately.

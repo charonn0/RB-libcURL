@@ -228,7 +228,7 @@ Protected Module libcURL
 		  
 		  Dim out As New MemoryBlock(0)
 		  Dim outstream As New BinaryStream(out)
-		  Dim c As libcURL.cURLItem = libcURL.SynchronousHelpers.Get(URL, TimeOut, outstream, Headers, Username, Password)
+		  Dim c As libcURL.EasyHandle = libcURL.SynchronousHelpers.Get(URL, TimeOut, outstream, Headers, Username, Password)
 		  StatusCode = c.LastError
 		  outstream.Close
 		  c.Close
@@ -284,7 +284,7 @@ Protected Module libcURL
 		  For Each item As String In FormData.Keys
 		    If Not frm.AddElement(item, FormData.Value(item)) Then Raise New cURLException(frm)
 		  Next
-		  Dim c As libcURL.cURLItem = libcURL.SynchronousHelpers.Post(frm, URL, TimeOut, outstream, Headers, Username, Password)
+		  Dim c As libcURL.EasyHandle = libcURL.SynchronousHelpers.Post(frm, URL, TimeOut, outstream, Headers, Username, Password)
 		  StatusCode = c.LastError
 		  outstream.Close
 		  c.Close
@@ -306,7 +306,7 @@ Protected Module libcURL
 		  Dim outstream As New BinaryStream(out)
 		  Dim instream As BinaryStream = BinaryStream.Open(File)
 		  
-		  Dim c As libcURL.cURLItem = libcURL.SynchronousHelpers.Put(URL, TimeOut, instream, outstream, Headers, Username, Password)
+		  Dim c As libcURL.EasyHandle = libcURL.SynchronousHelpers.Put(URL, TimeOut, instream, outstream, Headers, Username, Password)
 		  StatusCode = c.LastError
 		  outstream.Close
 		  instream.Close
@@ -322,7 +322,7 @@ Protected Module libcURL
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_unescape.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLDecode
 		  
-		  Dim curl As New libcURL.cURLItem(CURL_GLOBAL_NOTHING)
+		  Dim curl As New libcURL.EasyHandle(CURL_GLOBAL_NOTHING)
 		  If Not libcURL.Version.IsAtLeast(7, 15, 4) Then
 		    Dim p() As Introspection.PropertyInfo = Introspection.GetType(curl).GetProperties
 		    For Each prop As Introspection.PropertyInfo In p
@@ -352,7 +352,7 @@ Protected Module libcURL
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_escape.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLEncode
 		  
-		  Dim curl As New libcURL.cURLItem(CURL_GLOBAL_NOTHING)
+		  Dim curl As New libcURL.EasyHandle(CURL_GLOBAL_NOTHING)
 		  If Not libcURL.Version.IsAtLeast(7, 15, 4) Then
 		    Dim p() As Introspection.PropertyInfo = Introspection.GetType(curl).GetProperties
 		    For Each prop As Introspection.PropertyInfo In p
