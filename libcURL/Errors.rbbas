@@ -39,6 +39,9 @@ Protected Module Errors
 	#tag Constant, Name = FAILED_INIT, Type = Double, Dynamic = False, Default = \"2", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = FEATURE_UNAVAILABLE, Type = Double, Dynamic = False, Default = \"-4", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = FILESIZE_EXCEEDED, Type = Double, Dynamic = False, Default = \"63", Scope = Protected
 	#tag EndConstant
 

@@ -169,7 +169,11 @@ Inherits libcURL.cURLHandle
 		  ' that PerformOnce may be called immediately.
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_timeout.html
 		  Dim i As Integer
-		  mLastError = curl_multi_timeout(mHandle, i)
+		  If libcURL.Version.IsAtLeast(7, 15, 4) Then
+		    mLastError = curl_multi_timeout(mHandle, i)
+		  Else
+		    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
+		  End If
 		  If mLastError = 0 Then Return i Else Return -1
 		  
 		End Function
@@ -228,6 +232,11 @@ Inherits libcURL.cURLHandle
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_setopt.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLMulti.SetOption
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Opts
+		  
+		  If Not libcURL.Version.IsAtLeast(7, 15, 4) Then
+		    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
+		    Raise New cURLException(Me)
+		  End If
 		  
 		  Dim MarshalledValue As MemoryBlock
 		  Dim ValueType As Integer = VarType(NewValue)

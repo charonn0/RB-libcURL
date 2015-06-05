@@ -31,14 +31,20 @@ Protected Module Version
 	#tag Method, Flags = &h21
 		Private Function MajorNumber() As Integer
 		  ' libcurl's major version; e.g. if the version is 1.2.3 then the MajorNumber is 1
-		  Return Val(NthField(NthField(NthField(libcURL.Version.Name, " ", 1), "/", 2), ".", 1))
+		  
+		  Static Major As Integer
+		  If Major = 0 Then Major = Val(NthField(NthField(NthField(libcURL.Version.Name, " ", 1), "/", 2), ".", 1))
+		  Return Major
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
 		Private Function MinorNumber() As Integer
 		  ' libcurl's minor version; e.g. if the version is 1.2.3 then the MinorNumber is 2
-		  Return Val(NthField(NthField(NthField(libcURL.Version.Name, " ", 1), "/", 2), ".", 2))
+		  
+		  Static Minor As Integer
+		  If Minor = 0 Then Minor = Val(NthField(NthField(NthField(libcURL.Version.Name, " ", 1), "/", 2), ".", 2))
+		  Return Minor 
 		End Function
 	#tag EndMethod
 
@@ -56,7 +62,9 @@ Protected Module Version
 	#tag Method, Flags = &h21
 		Private Function PatchNumber() As Integer
 		  ' libcurl's patch version; e.g. if the version is 1.2.3 then the PatchNumber is 3
-		  Return Val(NthField(NthField(NthField(libcURL.Version.Name, " ", 1), "/", 2), ".", 3))
+		  Static Patch As Integer
+		  If Patch = 0 Then Patch = Val(NthField(NthField(NthField(libcURL.Version.Name, " ", 1), "/", 2), ".", 3))
+		  Return Patch
 		End Function
 	#tag EndMethod
 

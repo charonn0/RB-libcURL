@@ -323,6 +323,17 @@ Protected Module libcURL
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLDecode
 		  
 		  Dim curl As New libcURL.cURLItem(CURL_GLOBAL_NOTHING)
+		  If Not libcURL.Version.IsAtLeast(7, 15, 4) Then
+		    Dim p() As Introspection.PropertyInfo = Introspection.GetType(curl).GetProperties
+		    For Each prop As Introspection.PropertyInfo In p
+		      If prop.Name = "mLastError" Then
+		        prop.Value(curl) = libcURL.Errors.FEATURE_UNAVAILABLE
+		        Exit For
+		      End If
+		    Next
+		    Raise New cURLException(curl)
+		  End If
+		  
 		  Dim InP As MemoryBlock = Data
 		  Dim outlen As Integer
 		  Dim p As Ptr = curl_easy_unescape(curl.Handle, InP, InP.Size, outlen)
@@ -342,6 +353,17 @@ Protected Module libcURL
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLEncode
 		  
 		  Dim curl As New libcURL.cURLItem(CURL_GLOBAL_NOTHING)
+		  If Not libcURL.Version.IsAtLeast(7, 15, 4) Then
+		    Dim p() As Introspection.PropertyInfo = Introspection.GetType(curl).GetProperties
+		    For Each prop As Introspection.PropertyInfo In p
+		      If prop.Name = "mLastError" Then
+		        prop.Value(curl) = libcURL.Errors.FEATURE_UNAVAILABLE
+		        Exit For
+		      End If
+		    Next
+		    Raise New cURLException(curl)
+		  End If
+		  
 		  Dim InP As MemoryBlock = Data
 		  Dim p As Ptr = curl_easy_escape(curl.Handle, InP, InP.Size)
 		  InP = p
