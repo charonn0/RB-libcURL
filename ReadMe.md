@@ -5,21 +5,21 @@ It is strongly recommended that you familiarize yourself with [libcURL](http://c
 
 ##Features
 * Run transfers using any protocol supported by libcURL.
-* Run transfers [on a Xojo thread](https://github.com/charonn0/RB-libcURL/wiki/cURLMulti.PerformOnce).
+* Run transfers [on a Xojo thread](https://github.com/charonn0/RB-libcURL/wiki/MultiHandle.PerformOnce).
 * [Stream-oriented transfers](https://github.com/charonn0/RB-libcURL/wiki/cURLManager.Perform) using Xojo's built-in [Readable](http://docs.xojo.com/index.php/Readable) and [Writeable](http://docs.xojo.com/index.php/Writeable) interfaces.
 * No plugins required.
 * Synchronous and asynchronous transfers (any protocol).
 
 ##Synopsis
-Every transfer is associated with a [`curl_easy`](http://curl.haxx.se/libcurl/c/libcurl-easy.html) handle; these handles are represented by the [`cURLItem`](https://github.com/charonn0/RB-libcURL/wiki/cURLItem) class.
+Every transfer is associated with a [`curl_easy`](http://curl.haxx.se/libcurl/c/libcurl-easy.html) handle; these handles are represented by the [`EasyHandle`](https://github.com/charonn0/RB-libcURL/wiki/EasyHandle) class.
 
-After creating a new `cURLItem` instance, you can set various options for the handle by calling the [`SetOption`](https://github.com/charonn0/RB-libcURL/wiki/cURLItem.SetOption) method with the desired [cURL option number](http://curl.haxx.se/libcurl/c/curl_easy_setopt.html) and its new value. 
+After creating a new `EasyHandle` instance, you can set various options for the handle by calling the [`SetOption`](https://github.com/charonn0/RB-libcURL/wiki/EasyHandle.SetOption) method with the desired [cURL option number](http://curl.haxx.se/libcurl/c/curl_easy_setopt.html) and its new value. 
 
 Once all the desired options have been set (e.g. URL, port, cookies, etc.) you are ready to begin the transfer. Depending on your specific requirements, you can do it in one of several ways. 
 
-You may call [`cURLItem.Perform`](https://github.com/charonn0/RB-libcURL/wiki/cURLItem.Perform) directly. However, this is a blocking call; not merely asynchronous: the entire application _halts_ for the duration of the transfer. As such, it is useful only in single-threaded console applications.
+You may call [`EasyHandle.Perform`](https://github.com/charonn0/RB-libcURL/wiki/EasyHandle.Perform) directly. However, this is a blocking call; not merely asynchronous: the entire application _halts_ for the duration of the transfer. As such, it is useful only in single-threaded console applications.
 
-To perform one or more transfers in a non-halting manner use the [`cURLMulti`](https://github.com/charonn0/RB-libcURL/wiki/cURLMulti) class. The `cURLMulti` class represents a [`curl_multi`](http://curl.haxx.se/libcurl/c/libcurl-multi.html) handle (AKA a "stack"). [Add](https://github.com/charonn0/RB-libcURL/wiki/cURLMulti.AddItem) the `cURLItem` to the multi stack and then call [`cURLMulti.Perform`](https://github.com/charonn0/RB-libcURL/wiki/cURLMulti.Perform) (or [`cURLMulti.PerformOnce`](https://github.com/charonn0/RB-libcURL/wiki/cURLMulti.PerformOnce) on a RB/Xojo thread.)
+To perform one or more transfers in a non-halting manner use the [`MultiHandle`](https://github.com/charonn0/RB-libcURL/wiki/MultiHandle) class. The `MultiHandle` class represents a [`curl_multi`](http://curl.haxx.se/libcurl/c/libcurl-multi.html) handle (AKA a "stack"). [Add](https://github.com/charonn0/RB-libcURL/wiki/MultiHandle.AddItem) the `EasyHandle` to the multi stack and then call [`MultiHandle.Perform`](https://github.com/charonn0/RB-libcURL/wiki/MultiHandle.Perform) (or [`MultiHandle.PerformOnce`](https://github.com/charonn0/RB-libcURL/wiki/MultiHandle.PerformOnce) on a RB/Xojo thread.)
 
 The [`cURLClient`](https://github.com/charonn0/RB-libcURL/wiki/cURLClient) class provides a simplified interface and is recommended for most transfers.
 
