@@ -20,7 +20,7 @@ Inherits RuntimeException
 		  Case ErrantItem IsA libcURL.ShareHandle
 		    Me.Message = libcURL.FormatShareError(Me.ErrorNumber)
 		    
-		  Case ErrantItem IsA libcURL.cURLMulti
+		  Case ErrantItem IsA libcURL.MultiHandle
 		    Me.Message = libcURL.FormatMultiError(Me.ErrorNumber)
 		    
 		  Else

@@ -300,7 +300,7 @@ Inherits libcURL.cURLHandle
 		  ' attempt. The default is to wait forever.
 		  '
 		  ' This method is a blocking function: it will not return (and your application will stop responding) until the
-		  ' transfer completes. For non-blocking transfers use the cURLMulti class to manage the cURLItem.
+		  ' transfer completes. For non-blocking transfers use the MultiHandle class to manage the cURLItem.
 		  '
 		  ' If this method returns true the transfer completed without error. Otherwise, check cURLItem.LastError for the
 		  ' error code.
@@ -497,7 +497,7 @@ Inherits libcURL.cURLHandle
 		      
 		    Case IsA libcURL.ShareHandle
 		      Dim f As libcURL.ShareHandle = NewValue
-		      Return Me.SetOption(OptionNumber, f.ShareHandle)
+		      Return Me.SetOption(OptionNumber, f.SharedHandle)
 		      
 		    Case IsA cURLProgressCallback
 		      Dim p As cURLProgressCallback = NewValue
@@ -791,9 +791,9 @@ Inherits libcURL.cURLHandle
 		FolderItem, libcURL.MultipartForm, libcURL.ListPtr should be used. 
 		
 		Once all options are set, you may call the cURLItem.Perform method to initiate a synchronous (i.e. blocking)
-		transfer, or pass the cURLItem to a cURLMulti stack for asynchronous processing.
+		transfer, or pass the cURLItem to a MultiHandle stack for asynchronous processing.
 		
-		Once the transfer has completed (successfully or not, and regardless of whether a cURLMulti stack was used,)
+		Once the transfer has completed (successfully or not, and regardless of whether a MultiHandle stack was used,)
 		you may call cURLItem.GetInfo to retrieve various data about the transfer.
 		
 		For example, continuing the above code sample:

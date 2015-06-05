@@ -1,6 +1,6 @@
 #tag Class
 Protected Class ShareHandle
-Inherits libcURL.cURLMulti
+Inherits libcURL.MultiHandle
 	#tag Method, Flags = &h0
 		Function AddItem(Item As libcURL.cURLItem) As Boolean
 		  ' Add an easy handle to share handle, then call the overridden AddItem method.
@@ -29,7 +29,7 @@ Inherits libcURL.cURLMulti
 	#tag Method, Flags = &h1000
 		Sub Constructor(GlobalInitFlags As Integer = libcURL.CURL_GLOBAL_DEFAULT)
 		  // Calling the overridden superclass constructor.
-		  // Constructor(GlobalInitFlags As Integer) -- From libcURL.cURLMulti
+		  // Constructor(GlobalInitFlags As Integer) -- From libcURL.MultiHandle
 		  Super.Constructor(GlobalInitFlags)
 		  mShareHandle = curl_share_init()
 		  If mShareHandle = 0 Then
@@ -56,7 +56,7 @@ Inherits libcURL.cURLMulti
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ShareHandle() As Integer
+		Function SharedHandle() As Integer
 		  Return mShareHandle
 		End Function
 	#tag EndMethod

@@ -36,7 +36,7 @@ Protected Class cURLManager
 		  AddHandler mEasyItem.Progress, WeakAddressOf _ProgressHandler
 		  AddHandler mEasyItem.SeekStream, WeakAddressOf _SeekStreamHandler
 		  
-		  mMultiItem = New libcURL.cURLMulti
+		  mMultiItem = New libcURL.MultiHandle
 		  AddHandler mMultiItem.TransferComplete, WeakAddressOf _TransferCompleteHandler
 		  mEasyItem.UserAgent = libcURL.Version.Name
 		  mEasyItem.CA_ListFile = libcURL.Default_CA_File
@@ -273,7 +273,7 @@ Protected Class cURLManager
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Sub _TransferCompleteHandler(Sender As libcURL.cURLMulti, Item As libcURL.cURLItem)
+		Private Sub _TransferCompleteHandler(Sender As libcURL.MultiHandle, Item As libcURL.cURLItem)
 		  #pragma Unused Sender
 		  If mDownload <> Nil And mDownload IsA BinaryStream And mDownloadMB <> Nil Then BinaryStream(mDownload).Close
 		  Dim status As Integer = Item.LastError
@@ -370,7 +370,7 @@ Protected Class cURLManager
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private mMultiItem As libcURL.cURLMulti
+		Private mMultiItem As libcURL.MultiHandle
 	#tag EndProperty
 
 	#tag Property, Flags = &h21

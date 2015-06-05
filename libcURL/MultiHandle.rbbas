@@ -1,15 +1,15 @@
 #tag Class
-Protected Class cURLMulti
+Protected Class MultiHandle
 Inherits libcURL.cURLHandle
 	#tag Method, Flags = &h0
 		Function AddItem(Item As libcURL.cURLItem) As Boolean
 		  ' Add a cURLItem to the multistack. The cURLItem should have all of its options already set and ready to go.
 		  ' You may not add an item while a call to PerformOnce has not yet returned. Doing so will raise an IllegalLockingException.
-		  ' A cURLItem may belong to only one cURLMulti object at a time. Passing an owned cURLItem will fail.
+		  ' A cURLItem may belong to only one MultiHandle object at a time. Passing an owned cURLItem will fail.
 		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_add_handle.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLMulti.AddItem
+		  ' https://github.com/charonn0/RB-libcURL/wiki/MultiHandle.AddItem
 		  
 		  If mEasyHandles.IndexOf(Item.Handle) > -1 Then
 		    mLastError = libcURL.Errors.ALREADY_ADDED
@@ -35,7 +35,7 @@ Inherits libcURL.cURLHandle
 		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_cleanup.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLMulti.Close
+		  ' https://github.com/charonn0/RB-libcURL/wiki/MultiHandle.Close
 		  
 		  If Instances <> Nil And libcURL.IsAvailable Then
 		    For Each h As Integer In Instances.Keys
@@ -53,7 +53,7 @@ Inherits libcURL.cURLHandle
 		  
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_init.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLMulti.Constructor
+		  ' https://github.com/charonn0/RB-libcURL/wiki/MultiHandle.Constructor
 		  
 		  // Calling the overridden superclass constructor.
 		  // Constructor(GlobalInitFlags As Integer) -- From libcURL.cURLHandle
@@ -88,7 +88,7 @@ Inherits libcURL.cURLHandle
 		  ' period with libcURL's best estimate of an optimum interval.
 		  '
 		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLMulti.Perform
+		  ' https://github.com/charonn0/RB-libcURL/wiki/MultiHandle.Perform
 		  
 		  If PerformTimer = Nil Then
 		    PerformTimer = New Timer
@@ -114,13 +114,13 @@ Inherits libcURL.cURLHandle
 		  ' indicates that all transfers have completed. PerformOnce will return True until all transfers
 		  ' have completed or an error occurs.
 		  '
-		  ' Unlike cURLMulti.Perform, this method will run the transfers and raise events on the calling
+		  ' Unlike MultiHandle.Perform, this method will run the transfers and raise events on the calling
 		  ' thread instead of always on the main thread.
 		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_perform.html
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_info_read.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLMulti.PerformOnce
+		  ' https://github.com/charonn0/RB-libcURL/wiki/MultiHandle.PerformOnce
 		  
 		  StackLock.Enter
 		  Try
@@ -199,7 +199,7 @@ Inherits libcURL.cURLHandle
 		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_remove_handle.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLMulti.RemoveItem
+		  ' https://github.com/charonn0/RB-libcURL/wiki/MultiHandle.RemoveItem
 		  
 		  StackLock.Enter
 		  Try
@@ -217,7 +217,7 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Function SetOption(OptionNumber As Integer, NewValue As Variant) As Boolean
-		  ' SetOption is the primary interface to the multistack. Call this method with a curlmulti option number
+		  ' SetOption is the primary interface to the multistack. Call this method with a MultiHandle option number
 		  ' and a value that is acceptable for that option. SetOption does not check that a value is valid for
 		  ' a particular option (except Nil,) however it does enforce type safety of the value and will raise
 		  ' an exception if an unsupported type is passed.
@@ -226,11 +226,11 @@ Inherits libcURL.cURLHandle
 		  ' exception unless the option explicitly accepts NULL.
 		  
 		  ' If the option was set this method returns True. If it returns False the option was not set and the
-		  ' curl error number is stored in cURLMulti.LastError.
+		  ' curl error number is stored in MultiHandle.LastError.
 		  
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_setopt.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLMulti.SetOption
+		  ' https://github.com/charonn0/RB-libcURL/wiki/MultiHandle.SetOption
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Opts
 		  
 		  If Not libcURL.Version.IsAtLeast(7, 15, 4) Then
@@ -297,19 +297,19 @@ Inherits libcURL.cURLHandle
 
 
 	#tag Note, Name = Using this class
-		This class implements the curl_multi interface of libcURL. A cURLMulti instance can manage one or more cURLItems. 
+		This class implements the curl_multi interface of libcURL. A MultiHandle instance can manage one or more cURLItems. 
 		See: http://curl.haxx.se/libcurl/c/libcurl-multi.html
 		
-		Using cURLMulti allows us to use the cURLItem class asynchronously, either automatically on the main thread or 'manually' 
+		Using MultiHandle allows us to use the cURLItem class asynchronously, either automatically on the main thread or 'manually' 
 		on a RB thread.
 		
-		cURLItems may be added to the stack at any time. Once added, cURLMulti will maintain a (RB) reference to the cURLItem.
+		cURLItems may be added to the stack at any time. Once added, MultiHandle will maintain a (RB) reference to the cURLItem.
 		You should not call any methods/set any properties on the cURLItem until you receive its reference as the parameter to the 
 		TransferComplete event.
 		
 		Once all desired cURLItems have been added, you may call Perform or PerformOnce to begin the transfer(s). 
 		
-		Calling PerformOnce executes curl_multi_perform once and processes all completed cURLItems. All cURLItem and cURLMulti events will be 
+		Calling PerformOnce executes curl_multi_perform once and processes all completed cURLItems. All cURLItem and MultiHandle events will be 
 		raised on the thread which calls PerformOnce. PerformOnce will not return until all event handlers have returned.
 		
 		Calling Perform will activate a timer which calls PerformOnce on the main thread until there are no more items. Perform returns immediately.
