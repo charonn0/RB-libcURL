@@ -76,6 +76,30 @@ Protected Module libcURL
 		Private Soft Declare Function curl_global_init Lib "libcurl" (flags As Integer) As Integer
 	#tag EndExternalMethod
 
+	#tag Method, Flags = &h1
+		Protected Function curl_infoname(MessageType As libcURL.curl_infotype) As String
+		  Select Case MessageType
+		  Case libcURL.curl_infotype.data_in
+		    Return "Data In"
+		  Case libcURL.curl_infotype.data_out
+		    Return "Data Out"
+		  Case libcURL.curl_infotype.header_in
+		    Return "Header In"
+		  Case libcURL.curl_infotype.header_out
+		    Return "Header Out"
+		  Case libcURL.curl_infotype.info_end
+		    Return "Info End"
+		  Case libcURL.curl_infotype.ssl_in
+		    Return "SSL In"
+		  Case libcURL.curl_infotype.ssl_out
+		    Return "SSL Out"
+		  Case libcURL.curl_infotype.text
+		    Return "Text"
+		  End Select
+		  
+		End Function
+	#tag EndMethod
+
 	#tag ExternalMethod, Flags = &h21
 		Private Soft Declare Function curl_multi_add_handle Lib "libcurl" (MultiHandle As Integer, EasyHandle As Integer) As Integer
 	#tag EndExternalMethod

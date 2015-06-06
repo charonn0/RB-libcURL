@@ -834,21 +834,7 @@ End
 	#tag Event
 		Sub DebugMessage(MessageType As libcURL.curl_infotype, data As String)
 		  If MessageType = libcURL.curl_infotype.data_in Or MessageType = libcURL.curl_infotype.data_out Then Return
-		  Dim ty As String
-		  Select Case MessageType
-		  Case libcURL.curl_infotype.data_in, libcURL.curl_infotype.data_out, libcURL.curl_infotype.ssl_in, libcURL.curl_infotype.ssl_out
-		    Return
-		  Case libcURL.curl_infotype.header_in
-		    ty = "Header In"
-		  Case libcURL.curl_infotype.header_out
-		    ty = "Header Out"
-		  Case libcURL.curl_infotype.info_end
-		    ty = "Info End"
-		  Case libcURL.curl_infotype.text
-		    ty = "Text"
-		  End Select
-		  
-		  Debug.AddRow(ty, data.Trim)
+		  Debug.AddRow(libcURL.curl_infoname(MessageType), data.Trim)
 		  Debug.ScrollPosition = Debug.ListCount
 		  'End If
 		End Sub
@@ -860,6 +846,7 @@ End
 		  Else
 		    TextArea1.Text = ""
 		  End If
+		  CurlInfo.DeleteAllRows
 		  CurlInfo.AddRow("EFFECTIVE_URL", Me.GetInfo(libcURL.Info.EFFECTIVE_URL))
 		  CurlInfo.AddRow("REDIRECT_COUNT", Str(Me.GetInfo(libcURL.Info.REDIRECT_COUNT).Int32Value))
 		  CurlInfo.AddRow("REDIRECT_URL", Me.GetInfo(libcURL.Info.REDIRECT_URL))
@@ -870,6 +857,7 @@ End
 		  CurlInfo.AddRow("OS_ERRNO", Str(Me.GetInfo(libcURL.Info.OS_ERRNO).Int32Value))
 		  CurlInfo.AddRow("SIZE_DOWNLOAD", Str(Me.GetInfo(libcURL.Info.SIZE_DOWNLOAD).Int32Value))
 		  CurlInfo.AddRow("SIZE_UPLOAD", Str(Me.GetInfo(libcURL.Info.SIZE_UPLOAD).Int32Value))
+		  Headers.DeleteAllRows
 		  Dim h As InternetHeaders = Me.GetResponseHeaders
 		  For i As Integer = 0 To h.Count - 1
 		    Headers.AddRow(h.Name(i), h.Value(i))
