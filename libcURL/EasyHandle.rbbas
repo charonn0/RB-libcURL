@@ -540,7 +540,13 @@ Inherits libcURL.cURLHandle
 		    
 		  End Select
 		  
-		  mLastError = curl_easy_setopt(mHandle, OptionNumber, MarshalledValue)
+		  Return Me.SetOptionPtr(OptionNumber, MarshalledValue)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function SetOptionPtr(OptionNumber As Integer, NewValue As Ptr) As Boolean
+		  mLastError = curl_easy_setopt(mHandle, OptionNumber, NewValue)
 		  Return mLastError = 0
 		End Function
 	#tag EndMethod
