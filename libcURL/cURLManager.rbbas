@@ -113,17 +113,7 @@ Protected Class cURLManager
 		Protected Sub Perform(URL As String, ReadFrom As Readable, WriteTo As Writeable)
 		  ' Perform the transfer on the main thread/event loop.
 		  
-		  mEasyItem.URL = URL
-		  mHeaders = Nil
-		  mDownload = WriteTo
-		  mDownloadMB = Nil
-		  mUpload = ReadFrom
-		  If mRequestHeaders <> Nil Then
-		    If Not Me.SetOption(libcURL.Opts.HTTPHEADER, mRequestHeaders) Then Raise New libcURL.cURLException(mEasyItem)
-		  End If
-		  
-		  If Not mMultiItem.AddItem(mEasyItem) Then Raise New libcURL.cURLException(mMultiItem)
-		  
+		  QueueTransfer(URL, ReadFrom, WriteTo)
 		  mMultiItem.Perform()
 		End Sub
 	#tag EndMethod
@@ -132,6 +122,16 @@ Protected Class cURLManager
 		Protected Function Perform(URL As String, ReadFrom As Readable, WriteTo As Writeable) As Boolean
 		  ' Perform the transfer on the calling thread.
 		  
+		  QueueTransfer(URL, ReadFrom, WriteTo)
+		  While mMultiItem.PerformOnce()
+		    App.YieldToNextThread
+		  Wend
+		  Return mEasyItem.LastError = 0
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub QueueTransfer(URL As String, ReadFrom As Readable, WriteTo As Writeable)
 		  mEasyItem.URL = URL
 		  mHeaders = Nil
 		  mDownload = WriteTo
@@ -143,11 +143,7 @@ Protected Class cURLManager
 		  
 		  If Not mMultiItem.AddItem(mEasyItem) Then Raise New libcURL.cURLException(mMultiItem)
 		  
-		  While mMultiItem.PerformOnce()
-		    App.YieldToNextThread
-		  Wend
-		  Return mEasyItem.LastError = 0
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
