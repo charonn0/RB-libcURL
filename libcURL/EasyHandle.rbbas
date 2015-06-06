@@ -172,8 +172,7 @@ Inherits libcURL.cURLHandle
 		  Case libcURL.Info.EFFECTIVE_URL, libcURL.Info.REDIRECT_URL, libcURL.Info.CONTENT_TYPE, libcURL.Info.PRIVATE_, libcURL.Info.PRIMARY_IP, _
 		    libcURL.Info.LOCAL_IP, libcURL.Info.FTP_ENTRY_PATH, libcURL.Info.RTSP_SESSION_ID
 		    mb = New MemoryBlock(4)
-		    mLastError = curl_easy_getinfo(mHandle, InfoType, mb)
-		    If mLastError = 0 Then
+		    If Me.GetInfo(InfoType, mb) Then
 		      mb = mb.Ptr(0)
 		      If mb <> Nil Then Return mb.CString(0)
 		    End If
@@ -183,22 +182,19 @@ Inherits libcURL.cURLHandle
 		    libcURL.Info.PRIMARY_PORT, libcURL.Info.LOCAL_PORT, libcURL.Info.LASTSOCKET, libcURL.Info.CONDITION_UNMET, libcURL.Info.RTSP_CLIENT_CSEQ, _
 		    libcURL.Info.RTSP_SERVER_CSEQ, libcURL.Info.RTSP_CSEQ_RECV
 		    mb = New MemoryBlock(4)
-		    mLastError = curl_easy_getinfo(mHandle, InfoType, mb)
-		    If mLastError = 0 Then Return mb.Int32Value(0)
+		    If Me.GetInfo(InfoType, mb) Then Return mb.Int32Value(0)
 		    
 		  Case libcURL.Info.TOTAL_TIME, libcURL.Info.NAMELOOKUP_TIME, libcURL.Info.CONNECT_TIME, libcURL.Info.APPCONNECT_TIME, libcURL.Info.PRETRANSFER_TIME, _
 		    libcURL.Info.STARTTRANSFER_TIME, libcURL.Info.REDIRECT_TIME, libcURL.Info.SIZE_DOWNLOAD, libcURL.Info.SIZE_UPLOAD, libcURL.Info.SPEED_DOWNLOAD, _
 		    libcURL.Info.SPEED_UPLOAD, libcURL.Info.CONTENT_LENGTH_UPLOAD, libcURL.Info.CONTENT_LENGTH_DOWNLOAD
 		    mb = New MemoryBlock(8)
-		    mLastError = curl_easy_getinfo(mHandle, InfoType, mb)
-		    If mLastError = 0 Then Return mb.DoubleValue(0)
+		    If Me.GetInfo(InfoType, mb) Then Return mb.DoubleValue(0)
 		    
 		  Case libcURL.Info.SSL_ENGINES, libcURL.Info.COOKIELIST
 		    Dim p As Ptr = New MemoryBlock(4)
 		    mb = New MemoryBlock(4)
 		    mb.Ptr(0) = p
-		    mLastError = curl_easy_getinfo(mHandle, InfoType, mb)
-		    If mLastError = 0 Then Return New libcURL.ListPtr(p)
+		    If Me.GetInfo(InfoType, mb) Then Return New libcURL.ListPtr(p)
 		    
 		  Else
 		    Dim err As New TypeMismatchException
@@ -206,6 +202,13 @@ Inherits libcURL.cURLHandle
 		    err.ErrorNumber = InfoType
 		    Raise err
 		  End Select
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function GetInfo(InfoType As Integer, Buffer As MemoryBlock) As Boolean
+		  mLastError = curl_easy_getinfo(mHandle, InfoType, Buffer)
+		  Return mLastError = 0
 		End Function
 	#tag EndMethod
 
@@ -638,6 +641,9 @@ Inherits libcURL.cURLHandle
 		  ' DO NOT CALL THIS METHOD
 		  Dim mb As MemoryBlock = data
 		  Dim s As String = mb.StringValue(0, size)
+		  If info <> curl_infotype.data_in And info <> curl_infotype.data_out Then 
+		    System.DebugLog("libcURL 0x" + Hex(mHandle) + " (" + curl_infoname(info) + "): " + s)
+		  End If
 		  RaiseEvent DebugMessage(info, s)
 		  Return size
 		End Function
