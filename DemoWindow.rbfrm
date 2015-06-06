@@ -882,7 +882,7 @@ End
 	#tag Event
 		Sub Run()
 		  If Not Client.Get(TextField1.Text) Then
-		    MsgBox("Error")
+		    Break
 		  End If
 		End Sub
 	#tag EndEvent
@@ -891,9 +891,11 @@ End
 	#tag Event
 		Sub Run()
 		  Dim f As FolderItem = GetOpenFolderItem("")
-		  Dim bs As BinaryStream = BinaryStream.Open(f)
-		  If Not Client.Put(TextField1.Text, bs) Then
-		    MsgBox("Error")
+		  If f <> Nil Then
+		    Dim bs As BinaryStream = BinaryStream.Open(f)
+		    If Not Client.Put(TextField1.Text, bs) Then
+		      Break
+		    End If
 		  End If
 		End Sub
 	#tag EndEvent
@@ -901,11 +903,8 @@ End
 #tag Events PostThread
 	#tag Event
 		Sub Run()
-		  Dim form As New Dictionary
-		  form.Value("Username") = "User1"
-		  form.Value("Password") = "P@ss"
-		  If Not Client.Post(TextField1.Text, form) Then
-		    MsgBox("Error")
+		  If FormValue <> Nil And Not Client.Post(TextField1.Text, FormValue) Then
+		    Break
 		  End If
 		End Sub
 	#tag EndEvent
