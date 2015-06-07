@@ -19,7 +19,7 @@ Begin Window DemoWindow
    MinHeight       =   64
    MinimizeButton  =   True
    MinWidth        =   64
-   Placement       =   0
+   Placement       =   1
    Resizeable      =   True
    Title           =   "cURLClient Demo"
    Visible         =   True
@@ -42,7 +42,7 @@ Begin Window DemoWindow
       Panels          =   ""
       Scope           =   0
       SmallTabs       =   ""
-      TabDefinition   =   "Debug Messages\rOutput\rFeatures"
+      TabDefinition   =   "Information\rOutput\rFeatures"
       TabIndex        =   11
       TabPanelIndex   =   0
       TabStop         =   True
@@ -51,7 +51,7 @@ Begin Window DemoWindow
       TextUnit        =   0
       Top             =   92
       Underline       =   ""
-      Value           =   2
+      Value           =   0
       Visible         =   True
       Width           =   596
       Begin Listbox Debug
@@ -72,14 +72,14 @@ Begin Window DemoWindow
          GridLinesVertical=   0
          HasHeading      =   True
          HeadingIndex    =   -1
-         Height          =   272
+         Height          =   147
          HelpTag         =   ""
          Hierarchical    =   ""
          Index           =   -2147483648
          InitialParent   =   "TabPanel2"
          InitialValue    =   "Type	Message"
          Italic          =   ""
-         Left            =   11
+         Left            =   13
          LockBottom      =   True
          LockedInPosition=   False
          LockLeft        =   True
@@ -96,7 +96,7 @@ Begin Window DemoWindow
          TextFont        =   "System"
          TextSize        =   0
          TextUnit        =   0
-         Top             =   121
+         Top             =   246
          Underline       =   ""
          UseFocusRing    =   True
          Visible         =   True
@@ -115,13 +115,13 @@ Begin Window DemoWindow
          DataSource      =   ""
          Enabled         =   True
          Format          =   ""
-         Height          =   86
+         Height          =   134
          HelpTag         =   ""
          HideSelection   =   True
          Index           =   -2147483648
          InitialParent   =   "TabPanel2"
          Italic          =   ""
-         Left            =   14
+         Left            =   13
          LimitText       =   0
          LockBottom      =   True
          LockedInPosition=   False
@@ -143,11 +143,11 @@ Begin Window DemoWindow
          TextFont        =   "System"
          TextSize        =   0
          TextUnit        =   0
-         Top             =   307
+         Top             =   259
          Underline       =   ""
          UseFocusRing    =   True
          Visible         =   True
-         Width           =   579
+         Width           =   578
       End
       Begin Listbox Protocols
          AutoDeactivate  =   True
@@ -247,55 +247,6 @@ Begin Window DemoWindow
          Width           =   578
          _ScrollWidth    =   -1
       End
-      Begin Listbox CurlInfo
-         AutoDeactivate  =   True
-         AutoHideScrollbars=   True
-         Bold            =   ""
-         Border          =   True
-         ColumnCount     =   2
-         ColumnsResizable=   True
-         ColumnWidths    =   "40%"
-         DataField       =   ""
-         DataSource      =   ""
-         DefaultRowHeight=   -1
-         Enabled         =   True
-         EnableDrag      =   ""
-         EnableDragReorder=   ""
-         GridLinesHorizontal=   0
-         GridLinesVertical=   0
-         HasHeading      =   True
-         HeadingIndex    =   -1
-         Height          =   76
-         HelpTag         =   ""
-         Hierarchical    =   ""
-         Index           =   -2147483648
-         InitialParent   =   "TabPanel2"
-         InitialValue    =   "Info Name	Last request Value"
-         Italic          =   ""
-         Left            =   14
-         LockBottom      =   False
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   True
-         LockTop         =   True
-         RequiresSelection=   ""
-         Scope           =   0
-         ScrollbarHorizontal=   True
-         ScrollBarVertical=   True
-         SelectionType   =   0
-         TabIndex        =   1
-         TabPanelIndex   =   2
-         TabStop         =   True
-         TextFont        =   "System"
-         TextSize        =   0
-         TextUnit        =   0
-         Top             =   125
-         Underline       =   ""
-         UseFocusRing    =   True
-         Visible         =   True
-         Width           =   572
-         _ScrollWidth    =   -1
-      End
       Begin Listbox Headers
          AutoDeactivate  =   True
          AutoHideScrollbars=   True
@@ -314,14 +265,14 @@ Begin Window DemoWindow
          GridLinesVertical=   0
          HasHeading      =   True
          HeadingIndex    =   -1
-         Height          =   86
+         Height          =   130
          HelpTag         =   ""
          Hierarchical    =   ""
          Index           =   -2147483648
          InitialParent   =   "TabPanel2"
          InitialValue    =   "Header name	Header value"
          Italic          =   ""
-         Left            =   14
+         Left            =   13
          LockBottom      =   False
          LockedInPosition=   False
          LockLeft        =   True
@@ -338,11 +289,60 @@ Begin Window DemoWindow
          TextFont        =   "System"
          TextSize        =   0
          TextUnit        =   0
-         Top             =   209
+         Top             =   123
          Underline       =   ""
          UseFocusRing    =   True
          Visible         =   True
-         Width           =   572
+         Width           =   578
+         _ScrollWidth    =   -1
+      End
+      Begin Listbox CurlInfo
+         AutoDeactivate  =   True
+         AutoHideScrollbars=   True
+         Bold            =   ""
+         Border          =   True
+         ColumnCount     =   2
+         ColumnsResizable=   True
+         ColumnWidths    =   "40%"
+         DataField       =   ""
+         DataSource      =   ""
+         DefaultRowHeight=   -1
+         Enabled         =   True
+         EnableDrag      =   ""
+         EnableDragReorder=   ""
+         GridLinesHorizontal=   0
+         GridLinesVertical=   0
+         HasHeading      =   True
+         HeadingIndex    =   -1
+         Height          =   119
+         HelpTag         =   ""
+         Hierarchical    =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel2"
+         InitialValue    =   "Info Name	Last request Value"
+         Italic          =   ""
+         Left            =   13
+         LockBottom      =   False
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   True
+         LockTop         =   True
+         RequiresSelection=   ""
+         Scope           =   0
+         ScrollbarHorizontal=   True
+         ScrollBarVertical=   True
+         SelectionType   =   0
+         TabIndex        =   1
+         TabPanelIndex   =   1
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   121
+         Underline       =   ""
+         UseFocusRing    =   True
+         Visible         =   True
+         Width           =   578
          _ScrollWidth    =   -1
       End
    End
@@ -762,6 +762,13 @@ End
 #tag EndWindow
 
 #tag WindowCode
+	#tag Event
+		Sub Open()
+		  Me.Title = Me.Title + " - " + libcURL.Version.Name
+		End Sub
+	#tag EndEvent
+
+
 	#tag Property, Flags = &h21
 		Private FormValue As Dictionary
 	#tag EndProperty
