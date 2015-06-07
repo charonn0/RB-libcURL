@@ -42,6 +42,9 @@ Protected Class cURLManager
 		  mEasyItem.CA_ListFile = libcURL.Default_CA_File
 		  mEasyItem.FailOnServerError = True
 		  mEasyItem.FollowRedirects = True
+		  If libcURL.Version.LibZ.IsAvailable Then
+		    If Not mEasyItem.SetOption(libcURL.Opts.ACCEPT_ENCODING, "") Then Raise New cURLException(mEasyItem)
+		  End If
 		End Sub
 	#tag EndMethod
 
