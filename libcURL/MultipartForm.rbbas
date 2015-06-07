@@ -62,6 +62,15 @@ Inherits libcURL.cURLHandle
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Sub Operator_Convert(FromDict As Dictionary)
+		  Me.Constructor()
+		  For Each item As String In FromDict.Keys
+		    If Not Me.AddElement(item, FromDict.Value(item)) Then Raise New cURLException(Me)
+		  Next
+		End Sub
+	#tag EndMethod
+
 
 	#tag Note, Name = Using this class
 		This class represents a linked list of form elements that are managed by libcURL.

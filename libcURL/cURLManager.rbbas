@@ -13,7 +13,7 @@ Protected Class cURLManager
 		  Me.UploadMode = False
 		  If Not Me.SetOption(libcURL.Opts.HTTPGET, True) Then Raise New libcURL.cURLException(mEasyItem)
 		  mUpload = Nil
-		  
+		  Me.SetFormData(Nil)
 		End Sub
 	#tag EndMethod
 
@@ -147,27 +147,33 @@ Protected Class cURLManager
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub SetFormData(FormData As Dictionary, Multipart As Boolean = True)
-		  Select Case True
-		  Case FormData = Nil And mForm <> Nil
-		    If Not Me.SetOption(libcURL.Opts.HTTPPOST, Nil) Then Raise New libcURL.cURLException(mEasyItem)
-		    mForm = Nil
-		    
-		  Case Multipart And FormData <> Nil
-		    mForm = New libcURL.MultipartForm
-		    For Each item As String In FormData.Keys
-		      If Not mForm.AddElement(item, FormData.Value(item)) Then Raise New libcURL.cURLException(mForm)
-		    Next
+		Sub SetForm(FormData As libcURL.MultipartForm)
+		  If FormData = Nil Then
+		    If mForm <> Nil Then
+		      If Not Me.SetOption(libcURL.Opts.HTTPPOST, Nil) Then Raise New libcURL.cURLException(mEasyItem)
+		      mForm = Nil
+		    End If
+		  Else
 		    If Not Me.SetOption(libcURL.Opts.HTTPPOST, mForm) Then Raise New libcURL.cURLException(mEasyItem)
+		    mForm = New libcURL.MultipartForm
+		  End If
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub SetFormData(FormData As Dictionary)
+		  If FormData = Nil Then
+		    Me.SetForm(Nil)
 		    
-		  Case FormData <> Nil
+		  Else
 		    Dim data() As String
 		    For Each key As String in FormData.Keys
 		      data.Append(URLEncode(Key) + "=" + URLEncode(FormData.Value(key)))
 		    Next
 		    If Not mEasyItem.SetOption(libcURL.Opts.COPYPOSTFIELDS, Join(data, "&")) Then Raise New libcURL.cURLException(mEasyItem)
 		    
-		  End Select
+		  End If
+		  
 		End Sub
 	#tag EndMethod
 
@@ -353,8 +359,8 @@ Protected Class cURLManager
 		Private mErrorBuffer As MemoryBlock
 	#tag EndProperty
 
-	#tag Property, Flags = &h21
-		Private mForm As libcURL.MultipartForm
+	#tag Property, Flags = &h1
+		Protected mForm As libcURL.MultipartForm
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
