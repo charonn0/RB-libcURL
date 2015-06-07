@@ -52,6 +52,15 @@ Inherits libcURL.cURLHandle
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Sub Operator_Convert(From() As String)
+		  Me.Constructor()
+		  For i As Integer = 0 To UBound(From)
+		    If Not Me.Append(From(i)) Then Raise New cURLException(Me)
+		  Next
+		End Sub
+	#tag EndMethod
+
 
 	#tag Property, Flags = &h1
 		Protected List As Ptr
