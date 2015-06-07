@@ -34,10 +34,10 @@ Begin Window DemoWindow
       InitialParent   =   ""
       Italic          =   ""
       Left            =   4
-      LockBottom      =   ""
+      LockBottom      =   True
       LockedInPosition=   False
       LockLeft        =   True
-      LockRight       =   ""
+      LockRight       =   True
       LockTop         =   True
       Panels          =   ""
       Scope           =   0
@@ -51,7 +51,7 @@ Begin Window DemoWindow
       TextUnit        =   0
       Top             =   92
       Underline       =   ""
-      Value           =   1
+      Value           =   2
       Visible         =   True
       Width           =   596
       Begin Listbox Debug
@@ -80,7 +80,7 @@ Begin Window DemoWindow
          InitialValue    =   "Type	Message"
          Italic          =   ""
          Left            =   11
-         LockBottom      =   False
+         LockBottom      =   True
          LockedInPosition=   False
          LockLeft        =   True
          LockRight       =   True
@@ -123,10 +123,10 @@ Begin Window DemoWindow
          Italic          =   ""
          Left            =   14
          LimitText       =   0
-         LockBottom      =   ""
+         LockBottom      =   True
          LockedInPosition=   False
          LockLeft        =   True
-         LockRight       =   ""
+         LockRight       =   True
          LockTop         =   True
          Mask            =   ""
          Multiline       =   True
@@ -178,7 +178,7 @@ Begin Window DemoWindow
          LockBottom      =   ""
          LockedInPosition=   False
          LockLeft        =   True
-         LockRight       =   ""
+         LockRight       =   True
          LockTop         =   True
          RequiresSelection=   ""
          Scope           =   0
@@ -224,10 +224,10 @@ Begin Window DemoWindow
          InitialValue    =   "Available Features"
          Italic          =   ""
          Left            =   11
-         LockBottom      =   ""
+         LockBottom      =   True
          LockedInPosition=   False
          LockLeft        =   True
-         LockRight       =   ""
+         LockRight       =   True
          LockTop         =   True
          RequiresSelection=   ""
          Scope           =   0
@@ -276,7 +276,7 @@ Begin Window DemoWindow
          LockBottom      =   False
          LockedInPosition=   False
          LockLeft        =   True
-         LockRight       =   False
+         LockRight       =   True
          LockTop         =   True
          RequiresSelection=   ""
          Scope           =   0
@@ -347,19 +347,15 @@ Begin Window DemoWindow
       End
    End
    Begin cURLClient Client
-      Enabled         =   True
       Height          =   32
       Index           =   -2147483648
       Left            =   7
       LockedInPosition=   False
       Port            =   ""
       Scope           =   0
-      TabIndex        =   1
       TabPanelIndex   =   0
-      TabStop         =   True
       Top             =   437
       UploadMode      =   ""
-      Visible         =   True
       Width           =   32
    End
    Begin TextField TextField1
@@ -384,7 +380,7 @@ Begin Window DemoWindow
       LockBottom      =   ""
       LockedInPosition=   False
       LockLeft        =   True
-      LockRight       =   ""
+      LockRight       =   True
       LockTop         =   True
       Mask            =   ""
       Password        =   ""
@@ -405,7 +401,6 @@ Begin Window DemoWindow
       Width           =   335
    End
    Begin Thread GetThread
-      Enabled         =   True
       Height          =   32
       Index           =   -2147483648
       Left            =   44
@@ -413,15 +408,11 @@ Begin Window DemoWindow
       Priority        =   5
       Scope           =   0
       StackSize       =   0
-      TabIndex        =   3
       TabPanelIndex   =   0
-      TabStop         =   True
       Top             =   437
-      Visible         =   True
       Width           =   32
    End
    Begin Thread PutThread
-      Enabled         =   True
       Height          =   32
       Index           =   -2147483648
       Left            =   80
@@ -429,15 +420,11 @@ Begin Window DemoWindow
       Priority        =   5
       Scope           =   0
       StackSize       =   0
-      TabIndex        =   4
       TabPanelIndex   =   0
-      TabStop         =   True
       Top             =   437
-      Visible         =   True
       Width           =   32
    End
    Begin Thread PostThread
-      Enabled         =   True
       Height          =   32
       Index           =   -2147483648
       Left            =   117
@@ -445,11 +432,8 @@ Begin Window DemoWindow
       Priority        =   5
       Scope           =   0
       StackSize       =   0
-      TabIndex        =   5
       TabPanelIndex   =   0
-      TabStop         =   True
       Top             =   437
-      Visible         =   True
       Width           =   32
    End
    Begin ProgressBar ProgressUpload
@@ -463,13 +447,11 @@ Begin Window DemoWindow
       LockBottom      =   ""
       LockedInPosition=   False
       LockLeft        =   True
-      LockRight       =   ""
+      LockRight       =   True
       LockTop         =   True
       Maximum         =   100
       Scope           =   0
-      TabIndex        =   6
       TabPanelIndex   =   0
-      TabStop         =   True
       Top             =   46
       Value           =   0
       Visible         =   True
@@ -766,13 +748,11 @@ Begin Window DemoWindow
       LockBottom      =   ""
       LockedInPosition=   False
       LockLeft        =   True
-      LockRight       =   ""
+      LockRight       =   True
       LockTop         =   True
       Maximum         =   100
       Scope           =   0
-      TabIndex        =   8
       TabPanelIndex   =   0
-      TabStop         =   True
       Top             =   58
       Value           =   0
       Visible         =   True
