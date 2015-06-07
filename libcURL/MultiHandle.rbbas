@@ -9,7 +9,7 @@ Inherits libcURL.cURLHandle
 		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_add_handle.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/MultiHandle.AddItem
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.AddItem
 		  
 		  If mEasyHandles.IndexOf(Item.Handle) > -1 Then
 		    mLastError = libcURL.Errors.ALREADY_ADDED
@@ -35,7 +35,7 @@ Inherits libcURL.cURLHandle
 		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_cleanup.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/MultiHandle.Close
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.Close
 		  
 		  If Instances <> Nil And libcURL.IsAvailable Then
 		    For Each h As Integer In Instances.Keys
@@ -53,7 +53,7 @@ Inherits libcURL.cURLHandle
 		  
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_init.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/MultiHandle.Constructor
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.Constructor
 		  
 		  // Calling the overridden superclass constructor.
 		  // Constructor(GlobalInitFlags As Integer) -- From libcURL.cURLHandle
@@ -88,7 +88,7 @@ Inherits libcURL.cURLHandle
 		  ' period with libcURL's best estimate of an optimum interval.
 		  '
 		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/MultiHandle.Perform
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.Perform
 		  
 		  If PerformTimer = Nil Then
 		    PerformTimer = New Timer
@@ -120,7 +120,7 @@ Inherits libcURL.cURLHandle
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_perform.html
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_info_read.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/MultiHandle.PerformOnce
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.PerformOnce
 		  
 		  StackLock.Enter
 		  Try
@@ -199,7 +199,7 @@ Inherits libcURL.cURLHandle
 		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_remove_handle.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/MultiHandle.RemoveItem
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.RemoveItem
 		  
 		  StackLock.Enter
 		  Try
@@ -230,7 +230,7 @@ Inherits libcURL.cURLHandle
 		  
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_setopt.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/MultiHandle.SetOption
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.SetOption
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Opts
 		  
 		  If Not libcURL.Version.IsAtLeast(7, 15, 4) Then

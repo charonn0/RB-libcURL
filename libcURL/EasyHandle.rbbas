@@ -7,7 +7,7 @@ Inherits libcURL.cURLHandle
 		  ' called automatically by the class destructor.
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_cleanup.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/EasyHandle.Close
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Close
 		  
 		  If Me.Handle <> 0 Then
 		    curl_easy_cleanup(mHandle)
@@ -52,7 +52,7 @@ Inherits libcURL.cURLHandle
 		  ' Creates a new curl_easy handle
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_init.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/EasyHandle.Constructor
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Constructor
 		  
 		  // Calling the overridden superclass constructor.
 		  // Constructor(GlobalInitFlags As Integer) -- From libcURL.cURLHandle
@@ -81,7 +81,7 @@ Inherits libcURL.cURLHandle
 		  ' will be raised.
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_duphandle.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/EasyHandle.Constructor
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Constructor
 		  
 		  If CopyOpts = Nil Or CopyOpts.Handle = 0 Then Raise New NilObjectException
 		  
@@ -142,7 +142,7 @@ Inherits libcURL.cURLHandle
 		Private Sub Destructor()
 		  ' Closes the instance.
 		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/EasyHandle.Destructor
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Destructor
 		  
 		  Me.Close()
 		  If Instances <> Nil And Instances.Count = 0 Then Instances = Nil
@@ -164,7 +164,7 @@ Inherits libcURL.cURLHandle
 		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_getinfo.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/EasyHandle.GetInfo
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.GetInfo
 		  
 		  Dim mb As MemoryBlock
 		  
@@ -289,7 +289,7 @@ Inherits libcURL.cURLHandle
 		  ' Pauses or unpauses uploads and/or downloads
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_pause.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/EasyHandle.Pause
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Pause
 		  
 		  mLastError = curl_easy_pause(mHandle, Mask)
 		  Return mLastError = 0
@@ -310,7 +310,7 @@ Inherits libcURL.cURLHandle
 		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_perform.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/EasyHandle.Perform
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Perform
 		  
 		  If URL <> "" Then Me.URL = URL
 		  If Timeout > 0 Then Me.TimeOut = Timeout
@@ -340,7 +340,7 @@ Inherits libcURL.cURLHandle
 		  ' Once Perform returns you may Read from the easy_handle by calling this method
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_recv.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/EasyHandle.Read
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Read
 		  
 		  If Not libcURL.Version.IsAtLeast(7, 18, 2) Then
 		    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
@@ -388,7 +388,7 @@ Inherits libcURL.cURLHandle
 		  ' Resets the curl_easy handle to a pristine state. You may reuse the handle immediately.
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_reset.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/EasyHandle.Reset
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Reset
 		  
 		  curl_easy_reset(mHandle)
 		  mLastError = 0
@@ -403,7 +403,7 @@ Inherits libcURL.cURLHandle
 		  ' Resumes uploads and/or downloads
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_pause.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/EasyHandle.Resume
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Resume
 		  
 		  Return Me.Pause(mask)
 		End Function
@@ -440,7 +440,7 @@ Inherits libcURL.cURLHandle
 		  
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_setopt.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/EasyHandle.SetOption
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.SetOption
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Opts
 		  
 		  Dim MarshalledValue As Ptr
@@ -578,7 +578,7 @@ Inherits libcURL.cURLHandle
 		  ' If the write failed an IOException will be raised.
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_send.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/EasyHandle.Write
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Write
 		  
 		  If Not libcURL.Version.IsAtLeast(7, 18, 2) Then
 		    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
@@ -647,7 +647,7 @@ Inherits libcURL.cURLHandle
 		  ' DO NOT CALL THIS METHOD
 		  Dim mb As MemoryBlock = data
 		  Dim s As String = mb.StringValue(0, size)
-		  If info <> curl_infotype.data_in And info <> curl_infotype.data_out Then 
+		  If info <> curl_infotype.data_in And info <> curl_infotype.data_out Then
 		    System.DebugLog("libcURL 0x" + Hex(mHandle) + " (" + curl_infoname(info) + "): " + s)
 		  End If
 		  RaiseEvent DebugMessage(info, s)
@@ -892,7 +892,7 @@ Inherits libcURL.cURLHandle
 			  ' Pass True to follow HTTP redirects automatically. The default is False
 			  ' See:
 			  ' http://curl.haxx.se/libcurl/c/curl_easy_setopt.html#CURLOPTFOLLOWLOCATION
-			  ' https://github.com/charonn0/RB-libcURL/wiki/EasyHandle.FollowRedirects
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.FollowRedirects
 			  
 			  If Not Me.SetOption(libcURL.Opts.FOLLOWLOCATION, value) Then Raise New cURLException(Me)
 			  mFollowRedirects = value
@@ -1162,7 +1162,7 @@ Inherits libcURL.cURLHandle
 			  ' Pass True to receive the DebugMessage event. The default is False
 			  ' See:
 			  ' http://curl.haxx.se/libcurl/c/curl_easy_setopt.html#CURLOPTVERBOSE
-			  ' https://github.com/charonn0/RB-libcURL/wiki/EasyHandle.Verbose
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Verbose
 			  
 			  If Not Me.SetOption(libcURL.Opts.VERBOSE, value) Then Raise New cURLException(Me)
 			  mVerbose = value

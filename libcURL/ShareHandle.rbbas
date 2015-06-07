@@ -7,7 +7,7 @@ Inherits libcURL.MultiHandle
 		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/CURLOPT_SHARE.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/ShareHandle.AddItem
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ShareHandle.AddItem
 		  
 		  If Not Item.SetOption(libcURL.Opts.SHARE, Me) Then Raise New cURLException(Item)
 		  Return Super.AddItem(Item)
