@@ -71,6 +71,13 @@ Protected Class cURLHandle
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function Operator_Compare(OtherHandle As libcURL.cURLHandle) As Integer
+		  If OtherHandle Is Nil Then Return 1
+		  Return Sign(Me.Flags - OtherHandle.Flags)
+		End Function
+	#tag EndMethod
+
 
 	#tag Property, Flags = &h21
 		Private Shared InitFlags As Dictionary

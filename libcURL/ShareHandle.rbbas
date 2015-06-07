@@ -40,6 +40,14 @@ Inherits libcURL.MultiHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function Operator_Compare(OtherShare As libcURL.ShareHandle) As Integer
+		  Dim i As Integer = Super.Operator_Compare(OtherShare)
+		  If i = 0 Then Return Sign(mHandle - OtherShare.SharedHandle)
+		  Return i
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function RemoveItem(Item As libcURL.EasyHandle) As Boolean
 		  ' Remove an easy handle from share handle, then call the overridden RemoveItem method.
 		  ' See: http://curl.haxx.se/libcurl/c/CURLOPT_SHARE.html

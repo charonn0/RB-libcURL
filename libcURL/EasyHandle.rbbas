@@ -285,6 +285,14 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function Operator_Compare(OtherEasy As libcURL.EasyHandle) As Integer
+		  Dim i As Integer = Super.Operator_Compare(OtherEasy)
+		  If i = 0 Then Return Sign(mHandle - OtherEasy.Handle)
+		  Return i
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function Pause(Mask As Integer = CURLPAUSE_ALL) As Boolean
 		  ' Pauses or unpauses uploads and/or downloads
 		  ' See:

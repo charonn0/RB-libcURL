@@ -63,8 +63,17 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function Operator_Compare(OtherForm As libcURL.MultipartForm) As Integer
+		  Dim i As Integer = Super.Operator_Compare(OtherForm)
+		  If i = 0 Then Return Sign(mHandle - OtherForm.Handle)
+		  Return i
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub Operator_Convert(FromDict As Dictionary)
 		  Me.Constructor()
+		  If FromDict = Nil Then Raise New NilObjectException
 		  For Each item As String In FromDict.Keys
 		    If Not Me.AddElement(item, FromDict.Value(item)) Then Raise New cURLException(Me)
 		  Next
