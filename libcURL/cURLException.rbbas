@@ -27,6 +27,12 @@ Inherits RuntimeException
 		    Me.Message = libcURL.FormatError(Me.ErrorNumber)
 		    
 		  End Select
+		  If ErrantItem IsA libcURL.EasyHandle Then
+		    Dim easy As libcURL.EasyHandle = libcURL.EasyHandle(ErrantItem)
+		    If easy.ErrorBuffer <> "" Then
+		      Me.Message = Me.Message + EndOfLine + "Additional info: " + easy.ErrorBuffer
+		    End If
+		  End If
 		End Sub
 	#tag EndMethod
 

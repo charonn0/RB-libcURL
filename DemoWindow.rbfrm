@@ -403,7 +403,7 @@ Begin Window DemoWindow
    Begin Thread GetThread
       Height          =   32
       Index           =   -2147483648
-      Left            =   44
+      Left            =   43
       LockedInPosition=   False
       Priority        =   5
       Scope           =   0
@@ -452,7 +452,7 @@ Begin Window DemoWindow
       Maximum         =   100
       Scope           =   0
       TabPanelIndex   =   0
-      Top             =   46
+      Top             =   35
       Value           =   0
       Visible         =   True
       Width           =   335
@@ -753,10 +753,55 @@ Begin Window DemoWindow
       Maximum         =   100
       Scope           =   0
       TabPanelIndex   =   0
-      Top             =   58
+      Top             =   47
       Value           =   0
       Visible         =   True
       Width           =   335
+   End
+   Begin TextArea ErrorBuffer
+      AcceptTabs      =   ""
+      Alignment       =   0
+      AutoDeactivate  =   True
+      AutomaticallyCheckSpelling=   True
+      BackColor       =   &hFFFFFF
+      Bold            =   ""
+      Border          =   True
+      DataField       =   ""
+      DataSource      =   ""
+      Enabled         =   True
+      Format          =   ""
+      Height          =   38
+      HelpTag         =   ""
+      HideSelection   =   True
+      Index           =   -2147483648
+      Italic          =   ""
+      Left            =   259
+      LimitText       =   0
+      LockBottom      =   ""
+      LockedInPosition=   False
+      LockLeft        =   True
+      LockRight       =   ""
+      LockTop         =   True
+      Mask            =   ""
+      Multiline       =   True
+      ReadOnly        =   True
+      Scope           =   0
+      ScrollbarHorizontal=   ""
+      ScrollbarVertical=   True
+      Styled          =   True
+      TabIndex        =   12
+      TabPanelIndex   =   0
+      TabStop         =   True
+      Text            =   ""
+      TextColor       =   &h000000
+      TextFont        =   "System"
+      TextSize        =   0
+      TextUnit        =   0
+      Top             =   59
+      Underline       =   ""
+      UseFocusRing    =   True
+      Visible         =   False
+      Width           =   332
    End
 End
 #tag EndWindow
@@ -765,8 +810,21 @@ End
 	#tag Event
 		Sub Open()
 		  Me.Title = Me.Title + " - " + libcURL.Version.Name
+		  Client.UseErrorBuffer = True
 		End Sub
 	#tag EndEvent
+
+
+	#tag Method, Flags = &h1
+		Protected Sub ShowErrorBuffer()
+		  If Client.ErrorBuffer <> "" Then 
+		    ErrorBuffer.Text = Client.ErrorBuffer
+		    ErrorBuffer.Visible = True
+		  Else
+		    ErrorBuffer.Visible = False
+		  End If
+		End Sub
+	#tag EndMethod
 
 
 	#tag Property, Flags = &h21
@@ -829,13 +887,14 @@ End
 	#tag Event
 		Sub Error(cURLCode As Integer)
 		  MsgBox("cURL error " + Str(cURLCode) + ": " + libcURL.FormatError(cURLCode))
+		  ShowErrorBuffer()
 		End Sub
 	#tag EndEvent
 	#tag Event
 		Function Progress(dlTotal As UInt64, dlnow As UInt64, ultotal As UInt64, ulnow As UInt64) As Boolean
 		  ProgressDownload.Value = dlnow * 100 / dlTotal
 		  ProgressUpload.Value = ulnow * 100 / ulTotal
-		  
+		  ShowErrorBuffer()
 		End Function
 	#tag EndEvent
 	#tag Event
@@ -844,7 +903,7 @@ End
 		    Or MessageType = libcURL.curl_infotype.ssl_in Or MessageType = libcURL.curl_infotype.ssl_out Then Return
 		    Debug.AddRow(libcURL.curl_infoname(MessageType), data.Trim)
 		    Debug.ScrollPosition = Debug.ListCount
-		    'End If
+		    ShowErrorBuffer()
 		End Sub
 	#tag EndEvent
 	#tag Event
@@ -871,6 +930,7 @@ End
 		    Headers.AddRow(h.Name(i), h.Value(i))
 		  Next
 		  MsgBox("Transfer completed (" + Str(BytesWritten) + " bytes written, " + Str(BytesRead) +" bytes read) with status: " + Str(Me.GetStatusCode))
+		  ShowErrorBuffer()
 		End Sub
 	#tag EndEvent
 #tag EndEvents

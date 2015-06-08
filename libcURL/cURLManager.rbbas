@@ -55,6 +55,12 @@ Protected Class cURLManager
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function ErrorBuffer() As String
+		  Return mEasyItem.ErrorBuffer
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function GetDownloadedData() As MemoryBlock
 		  ' Returns a MemoryBlock containing all data which was downloaded during the most recent transfer.
 		  ' If you passed a Writeable object to any of the transfer methods (get, post, put) then this
@@ -280,6 +286,7 @@ Protected Class cURLManager
 	#tag Method, Flags = &h21
 		Private Sub _TransferCompleteHandler(Sender As libcURL.MultiHandle, Item As libcURL.EasyHandle)
 		  #pragma Unused Sender
+		  
 		  If mDownload <> Nil And mDownload IsA BinaryStream And mDownloadMB <> Nil Then BinaryStream(mDownload).Close
 		  Dim status As Integer = Item.LastError
 		  If status <> 0 Then
@@ -481,6 +488,20 @@ Protected Class cURLManager
 			End Set
 		#tag EndSetter
 		UploadMode As Boolean
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  Return mEasyItem.UseErrorBuffer
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  mEasyItem.UseErrorBuffer = value
+			End Set
+		#tag EndSetter
+		UseErrorBuffer As Boolean
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
