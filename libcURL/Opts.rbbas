@@ -261,6 +261,9 @@ Protected Module Opts
 	#tag Constant, Name = REFERER, Type = Double, Dynamic = False, Default = \"10016", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = RESOLVE, Type = Double, Dynamic = False, Default = \"10203", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = RTSP_SESSION_ID, Type = Double, Dynamic = False, Default = \"10190", Scope = Protected
 	#tag EndConstant
 

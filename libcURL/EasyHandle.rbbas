@@ -287,7 +287,7 @@ Inherits libcURL.cURLHandle
 	#tag Method, Flags = &h0
 		Function Operator_Compare(OtherEasy As libcURL.EasyHandle) As Integer
 		  Dim i As Integer = Super.Operator_Compare(OtherEasy)
-		  If i = 0 Then Return Sign(mHandle - OtherEasy.Handle)
+		  If i = 0 Then i = Sign(mHandle - OtherEasy.Handle)
 		  Return i
 		End Function
 	#tag EndMethod
@@ -554,6 +554,17 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Function SetOptionPtr(OptionNumber As Integer, NewValue As Ptr) As Boolean
+		  ' Call this method with a curl option number and a Ptr to a representation of the new value for that option. 
+		  ' The Ptr is passed verbatim to libcURL.
+		  '
+		  ' If the option was set this method returns True. If it returns False the option was not set and the
+		  ' curl error number is stored in EasyHandle.LastError.
+		  
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/curl_easy_setopt.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.SetOptionPtr
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Opts
+		  
 		  mLastError = curl_easy_setopt(mHandle, OptionNumber, NewValue)
 		  Return mLastError = 0
 		End Function
