@@ -14,18 +14,6 @@ Inherits libcURL.MultiHandle
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Sub Close()
-		  ' Calls the overridden Close method, and then cleans up the share handle.
-		  ' Called automatically by the superclass destructor.
-		  
-		  Super.Close
-		  If mShareHandle <> 0 Then mLastError = curl_share_cleanup(mShareHandle)
-		  If mShareHandle <> 0 And mLastError = 0 Then mShareHandle = 0
-		  
-		End Sub
-	#tag EndMethod
-
 	#tag Method, Flags = &h1000
 		Sub Constructor(GlobalInitFlags As Integer = libcURL.CURL_GLOBAL_DEFAULT)
 		  // Calling the overridden superclass constructor.
@@ -36,6 +24,15 @@ Inherits libcURL.MultiHandle
 		    mLastError = libcURL.Errors.INIT_FAILED
 		    Raise New cURLException(Me)
 		  End If
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub Destructor()
+		  Me.Close
+		  If mShareHandle <> 0 Then mLastError = curl_share_cleanup(mShareHandle)
+		  If mShareHandle <> 0 And mLastError = 0 Then mShareHandle = 0
+		  
 		End Sub
 	#tag EndMethod
 
