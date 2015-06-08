@@ -16,9 +16,9 @@ Protected Class cURLHandle
 		  End If
 		  
 		  If InitFlags = Nil Then InitFlags = New Dictionary
-		  If Not InitFlags.HasKey(GlobalInitFlags) And curl_global_init(GlobalInitFlags) <> 0 Then
-		    mLastError = libcURL.Errors.INIT_FAILED
-		    Raise New cURLException(Me)
+		  If Not InitFlags.HasKey(GlobalInitFlags) Then
+		    mLastError = curl_global_init(GlobalInitFlags) 
+		    If mLastError <> 0 Then Raise New cURLException(Me)
 		  End If
 		  InitFlags.Value(GlobalInitFlags) = InitFlags.Lookup(GlobalInitFlags, 0) + 1
 		  mFlags = GlobalInitFlags
