@@ -853,10 +853,29 @@ Inherits libcURL.cURLHandle
 		#tag Setter
 			Set
 			  mCA_ListFile = value
-			  If Not Me.SetOption(libcURL.Opts.CAINFO, value) Then Raise New cURLException(Me)
+			  If mCA_ListFile.Directory Then
+			    If Not Me.SetOption(libcURL.Opts.CAPATH, value) Then Raise New cURLException(Me)
+			  Else
+			    If Not Me.SetOption(libcURL.Opts.CAINFO, value) Then Raise New cURLException(Me)
+			  End If
 			End Set
 		#tag EndSetter
 		CA_ListFile As FolderItem
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  return mConnectionType
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  If Not Me.SetOption(libcURL.Opts.USE_SSL, value) Then Raise New cURLException(Me)
+			  mConnectionType = value
+			End Set
+		#tag EndSetter
+		ConnectionType As Integer
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
@@ -920,6 +939,10 @@ Inherits libcURL.cURLHandle
 		FollowRedirects As Boolean
 	#tag EndComputedProperty
 
+	#tag Property, Flags = &h0
+		Shared HostEncoding As TextEncoding
+	#tag EndProperty
+
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
@@ -965,6 +988,10 @@ Inherits libcURL.cURLHandle
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
+		Private mConnectionType As Integer
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
 		Private mCookieJar As FolderItem
 	#tag EndProperty
 
@@ -986,6 +1013,10 @@ Inherits libcURL.cURLHandle
 
 	#tag Property, Flags = &h21
 		Private mPassword As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mSecure As Boolean
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -1085,6 +1116,34 @@ Inherits libcURL.cURLHandle
 			End Get
 		#tag EndGetter
 		RemoteIP As String
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Note
+			ion will use SSL at alfail if an invalid SSL certificate is presented by the server
+			
+		#tag EndNote
+		#tag Getter
+			Get
+			  return mSecure
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  If value Then
+			    If Not Me.SetOption(libcURL.Opts.SSL_VERIFYHOST, 2) Then Raise New cURLException(Me)
+			    If Not Me.SetOption(libcURL.Opts.SSL_VERIFYPEER, 1) Then Raise New cURLException(Me)
+			    If Me.CA_ListFile = Nil Then Me.CA_ListFile = libcURL.Default_CA_File
+			  Else
+			    If Not Me.SetOption(libcURL.Opts.SSL_VERIFYHOST, 0) Then Raise New cURLException(Me)
+			    If Not Me.SetOption(libcURL.Opts.SSL_VERIFYPEER, 0) Then Raise New cURLException(Me)
+			    Me.CA_ListFile = Nil
+			  End If
+			  
+			  mSecure = value
+			End Set
+		#tag EndSetter
+		Secure As Boolean
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
