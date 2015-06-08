@@ -66,6 +66,9 @@ Protected Module Opts
 	#tag Constant, Name = DNS_LOCAL_IP6, Type = Double, Dynamic = False, Default = \"10223", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = DNS_SERVERS, Type = Double, Dynamic = False, Default = \"10211", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = EGDSOCKET, Type = Double, Dynamic = False, Default = \"10077", Scope = Protected
 	#tag EndConstant
 
