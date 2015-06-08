@@ -31,19 +31,16 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Sub Close()
-		  ' Removes all remaining EasyHandles from the stack and then destroys the stack.
+		  ' Removes all EasyHandles from the stack
 		  '
 		  ' See:
-		  ' http://curl.haxx.se/libcurl/c/curl_multi_cleanup.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.Close
 		  
 		  If Instances <> Nil And libcURL.IsAvailable Then
 		    For Each h As Integer In Instances.Keys
 		      Call Me.RemoveItem(Instances.Value(h))
 		    Next
-		    If Me.Handle <> 0 Then mLastError = curl_multi_cleanup(mHandle)
 		  End If
-		  mHandle = 0
 		End Sub
 	#tag EndMethod
 
@@ -71,7 +68,14 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h21
 		Private Sub Destructor()
+		  ' Destroys the stack. Any remaining EasyHandles are removed first.
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/curl_multi_cleanup.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.Destructor
+		  
 		  Me.Close
+		  If mHandle <> 0 Then mLastError = curl_multi_cleanup(mHandle)
+		  mHandle = 0
 		End Sub
 	#tag EndMethod
 
