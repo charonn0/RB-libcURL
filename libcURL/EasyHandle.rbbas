@@ -724,12 +724,12 @@ Inherits libcURL.cURLHandle
 		  Dim sz As Integer = nmemb * size
 		  Dim mb As New MemoryBlock(sz)
 		  sz = RaiseEvent DataNeeded(mb)
-		  Dim out As MemoryBlock = char
 		  Select Case sz
 		  Case 0, CURL_READFUNC_ABORT, CURL_READFUNC_PAUSE
 		    Return sz
 		  Case Is > 0
-		    out.StringValue(0, sz) = LeftB(mb, sz)
+		    Dim out As MemoryBlock = char
+		    out.StringValue(0, sz) = mb.StringValue(0, sz)
 		    Return sz
 		  Else
 		    Raise New OutOfBoundsException
@@ -762,8 +762,7 @@ Inherits libcURL.cURLHandle
 		  ' DO NOT CALL THIS METHOD
 		  
 		  Dim mb As MemoryBlock = char
-		  Dim s As String = mb.StringValue(0, nmemb * size)
-		  Return RaiseEvent DataAvailable(s)
+		  Return RaiseEvent DataAvailable(mb.StringValue(0, nmemb * size))
 		  
 		End Function
 	#tag EndMethod
