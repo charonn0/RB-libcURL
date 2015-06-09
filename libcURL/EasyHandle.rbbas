@@ -463,7 +463,7 @@ Inherits libcURL.cURLHandle
 		      libcURL.Opts.CUSTOMREQUEST, libcURL.Opts.DNS_INTERFACE, libcURL.Opts.DNS_LOCAL_IP4, libcURL.Opts.DNS_LOCAL_IP6, libcURL.Opts.KRBLEVEL, _
 		      libcURL.Opts.CLOSESOCKETFUNCTION, libcURL.Opts.DEBUGFUNCTION, libcURL.Opts.HEADERFUNCTION, libcURL.Opts.OPENSOCKETFUNCTION, _
 		      libcURL.Opts.PROGRESSFUNCTION, libcURL.Opts.READFUNCTION, libcURL.Opts.SSL_CTX_FUNCTION, libcURL.Opts.WRITEFUNCTION, libcURL.Opts.SHARE, _
-		      libcURL.Opts.COOKIEJAR, libcURL.Opts.COOKIEFILE, libcURL.Opts.HTTPPOST
+		      libcURL.Opts.COOKIEJAR, libcURL.Opts.COOKIEFILE, libcURL.Opts.HTTPPOST, libcURL.Opts.CAINFO, libcURL.Opts.CAPATH
 		      ' These option numbers explicitly accept NULL. Refer to the curl documentation on the individual option numbers for details.
 		      MarshalledValue = Nil
 		    Else
@@ -554,7 +554,7 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Function SetOptionPtr(OptionNumber As Integer, NewValue As Ptr) As Boolean
-		  ' Call this method with a curl option number and a Ptr to a representation of the new value for that option. 
+		  ' Call this method with a curl option number and a Ptr to a representation of the new value for that option.
 		  ' The Ptr is passed verbatim to libcURL.
 		  '
 		  ' If the option was set this method returns True. If it returns False the option was not set and the
@@ -853,11 +853,17 @@ Inherits libcURL.cURLHandle
 		#tag Setter
 			Set
 			  mCA_ListFile = value
-			  If mCA_ListFile.Directory Then
+			  Select Case True
+			  Case mCA_ListFile = Nil
+			    If Not Me.SetOption(libcURL.Opts.CAINFO, Nil) Then Raise New cURLException(Me)
+			    If Not Me.SetOption(libcURL.Opts.CAPATH, Nil) Then Raise New cURLException(Me)
+			    
+			  Case mCA_ListFile.Directory
 			    If Not Me.SetOption(libcURL.Opts.CAPATH, value) Then Raise New cURLException(Me)
+			    
 			  Else
 			    If Not Me.SetOption(libcURL.Opts.CAINFO, value) Then Raise New cURLException(Me)
-			  End If
+			  End Select
 			End Set
 		#tag EndSetter
 		CA_ListFile As FolderItem
@@ -1121,7 +1127,6 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Note
 			ion will use SSL at alfail if an invalid SSL certificate is presented by the server
-			
 		#tag EndNote
 		#tag Getter
 			Get
@@ -1314,6 +1319,11 @@ Inherits libcURL.cURLHandle
 
 	#tag ViewBehavior
 		#tag ViewProperty
+			Name="ConnectionType"
+			Group="Behavior"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="FailOnServerError"
 			Group="Behavior"
 			Type="Boolean"
@@ -1370,6 +1380,11 @@ Inherits libcURL.cURLHandle
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Secure"
+			Group="Behavior"
+			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
