@@ -1146,7 +1146,6 @@ Inherits libcURL.cURLHandle
 			  Else
 			    If Not Me.SetOption(libcURL.Opts.SSL_VERIFYHOST, 0) Then Raise New cURLException(Me)
 			    If Not Me.SetOption(libcURL.Opts.SSL_VERIFYPEER, 0) Then Raise New cURLException(Me)
-			    Me.CA_ListFile = Nil
 			  End If
 			  
 			  mSecure = value
