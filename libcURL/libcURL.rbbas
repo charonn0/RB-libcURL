@@ -255,7 +255,6 @@ Protected Module libcURL
 		  Dim c As libcURL.EasyHandle = libcURL.SynchronousHelpers.Get(URL, TimeOut, outstream, Headers, Username, Password)
 		  StatusCode = c.LastError
 		  outstream.Close
-		  c.Close
 		  Return out
 		End Function
 	#tag EndMethod
@@ -307,7 +306,6 @@ Protected Module libcURL
 		  Dim c As libcURL.EasyHandle = libcURL.SynchronousHelpers.Post(FormData, URL, TimeOut, outstream, Headers, Username, Password)
 		  StatusCode = c.LastError
 		  outstream.Close
-		  c.Close
 		  Return out
 		End Function
 	#tag EndMethod
@@ -330,7 +328,6 @@ Protected Module libcURL
 		  StatusCode = c.LastError
 		  outstream.Close
 		  instream.Close
-		  c.Close
 		  Return out
 		End Function
 	#tag EndMethod

@@ -1,25 +1,6 @@
 #tag Class
 Protected Class EasyHandle
 Inherits libcURL.cURLHandle
-	#tag Method, Flags = &h0
-		Sub Close()
-		  ' cleans up the instance.
-		  ' called automatically by the class destructor.
-		  ' See:
-		  ' http://curl.haxx.se/libcurl/c/curl_easy_cleanup.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Close
-		  
-		  If Me.Handle <> 0 Then
-		    curl_easy_cleanup(mHandle)
-		    Instances.Remove(mHandle)
-		    mErrorBuffer = Nil
-		  End If
-		  mConnectionCount = 0
-		  mHandle = 0
-		  
-		End Sub
-	#tag EndMethod
-
 	#tag Method, Flags = &h21
 		Private Shared Function CloseCallback(UserData As Integer, Socket As Integer) As Integer
 		  ' This method is invoked by libcURL. DO NOT CALL THIS METHOD
@@ -142,9 +123,17 @@ Inherits libcURL.cURLHandle
 		Private Sub Destructor()
 		  ' Closes the instance.
 		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/curl_easy_cleanup.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Destructor
 		  
-		  Me.Close()
+		  If Me.Handle <> 0 Then
+		    curl_easy_cleanup(mHandle)
+		    Instances.Remove(mHandle)
+		    mErrorBuffer = Nil
+		  End If
+		  mConnectionCount = 0
+		  mHandle = 0
+		  
 		  If Instances <> Nil And Instances.Count = 0 Then Instances = Nil
 		End Sub
 	#tag EndMethod
