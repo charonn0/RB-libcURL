@@ -39,7 +39,7 @@ Protected Class cURLManager
 		  mMultiItem = New libcURL.MultiHandle
 		  AddHandler mMultiItem.TransferComplete, WeakAddressOf _TransferCompleteHandler
 		  mEasyItem.UserAgent = libcURL.Version.Name
-		  mEasyItem.CA_ListFile = libcURL.Default_CA_File
+		  mEasyItem.Secure = True
 		  mEasyItem.FailOnServerError = True
 		  mEasyItem.FollowRedirects = True
 		  If libcURL.Version.LibZ.IsAvailable Then
@@ -576,6 +576,11 @@ Protected Class cURLManager
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="UploadMode"
+			Group="Behavior"
+			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="UseErrorBuffer"
 			Group="Behavior"
 			Type="Boolean"
 		#tag EndViewProperty
