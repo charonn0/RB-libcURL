@@ -858,7 +858,7 @@ Inherits libcURL.cURLHandle
 			    If Not Me.SetOption(libcURL.Opts.CAINFO, Nil) Then Raise New cURLException(Me)
 			    If Not Me.SetOption(libcURL.Opts.CAPATH, Nil) Then Raise New cURLException(Me)
 			    
-			  Case mCA_ListFile.Directory
+			  Case value.Directory
 			    If Not Me.SetOption(libcURL.Opts.CAPATH, value) Then Raise New cURLException(Me)
 			    
 			  Else
