@@ -464,7 +464,7 @@ Inherits libcURL.cURLHandle
 		      libcURL.Opts.CLOSESOCKETFUNCTION, libcURL.Opts.DEBUGFUNCTION, libcURL.Opts.HEADERFUNCTION, libcURL.Opts.OPENSOCKETFUNCTION, _
 		      libcURL.Opts.PROGRESSFUNCTION, libcURL.Opts.READFUNCTION, libcURL.Opts.SSL_CTX_FUNCTION, libcURL.Opts.WRITEFUNCTION, libcURL.Opts.SHARE, _
 		      libcURL.Opts.COOKIEJAR, libcURL.Opts.COOKIEFILE, libcURL.Opts.HTTPPOST, libcURL.Opts.CAINFO, libcURL.Opts.CAPATH, _
-		      libcURL.Opts.NETINTERFACE
+		      libcURL.Opts.NETINTERFACE, libcURL.Opts.ERRORBUFFER
 		      ' These option numbers explicitly accept NULL. Refer to the curl documentation on the individual option numbers for details.
 		      MarshalledValue = Nil
 		    Else
