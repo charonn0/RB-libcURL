@@ -852,9 +852,8 @@ Inherits libcURL.cURLHandle
 		#tag EndGetter
 		#tag Setter
 			Set
-			  mCA_ListFile = value
 			  Select Case True
-			  Case mCA_ListFile = Nil
+			  Case value = Nil
 			    If Not Me.SetOption(libcURL.Opts.CAINFO, Nil) Then Raise New cURLException(Me)
 			    If Not Me.SetOption(libcURL.Opts.CAPATH, Nil) Then Raise New cURLException(Me)
 			    
@@ -864,6 +863,7 @@ Inherits libcURL.cURLHandle
 			  Else
 			    If Not Me.SetOption(libcURL.Opts.CAINFO, value) Then Raise New cURLException(Me)
 			  End Select
+			  mCA_ListFile = value
 			End Set
 		#tag EndSetter
 		CA_ListFile As FolderItem
