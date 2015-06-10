@@ -112,7 +112,7 @@ Inherits libcURL.cURLManager
 		  ' The transfer will be performed on the event loop (main thread).
 		  
 		  Me.Cleanup()
-		  Me.UploadMode = True
+		  Me.EasyItem.UploadMode = True
 		  Me.Perform(URL, ReadFrom, WriteTo)
 		End Sub
 	#tag EndMethod
@@ -127,7 +127,7 @@ Inherits libcURL.cURLManager
 		  ' on the calling thread.
 		  
 		  Me.Cleanup()
-		  Me.UploadMode = True
+		  Me.EasyItem.UploadMode = True
 		  Return Me.Perform(URL, ReadFrom, WriteTo)
 		End Function
 	#tag EndMethod
@@ -174,6 +174,26 @@ Inherits libcURL.cURLManager
 			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
+			Name="Password"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+			InheritedFrom="libcURL.cURLManager"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Port"
+			Group="Behavior"
+			Type="Integer"
+			InheritedFrom="libcURL.cURLManager"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="RemoteIP"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+			InheritedFrom="libcURL.cURLManager"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
@@ -185,6 +205,25 @@ Inherits libcURL.cURLManager
 			Group="Position"
 			InitialValue="0"
 			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="UploadMode"
+			Group="Behavior"
+			Type="Boolean"
+			InheritedFrom="libcURL.cURLManager"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="UseErrorBuffer"
+			Group="Behavior"
+			Type="Boolean"
+			InheritedFrom="libcURL.cURLManager"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Username"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+			InheritedFrom="libcURL.cURLManager"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class
