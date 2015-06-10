@@ -1,12 +1,12 @@
 ##Introduction
 **RB-libcURL** provides REALbasic and Xojo [bindings](http://en.wikipedia.org/wiki/Language_binding) for [libcURL](http://curl.haxx.se/libcurl/c/libcurl.html). RB-libcURL is designed and tested on Windows 7 against [curl-7.40.0-devel-mingw32](http://curl.haxx.se/gknw.net/7.40.0/dist-w32/curl-7.40.0-devel-mingw32.zip) and associated security and compression libraries ([more platforms](http://curl.haxx.se/download.html)). The minimum supported libcURL version is [7.15.2](https://github.com/charonn0/RB-libcURL/wiki/libcURL.IsAvailable). 
 
-##Features
-* Use any protocol supported by libcURL.
-* Run transfers [on a Xojo thread](https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.PerformOnce) or [on the main event loop](https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.Perform).
-* [Stream-oriented](https://github.com/charonn0/RB-libcURL/wiki/cURLManager.Perform) to minimize memory use, using Xojo's built-in [Readable](http://docs.xojo.com/index.php/Readable) and [Writeable](http://docs.xojo.com/index.php/Writeable) interfaces.
-* Written purely in Xojo, no plugins required.
-* Synchronous and asynchronous transfers (any protocol).
+##Main features
+* Synchronous and asynchronous transfers using any protocol supported by libcURL
+* Full support for [RB/Xojo threads](https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.PerformOnce)
+* [Stream-oriented](https://github.com/charonn0/RB-libcURL/wiki/cURLManager.Perform) to minimize memory use, using Xojo's built-in [Readable](http://docs.xojo.com/index.php/Readable) and [Writeable](http://docs.xojo.com/index.php/Writeable) interfaces
+* [Easy to use](https://github.com/charonn0/RB-libcURL/wiki/cURLClient), but still exposing [the full range of libcURL's features](https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle).
+* No plugins required
 
 ##Synopsis
 
