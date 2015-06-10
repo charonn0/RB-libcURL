@@ -223,12 +223,17 @@ Protected Class cURLManager
 	#tag Method, Flags = &h21
 		Private Function _DataNeededHandler(Sender As libcURL.EasyHandle, Buffer As MemoryBlock) As Integer
 		  #pragma Unused Sender
-		  If mUpload = Nil Then
-		    Return libcURL.CURL_READFUNC_ABORT
+		  
+		  If mUpload <> Nil Then
+		    Dim data As MemoryBlock = mUpload.Read(Buffer.Size)
+		    Buffer.StringValue(0, data.Size) = data
+		    Return data.Size
 		  End If
-		  Dim data As MemoryBlock = mUpload.Read(Buffer.Size)
-		  Buffer.StringValue(0, data.Size) = data
-		  Return data.Size
+		  
+		  Dim msg As String = "This transfer needs an upload stream, but none was provided!"
+		  If mEasyItem.Verbose Then RaiseEvent DebugMessage(libcURL.curl_infotype.RB_libcURL, msg)
+		  ' LastError will be libcURL.Errors.ABORTED_BY_CALLBACK(42)
+		  Return libcURL.CURL_READFUNC_ABORT
 		End Function
 	#tag EndMethod
 

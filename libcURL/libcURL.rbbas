@@ -95,6 +95,8 @@ Protected Module libcURL
 		    Return "SSL Out"
 		  Case libcURL.curl_infotype.text
 		    Return "Text"
+		  Case libcURL.curl_infotype.RB_libcURL
+		    Return "RB-libcURL"
 		  End Select
 		  
 		End Function
@@ -449,7 +451,8 @@ Protected Module libcURL
 		  data_out
 		  ssl_in
 		  ssl_out
-		info_end
+		  info_end
+		RB_libcURL
 	#tag EndEnum
 
 
