@@ -1019,6 +1019,10 @@ Inherits libcURL.cURLHandle
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
+		Private mUploadMode As Boolean
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
 		Private mUsername As String
 	#tag EndProperty
 
@@ -1156,6 +1160,21 @@ Inherits libcURL.cURLHandle
 			End Set
 		#tag EndSetter
 		TimeOut As Integer
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  return mUploadMode
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  If Not Me.SetOption(libcURL.Opts.UPLOAD, value) Then Raise New libcURL.cURLException(Me)
+			  mUploadMode = value
+			End Set
+		#tag EndSetter
+		UploadMode As Boolean
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0

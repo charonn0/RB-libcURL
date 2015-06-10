@@ -10,7 +10,7 @@ Protected Class cURLManager
 		  ' Me.Perform
 		  
 		  mIsTransferComplete = False
-		  Me.UploadMode = False
+		  mEasyItem.UploadMode = False
 		  mUpload = Nil
 		  Me.SetFormData(Nil)
 		  If Not Me.SetOption(libcURL.Opts.HTTPGET, True) Then Raise New libcURL.cURLException(mEasyItem)
@@ -55,8 +55,8 @@ Protected Class cURLManager
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ErrorBuffer() As String
-		  Return mEasyItem.ErrorBuffer
+		Function EasyItem() As libcURL.EasyHandle
+		  Return mEasyItem
 		End Function
 	#tag EndMethod
 
@@ -309,43 +309,6 @@ Protected Class cURLManager
 	#tag EndHook
 
 
-	#tag ComputedProperty, Flags = &h0
-		#tag Note
-			Sets the PEM file containing one or more certificate authorities libcURL should trust to verify the peer with.
-			The included DEFAULT_CA_INFO_PEM file contains the default CA list for Mozilla products.
-			
-			To generate an updated Mozilla CA file use one of these two scripts
-			
-			VBScript: https://github.com/bagder/curl/blob/master/lib/mk-ca-bundle.vbs
-			Perl: https://github.com/bagder/curl/blob/master/lib/mk-ca-bundle.pl
-		#tag EndNote
-		#tag Getter
-			Get
-			  return mEasyItem.CA_ListFile
-			End Get
-		#tag EndGetter
-		#tag Setter
-			Set
-			  mEasyItem.CA_ListFile = value
-			End Set
-		#tag EndSetter
-		CA_ListFile As FolderItem
-	#tag EndComputedProperty
-
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
-			  return mEasyItem.CookieJar
-			End Get
-		#tag EndGetter
-		#tag Setter
-			Set
-			  mEasyItem.CookieJar = value
-			End Set
-		#tag EndSetter
-		CookieJar As FolderItem
-	#tag EndComputedProperty
-
 	#tag Property, Flags = &h21
 		Private mDownload As Writeable
 	#tag EndProperty
@@ -354,12 +317,8 @@ Protected Class cURLManager
 		Private mDownloadMB As MemoryBlock
 	#tag EndProperty
 
-	#tag Property, Flags = &h1
-		Protected mEasyItem As libcURL.EasyHandle
-	#tag EndProperty
-
 	#tag Property, Flags = &h21
-		Private mErrorBuffer As MemoryBlock
+		Private mEasyItem As libcURL.EasyHandle
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -385,135 +344,6 @@ Protected Class cURLManager
 	#tag Property, Flags = &h21
 		Private mUpload As Readable
 	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private mUploadMode As Boolean
-	#tag EndProperty
-
-	#tag ComputedProperty, Flags = &h0
-		#tag Note
-			SocketCore.NetworkInterface workalike.
-			See: http://docs.realsoftware.com/index.php/SocketCore.NetworkInterface
-			
-			For example:
-			
-			Dim curl As New libcURL.EasyHandle
-			curl.NetworkInterface = System.GetNetworkInterface(0)
-			MsgBox(curl.NetworkInterface.IPAddress))
-		#tag EndNote
-		#tag Getter
-			Get
-			  Return mEasyItem.NetworkInterface
-			End Get
-		#tag EndGetter
-		#tag Setter
-			Set
-			  mEasyItem.NetworkInterface = value
-			End Set
-		#tag EndSetter
-		NetworkInterface As NetworkInterface
-	#tag EndComputedProperty
-
-	#tag ComputedProperty, Flags = &h0
-		#tag Note
-			The password to be supplied to the remote host if the underlying protocol requires/allows users to log on.
-		#tag EndNote
-		#tag Getter
-			Get
-			  Return mEasyItem.Password
-			End Get
-		#tag EndGetter
-		#tag Setter
-			Set
-			  mEasyItem.Password = value
-			End Set
-		#tag EndSetter
-		Password As String
-	#tag EndComputedProperty
-
-	#tag ComputedProperty, Flags = &h0
-		#tag Note
-			SocketCore.Port workalike.
-			See: See: http://docs.realsoftware.com/index.php/SocketCore.Port
-			
-			Prior to connecting, you may set this value to the remote port to connect to. If the port is not specified
-			libcURL will select the default port for the inferred protocol (e.g. HTTP=80; HTTPS=443)
-			
-			Once connected, you may get this value to read the actual remote port number that is connected to.
-		#tag EndNote
-		#tag Getter
-			Get
-			  //Remote port
-			  Return mEasyItem.Port
-			End Get
-		#tag EndGetter
-		#tag Setter
-			Set
-			  //remote port.
-			  mEasyItem.Port = value
-			End Set
-		#tag EndSetter
-		Port As Integer
-	#tag EndComputedProperty
-
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
-			  ' Prior to connecting this value will be empty. Once connected, this value will contain the
-			  ' IP address of the remote server.
-			  
-			  Return mEasyItem.RemoteIP
-			End Get
-		#tag EndGetter
-		RemoteIP As String
-	#tag EndComputedProperty
-
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
-			  return mUploadMode
-			End Get
-		#tag EndGetter
-		#tag Setter
-			Set
-			  If Not Me.SetOption(libcURL.Opts.UPLOAD, value) Then Raise New libcURL.cURLException(mEasyItem)
-			  mUploadMode = value
-			End Set
-		#tag EndSetter
-		UploadMode As Boolean
-	#tag EndComputedProperty
-
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
-			  Return mEasyItem.UseErrorBuffer
-			End Get
-		#tag EndGetter
-		#tag Setter
-			Set
-			  mEasyItem.UseErrorBuffer = value
-			End Set
-		#tag EndSetter
-		UseErrorBuffer As Boolean
-	#tag EndComputedProperty
-
-	#tag ComputedProperty, Flags = &h0
-		#tag Note
-			The username to be supplied to the remote host if the underlying protocol requires/allows users to log on.
-		#tag EndNote
-		#tag Getter
-			Get
-			  Return mEasyItem.Username
-			End Get
-		#tag EndGetter
-		#tag Setter
-			Set
-			  //If the server will require a username, set it here. If the server doesn't require one, this property is ignored
-			  mEasyItem.Username = value
-			End Set
-		#tag EndSetter
-		Username As String
-	#tag EndComputedProperty
 
 
 	#tag ViewBehavior
