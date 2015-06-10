@@ -48,6 +48,7 @@ Inherits libcURL.MultiHandle
 		Function RemoveItem(Item As libcURL.EasyHandle) As Boolean
 		  ' Remove an easy handle from share handle, then call the overridden RemoveItem method.
 		  ' See: http://curl.haxx.se/libcurl/c/CURLOPT_SHARE.html
+		  
 		  If Not Item.SetOption(libcURL.Opts.SHARE, Nil) Then Raise New cURLException(Item)
 		  Return Super.RemoveItem(Item)
 		End Function

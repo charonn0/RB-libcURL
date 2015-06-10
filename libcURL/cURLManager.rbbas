@@ -11,9 +11,9 @@ Protected Class cURLManager
 		  
 		  mIsTransferComplete = False
 		  Me.UploadMode = False
-		  If Not Me.SetOption(libcURL.Opts.HTTPGET, True) Then Raise New libcURL.cURLException(mEasyItem)
 		  mUpload = Nil
 		  Me.SetFormData(Nil)
+		  If Not Me.SetOption(libcURL.Opts.HTTPGET, True) Then Raise New libcURL.cURLException(mEasyItem)
 		End Sub
 	#tag EndMethod
 
@@ -157,15 +157,8 @@ Protected Class cURLManager
 
 	#tag Method, Flags = &h0
 		Sub SetForm(FormData As libcURL.MultipartForm)
-		  If FormData = Nil Then
-		    If mForm <> Nil Then
-		      If Not Me.SetOption(libcURL.Opts.HTTPPOST, Nil) Then Raise New libcURL.cURLException(mEasyItem)
-		      mForm = Nil
-		    End If
-		  Else
-		    If Not Me.SetOption(libcURL.Opts.HTTPPOST, mForm) Then Raise New libcURL.cURLException(mEasyItem)
-		    mForm = New libcURL.MultipartForm
-		  End If
+		  If Not Me.SetOption(libcURL.Opts.HTTPPOST, FormData) Then Raise New libcURL.cURLException(mEasyItem)
+		  mForm = FormData
 		End Sub
 	#tag EndMethod
 
@@ -369,8 +362,8 @@ Protected Class cURLManager
 		Private mErrorBuffer As MemoryBlock
 	#tag EndProperty
 
-	#tag Property, Flags = &h1
-		Protected mForm As libcURL.MultipartForm
+	#tag Property, Flags = &h21
+		Private mForm As libcURL.MultipartForm
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -576,6 +569,11 @@ Protected Class cURLManager
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="UploadMode"
+			Group="Behavior"
+			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="UseErrorBuffer"
 			Group="Behavior"
 			Type="Boolean"
 		#tag EndViewProperty
