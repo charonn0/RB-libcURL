@@ -118,8 +118,8 @@ Protected Class cURLManager
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Sub Perform(URL As String, ReadFrom As Readable, WriteTo As Writeable)
+	#tag Method, Flags = &h0
+		Sub Perform(URL As String, ReadFrom As Readable, WriteTo As Writeable)
 		  ' Perform the transfer on the main thread/event loop.
 		  
 		  QueueTransfer(URL, ReadFrom, WriteTo)
@@ -127,8 +127,8 @@ Protected Class cURLManager
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Function Perform(URL As String, ReadFrom As Readable, WriteTo As Writeable) As Boolean
+	#tag Method, Flags = &h0
+		Function Perform(URL As String, ReadFrom As Readable, WriteTo As Writeable) As Boolean
 		  ' Perform the transfer on the calling thread.
 		  
 		  QueueTransfer(URL, ReadFrom, WriteTo)
