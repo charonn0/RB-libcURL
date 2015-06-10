@@ -228,8 +228,24 @@ Inherits libcURL.cURLHandle
 		    If Not Sender.SetOption(libcURL.Opts.SSL_CTX_FUNCTION, AddressOf SSLInitCallback) Then Raise New cURLException(Sender)
 		  End If
 		  
-		  If Not Sender.SetOption(libcURL.Opts.CLOSESOCKETDATA, Sender.Handle) Then Raise New cURLException(Sender)
-		  If Not Sender.SetOption(libcURL.Opts.CLOSESOCKETFUNCTION, AddressOf CloseCallback) Then Raise New cURLException(Sender)
+		  If libcURL.Version.IsAtLeast(7, 21, 7) Then
+		    If Not Sender.SetOption(libcURL.Opts.CLOSESOCKETDATA, Sender.Handle) Then Raise New cURLException(Sender)
+		    If Not Sender.SetOption(libcURL.Opts.CLOSESOCKETFUNCTION, AddressOf CloseCallback) Then Raise New cURLException(Sender)
+		  End If
+		  
+		  If libcURL.Version.IsAtLeast(7, 18, 0) Then
+		    If Not Sender.SetOption(libcURL.Opts.SEEKDATA, Sender.Handle) Then Raise New cURLException(Sender)
+		    If Not Sender.SetOption(libcURL.Opts.SEEKFUNCTION, AddressOf SeekCallback) Then Raise New cURLException(Sender)
+		  End If
+		  
+		  If Not Sender.SetOption(libcURL.Opts.NOPROGRESS, False) Then Raise New cURLException(Sender)
+		  If libcURL.Version.IsAtLeast(7, 32, 0) Then
+		    If Not Sender.SetOption(libcURL.Opts.XFERINFOFUNCTION, AddressOf ProgressCallback) Then Raise New cURLException(Sender)
+		    If Not Sender.SetOption(libcURL.Opts.XFERINFODATA, Sender.Handle) Then Raise New cURLException(Sender)
+		  Else ' old versions
+		    If Not Sender.SetOption(libcURL.Opts.PROGRESSDATA, Sender.Handle) Then Raise New cURLException(Sender)
+		    If Not Sender.SetOption(libcURL.Opts.PROGRESSFUNCTION, AddressOf ProgressCallback) Then Raise New cURLException(Sender)
+		  End If
 		  
 		  If Not Sender.SetOption(libcURL.Opts.WRITEDATA, Sender.Handle) Then Raise New cURLException(Sender)
 		  If Not Sender.SetOption(libcURL.Opts.WRITEFUNCTION, AddressOf WriteCallback) Then Raise New cURLException(Sender)
@@ -237,23 +253,11 @@ Inherits libcURL.cURLHandle
 		  If Not Sender.SetOption(libcURL.Opts.READDATA, Sender.Handle) Then Raise New cURLException(Sender)
 		  If Not Sender.SetOption(libcURL.Opts.READFUNCTION, AddressOf ReadCallback) Then Raise New cURLException(Sender)
 		  
-		  If Not Sender.SetOption(libcURL.Opts.NOPROGRESS, False) Then Raise New cURLException(Sender)
-		  If Sender.SetOption(libcURL.Opts.XFERINFOFUNCTION, AddressOf ProgressCallback) Then ' New versions
-		    If Not Sender.SetOption(libcURL.Opts.XFERINFODATA, Sender.Handle) Then Raise New cURLException(Sender)
-		  Else ' old versions
-		    If Not Sender.SetOption(libcURL.Opts.PROGRESSDATA, Sender.Handle) Then Raise New cURLException(Sender)
-		    If Not Sender.SetOption(libcURL.Opts.PROGRESSFUNCTION, AddressOf ProgressCallback) Then Raise New cURLException(Sender)
-		  End If
-		  
 		  If Not Sender.SetOption(libcURL.Opts.HEADERDATA, Sender.Handle) Then Raise New cURLException(Sender)
 		  If Not Sender.SetOption(libcURL.Opts.HEADERFUNCTION, AddressOf HeaderCallback) Then Raise New cURLException(Sender)
 		  
 		  If Not Sender.SetOption(libcURL.Opts.DEBUGDATA, Sender.Handle) Then Raise New cURLException(Sender)
 		  If Not Sender.SetOption(libcURL.Opts.DEBUGFUNCTION, AddressOf DebugCallback) Then Raise New cURLException(Sender)
-		  
-		  If Not Sender.SetOption(libcURL.Opts.SEEKDATA, Sender.Handle) Then Raise New cURLException(Sender)
-		  If Not Sender.SetOption(libcURL.Opts.SEEKFUNCTION, AddressOf SeekCallback) Then Raise New cURLException(Sender)
-		  
 		End Sub
 	#tag EndMethod
 
@@ -934,10 +938,6 @@ Inherits libcURL.cURLHandle
 		FollowRedirects As Boolean
 	#tag EndComputedProperty
 
-	#tag Property, Flags = &h0
-		Shared HostEncoding As TextEncoding
-	#tag EndProperty
-
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
@@ -1123,7 +1123,8 @@ Inherits libcURL.cURLHandle
 
 	#tag ComputedProperty, Flags = &h0
 		#tag Note
-			ion will use SSL at alfail if an invalid SSL certificate is presented by the server
+			If True, a connection will fail if an invalid SSL certificate is presented by the server.
+			
 		#tag EndNote
 		#tag Getter
 			Get

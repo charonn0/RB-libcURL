@@ -356,6 +356,7 @@ Begin Window DemoWindow
       TabPanelIndex   =   0
       Top             =   437
       UploadMode      =   ""
+      UseErrorBuffer  =   ""
       Width           =   32
    End
    Begin TextField TextField1
@@ -810,15 +811,15 @@ End
 	#tag Event
 		Sub Open()
 		  Me.Title = Me.Title + " - " + libcURL.Version.Name
-		  Client.UseErrorBuffer = True
+		  Client.EasyItem.UseErrorBuffer = True
 		End Sub
 	#tag EndEvent
 
 
 	#tag Method, Flags = &h1
 		Protected Sub ShowErrorBuffer()
-		  If Client.ErrorBuffer <> "" Then 
-		    ErrorBuffer.Text = Client.ErrorBuffer
+		  If Client.EasyItem.ErrorBuffer <> "" Then
+		    ErrorBuffer.Text = Client.EasyItem.ErrorBuffer
 		    ErrorBuffer.Visible = True
 		  Else
 		    ErrorBuffer.Visible = False
