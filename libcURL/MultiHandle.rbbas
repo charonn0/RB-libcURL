@@ -11,20 +11,13 @@ Inherits libcURL.cURLHandle
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_add_handle.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.AddItem
 		  
-		  If mEasyHandles.IndexOf(Item.Handle) > -1 Then
-		    mLastError = libcURL.Errors.ALREADY_ADDED
-		  Else
-		    StackLock.Enter
-		    Try
-		      mLastError = curl_multi_add_handle(mHandle, Item.Handle)
-		      If mLastError = 0 Then
-		        Instances.Value(Item.Handle) = Item
-		        mEasyHandles.Append(Item.Handle)
-		      End If
-		    Finally
-		      StackLock.Leave
-		    End Try
-		  End If
+		  StackLock.Enter
+		  Try
+		    mLastError = curl_multi_add_handle(mHandle, Item.Handle)
+		    If mLastError = 0 Then Instances.Value(Item.Handle) = Item
+		  Finally
+		    StackLock.Leave
+		  End Try
 		  Return mLastError = 0
 		End Function
 	#tag EndMethod
@@ -169,6 +162,7 @@ Inherits libcURL.cURLHandle
 		  End If
 		  
 		Exception Err As RuntimeException
+		  #pragma BreakOnExceptions Off
 		  If Err IsA EndException Or Err IsA ThreadEndException Then Raise Err
 		  If Sender <> Nil Then Sender.Mode = Timer.ModeOff
 		  Raise Err
@@ -221,8 +215,6 @@ Inherits libcURL.cURLHandle
 		  Finally
 		    StackLock.Leave
 		  End Try
-		  Dim h As Integer = mEasyHandles.IndexOf(Item.Handle)
-		  If h > -1 Then mEasyHandles.Remove(h)
 		  Return mLastError = 0
 		End Function
 	#tag EndMethod
@@ -334,10 +326,6 @@ Inherits libcURL.cURLHandle
 
 	#tag Property, Flags = &h21
 		Private LastCount As Integer = -1
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private Shared mEasyHandles() As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h21

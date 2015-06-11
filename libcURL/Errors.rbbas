@@ -6,9 +6,6 @@ Protected Module Errors
 	#tag Constant, Name = AGAIN, Type = Double, Dynamic = False, Default = \"81", Scope = Protected
 	#tag EndConstant
 
-	#tag Constant, Name = ALREADY_ADDED, Type = Double, Dynamic = False, Default = \"-5", Scope = Protected
-	#tag EndConstant
-
 	#tag Constant, Name = BAD_CONTENT_ENCODING, Type = Double, Dynamic = False, Default = \"61", Scope = Protected
 	#tag EndConstant
 

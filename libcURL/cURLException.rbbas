@@ -11,9 +11,6 @@ Inherits RuntimeException
 		  Case Me.ErrorNumber = libcURL.Errors.INIT_FAILED
 		    Me.Message = "Unknown failure while constructing a libcURL handle."
 		    
-		  Case Me.ErrorNumber = libcURL.Errors.ALREADY_ADDED
-		    Me.Message = "The easy handle is already associated with a multi handle."
-		    
 		  Case Me.ErrorNumber = libcURL.Errors.FEATURE_UNAVAILABLE
 		    Me.Message = "This feature is not available in the installed version of libcURL."
 		    
