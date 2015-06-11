@@ -9,7 +9,6 @@ Inherits libcURL.cURLManager
 		  ' object directly. If WriteTo is Nil then use the GetDownloadedData method to get any downloaded data.
 		  ' The transfer will be performed on the event loop (main thread).
 		  
-		  Me.Cleanup()
 		  Me.Perform(URL, Nil, WriteTo)
 		End Sub
 	#tag EndMethod
@@ -23,7 +22,6 @@ Inherits libcURL.cURLManager
 		  ' This method will block the calling thread until the transfer completes. All events will be raised
 		  ' on the calling thread.
 		  
-		  Me.Cleanup()
 		  Return Me.Perform(URL, Nil, WriteTo)
 		  
 		End Function
@@ -35,7 +33,6 @@ Inherits libcURL.cURLManager
 		  ' The protocol is inferred from the URL; explictly specify the protocol in the URL to avoid bad guesses.
 		  ' The transfer will be performed on the event loop (main thread).
 		  
-		  Me.Cleanup()
 		  Call Me.SetOption(libcURL.Opts.NOBODY, True)
 		  Me.Perform(URL, Nil, Nil)
 		End Sub
@@ -48,7 +45,6 @@ Inherits libcURL.cURLManager
 		  ' This method will block the calling thread until the transfer completes. All events will be raised
 		  ' on the calling thread.
 		  
-		  Me.Cleanup()
 		  Call Me.SetOption(libcURL.Opts.NOBODY, True)
 		  Return Me.Perform(URL, Nil, Nil)
 		End Function
@@ -64,7 +60,6 @@ Inherits libcURL.cURLManager
 		  ' object directly. If WriteTo is Nil then use the GetDownloadedData method to get any downloaded data.
 		  ' The transfer will be performed on the event loop (main thread).
 		  
-		  Me.Cleanup()
 		  Me.SetFormData(FormData)
 		  Me.Perform(URL, Nil, WriteTo)
 		End Sub
@@ -80,7 +75,6 @@ Inherits libcURL.cURLManager
 		  ' This method will block the calling thread until the transfer completes. All events will be raised
 		  ' on the calling thread.
 		  
-		  Me.Cleanup()
 		  Me.SetFormData(FormData)
 		  Return Me.Perform(URL, Nil, WriteTo)
 		End Function
@@ -96,7 +90,6 @@ Inherits libcURL.cURLManager
 		  ' object directly. If WriteTo is Nil then use the GetDownloadedData method to get any downloaded data.
 		  ' The transfer will be performed on the event loop (main thread).
 		  
-		  Me.Cleanup()
 		  Me.SetFormData(PostFields)
 		  Me.Perform(URL, Nil, WriteTo)
 		End Sub
@@ -111,7 +104,6 @@ Inherits libcURL.cURLManager
 		  ' This method will block the calling thread until the transfer completes. All events will be raised
 		  ' on the calling thread.
 		  
-		  Me.Cleanup()
 		  Me.SetFormData(PostFields)
 		  Return Me.Perform(URL, Nil, WriteTo)
 		End Function
@@ -142,7 +134,6 @@ Inherits libcURL.cURLManager
 		  ' object directly. If WriteTo is Nil then use the GetDownloadedData method to get any downloaded data.
 		  ' The transfer will be performed on the event loop (main thread).
 		  
-		  Me.Cleanup()
 		  Me.EasyItem.UploadMode = True
 		  Me.Perform(URL, ReadFrom, WriteTo)
 		End Sub
@@ -157,7 +148,6 @@ Inherits libcURL.cURLManager
 		  ' This method will block the calling thread until the transfer completes. All events will be raised
 		  ' on the calling thread.
 		  
-		  Me.Cleanup()
 		  Me.EasyItem.UploadMode = True
 		  Return Me.Perform(URL, ReadFrom, WriteTo)
 		End Function

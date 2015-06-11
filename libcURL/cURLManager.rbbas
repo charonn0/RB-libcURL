@@ -1,24 +1,5 @@
 #tag Class
 Protected Class cURLManager
-	#tag Method, Flags = &h1
-		Protected Sub CleanUp()
-		  ' Call this method before setting any options for the next transfer
-		  ' e.g.
-		  ' Me.CleanUp()
-		  ' Me.SetOption(...)
-		  ' Me.SetOption(...)
-		  ' Me.Perform
-		  
-		  mIsTransferComplete = False
-		  mEasyItem.UploadMode = False
-		  mUpload = Nil
-		  If Not Me.SetOption(libcURL.Opts.HTTPPOST, Nil) Then Raise New libcURL.cURLException(mEasyItem)
-		  If Not Me.SetOption(libcURL.Opts.COPYPOSTFIELDS, "" + Chr(0)) Then Raise New libcURL.cURLException(mEasyItem)
-		  If Not Me.SetOption(libcURL.Opts.HTTPGET, True) Then Raise New libcURL.cURLException(mEasyItem)
-		  mForm = Nil
-		End Sub
-	#tag EndMethod
-
 	#tag Method, Flags = &h0
 		Sub Close()
 		  mMultiItem = Nil
@@ -143,6 +124,7 @@ Protected Class cURLManager
 
 	#tag Method, Flags = &h21
 		Private Sub QueueTransfer(URL As String, ReadFrom As Readable, WriteTo As Writeable)
+		  mIsTransferComplete = False
 		  mEasyItem.URL = URL
 		  mHeaders = Nil
 		  mDownload = WriteTo
