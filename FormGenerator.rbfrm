@@ -99,7 +99,7 @@ Begin Window FormGenerator
       Index           =   -2147483648
       InitialParent   =   ""
       Italic          =   False
-      Left            =   283
+      Left            =   470
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   True
@@ -112,7 +112,7 @@ Begin Window FormGenerator
       TextFont        =   "System"
       TextSize        =   0.0
       TextUnit        =   0
-      Top             =   244
+      Top             =   242
       Underline       =   False
       Visible         =   True
       Width           =   80
@@ -130,7 +130,7 @@ Begin Window FormGenerator
       Index           =   -2147483648
       InitialParent   =   ""
       Italic          =   False
-      Left            =   199
+      Left            =   386
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   True
@@ -143,7 +143,7 @@ Begin Window FormGenerator
       TextFont        =   "System"
       TextSize        =   0.0
       TextUnit        =   0
-      Top             =   244
+      Top             =   242
       Underline       =   False
       Visible         =   True
       Width           =   80
@@ -166,7 +166,7 @@ Begin Window FormGenerator
       GridLinesVertical=   0
       HasHeading      =   True
       HeadingIndex    =   -1
-      Height          =   232
+      Height          =   225
       HelpTag         =   ""
       Hierarchical    =   False
       Index           =   -2147483648
@@ -228,6 +228,64 @@ Begin Window FormGenerator
       Visible         =   True
       Width           =   36
    End
+   Begin RadioButton FormType
+      AutoDeactivate  =   True
+      Bold            =   ""
+      Caption         =   "multipart/form-data"
+      Enabled         =   True
+      Height          =   20
+      HelpTag         =   ""
+      Index           =   -2147483648
+      InitialParent   =   ""
+      Italic          =   ""
+      Left            =   94
+      LockBottom      =   ""
+      LockedInPosition=   False
+      LockLeft        =   True
+      LockRight       =   ""
+      LockTop         =   True
+      Scope           =   0
+      TabIndex        =   9
+      TabPanelIndex   =   0
+      TabStop         =   True
+      TextFont        =   "System"
+      TextSize        =   0
+      TextUnit        =   0
+      Top             =   251
+      Underline       =   ""
+      Value           =   ""
+      Visible         =   True
+      Width           =   232
+   End
+   Begin RadioButton FormType1
+      AutoDeactivate  =   True
+      Bold            =   ""
+      Caption         =   "application/x-www-form-urlencoded"
+      Enabled         =   True
+      Height          =   20
+      HelpTag         =   ""
+      Index           =   -2147483648
+      InitialParent   =   ""
+      Italic          =   ""
+      Left            =   94
+      LockBottom      =   ""
+      LockedInPosition=   False
+      LockLeft        =   True
+      LockRight       =   ""
+      LockTop         =   True
+      Scope           =   0
+      TabIndex        =   10
+      TabPanelIndex   =   0
+      TabStop         =   True
+      TextFont        =   "System"
+      TextSize        =   0
+      TextUnit        =   0
+      Top             =   228
+      Underline       =   ""
+      Value           =   True
+      Visible         =   True
+      Width           =   232
+   End
 End
 #tag EndWindow
 
@@ -242,11 +300,21 @@ End
 
 
 	#tag Method, Flags = &h0
-		Function CreateForm() As Dictionary
+		Function CreateForm() As Pair
 		  Form = New Dictionary
 		  HTTPForm.DeleteAllRows
 		  Self.ShowModal()
-		  Return Form
+		  If mFormType = TYPE_URLENCODED Then ' urlencoded
+		    Dim s() As String
+		    For Each key As String In Form.Keys
+		      s.Append(libcURL.URLEncode(key) + "=" + libcURL.URLEncode(Form.Value(key)))
+		    Next
+		    Return s:TYPE_URLENCODED
+		    
+		  Else ' multipart
+		    Return Form:TYPE_MULTIPART
+		  End If
+		  
 		End Function
 	#tag EndMethod
 
@@ -254,6 +322,17 @@ End
 	#tag Property, Flags = &h1
 		Protected Form As Dictionary
 	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mFormType As Integer
+	#tag EndProperty
+
+
+	#tag Constant, Name = TYPE_MULTIPART, Type = Double, Dynamic = False, Default = \"1", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = TYPE_URLENCODED, Type = Double, Dynamic = False, Default = \"0", Scope = Public
+	#tag EndConstant
 
 
 #tag EndWindowCode
@@ -287,7 +366,11 @@ End
 		      Form.Value(HTTPForm.Cell(i, 0)) = HTTPForm.Cell(i, 1)
 		    End If
 		  Next
-		  
+		  If FormType.Value Then ' multipart
+		    mFormType = TYPE_MULTIPART
+		  Else
+		    mFormType = TYPE_URLENCODED
+		  End If
 		  Self.Close
 		End Sub
 	#tag EndEvent
@@ -312,6 +395,13 @@ End
 #tag Events FileAdd
 	#tag Event
 		Sub Action()
+		  If FormType1.Value Then
+		    If MsgBox("Change form encoding to 'multipart/form-data'?", 4 + 48, "Current encoding does not support files") = 6 Then
+		      FormType.Value = True
+		    Else
+		      Return
+		    End If
+		  End If
 		  Dim f As FolderItem = GetOpenFolderItem("")
 		  If f <> Nil Then
 		    HTTPForm.AddRow(f.Name, f.AbsolutePath, "")

@@ -12,8 +12,10 @@ Protected Class cURLManager
 		  mIsTransferComplete = False
 		  mEasyItem.UploadMode = False
 		  mUpload = Nil
-		  Me.SetFormData(Nil)
+		  If Not Me.SetOption(libcURL.Opts.HTTPPOST, Nil) Then Raise New libcURL.cURLException(mEasyItem)
+		  If Not Me.SetOption(libcURL.Opts.COPYPOSTFIELDS, "" + Chr(0)) Then Raise New libcURL.cURLException(mEasyItem)
 		  If Not Me.SetOption(libcURL.Opts.HTTPGET, True) Then Raise New libcURL.cURLException(mEasyItem)
+		  mForm = Nil
 		End Sub
 	#tag EndMethod
 
@@ -155,26 +157,21 @@ Protected Class cURLManager
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Sub SetForm(FormData As libcURL.MultipartForm)
-		  If Not Me.SetOption(libcURL.Opts.HTTPPOST, FormData) Then Raise New libcURL.cURLException(mEasyItem)
-		  mForm = FormData
+	#tag Method, Flags = &h1
+		Protected Sub SetFormData(FormData As Dictionary)
+		  Dim frm As libcURL.MultipartForm
+		  If FormData <> Nil Then frm = FormData
+		  If Not Me.SetOption(libcURL.Opts.HTTPPOST, frm) Then Raise New libcURL.cURLException(mEasyItem)
+		  mForm = frm
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Sub SetFormData(FormData As Dictionary)
-		  If FormData = Nil Then
-		    Me.SetForm(Nil)
-		    
-		  Else
-		    Dim data() As String
-		    For Each key As String in FormData.Keys
-		      data.Append(URLEncode(Key) + "=" + URLEncode(FormData.Value(key)))
-		    Next
-		    If Not mEasyItem.SetOption(libcURL.Opts.COPYPOSTFIELDS, Join(data, "&")) Then Raise New libcURL.cURLException(mEasyItem)
-		    
-		  End If
+	#tag Method, Flags = &h1
+		Protected Sub SetFormData(FormData() As String)
+		  'For i As Integer = 0 To UBound(FormData)
+		  'FormData(i) = URLEncode(FormData(i))
+		  'Next
+		  If Not mEasyItem.SetOption(libcURL.Opts.COPYPOSTFIELDS, Join(FormData, "&")) Then Raise New libcURL.cURLException(mEasyItem)
 		  
 		End Sub
 	#tag EndMethod
@@ -373,23 +370,6 @@ Protected Class cURLManager
 			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="Password"
-			Group="Behavior"
-			Type="String"
-			EditorType="MultiLineEditor"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Port"
-			Group="Behavior"
-			Type="Integer"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="RemoteIP"
-			Group="Behavior"
-			Type="String"
-			EditorType="MultiLineEditor"
-		#tag EndViewProperty
-		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
@@ -401,27 +381,6 @@ Protected Class cURLManager
 			Group="Position"
 			InitialValue="0"
 			InheritedFrom="Object"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="UploadMode"
-			Group="Behavior"
-			Type="Boolean"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="UseErrorBuffer"
-			Group="Behavior"
-			Type="Boolean"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="UseErrorBuffer"
-			Group="Behavior"
-			Type="Boolean"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Username"
-			Group="Behavior"
-			Type="String"
-			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

@@ -485,7 +485,7 @@ Begin Window DemoWindow
       TextUnit        =   0
       Top             =   0
       Underline       =   ""
-      Value           =   0
+      Value           =   2
       Visible         =   True
       Width           =   246
       Begin PushButton PushButton1
@@ -829,7 +829,7 @@ End
 
 
 	#tag Property, Flags = &h21
-		Private FormValue As Dictionary
+		Private FormValue As Pair
 	#tag EndProperty
 
 
@@ -927,9 +927,11 @@ End
 		  CurlInfo.AddRow("SIZE_UPLOAD", Str(Me.GetInfo(libcURL.Info.SIZE_UPLOAD).Int32Value))
 		  Headers.DeleteAllRows
 		  Dim h As InternetHeaders = Me.GetResponseHeaders
-		  For i As Integer = 0 To h.Count - 1
-		    Headers.AddRow(h.Name(i), h.Value(i))
-		  Next
+		  If h <> Nil Then
+		    For i As Integer = 0 To h.Count - 1
+		      Headers.AddRow(h.Name(i), h.Value(i))
+		    Next
+		  End If
 		  MsgBox("Transfer completed (" + Str(BytesWritten) + " bytes written, " + Str(BytesRead) +" bytes read) with status: " + Str(Me.GetStatusCode))
 		  ShowErrorBuffer()
 		End Sub
@@ -960,8 +962,16 @@ End
 #tag Events PostThread
 	#tag Event
 		Sub Run()
-		  If FormValue <> Nil And Not Client.Post(TextField1.Text, FormValue) Then
-		    Break
+		  If FormValue <> Nil Then
+		    If FormValue.Right = 0 Then ' URLEncoded
+		      Dim frm() As String = FormValue.Left
+		      If Not Client.Post(TextField1.Text, frm) Then Break
+		    ElseIf FormValue.Right = 1 Then ' Multipart
+		      Dim frm As Dictionary = FormValue.Left
+		      If Not Client.Post(TextField1.Text, frm) Then Break
+		    Else
+		      Break
+		    End If
 		  End If
 		End Sub
 	#tag EndEvent
@@ -1004,7 +1014,17 @@ End
 #tag Events PushButton5
 	#tag Event
 		Sub Action()
-		  If FormValue <> Nil Then Client.Post(TextField1.Text, FormValue)
+		  If FormValue <> Nil Then
+		    If FormValue.Right = 0 Then ' URLEncoded
+		      Dim frm() As String = FormValue.Left
+		      Client.Post(TextField1.Text, frm)
+		    ElseIf FormValue.Right = 1 Then ' Multipart
+		      Dim frm As Dictionary = FormValue.Left
+		      Client.Post(TextField1.Text, frm)
+		    Else
+		      Break
+		    End If
+		  End If
 		End Sub
 	#tag EndEvent
 #tag EndEvents
@@ -1018,7 +1038,7 @@ End
 #tag Events PushButton7
 	#tag Event
 		Sub Action()
-		  Dim f As Dictionary = FormGenerator.CreateForm
+		  Dim f As Pair = FormGenerator.CreateForm
 		  If f <> Nil Then
 		    FormValue = f
 		  End If

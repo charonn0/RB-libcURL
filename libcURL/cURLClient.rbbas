@@ -55,7 +55,7 @@ Inherits libcURL.cURLManager
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Post(URL As String, FormData As libcURL.MultiPartForm = Nil, WriteTo As Writeable = Nil)
+		Sub Post(URL As String, FormData As Dictionary, WriteTo As Writeable = Nil)
 		  ' Asynchronously POST the passed FormData via HTTP(S) using multipart/form-data encoding. The FormData dictionary
 		  ' contains NAME:VALUE pairs comprising HTML form elements. NAME is a string containing the form-element name; VALUE
 		  ' may be a string or a FolderItem.
@@ -65,13 +65,13 @@ Inherits libcURL.cURLManager
 		  ' The transfer will be performed on the event loop (main thread).
 		  
 		  Me.Cleanup()
-		  Me.SetForm(FormData)
+		  Me.SetFormData(FormData)
 		  Me.Perform(URL, Nil, WriteTo)
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Post(URL As String, FormData As libcURL.MultiPartForm = Nil, WriteTo As Writeable = Nil) As Boolean
+		Function Post(URL As String, FormData As Dictionary, WriteTo As Writeable = Nil) As Boolean
 		  ' Asynchronously POST the passed FormData via HTTP(S) using multipart/form-data encoding. The FormData dictionary
 		  ' contains NAME:VALUE pairs comprising HTML form elements. NAME is a string containing the form-element name; VALUE
 		  ' may be a string or a FolderItem.
@@ -81,7 +81,39 @@ Inherits libcURL.cURLManager
 		  ' on the calling thread.
 		  
 		  Me.Cleanup()
-		  Me.SetForm(FormData)
+		  Me.SetFormData(FormData)
+		  Return Me.Perform(URL, Nil, WriteTo)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Post(URL As String, PostFields() As String, WriteTo As Writeable = Nil)
+		  ' Asynchronously POST the passed FormData via HTTP(S) using application/x-www-form-urlencoded. The FormData dictionary
+		  ' contains NAME:VALUE pairs comprising HTML form elements. NAME is a string containing the form-element name; VALUE
+		  ' is a string containing the form-element value.
+		  ' The protocol is inferred from the URL; explictly specify the protocol in the URL to avoid bad guesses.
+		  ' WriteTo is an optional Writeable object (e.g. BinaryStream); downloaded data will be written to this
+		  ' object directly. If WriteTo is Nil then use the GetDownloadedData method to get any downloaded data.
+		  ' The transfer will be performed on the event loop (main thread).
+		  
+		  Me.Cleanup()
+		  Me.SetFormData(PostFields)
+		  Me.Perform(URL, Nil, WriteTo)
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Post(URL As String, PostFields() As String, WriteTo As Writeable = Nil) As Boolean
+		  ' Asynchronously POST the passed FormData via HTTP(S) using application/x-www-form-urlencoded. The FormData dictionary
+		  ' contains NAME:VALUE pairs comprising HTML form elements. NAME is a string containing the form-element name; VALUE
+		  ' is a string containing the form-element value.
+		  ' WriteTo is an optional Writeable object (e.g. BinaryStream); downloaded data will be written to this
+		  ' object directly. If WriteTo is Nil then use the GetDownloadedData method to get any downloaded data.
+		  ' This method will block the calling thread until the transfer completes. All events will be raised
+		  ' on the calling thread.
+		  
+		  Me.Cleanup()
+		  Me.SetFormData(PostFields)
 		  Return Me.Perform(URL, Nil, WriteTo)
 		End Function
 	#tag EndMethod
