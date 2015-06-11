@@ -104,9 +104,8 @@ Inherits libcURL.cURLManager
 
 	#tag Method, Flags = &h0
 		Function Post(URL As String, PostFields() As String, WriteTo As Writeable = Nil) As Boolean
-		  ' Asynchronously POST the passed FormData via HTTP(S) using application/x-www-form-urlencoded. The FormData dictionary
-		  ' contains NAME:VALUE pairs comprising HTML form elements. NAME is a string containing the form-element name; VALUE
-		  ' is a string containing the form-element value.
+		  ' Asynchronously POST the passed PostFields via HTTP(S) using application/x-www-form-urlencoded. The PostFields array
+		  ' contains "NAME=VALUE" strings comprising HTML form elements. 
 		  ' WriteTo is an optional Writeable object (e.g. BinaryStream); downloaded data will be written to this
 		  ' object directly. If WriteTo is Nil then use the GetDownloadedData method to get any downloaded data.
 		  ' This method will block the calling thread until the transfer completes. All events will be raised
@@ -206,26 +205,6 @@ Inherits libcURL.cURLManager
 			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="Password"
-			Group="Behavior"
-			Type="String"
-			EditorType="MultiLineEditor"
-			InheritedFrom="libcURL.cURLManager"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Port"
-			Group="Behavior"
-			Type="Integer"
-			InheritedFrom="libcURL.cURLManager"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="RemoteIP"
-			Group="Behavior"
-			Type="String"
-			EditorType="MultiLineEditor"
-			InheritedFrom="libcURL.cURLManager"
-		#tag EndViewProperty
-		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
@@ -237,25 +216,6 @@ Inherits libcURL.cURLManager
 			Group="Position"
 			InitialValue="0"
 			InheritedFrom="Object"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="UploadMode"
-			Group="Behavior"
-			Type="Boolean"
-			InheritedFrom="libcURL.cURLManager"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="UseErrorBuffer"
-			Group="Behavior"
-			Type="Boolean"
-			InheritedFrom="libcURL.cURLManager"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Username"
-			Group="Behavior"
-			Type="String"
-			EditorType="MultiLineEditor"
-			InheritedFrom="libcURL.cURLManager"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class
