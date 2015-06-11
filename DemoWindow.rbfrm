@@ -351,12 +351,9 @@ Begin Window DemoWindow
       Index           =   -2147483648
       Left            =   7
       LockedInPosition=   False
-      Port            =   ""
       Scope           =   0
       TabPanelIndex   =   0
       Top             =   437
-      UploadMode      =   ""
-      UseErrorBuffer  =   ""
       Width           =   32
    End
    Begin TextField TextField1
@@ -485,7 +482,7 @@ Begin Window DemoWindow
       TextUnit        =   0
       Top             =   0
       Underline       =   ""
-      Value           =   2
+      Value           =   0
       Visible         =   True
       Width           =   246
       Begin PushButton PushButton1
@@ -895,7 +892,6 @@ End
 		Function Progress(dlTotal As UInt64, dlnow As UInt64, ultotal As UInt64, ulnow As UInt64) As Boolean
 		  ProgressDownload.Value = dlnow * 100 / dlTotal
 		  ProgressUpload.Value = ulnow * 100 / ulTotal
-		  ShowErrorBuffer()
 		End Function
 	#tag EndEvent
 	#tag Event
