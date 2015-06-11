@@ -139,8 +139,8 @@ Protected Class cURLManager
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Sub SetFormData(FormData As Dictionary)
+	#tag Method, Flags = &h0
+		Sub SetFormData(FormData As Dictionary)
 		  Dim frm As libcURL.MultipartForm
 		  If FormData <> Nil Then frm = FormData
 		  If Not Me.SetOption(libcURL.Opts.HTTPPOST, frm) Then Raise New libcURL.cURLException(mEasyItem)
@@ -148,12 +148,15 @@ Protected Class cURLManager
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Sub SetFormData(FormData() As String)
+	#tag Method, Flags = &h0
+		Sub SetFormData(FormData() As String)
 		  'For i As Integer = 0 To UBound(FormData)
 		  'FormData(i) = URLEncode(FormData(i))
 		  'Next
-		  If Not mEasyItem.SetOption(libcURL.Opts.COPYPOSTFIELDS, Join(FormData, "&")) Then Raise New libcURL.cURLException(mEasyItem)
+		  
+		  Dim data As String = Join(FormData, "&")
+		  If Not mEasyItem.SetOption(libcURL.Opts.POSTFIELDSIZE, data.LenB) Then Raise New libcURL.cURLException(mEasyItem)
+		  If Not mEasyItem.SetOption(libcURL.Opts.COPYPOSTFIELDS, data) Then Raise New libcURL.cURLException(mEasyItem)
 		  
 		End Sub
 	#tag EndMethod
@@ -272,6 +275,12 @@ Protected Class cURLManager
 		    RaiseEvent TransferComplete(Me.GetInfo(libcURL.Info.SIZE_DOWNLOAD).Int32Value, Me.GetInfo(libcURL.Info.SIZE_UPLOAD).Int32Value)
 		  End If
 		  mIsTransferComplete = True
+		  If Not Me.SetOption(libcURL.Opts.HTTPPOST, Nil) Then Raise New libcURL.cURLException(mEasyItem)
+		  If Not Me.SetOption(libcURL.Opts.COPYPOSTFIELDS, "" + Chr(0)) Then Raise New libcURL.cURLException(mEasyItem)
+		  If Not Me.SetOption(libcURL.Opts.HTTPGET, True) Then Raise New libcURL.cURLException(mEasyItem)
+		  mForm = Nil
+		  mEasyItem.UploadMode = False
+		  mUpload = Nil
 		End Sub
 	#tag EndMethod
 

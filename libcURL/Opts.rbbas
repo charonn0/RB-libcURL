@@ -213,6 +213,9 @@ Protected Module Opts
 	#tag Constant, Name = POSTFIELDS, Type = Double, Dynamic = False, Default = \"10015", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = POSTFIELDSIZE, Type = Double, Dynamic = False, Default = \"60", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = POSTQUOTE, Type = Double, Dynamic = False, Default = \"10039", Scope = Protected
 	#tag EndConstant
 
