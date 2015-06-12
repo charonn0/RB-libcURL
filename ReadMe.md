@@ -2,7 +2,7 @@
 **RB-libcURL** provides REALbasic and Xojo [bindings](http://en.wikipedia.org/wiki/Language_binding) for [libcURL](http://curl.haxx.se/libcurl/c/libcurl.html). RB-libcURL is designed and tested on Windows 7 against [curl-7.40.0-devel-mingw32](http://curl.haxx.se/gknw.net/7.40.0/dist-w32/curl-7.40.0-devel-mingw32.zip) and associated security and compression libraries ([more platforms](http://curl.haxx.se/download.html)). The minimum supported libcURL version is [7.15.2](https://github.com/charonn0/RB-libcURL/wiki/libcURL.IsAvailable). 
 
 ##Main features
-* Synchronous and asynchronous transfers using any protocol supported by libcURL
+* [Synchronous and asynchronous](https://github.com/charonn0/RB-libcURL/wiki/Synchronous-vs.-Asynchronous-methods) transfers using any protocol supported by libcURL
 * Full support for [RB/Xojo threads](https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.PerformOnce)
 * [Stream-oriented](https://github.com/charonn0/RB-libcURL/wiki/cURLManager.Perform) to minimize memory use, using Xojo's built-in [Readable](http://docs.xojo.com/index.php/Readable) and [Writeable](http://docs.xojo.com/index.php/Writeable) interfaces
 * [Easy to use](https://github.com/charonn0/RB-libcURL/wiki/cURLClient), but still exposing [the full range of libcURL's features](https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle).
@@ -11,7 +11,7 @@
 ##Synopsis
 
 ***
-It is strongly recommended that you familiarize yourself with [libcURL](http://curl.haxx.se/libcurl/c/libcurl-tutorial.html), as this project preserves the semantics of libcURL's API in an object-oriented, Xojo-flavored wrapper. For a simplified client interface that is appropriate for most types of transfers you should use the [`cURLClient`](https://github.com/charonn0/RB-libcURL/wiki/cURLClient) class.
+It is strongly recommended that you familiarize yourself with [libcURL](http://curl.haxx.se/libcurl/c/libcurl-tutorial.html), as this project preserves the semantics of libcURL's API in an object-oriented, Xojo-flavored wrapper. For a simplified client interface that is appropriate for most types of transfers you should use the [`cURLClient`](https://github.com/charonn0/RB-libcURL/wiki/cURLClient) class. Refer to the [examples](https://github.com/charonn0/RB-libcURL/wiki/Home#examples) below for demonstrations of `cURLClient`.
 
 ***
 
@@ -46,3 +46,4 @@ To perform one or more transfers in a non-halting manner use the `MultiHandle` c
 * [SMTP Send](https://github.com/charonn0/RB-libcURL/wiki/SMTP-Example)
 * [DNS control](https://github.com/charonn0/RB-libcURL/wiki/DNS-Example)
 
+![Powered by libcURL](https://raw.githubusercontent.com/wiki/charonn0/RB-libcURL/powered_by_curl7.gif)
