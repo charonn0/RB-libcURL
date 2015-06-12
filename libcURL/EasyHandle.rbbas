@@ -31,6 +31,7 @@ Inherits libcURL.cURLHandle
 	#tag Method, Flags = &h0
 		Sub Constructor(GlobalInitFlags As Integer = libcURL.CURL_GLOBAL_DEFAULT)
 		  ' Creates a new curl_easy handle
+		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_init.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Constructor
@@ -60,6 +61,7 @@ Inherits libcURL.cURLHandle
 		  ' Creates a new curl_easy handle by cloning the passed handle and all of its options. The clone is independent
 		  ' of the original. If CopyOpts is Nil, its handle is invalid, or its handle cannot be duplicated an exception
 		  ' will be raised.
+		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_duphandle.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Constructor
@@ -817,16 +819,27 @@ Inherits libcURL.cURLHandle
 
 
 	#tag ComputedProperty, Flags = &h0
-		#tag Note
-			Sets the PEM file containing one or more certificate authorities libcURL should trust to verify the peer with.
-		#tag EndNote
 		#tag Getter
 			Get
+			  ' Gets the PEM file (or a directory of PEM files) containing one or more certificate authorities libcURL
+			  ' will trust to verify the peer with. If no file/folder is specified (default) then returns Nil.
+			  
 			  return mCA_ListFile
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
+			  ' Sets the PEM file (or a directory of PEM files) containing one or more certificate authorities libcURL
+			  ' should trust to verify the peer with. Set this to libcURL.Default_CA_File to use the default CA list for 
+			  ' Mozilla products. Set this to Nil to unset the current file/folder.
+			  '
+			  ' See:
+			  ' http://curl.haxx.se/libcurl/c/CURLOPT_CAINFO.html
+			  ' http://curl.haxx.se/libcurl/c/CURLOPT_CAPATH.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.CA_ListFile
+			  
+			  Set EasyHandle.ConnectionType to enable/disable SSL.
+			  
 			  Select Case True
 			  Case value = Nil
 			    If Not Me.SetOption(libcURL.Opts.CAINFO, Nil) Then Raise New cURLException(Me)
@@ -837,7 +850,9 @@ Inherits libcURL.cURLHandle
 			    
 			  Else
 			    If Not Me.SetOption(libcURL.Opts.CAINFO, value) Then Raise New cURLException(Me)
+			    
 			  End Select
+			  
 			  mCA_ListFile = value
 			End Set
 		#tag EndSetter
@@ -847,11 +862,19 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Gets whether SSL will be requested. Returns one of the libcURL.Opts.USE_SSL_* values.
+			  
 			  return mConnectionType
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
+			  ' Sets whether SSL will be requested. Use one of the libcURL.Opts.USE_SSL_* values.
+			  ' 
+			  ' See:
+			  ' http://curl.haxx.se/libcurl/c/CURLOPT_USE_SSL.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.ConnectionType
+			  
 			  If Not Me.SetOption(libcURL.Opts.USE_SSL, value) Then Raise New cURLException(Me)
 			  mConnectionType = value
 			End Set
@@ -862,11 +885,20 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Gets the local file to be used as cookie storage. If no file/folder is specified (default) then returns Nil.
+			  
 			  return mCookieJar
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
+			  ' Sets the local file to be used as cookie storage. 
+			  '
+			  ' See:
+			  ' http://curl.haxx.se/libcurl/c/CURLOPT_COOKIEJAR.html
+			  ' http://curl.haxx.se/libcurl/c/CURLOPT_COOKIEFILE.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.CookieJar
+			  
 			  Select Case True
 			  Case value = Nil, value.Directory
 			    If Not Me.SetOption(libcURL.Opts.COOKIEFILE, Nil) Then Raise New cURLException(Me)
@@ -888,11 +920,19 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Gets whether HTTP error codes constitute a failure condition. The default is False.
+			  
 			  return mFailOnServerError
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
+			  ' Sets whether HTTP error codes constitute a failure condition. The default is False.
+			  '
+			  ' See:
+			  ' http://curl.haxx.se/libcurl/c/CURLOPT_FAILONERROR.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.FailOnServerError
+			  
 			  If Not Me.SetOption(libcURL.Opts.FAILONERROR, value) Then Raise New cURLException(Me)
 			  mFailOnServerError = value
 			End Set
@@ -903,14 +943,17 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Gets whether libcURL will follow HTTP redirection. The default is False
+			  
 			  Return mFollowRedirects
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
-			  ' Pass True to follow HTTP redirects automatically. The default is False
+			  ' Sets whether libcURL will follow HTTP redirection. The default is False
+			  '
 			  ' See:
-			  ' http://curl.haxx.se/libcurl/c/curl_easy_setopt.html#CURLOPTFOLLOWLOCATION
+			  ' http://curl.haxx.se/libcurl/c/CURLOPT_FOLLOWLOCATION.html
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.FollowRedirects
 			  
 			  If Not Me.SetOption(libcURL.Opts.FOLLOWLOCATION, value) Then Raise New cURLException(Me)
@@ -923,11 +966,18 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Gets the version of HTTP to be used. Returns HTTP_VERSION_1_0, HTTP_VERSION_1_1, HTTP_VERSION_2_0, or HTTP_VERSION_NONE
 			  return mHTTPVersion
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
+			  ' Sets the version of HTTP to be used. Pass HTTP_VERSION_1_0, HTTP_VERSION_1_1, HTTP_VERSION_2_0, or HTTP_VERSION_NONE
+			  '
+			  ' See:
+			  ' http://curl.haxx.se/libcurl/c/CURLOPT_HTTP_VERSION.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.HTTPVersion
+			  
 			  If Not Me.SetOption(libcURL.Opts.HTTPVERSION, value) Then Raise New cURLException(Me)
 			  mHTTPVersion = value
 			End Set
@@ -942,14 +992,19 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  //The local port used to make the connection. This is decided upon by libcurl and the OS's network stack
+			  ' The local port used to make the most recent connection. This is decided upon by libcurl and the OS's network stack
 			  
 			  Return Me.GetInfo(libcURL.Info.LOCAL_PORT)
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
-			  //local port to use
+			  ' Sets the local port to use for the next connection
+			  '
+			  ' See:
+			  ' http://curl.haxx.se/libcurl/c/CURLOPT_LOCALPORT.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.LocalPort
+			  
 			  If Not Me.SetOption(libcURL.Opts.LOCALPORT, value) Then Raise New cURLException(Me)
 			End Set
 		#tag EndSetter
@@ -1005,6 +1060,10 @@ Inherits libcURL.cURLHandle
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
+		Private mUserAgent As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
 		Private mUsername As String
 	#tag EndProperty
 
@@ -1013,18 +1072,16 @@ Inherits libcURL.cURLHandle
 	#tag EndProperty
 
 	#tag ComputedProperty, Flags = &h0
-		#tag Note
-			SocketCore.NetworkInterface workalike.
-			See: http://docs.realsoftware.com/index.php/SocketCore.NetworkInterface
-			
-			For example:
-			
-			Dim curl As New libcURL.EasyHandle
-			curl.NetworkInterface = System.GetNetworkInterface(0)
-			MsgBox(curl.NetworkInterface.IPAddress))
-		#tag EndNote
 		#tag Getter
 			Get
+			  ' Returns the local network connection used to perform the most recent transfer
+			  '
+			  ' See:
+			  ' http://curl.haxx.se/libcurl/c/curl_easy_getinfo.html#CURLINFOLOCALIP
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.NetworkInterface
+			  ' http://docs.realsoftware.com/index.php/NetworkInterface
+			  
+			  
 			  Dim ip As String = Me.GetInfo(libcURL.Info.LOCAL_IP)
 			  If Me.LastError <> 0 Then Return Nil
 			  For i As Integer = 0 To System.NetworkInterfaceCount - 1
@@ -1037,6 +1094,20 @@ Inherits libcURL.cURLHandle
 		#tag EndGetter
 		#tag Setter
 			Set
+			  ' Sets the local network interface to be used for the next connection.
+			  '
+			  ' See: 
+			  ' http://curl.haxx.se/libcurl/c/CURLOPT_INTERFACE.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.NetworkInterface
+			  ' http://docs.realsoftware.com/index.php/NetworkInterface
+			  
+			  For example:
+			    
+			    Dim curl As New libcURL.EasyHandle
+			    curl.NetworkInterface = System.GetNetworkInterface(0)
+			    MsgBox(curl.NetworkInterface.IPAddress))
+			  Next
+			  
 			  If value <> Nil Then
 			    If Not Me.SetOption(libcURL.Opts.NETINTERFACE, value.IPAddress) Then Raise New cURLException(Me)
 			  Else
@@ -1048,9 +1119,6 @@ Inherits libcURL.cURLHandle
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
-		#tag Note
-			The password to be supplied to the remote host if the underlying protocol requires/allows users to log on.
-		#tag EndNote
 		#tag Getter
 			Get
 			  Return mPassword
@@ -1058,7 +1126,12 @@ Inherits libcURL.cURLHandle
 		#tag EndGetter
 		#tag Setter
 			Set
-			  //If the server will require a password, set it here. If the server doesn't require one, this property is ignored
+			  ' The password to be supplied to the remote host if the underlying protocol requires/allows users to log on.
+			  ' 
+			  ' See:
+			  ' http://curl.haxx.se/libcurl/c/CURLOPT_PASSWORD.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Password
+			  
 			  If Not Me.SetOption(libcURL.Opts.PASSWORD, value) Then Raise New cURLException(Me)
 			  mPassword = value
 			End Set
@@ -1104,9 +1177,6 @@ Inherits libcURL.cURLHandle
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
-		#tag Note
-			If True, a connection will fail if an invalid SSL certificate is presented by the server.
-		#tag EndNote
 		#tag Getter
 			Get
 			  return mSecure
@@ -1114,6 +1184,16 @@ Inherits libcURL.cURLHandle
 		#tag EndGetter
 		#tag Setter
 			Set
+			  ' If True, a connection will verify any SSL certificates presented by a server. This does not
+			  ' tell libcURL to use SSL, only to verify certs if SSL is used. Use EasyHandle.CA_ListFile to
+			  ' specify a list of certificate authorities to be trusted, otherwise libcURL.Default_CA_File
+			  ' is used.
+			  '
+			  ' See:
+			  ' http://curl.haxx.se/libcurl/c/CURLOPT_SSL_VERIFYHOST.html
+			  ' http://curl.haxx.se/libcurl/c/CURLOPT_SSL_VERIFYPEER.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Secure
+			  
 			  If value Then
 			    If Not Me.SetOption(libcURL.Opts.SSL_VERIFYHOST, 2) Then Raise New cURLException(Me)
 			    If Not Me.SetOption(libcURL.Opts.SSL_VERIFYPEER, 1) Then Raise New cURLException(Me)
@@ -1137,6 +1217,13 @@ Inherits libcURL.cURLHandle
 		#tag EndGetter
 		#tag Setter
 			Set
+			  ' Sets the timeout period, in seconds, after which a transfer should be aborted. The default is 0, which
+			  ' means wait forever.
+			  '
+			  ' See:
+			  ' http://curl.haxx.se/libcurl/c/CURLOPT_TIMEOUT.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Timeout
+			  
 			  If Not Me.SetOption(libcURL.Opts.TIMEOUT, value) Then Raise New cURLException(Me)
 			  mTimeOut = value
 			End Set
@@ -1152,6 +1239,12 @@ Inherits libcURL.cURLHandle
 		#tag EndGetter
 		#tag Setter
 			Set
+			  ' If True, the next transfer is an upload operation.
+			  ' 
+			  ' See:
+			  ' http://curl.haxx.se/libcurl/c/CURLOPT_UPLOAD.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.UploadMode
+			  
 			  If Not Me.SetOption(libcURL.Opts.UPLOAD, value) Then Raise New libcURL.cURLException(Me)
 			  mUploadMode = value
 			End Set
@@ -1163,6 +1256,9 @@ Inherits libcURL.cURLHandle
 		#tag Getter
 			Get
 			  ' Returns the last effective URL, if any
+			  ' See:
+			  ' http://curl.haxx.se/libcurl/c/curl_easy_getinfo.html#CURLINFOEFFECTIVEURL
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.URL
 			  
 			  Return Me.GetInfo(libcURL.Info.EFFECTIVE_URL)
 			End Get
@@ -1170,7 +1266,10 @@ Inherits libcURL.cURLHandle
 		#tag Setter
 			Set
 			  ' Sets the URL for the next request.
-			  ' See: http://curl.haxx.se/libcurl/c/curl_easy_setopt.html#CURLOPTURL
+			  '
+			  ' See: 
+			  ' http://curl.haxx.se/libcurl/c/curl_easy_setopt.html#CURLOPTURL
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.URL
 			  
 			  If Not SetOption(libcURL.Opts.URL, value) Then Raise New cURLException(Me)
 			End Set
@@ -1186,6 +1285,13 @@ Inherits libcURL.cURLHandle
 		#tag EndGetter
 		#tag Setter
 			Set
+			  ' Sets whether libcURL will write additional debug info to an application-provided buffer.
+			  '
+			  ' See:
+			  ' http://curl.haxx.se/libcurl/c/CURLOPT_ERRORBUFFER.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.UseErrorBuffer
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.ErrorBuffer
+			  
 			  If value Then
 			    mErrorBuffer = New MemoryBlock(256)
 			  Else
@@ -1198,20 +1304,27 @@ Inherits libcURL.cURLHandle
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  Return mUserAgent
+			End Get
+		#tag EndGetter
 		#tag Setter
 			Set
-			  //Set your application's UserAgent string for protocols that support/require such. The default will be the output of cURLversion()
+			  ' Sets the User-Agent string used by libcURL for protocols which support that feature.
+			  '
+			  ' See:
+			  ' http://curl.haxx.se/libcurl/c/CURLOPT_USERAGENT.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.UserAgent
 			  
 			  If Not Me.SetOption(libcURL.Opts.USERAGENT, value) Then Raise New cURLException(Me)
+			  mUserAgent = value
 			End Set
 		#tag EndSetter
 		UserAgent As String
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
-		#tag Note
-			The username to be supplied to the remote host if the underlying protocol requires/allows users to log on.
-		#tag EndNote
 		#tag Getter
 			Get
 			  Return mUsername
@@ -1219,7 +1332,12 @@ Inherits libcURL.cURLHandle
 		#tag EndGetter
 		#tag Setter
 			Set
-			  //If the server will require a username, set it here. If the server doesn't require one, this property is ignored
+			  ' The username to be supplied to the remote host if the underlying protocol requires/allows users to log on.
+			  '
+			  ' See:
+			  ' http://curl.haxx.se/libcurl/c/CURLOPT_USERNAME.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.UserName
+			  
 			  If Not Me.SetOption(libcURL.Opts.USERNAME, value) Then Raise New cURLException(Me)
 			  mUsername = value
 			End Set
