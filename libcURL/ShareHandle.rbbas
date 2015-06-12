@@ -33,6 +33,11 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h1000
 		Sub Constructor(GlobalInitFlags As Integer = libcURL.CURL_GLOBAL_DEFAULT)
+		  ' Create a new share.
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/curl_share_init.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ShareHandle.Constructor
+		  
 		  // Calling the overridden superclass constructor.
 		  // Constructor(GlobalInitFlags As Integer) -- From libcURL.cURLHandle
 		  Super.Constructor(GlobalInitFlags)
