@@ -492,17 +492,9 @@ Inherits libcURL.cURLHandle
 		      mb = FolderItem(NewValue).AbsolutePath + Chr(0)
 		      MarshalledValue = mb
 		      
-		    Case IsA libcURL.MultipartForm
-		      Dim f As libcURL.MultipartForm = NewValue
-		      Return Me.SetOption(OptionNumber, f.Handle)
-		      
-		    Case IsA libcURL.ListPtr
-		      Dim f As libcURL.ListPtr = NewValue
-		      Return Me.SetOption(OptionNumber, f.Handle)
-		      
-		    Case IsA libcURL.ShareHandle
-		      Dim f As libcURL.ShareHandle = NewValue
-		      Return Me.SetOption(OptionNumber, f.SharedHandle)
+		    Case IsA libcURL.cURLHandle
+		      Dim cURL As libcURL.cURLHandle = NewValue
+		      Return Me.SetOption(OptionNumber, cURL.Handle)
 		      
 		    Case IsA cURLProgressCallback
 		      Dim p As cURLProgressCallback = NewValue
@@ -1124,7 +1116,6 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Note
 			If True, a connection will fail if an invalid SSL certificate is presented by the server.
-			
 		#tag EndNote
 		#tag Getter
 			Get
@@ -1415,6 +1406,11 @@ Inherits libcURL.cURLHandle
 			Group="Position"
 			InitialValue="0"
 			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="UploadMode"
+			Group="Behavior"
+			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="URL"
