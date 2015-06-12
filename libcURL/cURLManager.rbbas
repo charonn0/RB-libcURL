@@ -1,6 +1,17 @@
 #tag Class
 Protected Class cURLManager
 	#tag Method, Flags = &h0
+		Sub ClearFormData()
+		  If Not mEasyItem.SetOption(libcURL.Opts.POSTFIELDSIZE, -1) Then Raise New libcURL.cURLException(mEasyItem)
+		  If Not Me.SetOption(libcURL.Opts.COPYPOSTFIELDS, Nil) Then Raise New libcURL.cURLException(mEasyItem)
+		  If Not Me.SetOption(libcURL.Opts.HTTPPOST, Nil) Then Raise New libcURL.cURLException(mEasyItem)
+		  mForm = Nil
+		  If Not Me.SetOption(libcURL.Opts.HTTPGET, True) Then Raise New libcURL.cURLException(mEasyItem)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub Close()
 		  mMultiItem = Nil
 		  mEasyItem = Nil
@@ -275,10 +286,7 @@ Protected Class cURLManager
 		    RaiseEvent TransferComplete(Me.GetInfo(libcURL.Info.SIZE_DOWNLOAD).Int32Value, Me.GetInfo(libcURL.Info.SIZE_UPLOAD).Int32Value)
 		  End If
 		  mIsTransferComplete = True
-		  If Not Me.SetOption(libcURL.Opts.HTTPPOST, Nil) Then Raise New libcURL.cURLException(mEasyItem)
-		  If Not Me.SetOption(libcURL.Opts.COPYPOSTFIELDS, "" + Chr(0)) Then Raise New libcURL.cURLException(mEasyItem)
-		  If Not Me.SetOption(libcURL.Opts.HTTPGET, True) Then Raise New libcURL.cURLException(mEasyItem)
-		  mForm = Nil
+		  ClearFormData()
 		  mEasyItem.UploadMode = False
 		  mUpload = Nil
 		End Sub
