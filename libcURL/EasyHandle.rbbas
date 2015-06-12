@@ -444,28 +444,27 @@ Inherits libcURL.cURLHandle
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.SetOption
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Opts
 		  
-		  Dim MarshalledValue As Ptr
-		  Dim mb As MemoryBlock
 		  Dim ValueType As Integer = VarType(NewValue)
 		  Select Case ValueType
-		  Case Variant.TypeNil
-		    ' Sometimes Nil is an error; sometimes not
-		    Select Case OptionNumber
-		    Case libcURL.Opts.POSTFIELDS, libcURL.Opts.HTTPHEADER, libcURL.Opts.PROXYHEADER, libcURL.Opts.FTPPORT, libcURL.Opts.QUOTE, _
-		      libcURL.Opts.POSTQUOTE, libcURL.Opts.PREQUOTE, libcURL.Opts.FTP_ACCOUNT, libcURL.Opts.RTSP_SESSION_ID, libcURL.Opts.RANGE, _
-		      libcURL.Opts.CUSTOMREQUEST, libcURL.Opts.DNS_INTERFACE, libcURL.Opts.DNS_LOCAL_IP4, libcURL.Opts.DNS_LOCAL_IP6, libcURL.Opts.KRBLEVEL, _
-		      libcURL.Opts.CLOSESOCKETFUNCTION, libcURL.Opts.DEBUGFUNCTION, libcURL.Opts.HEADERFUNCTION, libcURL.Opts.OPENSOCKETFUNCTION, _
-		      libcURL.Opts.PROGRESSFUNCTION, libcURL.Opts.READFUNCTION, libcURL.Opts.SSL_CTX_FUNCTION, libcURL.Opts.WRITEFUNCTION, libcURL.Opts.SHARE, _
-		      libcURL.Opts.COOKIEJAR, libcURL.Opts.COOKIEFILE, libcURL.Opts.HTTPPOST, libcURL.Opts.CAINFO, libcURL.Opts.CAPATH, _
-		      libcURL.Opts.NETINTERFACE, libcURL.Opts.ERRORBUFFER
-		      ' These option numbers explicitly accept NULL. Refer to the curl documentation on the individual option numbers for details.
-		      MarshalledValue = Nil
+		    
+		  Case Variant.TypeNil ' Sometimes Nil is an error; sometimes not
+		    Static Nilable() As Integer = Array(libcURL.Opts.POSTFIELDS, libcURL.Opts.HTTPHEADER, libcURL.Opts.PROXYHEADER, _
+		    libcURL.Opts.FTPPORT, libcURL.Opts.QUOTE, libcURL.Opts.POSTQUOTE, libcURL.Opts.PREQUOTE, libcURL.Opts.FTP_ACCOUNT, _
+		    libcURL.Opts.RTSP_SESSION_ID, libcURL.Opts.RANGE, libcURL.Opts.CUSTOMREQUEST, libcURL.Opts.DNS_INTERFACE, _
+		    libcURL.Opts.DNS_LOCAL_IP4, libcURL.Opts.DNS_LOCAL_IP6, libcURL.Opts.KRBLEVEL, libcURL.Opts.CLOSESOCKETFUNCTION, _
+		    libcURL.Opts.DEBUGFUNCTION, libcURL.Opts.HEADERFUNCTION, libcURL.Opts.OPENSOCKETFUNCTION, libcURL.Opts.PROGRESSFUNCTION, _
+		    libcURL.Opts.READFUNCTION, libcURL.Opts.SSL_CTX_FUNCTION, libcURL.Opts.WRITEFUNCTION, libcURL.Opts.SHARE, _
+		    libcURL.Opts.COOKIEJAR, libcURL.Opts.COOKIEFILE, libcURL.Opts.HTTPPOST, libcURL.Opts.CAINFO, libcURL.Opts.CAPATH, _
+		    libcURL.Opts.NETINTERFACE, libcURL.Opts.ERRORBUFFER)
+		    ' These option numbers explicitly accept NULL. Refer to the curl documentation on the individual option numbers for details.
+		    If Nilable.IndexOf(OptionNumber) > -1 Then
+		      Return Me.SetOptionPtr(OptionNumber, Nil)
 		    Else
 		      ' for all other option numbers reject NULL values.
 		      Dim err As New NilObjectException
 		      err.Message = "cURL option number 0x" + Hex(OptionNumber) + " may not be set to null."
 		      Raise err
-		    End Select
+		    End If
 		    
 		  Case Variant.TypeBoolean
 		    If NewValue.BooleanValue Then
@@ -475,22 +474,22 @@ Inherits libcURL.cURLHandle
 		    End If
 		    
 		  Case Variant.TypePtr, Variant.TypeInteger
-		    MarshalledValue = NewValue.PtrValue
+		    Return Me.SetOptionPtr(OptionNumber, NewValue.PtrValue)
 		    
 		  Case Variant.TypeString
 		    ' COPY the string to a new buffer so there's no weirdness if libcURL releases the memory.
-		    mb = NewValue.CStringValue + Chr(0)
-		    MarshalledValue = mb
+		    Dim mb As MemoryBlock = NewValue.CStringValue + Chr(0)
+		    Return Me.SetOptionPtr(OptionNumber, mb)
 		    
 		  Case Variant.TypeObject
 		    ' To add support for a custom object type, add a block to this Select statement that stores the object in MarshalledValue
 		    Select Case NewValue
 		    Case IsA MemoryBlock
-		      MarshalledValue = NewValue.PtrValue
+		      Return Me.SetOptionPtr(OptionNumber, NewValue.PtrValue)
 		      
 		    Case IsA FolderItem
-		      mb = FolderItem(NewValue).AbsolutePath + Chr(0)
-		      MarshalledValue = mb
+		      Dim mb As MemoryBlock = FolderItem(NewValue).AbsolutePath + Chr(0)
+		      Return Me.SetOptionPtr(OptionNumber, mb)
 		      
 		    Case IsA libcURL.cURLHandle
 		      Dim cURL As libcURL.cURLHandle = NewValue
@@ -498,43 +497,34 @@ Inherits libcURL.cURLHandle
 		      
 		    Case IsA cURLProgressCallback
 		      Dim p As cURLProgressCallback = NewValue
-		      MarshalledValue = p
+		      Return Me.SetOptionPtr(OptionNumber, p)
 		      
 		    Case IsA cURLIOCallback
 		      Dim p As cURLIOCallback = NewValue
-		      MarshalledValue = p
+		      Return Me.SetOptionPtr(OptionNumber, p)
 		      
 		    Case IsA cURLDebugCallback
 		      Dim p As cURLDebugCallback = NewValue
-		      MarshalledValue = p
+		      Return Me.SetOptionPtr(OptionNumber, p)
 		      
 		    Case IsA cURLCloseCallback
 		      Dim p As cURLCloseCallback = NewValue
-		      MarshalledValue = p
+		      Return Me.SetOptionPtr(OptionNumber, p)
 		      
 		    Case IsA cURLOpenCallback
 		      Dim p As cURLOpenCallback = NewValue
-		      MarshalledValue = p
+		      Return Me.SetOptionPtr(OptionNumber, p)
 		      
 		    Case IsA cURLSSLInitCallback
 		      Dim p As cURLSSLInitCallback = NewValue
-		      MarshalledValue = p
-		      
-		    Else
-		      Dim err As New TypeMismatchException
-		      err.Message = "NewValue is of unsupported type: " + Str(ValueType)
-		      Raise err
+		      Return Me.SetOptionPtr(OptionNumber, p)
 		      
 		    End Select
-		    
-		  Else
-		    Dim err As New TypeMismatchException
-		    err.Message = "NewValue is of unsupported vartype: " + Str(ValueType)
-		    Raise err
-		    
 		  End Select
 		  
-		  Return Me.SetOptionPtr(OptionNumber, MarshalledValue)
+		  Dim err As New TypeMismatchException
+		  err.Message = "NewValue is of unsupported vartype: " + Str(ValueType)
+		  Raise err
 		End Function
 	#tag EndMethod
 
