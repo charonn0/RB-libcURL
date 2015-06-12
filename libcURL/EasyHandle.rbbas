@@ -838,8 +838,6 @@ Inherits libcURL.cURLHandle
 			  ' http://curl.haxx.se/libcurl/c/CURLOPT_CAPATH.html
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.CA_ListFile
 			  
-			  Set EasyHandle.ConnectionType to enable/disable SSL.
-			  
 			  Select Case True
 			  Case value = Nil
 			    If Not Me.SetOption(libcURL.Opts.CAINFO, Nil) Then Raise New cURLException(Me)
@@ -1100,13 +1098,6 @@ Inherits libcURL.cURLHandle
 			  ' http://curl.haxx.se/libcurl/c/CURLOPT_INTERFACE.html
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.NetworkInterface
 			  ' http://docs.realsoftware.com/index.php/NetworkInterface
-			  
-			  For example:
-			    
-			    Dim curl As New libcURL.EasyHandle
-			    curl.NetworkInterface = System.GetNetworkInterface(0)
-			    MsgBox(curl.NetworkInterface.IPAddress))
-			  Next
 			  
 			  If value <> Nil Then
 			    If Not Me.SetOption(libcURL.Opts.NETINTERFACE, value.IPAddress) Then Raise New cURLException(Me)
