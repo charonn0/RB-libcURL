@@ -17,7 +17,7 @@ Protected Class cURLHandle
 		  
 		  If InitFlags = Nil Then InitFlags = New Dictionary
 		  If Not InitFlags.HasKey(GlobalInitFlags) Then
-		    mLastError = curl_global_init(GlobalInitFlags) 
+		    mLastError = curl_global_init(GlobalInitFlags)
 		    If mLastError <> 0 Then Raise New cURLException(Me)
 		  End If
 		  InitFlags.Value(GlobalInitFlags) = InitFlags.Lookup(GlobalInitFlags, 0) + 1
@@ -56,7 +56,7 @@ Protected Class cURLHandle
 
 	#tag Method, Flags = &h0
 		Function Handle() As Integer
-		  ' the multi handle
+		  ' the curl handle itself
 		  Return mHandle
 		End Function
 	#tag EndMethod
