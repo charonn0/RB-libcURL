@@ -21,7 +21,7 @@ Inherits RuntimeException
 		    Me.Message = libcURL.FormatMultiError(Me.ErrorNumber)
 		    
 		  Else
-		    Me.Message = libcURL.FormatError(Me.ErrorNumber)
+		    Me.Message = libcURL.FormatError(Me.ErrorNumber) + "(" + libcURL.Errors.Name(Me.ErrorNumber) + ")"
 		    
 		  End Select
 		  If ErrantItem IsA libcURL.EasyHandle Then
