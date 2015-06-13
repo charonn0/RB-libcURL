@@ -47,8 +47,25 @@ Inherits libcURL.cURLHandle
 		    Raise New cURLException(Me)
 		  End If
 		  SharedHandles = New Dictionary
+		  If Instances = Nil Then Instances = New Dictionary
+		  Instances.Value(mHandle) = Me
+		  CookieLock = New Mutex(Hex(mHandle) + "_Cookie")
+		  SSLLock = New Mutex(Hex(mHandle) + "_SSL")
+		  DNSLock = New Mutex(Hex(mHandle) + "_DNS")
+		  
+		  If Not Me.SetOption(libcURL.Opts.SHOPT_USERDATA, mHandle) Then Raise New cURLException(Me)
+		  If Not Me.SetOption(libcURL.Opts.SHOPT_LOCKFUNC, AddressOf LockCallback) Then Raise New cURLException(Me)
+		  If Not Me.SetOption(libcURL.Opts.SHOPT_UNLOCKFUNC, AddressOf UnlockCallback) Then Raise New cURLException(Me)
 		End Sub
 	#tag EndMethod
+
+	#tag DelegateDeclaration, Flags = &h21
+		Private Delegate Sub cURLLock(ShareItem As Integer, Data As curl_lock_data, Access As curl_lock_access, UserData As Integer)
+	#tag EndDelegateDeclaration
+
+	#tag DelegateDeclaration, Flags = &h21
+		Private Delegate Sub cURLUnlock(ShareItem As Integer, Data As curl_lock_data, UserData As Integer)
+	#tag EndDelegateDeclaration
 
 	#tag Method, Flags = &h21
 		Private Sub Destructor()
@@ -56,6 +73,20 @@ Inherits libcURL.cURLHandle
 		  If mHandle <> 0 Then mLastError = curl_share_cleanup(mHandle)
 		  If mHandle <> 0 And mLastError = 0 Then mHandle = 0
 		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Shared Sub LockCallback(ShareItem As Integer, Data As curl_lock_data, Access As curl_lock_access, UserData As Integer)
+		  #pragma X86CallingConvention StdCall
+		  #pragma Unused ShareItem
+		  
+		  Dim curl As ShareHandle = Instances.Lookup(UserData, Nil)
+		  If curl <> Nil Then 
+		    curl._Lock(Data, Access)
+		    Return
+		  End If
+		  Break 'UserData does not refer to a valid instance!
 		End Sub
 	#tag EndMethod
 
@@ -82,9 +113,82 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Function SetOption(OptionNumber As Integer, NewValue As Variant) As Boolean
-		  mLastError = curl_share_setopt(mHandle, OptionNumber, NewValue.PtrValue)
+		  Select Case NewValue
+		  Case IsA cURLLock
+		    Dim p As cURLLock = NewValue
+		    mLastError = curl_share_setopt(mHandle, OptionNumber, p)
+		  Case IsA cURLUnlock
+		    Dim p As cURLUnlock = NewValue
+		    mLastError = curl_share_setopt(mHandle, OptionNumber, p)
+		  Else
+		    mLastError = curl_share_setopt(mHandle, OptionNumber, NewValue.PtrValue)
+		  End Select
+		  
 		  Return mLastError = 0
 		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Shared Sub UnlockCallback(ShareItem As Integer, Data As curl_lock_data, UserData As Integer)
+		  #pragma X86CallingConvention StdCall
+		  #pragma Unused ShareItem
+		  
+		  Dim curl As ShareHandle = Instances.Lookup(UserData, Nil)
+		  If curl <> Nil Then 
+		    curl._Unlock(Data)
+		    Return
+		  End If
+		  Break 'UserData does not refer to a valid instance!
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub _Lock(Data As curl_lock_data, Access As curl_lock_access)
+		  #pragma Unused Access
+		  Select Case Data
+		  Case curl_lock_data.LOCK_COOKIE
+		    CookieLock.Enter
+		    
+		  Case curl_lock_data.LOCK_DNS
+		    DNSLock.Enter
+		    
+		  Case curl_lock_data.LOCK_SSL
+		    SSLLock.Enter
+		    
+		  Case curl_lock_data.LOCK_SHARE
+		    SSLLock.Enter
+		    DNSLock.Enter
+		    CookieLock.Enter
+		    
+		  Else
+		    Raise New IllegalLockingException
+		    
+		  End Select
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub _Unlock(Data As curl_lock_data)
+		  Select Case Data
+		  Case curl_lock_data.LOCK_COOKIE
+		    CookieLock.Leave
+		    
+		  Case curl_lock_data.LOCK_DNS
+		    DNSLock.Leave
+		    
+		  Case curl_lock_data.LOCK_SSL
+		    SSLLock.Leave
+		    
+		  Case curl_lock_data.LOCK_SHARE
+		    SSLLock.Leave
+		    DNSLock.Leave
+		    CookieLock.Leave
+		    
+		  Else
+		    Raise New IllegalLockingException
+		    
+		  End Select
+		End Sub
 	#tag EndMethod
 
 
@@ -93,6 +197,18 @@ Inherits libcURL.cURLHandle
 		s
 	#tag EndNote
 
+
+	#tag Property, Flags = &h21
+		Private CookieLock As Mutex
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private DNSLock As Mutex
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private Shared Instances As Dictionary
+	#tag EndProperty
 
 	#tag Property, Flags = &h21
 		Private mShareCookies As Boolean
@@ -117,7 +233,7 @@ Inherits libcURL.cURLHandle
 			  mShareCookies = value
 			  Dim shareoption As Integer
 			  If mShareCookies Then shareoption = CURLSHOPT_SHARE Else shareoption = CURLSHOPT_UNSHARE
-			  If Not Me.SetOption(shareoption, CURL_LOCK_DATA_COOKIE) Then Raise New cURLException(Me)
+			  If Not Me.SetOption(shareoption, curl_lock_data.LOCK_COOKIE) Then Raise New cURLException(Me)
 			End Set
 		#tag EndSetter
 		ShareCookies As Boolean
@@ -138,7 +254,7 @@ Inherits libcURL.cURLHandle
 			  mShareDNSCache = value
 			  Dim shareoption As Integer
 			  If mShareDNSCache Then shareoption = CURLSHOPT_SHARE Else shareoption = CURLSHOPT_UNSHARE
-			  If Not Me.SetOption(shareoption, CURL_LOCK_DATA_DNS) Then Raise New cURLException(Me)
+			  If Not Me.SetOption(shareoption, curl_lock_data.LOCK_DNS) Then Raise New cURLException(Me)
 			End Set
 		#tag EndSetter
 		ShareDNSCache As Boolean
@@ -155,11 +271,15 @@ Inherits libcURL.cURLHandle
 			  mShareSSL = value
 			  Dim shareoption As Integer
 			  If mShareSSL Then shareoption = CURLSHOPT_SHARE Else shareoption = CURLSHOPT_UNSHARE
-			  If Not Me.SetOption(shareoption, CURL_LOCK_DATA_SSL_SESSION) Then Raise New cURLException(Me)
+			  If Not Me.SetOption(shareoption, curl_lock_data.LOCK_SSL) Then Raise New cURLException(Me)
 			End Set
 		#tag EndSetter
 		ShareSSL As Boolean
 	#tag EndComputedProperty
+
+	#tag Property, Flags = &h21
+		Private SSLLock As Mutex
+	#tag EndProperty
 
 
 	#tag Constant, Name = CURLSHOPT_SHARE, Type = Double, Dynamic = False, Default = \"1", Scope = Private
@@ -168,14 +288,23 @@ Inherits libcURL.cURLHandle
 	#tag Constant, Name = CURLSHOPT_UNSHARE, Type = Double, Dynamic = False, Default = \"2", Scope = Private
 	#tag EndConstant
 
-	#tag Constant, Name = CURL_LOCK_DATA_COOKIE, Type = Double, Dynamic = False, Default = \"2", Scope = Private
-	#tag EndConstant
 
-	#tag Constant, Name = CURL_LOCK_DATA_DNS, Type = Double, Dynamic = False, Default = \"3", Scope = Private
-	#tag EndConstant
+	#tag Enum, Name = curl_lock_access, Type = Integer, Flags = &h21
+		ACCESS_NONE=0
+		  ACCESS_SHARED
+		  ACCESS_SINGLE
+		ACCESS_LAST
+	#tag EndEnum
 
-	#tag Constant, Name = CURL_LOCK_DATA_SSL_SESSION, Type = Double, Dynamic = False, Default = \"4", Scope = Private
-	#tag EndConstant
+	#tag Enum, Name = curl_lock_data, Type = Integer, Flags = &h21
+		LOCK_NONE=0
+		  LOCK_SHARE
+		  LOCK_COOKIE
+		  LOCK_DNS
+		  LOCK_SSL
+		  LOCK_CONNECT
+		LOCK_LAST
+	#tag EndEnum
 
 
 	#tag ViewBehavior

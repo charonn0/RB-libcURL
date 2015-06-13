@@ -288,6 +288,15 @@ Protected Module Opts
 	#tag Constant, Name = SHARE, Type = Double, Dynamic = False, Default = \"10100", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = SHOPT_LOCKFUNC, Type = Double, Dynamic = False, Default = \"3", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = SHOPT_UNLOCKFUNC, Type = Double, Dynamic = False, Default = \"4", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = SHOPT_USERDATA, Type = Double, Dynamic = False, Default = \"5", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = SOCKOPTDATA, Type = Double, Dynamic = False, Default = \"10149", Scope = Protected
 	#tag EndConstant
 
