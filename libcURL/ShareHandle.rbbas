@@ -28,6 +28,7 @@ Inherits libcURL.cURLHandle
 		      Call Me.RemoveItem(SharedHandles.Value(h))
 		    Next
 		  End If
+		  If Instances <> Nil And Instances.HasKey(mHandle) Then Instances.Remove(mHandle)
 		End Sub
 	#tag EndMethod
 
@@ -48,7 +49,7 @@ Inherits libcURL.cURLHandle
 		  End If
 		  SharedHandles = New Dictionary
 		  If Instances = Nil Then Instances = New Dictionary
-		  Instances.Value(mHandle) = Me
+		  Instances.Value(mHandle) = New WeakRef(Me)
 		  CookieLock = New Mutex(Hex(mHandle) + "_Cookie")
 		  SSLLock = New Mutex(Hex(mHandle) + "_SSL")
 		  DNSLock = New Mutex(Hex(mHandle) + "_DNS")
@@ -81,9 +82,9 @@ Inherits libcURL.cURLHandle
 		  #pragma X86CallingConvention StdCall
 		  #pragma Unused ShareItem
 		  
-		  Dim curl As ShareHandle = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil Then 
-		    curl._Lock(Data, Access)
+		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
+		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA ShareHandle Then
+		    ShareHandle(curl.Value)._Lock(Data, Access)
 		    Return
 		  End If
 		  Break 'UserData does not refer to a valid instance!
@@ -133,9 +134,9 @@ Inherits libcURL.cURLHandle
 		  #pragma X86CallingConvention StdCall
 		  #pragma Unused ShareItem
 		  
-		  Dim curl As ShareHandle = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil Then 
-		    curl._Unlock(Data)
+		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
+		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA ShareHandle Then
+		    ShareHandle(curl.Value)._Unlock(Data)
 		    Return
 		  End If
 		  Break 'UserData does not refer to a valid instance!
