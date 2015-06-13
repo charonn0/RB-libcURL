@@ -222,8 +222,10 @@ Inherits libcURL.cURLHandle
 		Protected Shared Sub InitCallbacks(Sender As libcURL.EasyHandle)
 		  ' This method sets up the callback functions for the passed instance of EasyHandle
 		  
-		  If Not Sender.SetOption(libcURL.Opts.SOCKOPTDATA, Sender.Handle) Then Raise New cURLException(Sender)
-		  If Not Sender.SetOption(libcURL.Opts.SOCKOPTFUNCTION, AddressOf OpenCallback) Then Raise New cURLException(Sender)
+		  If libcURL.Version.IsAtLeast(7, 16, 0) Then
+		    If Not Sender.SetOption(libcURL.Opts.SOCKOPTDATA, Sender.Handle) Then Raise New cURLException(Sender)
+		    If Not Sender.SetOption(libcURL.Opts.SOCKOPTFUNCTION, AddressOf OpenCallback) Then Raise New cURLException(Sender)
+		  End If
 		  
 		  If libcURL.Version.SSL Then
 		    If Not Sender.SetOption(libcURL.Opts.SSL_CTX_DATA, Sender.Handle) Then Raise New cURLException(Sender)
