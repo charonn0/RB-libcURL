@@ -830,7 +830,7 @@ Inherits libcURL.cURLHandle
 		#tag Setter
 			Set
 			  ' Sets the PEM file (or a directory of PEM files) containing one or more certificate authorities libcURL
-			  ' should trust to verify the peer with. Set this to libcURL.Default_CA_File to use the default CA list for 
+			  ' should trust to verify the peer with. Set this to libcURL.Default_CA_File to use the default CA list for
 			  ' Mozilla products. Set this to Nil to unset the current file/folder.
 			  '
 			  ' See:
@@ -868,7 +868,7 @@ Inherits libcURL.cURLHandle
 		#tag Setter
 			Set
 			  ' Sets whether SSL will be requested. Use one of the libcURL.Opts.USE_SSL_* values.
-			  ' 
+			  '
 			  ' See:
 			  ' http://curl.haxx.se/libcurl/c/CURLOPT_USE_SSL.html
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.ConnectionType
@@ -890,7 +890,7 @@ Inherits libcURL.cURLHandle
 		#tag EndGetter
 		#tag Setter
 			Set
-			  ' Sets the local file to be used as cookie storage. 
+			  ' Sets the local file to be used as cookie storage.
 			  '
 			  ' See:
 			  ' http://curl.haxx.se/libcurl/c/CURLOPT_COOKIEJAR.html
@@ -1094,7 +1094,7 @@ Inherits libcURL.cURLHandle
 			Set
 			  ' Sets the local network interface to be used for the next connection.
 			  '
-			  ' See: 
+			  ' See:
 			  ' http://curl.haxx.se/libcurl/c/CURLOPT_INTERFACE.html
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.NetworkInterface
 			  ' http://docs.realsoftware.com/index.php/NetworkInterface
@@ -1118,7 +1118,7 @@ Inherits libcURL.cURLHandle
 		#tag Setter
 			Set
 			  ' The password to be supplied to the remote host if the underlying protocol requires/allows users to log on.
-			  ' 
+			  '
 			  ' See:
 			  ' http://curl.haxx.se/libcurl/c/CURLOPT_PASSWORD.html
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Password
@@ -1231,7 +1231,7 @@ Inherits libcURL.cURLHandle
 		#tag Setter
 			Set
 			  ' If True, the next transfer is an upload operation.
-			  ' 
+			  '
 			  ' See:
 			  ' http://curl.haxx.se/libcurl/c/CURLOPT_UPLOAD.html
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.UploadMode
@@ -1258,7 +1258,7 @@ Inherits libcURL.cURLHandle
 			Set
 			  ' Sets the URL for the next request.
 			  '
-			  ' See: 
+			  ' See:
 			  ' http://curl.haxx.se/libcurl/c/curl_easy_setopt.html#CURLOPTURL
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.URL
 			  
