@@ -27,7 +27,9 @@ Inherits libcURL.cURLHandle
 		  End Select
 		  
 		  Dim err As RuntimeException
-		  If Value IsA FolderItem Then
+		  If mLastError <> 0 Then
+		    err = New cURLException(Me)
+		  ElseIf Value IsA FolderItem Then
 		    err = New IOException
 		    err.Message = "Value does not exist or is a directory." ' bad file
 		  Else
@@ -35,7 +37,6 @@ Inherits libcURL.cURLHandle
 		    err.Message = "Value is of unsupported vartype: " + Str(ValueType) ' bad type
 		  End If
 		  Raise err
-		  
 		End Function
 	#tag EndMethod
 
