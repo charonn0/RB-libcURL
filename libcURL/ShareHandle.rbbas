@@ -75,7 +75,7 @@ Inherits libcURL.cURLHandle
 		  Me.Close
 		  If mHandle <> 0 Then 
 		    mLastError = curl_share_cleanup(mHandle)
-		    If mLastError = 0
+		    If mLastError = 0 Then
 		      If Instances <> Nil And Instances.HasKey(mHandle) Then Instances.Remove(mHandle)
 		      mHandle = 0
 		    End If
