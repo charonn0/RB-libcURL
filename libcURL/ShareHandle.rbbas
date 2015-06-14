@@ -28,7 +28,7 @@ Inherits libcURL.cURLHandle
 		      Call Me.RemoveItem(SharedHandles.Value(h))
 		    Next
 		  End If
-		  If Instances <> Nil And Instances.HasKey(mHandle) Then Instances.Remove(mHandle)
+		  
 		End Sub
 	#tag EndMethod
 
@@ -48,15 +48,17 @@ Inherits libcURL.cURLHandle
 		    Raise New cURLException(Me)
 		  End If
 		  SharedHandles = New Dictionary
-		  If Instances = Nil Then Instances = New Dictionary
-		  Instances.Value(mHandle) = New WeakRef(Me)
-		  CookieLock = New Mutex(Hex(mHandle) + "_Cookie")
-		  SSLLock = New Mutex(Hex(mHandle) + "_SSL")
-		  DNSLock = New Mutex(Hex(mHandle) + "_DNS")
-		  
-		  If Not Me.SetOption(libcURL.Opts.SHOPT_USERDATA, mHandle) Then Raise New cURLException(Me)
-		  If Not Me.SetOption(libcURL.Opts.SHOPT_LOCKFUNC, AddressOf LockCallback) Then Raise New cURLException(Me)
-		  If Not Me.SetOption(libcURL.Opts.SHOPT_UNLOCKFUNC, AddressOf UnlockCallback) Then Raise New cURLException(Me)
+		  #If ENABLE_MUTEX Then
+		    If Instances = Nil Then Instances = New Dictionary
+		    Instances.Value(mHandle) = New WeakRef(Me)
+		    CookieLock = New Mutex(Hex(mHandle) + "_Cookie")
+		    SSLLock = New Mutex(Hex(mHandle) + "_SSL")
+		    DNSLock = New Mutex(Hex(mHandle) + "_DNS")
+		    
+		    If Not Me.SetOption(libcURL.Opts.SHOPT_USERDATA, mHandle) Then Raise New cURLException(Me)
+		    If Not Me.SetOption(libcURL.Opts.SHOPT_LOCKFUNC, AddressOf LockCallback) Then Raise New cURLException(Me)
+		    If Not Me.SetOption(libcURL.Opts.SHOPT_UNLOCKFUNC, AddressOf UnlockCallback) Then Raise New cURLException(Me)
+		  #endif
 		End Sub
 	#tag EndMethod
 
@@ -71,8 +73,13 @@ Inherits libcURL.cURLHandle
 	#tag Method, Flags = &h21
 		Private Sub Destructor()
 		  Me.Close
-		  If mHandle <> 0 Then mLastError = curl_share_cleanup(mHandle)
-		  If mHandle <> 0 And mLastError = 0 Then mHandle = 0
+		  If mHandle <> 0 Then 
+		    mLastError = curl_share_cleanup(mHandle)
+		    If mLastError = 0
+		      If Instances <> Nil And Instances.HasKey(mHandle) Then Instances.Remove(mHandle)
+		      mHandle = 0
+		    End If
+		  End If
 		  
 		End Sub
 	#tag EndMethod
@@ -287,6 +294,9 @@ Inherits libcURL.cURLHandle
 	#tag EndConstant
 
 	#tag Constant, Name = CURLSHOPT_UNSHARE, Type = Double, Dynamic = False, Default = \"2", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = ENABLE_MUTEX, Type = Boolean, Dynamic = False, Default = \"False", Scope = Private
 	#tag EndConstant
 
 
