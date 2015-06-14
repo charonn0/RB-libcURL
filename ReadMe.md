@@ -42,7 +42,7 @@ To perform one or more transfers in a non-halting manner use the `MultiHandle` c
 * [HTTP POST](https://github.com/charonn0/RB-libcURL/wiki/HTTP-POST-Example)
 * [FTP Download](https://github.com/charonn0/RB-libcURL/wiki/FTP-RETR-Example)
 * [FTP Upload](https://github.com/charonn0/RB-libcURL/wiki/FTP-STOR-Example)
-* [FTP Delete](https://github.com/charonn0/RB-libcURL/wiki/FTP-DELE-Example)
+* [FTP custom commands](https://github.com/charonn0/RB-libcURL/wiki/FTP-custom-commands)
 * [SMTP Send](https://github.com/charonn0/RB-libcURL/wiki/SMTP-Example)
 * [DNS control](https://github.com/charonn0/RB-libcURL/wiki/DNS-Example)
 
