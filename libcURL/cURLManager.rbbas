@@ -277,7 +277,7 @@ Protected Class cURLManager
 	#tag Method, Flags = &h21
 		Private Sub _TransferCompleteHandler(Sender As libcURL.MultiHandle, Item As libcURL.EasyHandle)
 		  #pragma Unused Sender
-		  
+		  Dim cURLCode As Integer = Item.LastError ' this gets clobbered too often
 		  If mDownload <> Nil And mDownload IsA BinaryStream And mDownloadMB <> Nil Then BinaryStream(mDownload).Close
 		  Dim status As Integer = Item.LastError
 		  If status <> 0 Then
@@ -289,6 +289,7 @@ Protected Class cURLManager
 		  ClearFormData()
 		  mEasyItem.UploadMode = False
 		  mUpload = Nil
+		  If Item.LastError <> cURLCode Then ErrorSetter(Item).LastError = cURLCode
 		End Sub
 	#tag EndMethod
 
