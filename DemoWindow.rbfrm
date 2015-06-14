@@ -51,7 +51,7 @@ Begin Window DemoWindow
       TextUnit        =   0
       Top             =   92
       Underline       =   ""
-      Value           =   0
+      Value           =   2
       Visible         =   True
       Width           =   596
       Begin Listbox Debug
@@ -103,7 +103,7 @@ Begin Window DemoWindow
          Width           =   578
          _ScrollWidth    =   -1
       End
-      Begin TextArea TextArea1
+      Begin TextArea DownloadOutput
          AcceptTabs      =   ""
          Alignment       =   0
          AutoDeactivate  =   True
@@ -167,7 +167,7 @@ Begin Window DemoWindow
          GridLinesVertical=   0
          HasHeading      =   True
          HeadingIndex    =   -1
-         Height          =   138
+         Height          =   185
          HelpTag         =   ""
          Hierarchical    =   ""
          Index           =   -2147483648
@@ -175,10 +175,10 @@ Begin Window DemoWindow
          InitialValue    =   "Supported Protocols"
          Italic          =   ""
          Left            =   11
-         LockBottom      =   ""
+         LockBottom      =   True
          LockedInPosition=   False
          LockLeft        =   True
-         LockRight       =   True
+         LockRight       =   False
          LockTop         =   True
          RequiresSelection=   ""
          Scope           =   0
@@ -195,7 +195,7 @@ Begin Window DemoWindow
          Underline       =   ""
          UseFocusRing    =   True
          Visible         =   True
-         Width           =   578
+         Width           =   290
          _ScrollWidth    =   -1
       End
       Begin Listbox Features
@@ -216,14 +216,14 @@ Begin Window DemoWindow
          GridLinesVertical=   0
          HasHeading      =   True
          HeadingIndex    =   -1
-         Height          =   121
+         Height          =   185
          HelpTag         =   ""
          Hierarchical    =   ""
          Index           =   -2147483648
          InitialParent   =   "TabPanel2"
          InitialValue    =   "Available Features"
          Italic          =   ""
-         Left            =   11
+         Left            =   305
          LockBottom      =   True
          LockedInPosition=   False
          LockLeft        =   True
@@ -240,11 +240,11 @@ Begin Window DemoWindow
          TextFont        =   "System"
          TextSize        =   0
          TextUnit        =   0
-         Top             =   267
+         Top             =   122
          Underline       =   ""
          UseFocusRing    =   True
          Visible         =   True
-         Width           =   578
+         Width           =   287
          _ScrollWidth    =   -1
       End
       Begin Listbox Headers
@@ -344,6 +344,396 @@ Begin Window DemoWindow
          Visible         =   True
          Width           =   578
          _ScrollWidth    =   -1
+      End
+      Begin Label Label1
+         AutoDeactivate  =   True
+         Bold            =   ""
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel2"
+         Italic          =   ""
+         Left            =   11
+         LockBottom      =   True
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   False
+         LockTop         =   False
+         Multiline       =   ""
+         Scope           =   0
+         Selectable      =   False
+         TabIndex        =   2
+         TabPanelIndex   =   3
+         Text            =   "CA List:"
+         TextAlign       =   2
+         TextColor       =   &h000000
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   351
+         Transparent     =   True
+         Underline       =   ""
+         Visible         =   True
+         Width           =   94
+      End
+      Begin Label Label2
+         AutoDeactivate  =   True
+         Bold            =   ""
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel2"
+         Italic          =   ""
+         Left            =   11
+         LockBottom      =   True
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   False
+         LockTop         =   False
+         Multiline       =   ""
+         Scope           =   0
+         Selectable      =   False
+         TabIndex        =   3
+         TabPanelIndex   =   3
+         Text            =   "Client certificate:"
+         TextAlign       =   2
+         TextColor       =   &h000000
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   373
+         Transparent     =   True
+         Underline       =   ""
+         Visible         =   True
+         Width           =   94
+      End
+      Begin Label CAListFile
+         AutoDeactivate  =   True
+         Bold            =   ""
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel2"
+         Italic          =   ""
+         Left            =   110
+         LockBottom      =   True
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   True
+         LockTop         =   False
+         Multiline       =   ""
+         Scope           =   0
+         Selectable      =   True
+         TabIndex        =   4
+         TabPanelIndex   =   3
+         Text            =   "Not specified"
+         TextAlign       =   0
+         TextColor       =   &h00464646
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   352
+         Transparent     =   True
+         Underline       =   ""
+         Visible         =   True
+         Width           =   411
+      End
+      Begin PushButton CASet
+         AutoDeactivate  =   True
+         Bold            =   ""
+         ButtonStyle     =   0
+         Cancel          =   ""
+         Caption         =   "Set"
+         Default         =   ""
+         Enabled         =   True
+         Height          =   22
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel2"
+         Italic          =   ""
+         Left            =   525
+         LockBottom      =   True
+         LockedInPosition=   False
+         LockLeft        =   False
+         LockRight       =   True
+         LockTop         =   False
+         Scope           =   0
+         TabIndex        =   5
+         TabPanelIndex   =   3
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   351
+         Underline       =   ""
+         Visible         =   True
+         Width           =   34
+      End
+      Begin PushButton CAUnset
+         AutoDeactivate  =   True
+         Bold            =   ""
+         ButtonStyle     =   0
+         Cancel          =   ""
+         Caption         =   "Unset"
+         Default         =   ""
+         Enabled         =   True
+         Height          =   22
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel2"
+         Italic          =   ""
+         Left            =   558
+         LockBottom      =   True
+         LockedInPosition=   False
+         LockLeft        =   False
+         LockRight       =   True
+         LockTop         =   False
+         Scope           =   0
+         TabIndex        =   6
+         TabPanelIndex   =   3
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   351
+         Underline       =   ""
+         Visible         =   True
+         Width           =   34
+      End
+      Begin Label ClientCert
+         AutoDeactivate  =   True
+         Bold            =   ""
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel2"
+         Italic          =   ""
+         Left            =   110
+         LockBottom      =   True
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   True
+         LockTop         =   False
+         Multiline       =   ""
+         Scope           =   0
+         Selectable      =   True
+         TabIndex        =   7
+         TabPanelIndex   =   3
+         Text            =   "Not specified"
+         TextAlign       =   0
+         TextColor       =   &h00464646
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   374
+         Transparent     =   True
+         Underline       =   ""
+         Visible         =   True
+         Width           =   411
+      End
+      Begin PushButton ClientCertSet
+         AutoDeactivate  =   True
+         Bold            =   ""
+         ButtonStyle     =   0
+         Cancel          =   ""
+         Caption         =   "Set"
+         Default         =   ""
+         Enabled         =   True
+         Height          =   22
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel2"
+         Italic          =   ""
+         Left            =   525
+         LockBottom      =   True
+         LockedInPosition=   False
+         LockLeft        =   False
+         LockRight       =   True
+         LockTop         =   False
+         Scope           =   0
+         TabIndex        =   8
+         TabPanelIndex   =   3
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   373
+         Underline       =   ""
+         Visible         =   True
+         Width           =   34
+      End
+      Begin PushButton ClientCertUnset
+         AutoDeactivate  =   True
+         Bold            =   ""
+         ButtonStyle     =   0
+         Cancel          =   ""
+         Caption         =   "Unset"
+         Default         =   ""
+         Enabled         =   True
+         Height          =   22
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel2"
+         Italic          =   ""
+         Left            =   558
+         LockBottom      =   True
+         LockedInPosition=   False
+         LockLeft        =   False
+         LockRight       =   True
+         LockTop         =   False
+         Scope           =   0
+         TabIndex        =   9
+         TabPanelIndex   =   3
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   373
+         Underline       =   ""
+         Visible         =   True
+         Width           =   34
+      End
+      Begin PushButton CookieJarUnset
+         AutoDeactivate  =   True
+         Bold            =   ""
+         ButtonStyle     =   0
+         Cancel          =   ""
+         Caption         =   "Unset"
+         Default         =   ""
+         Enabled         =   True
+         Height          =   22
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel2"
+         Italic          =   ""
+         Left            =   558
+         LockBottom      =   True
+         LockedInPosition=   False
+         LockLeft        =   False
+         LockRight       =   True
+         LockTop         =   False
+         Scope           =   0
+         TabIndex        =   10
+         TabPanelIndex   =   3
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   329
+         Underline       =   ""
+         Visible         =   True
+         Width           =   34
+      End
+      Begin PushButton CookieJarSet
+         AutoDeactivate  =   True
+         Bold            =   ""
+         ButtonStyle     =   0
+         Cancel          =   ""
+         Caption         =   "Set"
+         Default         =   ""
+         Enabled         =   True
+         Height          =   22
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel2"
+         Italic          =   ""
+         Left            =   525
+         LockBottom      =   True
+         LockedInPosition=   False
+         LockLeft        =   False
+         LockRight       =   True
+         LockTop         =   False
+         Scope           =   0
+         TabIndex        =   11
+         TabPanelIndex   =   3
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   329
+         Underline       =   ""
+         Visible         =   True
+         Width           =   34
+      End
+      Begin Label CookieJar
+         AutoDeactivate  =   True
+         Bold            =   ""
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel2"
+         Italic          =   ""
+         Left            =   110
+         LockBottom      =   True
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   True
+         LockTop         =   False
+         Multiline       =   ""
+         Scope           =   0
+         Selectable      =   True
+         TabIndex        =   12
+         TabPanelIndex   =   3
+         Text            =   "Not specified"
+         TextAlign       =   0
+         TextColor       =   &h00464646
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   330
+         Transparent     =   True
+         Underline       =   ""
+         Visible         =   True
+         Width           =   411
+      End
+      Begin Label Label5
+         AutoDeactivate  =   True
+         Bold            =   ""
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel2"
+         Italic          =   ""
+         Left            =   11
+         LockBottom      =   True
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   False
+         LockTop         =   False
+         Multiline       =   ""
+         Scope           =   0
+         Selectable      =   False
+         TabIndex        =   13
+         TabPanelIndex   =   3
+         Text            =   "Cookiejar:"
+         TextAlign       =   2
+         TextColor       =   &h000000
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   329
+         Transparent     =   True
+         Underline       =   ""
+         Visible         =   True
+         Width           =   94
       End
    End
    Begin cURLClient Client
@@ -482,7 +872,7 @@ Begin Window DemoWindow
       TextUnit        =   0
       Top             =   0
       Underline       =   ""
-      Value           =   0
+      Value           =   2
       Visible         =   True
       Width           =   246
       Begin PushButton PushButton1
@@ -801,6 +1191,30 @@ Begin Window DemoWindow
       Visible         =   False
       Width           =   332
    End
+   Begin Timer GUITimer
+      Height          =   32
+      Index           =   -2147483648
+      Left            =   152
+      LockedInPosition=   False
+      Mode            =   0
+      Period          =   1
+      Scope           =   0
+      TabPanelIndex   =   0
+      Top             =   437
+      Width           =   32
+   End
+   Begin Timer ProgressTimer
+      Height          =   32
+      Index           =   -2147483648
+      Left            =   186
+      LockedInPosition=   False
+      Mode            =   0
+      Period          =   1
+      Scope           =   0
+      TabPanelIndex   =   0
+      Top             =   437
+      Width           =   32
+   End
 End
 #tag EndWindow
 
@@ -812,6 +1226,44 @@ End
 		End Sub
 	#tag EndEvent
 
+
+	#tag Method, Flags = &h21
+		Private Sub Populate()
+		  Dim cURLCode As Integer = Client.LastError
+		  If Not CheckBox1.Value Then
+		    DownloadOutput.Text = Client.GetDownloadedData()
+		  Else
+		    DownloadOutput.Text = ""
+		  End If
+		  CurlInfo.DeleteAllRows
+		  Headers.DeleteAllRows
+		  ShowErrorBuffer()
+		  If cURLCode <> 0 Then
+		    Dim err As String = libcURL.Errors.Name(cURLCode) + "(" + Str(cURLCode) + "): " + libcURL.FormatError(cURLCode)
+		    Call MsgBox(err, 16, "libcURL error")
+		  Else
+		    Dim BytesRead As Integer = Client.GetInfo(libcURL.Info.SIZE_DOWNLOAD).Int32Value
+		    Dim BytesWritten As Integer = Client.GetInfo(libcURL.Info.SIZE_UPLOAD).Int32Value
+		    MsgBox("Transfer completed (" + Str(BytesWritten) + " bytes written, " + Str(BytesRead) +" bytes read) with status: " + Str(Client.GetStatusCode))
+		    CurlInfo.AddRow("EFFECTIVE_URL", Client.GetInfo(libcURL.Info.EFFECTIVE_URL))
+		    CurlInfo.AddRow("REDIRECT_COUNT", Str(Client.GetInfo(libcURL.Info.REDIRECT_COUNT).Int32Value))
+		    CurlInfo.AddRow("REDIRECT_URL", Client.GetInfo(libcURL.Info.REDIRECT_URL))
+		    CurlInfo.AddRow("CONTENT_TYPE", Client.GetInfo(libcURL.Info.CONTENT_TYPE))
+		    CurlInfo.AddRow("FTP_ENTRY_PATH", Client.GetInfo(libcURL.Info.FTP_ENTRY_PATH))
+		    CurlInfo.AddRow("RESPONSE_CODE", Str(Client.GetInfo(libcURL.Info.RESPONSE_CODE).Int32Value))
+		    CurlInfo.AddRow("NUM_CONNECTS", Str(Client.GetInfo(libcURL.Info.NUM_CONNECTS).Int32Value))
+		    CurlInfo.AddRow("OS_ERRNO", Str(Client.GetInfo(libcURL.Info.OS_ERRNO).Int32Value))
+		    CurlInfo.AddRow("SIZE_DOWNLOAD", Str(BytesRead))
+		    CurlInfo.AddRow("SIZE_UPLOAD", Str(BytesWritten))
+		    Dim h As InternetHeaders = Client.GetResponseHeaders
+		    If h <> Nil Then
+		      For i As Integer = 0 To h.Count - 1
+		        Headers.AddRow(h.Name(i), h.Value(i))
+		      Next
+		    End If
+		  End If
+		End Sub
+	#tag EndMethod
 
 	#tag Method, Flags = &h1
 		Protected Sub ShowErrorBuffer()
@@ -826,7 +1278,39 @@ End
 
 
 	#tag Property, Flags = &h21
+		Private ClientCertItem As FolderItem
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private dbgmsgs() As Pair
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
 		Private FormValue As Pair
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mdlnow As UInt64
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mdltotal As UInt64
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mPutTarget As FolderItem
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mulnow As UInt64
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private multotal As UInt64
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mURL As String
 	#tag EndProperty
 
 
@@ -881,62 +1365,163 @@ End
 		End Sub
 	#tag EndEvent
 #tag EndEvents
-#tag Events Client
+#tag Events CAListFile
 	#tag Event
-		Sub Error(cURLCode As Integer)
-		  MsgBox("cURL error " + Str(cURLCode) + ": " + libcURL.FormatError(cURLCode))
-		  ShowErrorBuffer()
+		Sub Open()
+		  If Client.EasyItem.CA_ListFile <> Nil Then Me.Text = Client.EasyItem.CA_ListFile.AbsolutePath
 		End Sub
 	#tag EndEvent
 	#tag Event
+		Sub MouseUp(X As Integer, Y As Integer)
+		  #pragma Unused X
+		  #pragma Unused Y
+		  If Client.EasyItem.CA_ListFile <> Nil Then
+		    Client.EasyItem.CA_ListFile.Parent.Launch
+		  End If
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Function MouseDown(X As Integer, Y As Integer) As Boolean
+		  #pragma Unused X
+		  #pragma Unused Y
+		  Return True
+		End Function
+	#tag EndEvent
+#tag EndEvents
+#tag Events CASet
+	#tag Event
+		Sub Action()
+		  Dim f As FolderItem = GetOpenFolderItem(cURLTypes.SecurityCertificate)
+		  If f <> Nil Then
+		    Client.EasyItem.CA_ListFile = f
+		    CAListFile.Text = Client.EasyItem.CA_ListFile.AbsolutePath
+		  End If
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events CAUnset
+	#tag Event
+		Sub Action()
+		  Client.EasyItem.CA_ListFile = Nil
+		  CAListFile.Text = "Not specified"
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events ClientCert
+	#tag Event
+		Sub MouseUp(X As Integer, Y As Integer)
+		  #pragma Unused X
+		  #pragma Unused Y
+		  If ClientCertItem <> Nil Then
+		    ClientCertItem.Parent.Launch
+		  End If
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Function MouseDown(X As Integer, Y As Integer) As Boolean
+		  #pragma Unused X
+		  #pragma Unused Y
+		  Return True
+		End Function
+	#tag EndEvent
+#tag EndEvents
+#tag Events ClientCertSet
+	#tag Event
+		Sub Action()
+		  Dim f As FolderItem = GetOpenFolderItem(cURLTypes.SecurityCertificate)
+		  If f <> Nil Then
+		    If Client.EasyItem.SetOption(libcURL.Opts.SSLCERT, f) Then
+		      ClientCert.Text = f.AbsolutePath
+		      ClientCertItem = f
+		    Else
+		      MsgBox("Unable to set client certificate!")
+		    End If
+		  End If
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events ClientCertUnset
+	#tag Event
+		Sub Action()
+		  Call Client.EasyItem.SetOption(libcURL.Opts.SSLCERT, Nil)
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events CookieJarUnset
+	#tag Event
+		Sub Action()
+		  Client.EasyItem.CookieJar = Nil
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events CookieJarSet
+	#tag Event
+		Sub Action()
+		  Dim f As FolderItem
+		  If MsgBox("Would you like to open an existing cookie file?", 4 + 32, "Open existing?") = 6 Then
+		    f = GetOpenFolderItem(cURLTypes.NetscapeCookieJar)
+		  Else
+		    f = GetSaveFolderItem(cURLTypes.NetscapeCookieJar, "cookie.jar")
+		  End If
+		  If f <> Nil Then
+		    Client.EasyItem.CookieJar = f
+		    CookieJar.Text = Client.EasyItem.CookieJar.AbsolutePath
+		  End If
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events CookieJar
+	#tag Event
+		Sub MouseUp(X As Integer, Y As Integer)
+		  #pragma Unused X
+		  #pragma Unused Y
+		  If Client.EasyItem.CookieJar <> Nil Then
+		    Client.EasyItem.CookieJar.Parent.Launch
+		  End If
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Function MouseDown(X As Integer, Y As Integer) As Boolean
+		  #pragma Unused X
+		  #pragma Unused Y
+		  Return True
+		End Function
+	#tag EndEvent
+#tag EndEvents
+#tag Events Client
+	#tag Event
 		Function Progress(dlTotal As UInt64, dlnow As UInt64, ultotal As UInt64, ulnow As UInt64) As Boolean
-		  ProgressDownload.Value = dlnow * 100 / dlTotal
-		  ProgressUpload.Value = ulnow * 100 / ulTotal
+		  mdlnow = dlnow
+		  mdltotal = dlTotal
+		  mulnow = ulnow
+		  multotal = ultotal
+		  ProgressTimer.Mode = Timer.ModeSingle
 		End Function
 	#tag EndEvent
 	#tag Event
-		Sub DebugMessage(MessageType As libcURL.curl_infotype, data As String)
-		  If MessageType = libcURL.curl_infotype.data_in Or MessageType = libcURL.curl_infotype.data_out _
-		    Or MessageType = libcURL.curl_infotype.ssl_in Or MessageType = libcURL.curl_infotype.ssl_out Then Return
-		    Debug.AddRow(libcURL.curl_infoname(MessageType), data.Trim)
-		    Debug.ScrollPosition = Debug.ListCount
-		    ShowErrorBuffer()
+		Sub Error(cURLCode As Integer)
+		  #pragma Unused cURLCode
+		  GUITimer.Mode = Timer.ModeSingle
 		End Sub
 	#tag EndEvent
 	#tag Event
 		Sub TransferComplete(BytesRead As Integer, BytesWritten As Integer)
-		  If Not CheckBox1.Value Then
-		    TextArea1.Text = Me.GetDownloadedData()
-		  Else
-		    TextArea1.Text = ""
-		  End If
-		  CurlInfo.DeleteAllRows
-		  CurlInfo.AddRow("EFFECTIVE_URL", Me.GetInfo(libcURL.Info.EFFECTIVE_URL))
-		  CurlInfo.AddRow("REDIRECT_COUNT", Str(Me.GetInfo(libcURL.Info.REDIRECT_COUNT).Int32Value))
-		  CurlInfo.AddRow("REDIRECT_URL", Me.GetInfo(libcURL.Info.REDIRECT_URL))
-		  CurlInfo.AddRow("CONTENT_TYPE", Me.GetInfo(libcURL.Info.CONTENT_TYPE))
-		  CurlInfo.AddRow("FTP_ENTRY_PATH", Me.GetInfo(libcURL.Info.FTP_ENTRY_PATH))
-		  CurlInfo.AddRow("RESPONSE_CODE", Str(Me.GetInfo(libcURL.Info.RESPONSE_CODE).Int32Value))
-		  CurlInfo.AddRow("NUM_CONNECTS", Str(Me.GetInfo(libcURL.Info.NUM_CONNECTS).Int32Value))
-		  CurlInfo.AddRow("OS_ERRNO", Str(Me.GetInfo(libcURL.Info.OS_ERRNO).Int32Value))
-		  CurlInfo.AddRow("SIZE_DOWNLOAD", Str(Me.GetInfo(libcURL.Info.SIZE_DOWNLOAD).Int32Value))
-		  CurlInfo.AddRow("SIZE_UPLOAD", Str(Me.GetInfo(libcURL.Info.SIZE_UPLOAD).Int32Value))
-		  Headers.DeleteAllRows
-		  Dim h As InternetHeaders = Me.GetResponseHeaders
-		  If h <> Nil Then
-		    For i As Integer = 0 To h.Count - 1
-		      Headers.AddRow(h.Name(i), h.Value(i))
-		    Next
-		  End If
-		  MsgBox("Transfer completed (" + Str(BytesWritten) + " bytes written, " + Str(BytesRead) +" bytes read) with status: " + Str(Me.GetStatusCode))
-		  ShowErrorBuffer()
+		  #pragma Unused BytesRead
+		  #pragma Unused BytesWritten
+		  GUITimer.Mode = Timer.ModeSingle
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Sub DebugMessage(MessageType As libcURL.curl_infotype, data As String)
+		  dbgmsgs.Insert(0, MessageType:data)
+		  ProgressTimer.Mode = Timer.ModeSingle
 		End Sub
 	#tag EndEvent
 #tag EndEvents
 #tag Events GetThread
 	#tag Event
 		Sub Run()
-		  If Not Client.Get(TextField1.Text) Then
+		  If Not Client.Get(mURL) Then
 		    Break
 		  End If
 		End Sub
@@ -945,12 +1530,12 @@ End
 #tag Events PutThread
 	#tag Event
 		Sub Run()
-		  Dim f As FolderItem = GetOpenFolderItem("")
-		  If f <> Nil Then
-		    Dim bs As BinaryStream = BinaryStream.Open(f)
-		    If Not Client.Put(TextField1.Text, bs) Then
+		  If mPutTarget <> Nil Then
+		    Dim bs As BinaryStream = BinaryStream.Open(mPutTarget)
+		    If Not Client.Put(mURL, bs) Then
 		      Break
 		    End If
+		    bs.Close
 		  End If
 		End Sub
 	#tag EndEvent
@@ -961,10 +1546,10 @@ End
 		  If FormValue <> Nil Then
 		    If FormValue.Right = 0 Then ' URLEncoded
 		      Dim frm() As String = FormValue.Left
-		      If Not Client.Post(TextField1.Text, frm) Then Break
+		      If Not Client.Post(mURL, frm) Then Break
 		    ElseIf FormValue.Right = 1 Then ' Multipart
 		      Dim frm As Dictionary = FormValue.Left
-		      If Not Client.Post(TextField1.Text, frm) Then Break
+		      If Not Client.Post(mURL, frm) Then Break
 		    Else
 		      Break
 		    End If
@@ -987,6 +1572,7 @@ End
 #tag Events PushButton2
 	#tag Event
 		Sub Action()
+		  mURL = TextField1.Text
 		  GetThread.Run
 		End Sub
 	#tag EndEvent
@@ -1003,6 +1589,8 @@ End
 #tag Events PushButton4
 	#tag Event
 		Sub Action()
+		  mPutTarget = GetOpenFolderItem("")
+		  mURL = TextField1.Text
 		  PutThread.Run
 		End Sub
 	#tag EndEvent
@@ -1027,6 +1615,8 @@ End
 #tag Events PushButton6
 	#tag Event
 		Sub Action()
+		  
+		  mURL = TextField1.Text
 		  PostThread.Run
 		End Sub
 	#tag EndEvent
@@ -1038,6 +1628,32 @@ End
 		  If f <> Nil Then
 		    FormValue = f
 		  End If
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events GUITimer
+	#tag Event
+		Sub Action()
+		  Populate()
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events ProgressTimer
+	#tag Event
+		Sub Action()
+		  ProgressDownload.Value = mdlnow * 100 / mdlTotal
+		  ProgressUpload.Value = mulnow * 100 / mulTotal
+		  
+		  Do Until UBound(dbgmsgs) = -1
+		    Dim p As Pair = dbgmsgs.Pop
+		    Dim MessageType As libcURL.curl_infotype = p.Left
+		    Dim data As String = p.Right
+		    If MessageType = libcURL.curl_infotype.data_in Or MessageType = libcURL.curl_infotype.data_out _
+		      Or MessageType = libcURL.curl_infotype.ssl_in Or MessageType = libcURL.curl_infotype.ssl_out Then Continue
+		      Debug.AddRow(libcURL.curl_infoname(MessageType), data.Trim)
+		      Debug.ScrollPosition = Debug.ListCount
+		  Loop
+		  ShowErrorBuffer()
 		End Sub
 	#tag EndEvent
 #tag EndEvents
