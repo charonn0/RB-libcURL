@@ -899,18 +899,14 @@ Inherits libcURL.cURLHandle
 			  ' http://curl.haxx.se/libcurl/c/CURLOPT_COOKIEFILE.html
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.CookieJar
 			  
-			  Select Case True
-			  Case value = Nil, value.Directory
+			  If value = Nil Or value.Directory Then
 			    If Not Me.SetOption(libcURL.Opts.COOKIEFILE, Nil) Then Raise New cURLException(Me)
 			    If Not Me.SetOption(libcURL.Opts.COOKIEJAR, Nil) Then Raise New cURLException(Me)
-			    
-			  Case value.Exists ' existing file
-			    If Not Me.SetOption(libcURL.Opts.COOKIEFILE, value) Then Raise New cURLException(Me)
-			    
 			  Else
+			    If Not Me.SetOption(libcURL.Opts.COOKIEFILE, value) Then Raise New cURLException(Me)
 			    If Not Me.SetOption(libcURL.Opts.COOKIEJAR, value) Then Raise New cURLException(Me)
-			    
-			  End Select
+			  End If
+			  
 			  mCookieJar = value
 			End Set
 		#tag EndSetter
