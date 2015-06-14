@@ -343,13 +343,7 @@ Protected Module libcURL
 		  
 		  If EasyItem = Nil Then EasyItem = New libcURL.EasyHandle(CURL_GLOBAL_NOTHING)
 		  If Not libcURL.Version.IsAtLeast(7, 15, 4) Then
-		    Dim p() As Introspection.PropertyInfo = Introspection.GetType(EasyItem).GetProperties
-		    For Each prop As Introspection.PropertyInfo In p
-		      If prop.Name = "mLastError" Then
-		        prop.Value(EasyItem) = libcURL.Errors.FEATURE_UNAVAILABLE
-		        Exit For
-		      End If
-		    Next
+		    Errorsetter(EasyItem).LastError = libcURL.Errors.FEATURE_UNAVAILABLE
 		    Raise New cURLException(EasyItem)
 		  End If
 		  
@@ -373,13 +367,7 @@ Protected Module libcURL
 		  
 		  If EasyItem = Nil Then EasyItem = New libcURL.EasyHandle(CURL_GLOBAL_NOTHING)
 		  If Not libcURL.Version.IsAtLeast(7, 15, 4) Then
-		    Dim p() As Introspection.PropertyInfo = Introspection.GetType(EasyItem).GetProperties
-		    For Each prop As Introspection.PropertyInfo In p
-		      If prop.Name = "mLastError" Then
-		        prop.Value(EasyItem) = libcURL.Errors.FEATURE_UNAVAILABLE
-		        Exit For
-		      End If
-		    Next
+		    Errorsetter(EasyItem).LastError = libcURL.Errors.FEATURE_UNAVAILABLE
 		    Raise New cURLException(EasyItem)
 		  End If
 		  

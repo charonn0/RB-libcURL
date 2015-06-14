@@ -138,7 +138,7 @@ Inherits libcURL.cURLHandle
 		        If c > -1 Then
 		          Dim curl As EasyHandle = Instances.Value(msg.easy_handle)
 		          Call Me.RemoveItem(curl)
-		          curl.mLastError = Integer(msg.Data) ' msg.Data is the last error code for the easy handle
+		          ErrorSetter(curl).LastError = Integer(msg.Data) ' msg.Data is the last error code for the easy handle
 		          RaiseEvent TransferComplete(curl)
 		          
 		        End If
