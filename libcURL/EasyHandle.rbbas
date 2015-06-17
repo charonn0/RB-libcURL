@@ -786,7 +786,7 @@ Inherits libcURL.cURLHandle
 
 	#tag Note, Name = Using this class
 		This class provides basic access to the curl_easy API. It is strongly recommended that you
-		familiarize yourself with libcURL, as this project is mostly glue code for libcURL's API.
+		familiarize yourself with libcURL, as this class is mostly glue code for libcURL's API.
 		
 		Create a new instance, then use the SetOption method to define what cURL will be doing.
 		
