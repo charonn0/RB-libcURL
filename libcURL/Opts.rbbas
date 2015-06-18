@@ -81,6 +81,12 @@ Protected Module Opts
 	#tag Constant, Name = FOLLOWLOCATION, Type = Double, Dynamic = False, Default = \"52", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = FORBID_REUSE, Type = Double, Dynamic = False, Default = \"75", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = FRESH_CONNECT, Type = Double, Dynamic = False, Default = \"74", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = FTPMETHOD_MULTICWD, Type = Double, Dynamic = False, Default = \"1", Scope = Protected
 	#tag EndConstant
 

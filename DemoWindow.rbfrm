@@ -1223,6 +1223,7 @@ End
 		Sub Open()
 		  Me.Title = Me.Title + " - " + libcURL.Version.Name
 		  Client.EasyItem.UseErrorBuffer = True
+		  Client.EasyItem.AutoDisconnect = True
 		End Sub
 	#tag EndEvent
 

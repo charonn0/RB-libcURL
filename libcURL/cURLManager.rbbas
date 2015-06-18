@@ -223,8 +223,7 @@ Protected Class cURLManager
 		    Return data.Size
 		  End If
 		  
-		  Dim msg As String = "This transfer needs an upload stream, but none was provided!"
-		  If mEasyItem.Verbose Then RaiseEvent DebugMessage(libcURL.curl_infotype.RB_libcURL, msg)
+		  If mEasyItem.Verbose Then RaiseEvent DebugMessage(curl_infotype.RB_libcURL, "Abort: No stream to upload!")
 		  ' LastError will be libcURL.Errors.ABORTED_BY_CALLBACK(42)
 		  Return libcURL.CURL_READFUNC_ABORT
 		End Function
