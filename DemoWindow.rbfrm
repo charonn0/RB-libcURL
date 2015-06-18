@@ -863,7 +863,7 @@ Begin Window DemoWindow
       Panels          =   ""
       Scope           =   0
       SmallTabs       =   ""
-      TabDefinition   =   "GET\rPUT\rPOST"
+      TabDefinition   =   "GET\rHEAD\rPUT\rPOST"
       TabIndex        =   10
       TabPanelIndex   =   0
       TabStop         =   True
@@ -872,7 +872,7 @@ Begin Window DemoWindow
       TextUnit        =   0
       Top             =   0
       Underline       =   ""
-      Value           =   2
+      Value           =   1
       Visible         =   True
       Width           =   246
       Begin PushButton PushButton1
@@ -990,7 +990,7 @@ Begin Window DemoWindow
          LockTop         =   True
          Scope           =   0
          TabIndex        =   0
-         TabPanelIndex   =   2
+         TabPanelIndex   =   3
          TabStop         =   True
          TextFont        =   "System"
          TextSize        =   0
@@ -1021,7 +1021,7 @@ Begin Window DemoWindow
          LockTop         =   True
          Scope           =   0
          TabIndex        =   1
-         TabPanelIndex   =   2
+         TabPanelIndex   =   3
          TabStop         =   True
          TextFont        =   "System"
          TextSize        =   0
@@ -1052,7 +1052,7 @@ Begin Window DemoWindow
          LockTop         =   True
          Scope           =   0
          TabIndex        =   0
-         TabPanelIndex   =   3
+         TabPanelIndex   =   4
          TabStop         =   True
          TextFont        =   "System"
          TextSize        =   0
@@ -1083,7 +1083,7 @@ Begin Window DemoWindow
          LockTop         =   True
          Scope           =   0
          TabIndex        =   1
-         TabPanelIndex   =   3
+         TabPanelIndex   =   4
          TabStop         =   True
          TextFont        =   "System"
          TextSize        =   0
@@ -1114,7 +1114,7 @@ Begin Window DemoWindow
          LockTop         =   False
          Scope           =   0
          TabIndex        =   2
-         TabPanelIndex   =   3
+         TabPanelIndex   =   4
          TabStop         =   True
          TextFont        =   "System"
          TextSize        =   0
@@ -1123,6 +1123,68 @@ Begin Window DemoWindow
          Underline       =   ""
          Visible         =   True
          Width           =   91
+      End
+      Begin PushButton PushButton8
+         AutoDeactivate  =   True
+         Bold            =   ""
+         ButtonStyle     =   0
+         Cancel          =   ""
+         Caption         =   "Head Threaded"
+         Default         =   ""
+         Enabled         =   True
+         Height          =   22
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel1"
+         Italic          =   ""
+         Left            =   103
+         LockBottom      =   ""
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   ""
+         LockTop         =   True
+         Scope           =   0
+         TabIndex        =   0
+         TabPanelIndex   =   2
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   31
+         Underline       =   ""
+         Visible         =   True
+         Width           =   104
+      End
+      Begin PushButton PushButton9
+         AutoDeactivate  =   True
+         Bold            =   ""
+         ButtonStyle     =   0
+         Cancel          =   ""
+         Caption         =   "Head"
+         Default         =   ""
+         Enabled         =   True
+         Height          =   22
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel1"
+         Italic          =   ""
+         Left            =   11
+         LockBottom      =   ""
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   ""
+         LockTop         =   True
+         Scope           =   0
+         TabIndex        =   1
+         TabPanelIndex   =   2
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   31
+         Underline       =   ""
+         Visible         =   True
+         Width           =   80
       End
    End
    Begin ProgressBar ProgressDownload
@@ -1194,7 +1256,7 @@ Begin Window DemoWindow
    Begin Timer GUITimer
       Height          =   32
       Index           =   -2147483648
-      Left            =   152
+      Left            =   190
       LockedInPosition=   False
       Mode            =   0
       Period          =   1
@@ -1206,11 +1268,23 @@ Begin Window DemoWindow
    Begin Timer ProgressTimer
       Height          =   32
       Index           =   -2147483648
-      Left            =   186
+      Left            =   224
       LockedInPosition=   False
       Mode            =   0
       Period          =   1
       Scope           =   0
+      TabPanelIndex   =   0
+      Top             =   437
+      Width           =   32
+   End
+   Begin Thread HeadThread
+      Height          =   32
+      Index           =   -2147483648
+      Left            =   155
+      LockedInPosition=   False
+      Priority        =   5
+      Scope           =   0
+      StackSize       =   0
       TabPanelIndex   =   0
       Top             =   437
       Width           =   32
@@ -1632,6 +1706,21 @@ End
 		End Sub
 	#tag EndEvent
 #tag EndEvents
+#tag Events PushButton8
+	#tag Event
+		Sub Action()
+		  mURL = TextField1.Text
+		  HeadThread.Run
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events PushButton9
+	#tag Event
+		Sub Action()
+		  Client.Head(TextField1.Text)
+		End Sub
+	#tag EndEvent
+#tag EndEvents
 #tag Events GUITimer
 	#tag Event
 		Sub Action()
@@ -1655,6 +1744,15 @@ End
 		      Debug.ScrollPosition = Debug.ListCount
 		  Loop
 		  ShowErrorBuffer()
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events HeadThread
+	#tag Event
+		Sub Run()
+		  If Not Client.Head(mURL) Then
+		    Break
+		  End If
 		End Sub
 	#tag EndEvent
 #tag EndEvents
