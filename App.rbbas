@@ -1,6 +1,17 @@
 #tag Class
 Protected Class App
 Inherits Application
+	#tag Event
+		Sub Open()
+		  Dim l As New libcURL.ListPtr
+		  Call l.Append("X-Texting: Foobar")
+		  Dim e As New libcURL.EasyHandle
+		  Call e.SetOption(libcURL.Opts.HTTPHEADER, l)
+		  Call e.Perform("http://192.168.1.4:8080/")
+		End Sub
+	#tag EndEvent
+
+
 	#tag Constant, Name = kEditClear, Type = String, Dynamic = False, Default = \"&Delete", Scope = Public
 		#Tag Instance, Platform = Windows, Language = Default, Definition  = \"&Delete"
 		#Tag Instance, Platform = Linux, Language = Default, Definition  = \"&Delete"

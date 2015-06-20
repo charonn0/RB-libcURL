@@ -71,9 +71,19 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 
-	#tag Property, Flags = &h1
+	#tag ComputedProperty, Flags = &h1
+		#tag Getter
+			Get
+			  return Ptr(mHandle)
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  mHandle = Integer(value)
+			End Set
+		#tag EndSetter
 		Protected List As Ptr
-	#tag EndProperty
+	#tag EndComputedProperty
 
 
 	#tag ViewBehavior
