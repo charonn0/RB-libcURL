@@ -646,9 +646,10 @@ Inherits libcURL.cURLHandle
 		  ' DO NOT CALL THIS METHOD
 		  Dim mb As MemoryBlock = data
 		  Dim s As String = mb.StringValue(0, size)
-		  If info <> curl_infotype.data_in And info <> curl_infotype.data_out Then
-		    System.DebugLog("libcURL 0x" + Hex(mHandle) + " (" + curl_infoname(info) + "): " + s)
-		  End If
+		    If info <> curl_infotype.data_in And info <> curl_infotype.data_out Then
+		      System.DebugLog("libcURL 0x" + Hex(mHandle) + " (" + curl_infoname(info) + "): " + s)  ' The Xojo IDE crashes here
+		    End If
+		  #endif
 		  RaiseEvent DebugMessage(info, s)
 		  Return size
 		End Function
