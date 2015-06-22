@@ -318,7 +318,7 @@ Inherits libcURL.cURLHandle
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Perform
 		  
 		  If URL <> "" Then Me.URL = URL
-		  If Timeout > 0 Then Me.TimeOut = Timeout
+		  If Timeout > 0 Then Me.ConnectionTimeout = Timeout
 		  mLastError = curl_easy_perform(mHandle)
 		  Return mLastError = 0
 		End Function
@@ -646,6 +646,7 @@ Inherits libcURL.cURLHandle
 		  ' DO NOT CALL THIS METHOD
 		  Dim mb As MemoryBlock = data
 		  Dim s As String = mb.StringValue(0, size)
+		  #If Debugbuild And RBVersion < 2013 Then
 		    If info <> curl_infotype.data_in And info <> curl_infotype.data_out Then
 		      System.DebugLog("libcURL 0x" + Hex(mHandle) + " (" + curl_infoname(info) + "): " + s)  ' The Xojo IDE crashes here
 		    End If
@@ -881,6 +882,28 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  return mConnectionTimeout
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  ' Sets the timeout period, in seconds, after which a transfer should be aborted. The default is 0, which
+			  ' means wait forever.
+			  '
+			  ' See:
+			  ' http://curl.haxx.se/libcurl/c/CURLOPT_TIMEOUT.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Timeout
+			  
+			  If Not Me.SetOption(libcURL.Opts.CONNECTTIMEOUT, value) Then Raise New cURLException(Me)
+			  mConnectionTimeout = value
+			End Set
+		#tag EndSetter
+		ConnectionTimeout As Integer
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
 			  ' Gets whether SSL will be requested. Returns one of the libcURL.Opts.USE_SSL_* values.
 			  
 			  return mConnectionType
@@ -1036,6 +1059,10 @@ Inherits libcURL.cURLHandle
 
 	#tag Property, Flags = &h21
 		Private mConnectionCount As Integer
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mConnectionTimeout As Integer = 300
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -1441,6 +1468,11 @@ Inherits libcURL.cURLHandle
 
 
 	#tag ViewBehavior
+		#tag ViewProperty
+			Name="AutoDisconnect"
+			Group="Behavior"
+			Type="Boolean"
+		#tag EndViewProperty
 		#tag ViewProperty
 			Name="ConnectionType"
 			Group="Behavior"

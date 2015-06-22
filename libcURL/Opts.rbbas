@@ -15,6 +15,9 @@ Protected Module Opts
 	#tag Constant, Name = CLOSESOCKETFUNCTION, Type = Double, Dynamic = False, Default = \"20208", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = CONNECTTIMEOUT, Type = Double, Dynamic = False, Default = \"78", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = CONNECT_ONLY, Type = Double, Dynamic = False, Default = \"141", Scope = Protected
 	#tag EndConstant
 
