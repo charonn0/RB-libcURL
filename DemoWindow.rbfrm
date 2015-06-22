@@ -1469,6 +1469,7 @@ End
 		  Dim f As FolderItem = GetOpenFolderItem(cURLTypes.SecurityCertificate)
 		  If f <> Nil Then
 		    Client.EasyItem.CA_ListFile = f
+		    Client.EasyItem.Secure = False
 		    CAListFile.Text = Client.EasyItem.CA_ListFile.AbsolutePath
 		  End If
 		End Sub
@@ -1478,6 +1479,7 @@ End
 	#tag Event
 		Sub Action()
 		  Client.EasyItem.CA_ListFile = Nil
+		  Client.EasyItem.Secure = False
 		  CAListFile.Text = "Not specified"
 		End Sub
 	#tag EndEvent
