@@ -854,6 +854,7 @@ Inherits libcURL.cURLHandle
 			  ' Sets the PEM file (or a directory of PEM files) containing one or more certificate authorities libcURL
 			  ' should trust to verify the peer with. Set this to libcURL.Default_CA_File to use the default CA list for
 			  ' Mozilla products. Set this to Nil to unset the current file/folder.
+			  ' EasyHandle.Secure must be set to True to enable certificate verification.
 			  '
 			  ' See:
 			  ' http://curl.haxx.se/libcurl/c/CURLOPT_CAINFO.html
@@ -1472,6 +1473,11 @@ Inherits libcURL.cURLHandle
 			Name="AutoDisconnect"
 			Group="Behavior"
 			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="ConnectionTimeout"
+			Group="Behavior"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="ConnectionType"

@@ -3,13 +3,42 @@ Protected Class App
 Inherits Application
 	#tag Event
 		Sub Open()
-		  Dim l As New libcURL.ListPtr
-		  Call l.Append("X-Texting: Foobar")
-		  Dim e As New libcURL.EasyHandle
-		  Call e.SetOption(libcURL.Opts.HTTPHEADER, l)
-		  Call e.Perform("http://192.168.1.4:8080/")
+		  'Dim c As New cURLClient
+		  'Dim root As FolderItem = SpecialFolder.Desktop.Child("Test_Source")
+		  'Dim err As Integer = FTPUpload(c, root, "ftp://charonn0:ohYZWitedJ4sn8S@ftp.sonic.net/public_html/Test/")
+		  'If err <> 0 Then MsgBox(libcURL.FormatError(err))
+		  'Quit
 		End Sub
 	#tag EndEvent
+
+
+	#tag Method, Flags = &h0
+		Function FTPUpload(cURL As cURLClient, Directory As FolderItem, FTPURL As String) As Integer
+		  If Right(FTPURL, 1) <> "/" Then FTPURL = FTPURL + "/"
+		  Dim c As Integer = Directory.Count
+		  Dim err As Integer
+		  Call cURL.SetOption(libcURL.Opts.FTP_CREATE_MISSING_DIRS, True)
+		  
+		  For i As Integer = 1 To c
+		    Dim item As FolderItem = Directory.Item(i)
+		    If Not item.Directory Then
+		      Dim bs As BinaryStream = BinaryStream.Open(item)
+		      If Not cURL.Put(FTPURL + item.Name, bs) Then err = cURL.LastError
+		      bs.Close
+		      
+		    Else
+		      If cURL.Head(FTPURL) Then ' create the directory
+		        err = FTPUpload(cURL, item, FTPURL + item.Name + "/") ' Recurse into it
+		      Else
+		        err = cURL.LastError
+		      End If
+		    End If
+		    If err <> 0 Then Exit For
+		  Next
+		  
+		  Return err
+		End Function
+	#tag EndMethod
 
 
 	#tag Constant, Name = kEditClear, Type = String, Dynamic = False, Default = \"&Delete", Scope = Public
