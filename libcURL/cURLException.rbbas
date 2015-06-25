@@ -12,7 +12,7 @@ Inherits RuntimeException
 		    Me.Message = "Unknown failure while constructing a libcURL handle."
 		    
 		  Case Me.ErrorNumber = libcURL.Errors.FEATURE_UNAVAILABLE
-		    Me.Message = "This feature is not available in the installed version of libcURL."
+		    Me.Message = "A required feature is not available in the installed version of libcURL."
 		    
 		  Case ErrantItem IsA libcURL.ShareHandle
 		    Me.Message = libcURL.FormatShareError(Me.ErrorNumber)

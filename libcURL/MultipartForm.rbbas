@@ -58,12 +58,16 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h21
 		Private Shared Function FormGetCallback(UserData As Integer, Buffer As Ptr, Length As Integer) As Integer
+		  #pragma X86CallingConvention CDecl
+		  
 		  Dim bs As BinaryStream = Instances.Lookup(UserData, Nil)
 		  If bs <> Nil Then
 		    Dim mb As MemoryBlock = Buffer
 		    bs.Write(mb.StringValue(0, Length))
 		    Return Length
 		  End If
+		  
+		  Break ' UserData does not refer to a valid stream!
 		End Function
 	#tag EndMethod
 
@@ -101,6 +105,10 @@ Inherits libcURL.cURLHandle
 		  ' http://curl.haxx.se/libcurl/c/curl_formget.html
 		  
 		  If FirstItem = Nil Then Return ""
+		  If Not libcURL.Version.IsAtLeast(7, 15, 5) Then
+		    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
+		    Raise New cURLException(Me)
+		  End If
 		  
 		  Dim mb As New MemoryBlock(0)
 		  Dim formstream As New BinaryStream(mb)
