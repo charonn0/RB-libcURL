@@ -10,21 +10,17 @@ Protected Module Version
 		Protected Function IsAtLeast(Major As Integer, Minor As Integer, Patch As Integer) As Boolean
 		  ' Returns True if libcURL is available and at least the version specified.
 		  
-		  Dim available As Boolean
 		  Select Case True
 		  Case Not System.IsFunctionAvailable("curl_global_init", "libcurl")
-		    available = False
+		    Return False
 		    
 		  Case MajorNumber > Major
-		    available = True
+		    Return True
 		    
 		  Case MajorNumber = Major
-		    If MinorNumber > Minor Or (MinorNumber = Minor And PatchNumber >= Patch) Then
-		      available = True
-		    End If
+		    If MinorNumber > Minor Or (MinorNumber = Minor And PatchNumber >= Patch) Then Return True
 		    
 		  End Select
-		  Return available
 		End Function
 	#tag EndMethod
 
@@ -44,7 +40,7 @@ Protected Module Version
 		  
 		  Static Minor As Integer
 		  If Minor = 0 Then Minor = Val(NthField(NthField(NthField(libcURL.Version.Name, " ", 1), "/", 2), ".", 2))
-		  Return Minor 
+		  Return Minor
 		End Function
 	#tag EndMethod
 
