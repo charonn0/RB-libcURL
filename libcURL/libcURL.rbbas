@@ -61,6 +61,10 @@ Protected Module libcURL
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Function curl_formget Lib "libcurl" (First As Ptr, UserData As Integer, Callback As Ptr) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h21
 		Private Soft Declare Sub curl_free Lib "libcurl" (char As Ptr)
 	#tag EndExternalMethod
 

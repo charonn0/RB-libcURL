@@ -56,6 +56,17 @@ Inherits libcURL.cURLHandle
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h21
+		Private Shared Function FormGetCallback(UserData As Integer, Buffer As Ptr, Length As Integer) As Integer
+		  Dim bs As BinaryStream = Instances.Lookup(UserData, Nil)
+		  If bs <> Nil Then
+		    Dim mb As MemoryBlock = Buffer
+		    bs.Write(mb.StringValue(0, Length))
+		    Return Length
+		  End If
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Function Handle() As Integer
 		  ' This method returns a Ptr to the form structure which can be passed back to libcURL
@@ -79,6 +90,28 @@ Inherits libcURL.cURLHandle
 		    If Not Me.AddElement(item, FromDict.Value(item)) Then Raise New cURLException(Me)
 		  Next
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Serialize() As String
+		  ' Serialize the form structure into a multipart/form-data string. The serialized form may be used with
+		  ' other HTTP libraries, including the built-in HTTPSocket.
+		  '
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/curl_formget.html
+		  
+		  If FirstItem = Nil Then Return ""
+		  
+		  Dim mb As New MemoryBlock(0)
+		  Dim formstream As New BinaryStream(mb)
+		  If Instances = Nil Then Instances = New Dictionary
+		  Instances.Value(Me.Handle) = formstream
+		  mLastError = curl_formget(FirstItem, Me.Handle, AddressOf FormGetCallback)
+		  If mLastError <> 0 Then Raise New cURLException(Me)
+		  Instances.Remove(Me.Handle)
+		  formstream.Close
+		  Return mb
+		End Function
 	#tag EndMethod
 
 
@@ -105,6 +138,10 @@ Inherits libcURL.cURLHandle
 
 	#tag Property, Flags = &h1
 		Protected FirstItem As Ptr
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private Shared Instances As Dictionary
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
