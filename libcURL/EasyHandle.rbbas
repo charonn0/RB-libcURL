@@ -1226,8 +1226,7 @@ Inherits libcURL.cURLHandle
 			Set
 			  ' If True, a connection will verify any SSL certificates presented by a server. This does not
 			  ' tell libcURL to use SSL, only to verify certs if SSL is used. Use EasyHandle.CA_ListFile to
-			  ' specify a list of certificate authorities to be trusted, otherwise libcURL.Default_CA_File
-			  ' is used.
+			  ' specify a list of certificate authorities to be trusted.
 			  '
 			  ' See:
 			  ' http://curl.haxx.se/libcurl/c/CURLOPT_SSL_VERIFYHOST.html
@@ -1235,9 +1234,8 @@ Inherits libcURL.cURLHandle
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Secure
 			  
 			  If value Then
-			    If Not Me.SetOption(libcURL.Opts.SSL_VERIFYHOST, 2) Then Raise New cURLException(Me)
+			    If Not Me.SetOption(libcURL.Opts.SSL_VERIFYHOST, 2) Then Raise New cURLException(Me) ' 2 is not a typo
 			    If Not Me.SetOption(libcURL.Opts.SSL_VERIFYPEER, 1) Then Raise New cURLException(Me)
-			    If Me.CA_ListFile = Nil Then Me.CA_ListFile = libcURL.Default_CA_File
 			  Else
 			    If Not Me.SetOption(libcURL.Opts.SSL_VERIFYHOST, 0) Then Raise New cURLException(Me)
 			    If Not Me.SetOption(libcURL.Opts.SSL_VERIFYPEER, 0) Then Raise New cURLException(Me)

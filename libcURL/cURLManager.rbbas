@@ -34,6 +34,7 @@ Protected Class cURLManager
 		  AddHandler mMultiItem.TransferComplete, WeakAddressOf _TransferCompleteHandler
 		  mEasyItem.UserAgent = libcURL.Version.Name
 		  mEasyItem.Secure = True
+		  mEasyItem.CA_ListFile = libcURL.Default_CA_File
 		  mEasyItem.FailOnServerError = True
 		  mEasyItem.FollowRedirects = True
 		  If libcURL.Version.LibZ.IsAvailable Then
