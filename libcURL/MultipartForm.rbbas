@@ -115,9 +115,9 @@ Inherits libcURL.cURLHandle
 		  If Instances = Nil Then Instances = New Dictionary
 		  Instances.Value(Me.Handle) = formstream
 		  mLastError = curl_formget(FirstItem, Me.Handle, AddressOf FormGetCallback)
-		  If mLastError <> 0 Then Raise New cURLException(Me)
 		  Instances.Remove(Me.Handle)
 		  formstream.Close
+		  If mLastError <> 0 Then Raise New cURLException(Me)
 		  Return mb
 		End Function
 	#tag EndMethod
