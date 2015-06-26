@@ -174,6 +174,12 @@ Protected Class cURLManager
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function SetOption(OptionNumber As Integer, NewValue As Variant) As Boolean
+		  Return mEasyItem.SetOption(OptionNumber, NewValue)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub SetRequestHeaders(Headers As InternetHeaders)
 		  If Headers <> Nil Then
 		    If mRequestHeaders = Nil Then mRequestHeaders = New libcURL.ListPtr
