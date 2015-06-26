@@ -175,7 +175,7 @@ Protected Class cURLManager
 
 	#tag Method, Flags = &h0
 		Function SetOption(OptionNumber As Integer, NewValue As Variant) As Boolean
-		  Return mEasyItem.SetOption(OptionNumber, NewValue)
+		  If mEasyItem <> Nil Then Return mEasyItem.SetOption(OptionNumber, NewValue)
 		End Function
 	#tag EndMethod
 
