@@ -203,23 +203,23 @@ Protected Class cURLManager
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Function _DataAvailableHandler(Sender As libcURL.EasyHandle, NewData As String) As Integer
+		Private Function _DataAvailableHandler(Sender As libcURL.EasyHandle, NewData As MemoryBlock) As Integer
 		  #pragma Unused Sender
 		  If mDownload = Nil Then
 		    mDownloadMB = New MemoryBlock(0)
 		    mDownload = New BinaryStream(mDownloadMB)
 		  End If
 		  mDownload.Write(NewData)
-		  Return NewData.LenB
+		  Return NewData.Size
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Function _DataNeededHandler(Sender As libcURL.EasyHandle, Buffer As MemoryBlock) As Integer
+		Private Function _DataNeededHandler(Sender As libcURL.EasyHandle, Buffer As MemoryBlock, MaxLength As Integer) As Integer
 		  #pragma Unused Sender
 		  
 		  If mUpload <> Nil Then
-		    Dim data As MemoryBlock = mUpload.Read(Buffer.Size)
+		    Dim data As MemoryBlock = mUpload.Read(MaxLength)
 		    Buffer.StringValue(0, data.Size) = data
 		    Return data.Size
 		  End If
