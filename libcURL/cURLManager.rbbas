@@ -3,10 +3,10 @@ Protected Class cURLManager
 	#tag Method, Flags = &h0
 		Sub ClearFormData()
 		  If Not mEasyItem.SetOption(libcURL.Opts.POSTFIELDSIZE, -1) Then Raise New libcURL.cURLException(mEasyItem)
-		  If Not Me.SetOption(libcURL.Opts.COPYPOSTFIELDS, Nil) Then Raise New libcURL.cURLException(mEasyItem)
-		  If Not Me.SetOption(libcURL.Opts.HTTPPOST, Nil) Then Raise New libcURL.cURLException(mEasyItem)
+		  If Not mEasyItem.SetOption(libcURL.Opts.COPYPOSTFIELDS, Nil) Then Raise New libcURL.cURLException(mEasyItem)
+		  If Not mEasyItem.SetOption(libcURL.Opts.HTTPPOST, Nil) Then Raise New libcURL.cURLException(mEasyItem)
 		  mForm = Nil
-		  If Not Me.SetOption(libcURL.Opts.HTTPGET, True) Then Raise New libcURL.cURLException(mEasyItem)
+		  If Not mEasyItem.SetOption(libcURL.Opts.HTTPGET, True) Then Raise New libcURL.cURLException(mEasyItem)
 		  
 		End Sub
 	#tag EndMethod
@@ -143,7 +143,7 @@ Protected Class cURLManager
 		  mDownloadMB = Nil
 		  mUpload = ReadFrom
 		  If mRequestHeaders <> Nil Then
-		    If Not Me.SetOption(libcURL.Opts.HTTPHEADER, mRequestHeaders) Then Raise New libcURL.cURLException(mEasyItem)
+		    If Not mEasyItem.SetOption(libcURL.Opts.HTTPHEADER, mRequestHeaders) Then Raise New libcURL.cURLException(mEasyItem)
 		  End If
 		  
 		  If Not mMultiItem.AddItem(mEasyItem) Then Raise New libcURL.cURLException(mMultiItem)
@@ -155,7 +155,7 @@ Protected Class cURLManager
 		Sub SetFormData(FormData As Dictionary)
 		  Dim frm As libcURL.MultipartForm
 		  If FormData <> Nil Then frm = FormData
-		  If Not Me.SetOption(libcURL.Opts.HTTPPOST, frm) Then Raise New libcURL.cURLException(mEasyItem)
+		  If Not mEasyItem.SetOption(libcURL.Opts.HTTPPOST, frm) Then Raise New libcURL.cURLException(mEasyItem)
 		  mForm = frm
 		End Sub
 	#tag EndMethod
@@ -174,12 +174,6 @@ Protected Class cURLManager
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function SetOption(OptionNumber As Integer, NewValue As Variant) As Boolean
-		  If mEasyItem <> Nil Then Return mEasyItem.SetOption(OptionNumber, NewValue)
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Sub SetRequestHeaders(Headers As InternetHeaders)
 		  If Headers <> Nil Then
 		    If mRequestHeaders = Nil Then mRequestHeaders = New libcURL.ListPtr
@@ -187,7 +181,7 @@ Protected Class cURLManager
 		      Call mRequestHeaders.Append(Headers.Name(i) + ": " + Headers.Value(Headers.Name(i)))
 		    Next
 		  Else
-		    If Not Me.SetOption(libcURL.Opts.HTTPHEADER, Nil) Then Raise New libcURL.cURLException(mEasyItem)
+		    If Not mEasyItem.SetOption(libcURL.Opts.HTTPHEADER, Nil) Then Raise New libcURL.cURLException(mEasyItem)
 		    mRequestHeaders = Nil
 		  End If
 		  

@@ -33,7 +33,7 @@ Inherits libcURL.cURLManager
 		  ' The protocol is inferred from the URL; explictly specify the protocol in the URL to avoid bad guesses.
 		  ' The transfer will be performed on the event loop (main thread).
 		  
-		  Call Me.SetOption(libcURL.Opts.NOBODY, True)
+		  Call Me.EasyItem.SetOption(libcURL.Opts.NOBODY, True)
 		  Me.Perform(URL, Nil, Nil)
 		End Sub
 	#tag EndMethod
@@ -45,7 +45,7 @@ Inherits libcURL.cURLManager
 		  ' This method will block the calling thread until the transfer completes. All events will be raised
 		  ' on the calling thread.
 		  
-		  Call Me.SetOption(libcURL.Opts.NOBODY, True)
+		  Call Me.EasyItem.SetOption(libcURL.Opts.NOBODY, True)
 		  Return Me.Perform(URL, Nil, Nil)
 		End Function
 	#tag EndMethod
@@ -98,7 +98,7 @@ Inherits libcURL.cURLManager
 	#tag Method, Flags = &h0
 		Function Post(URL As String, PostFields() As String, WriteTo As Writeable = Nil) As Boolean
 		  ' Asynchronously POST the passed PostFields via HTTP(S) using application/x-www-form-urlencoded. The PostFields array
-		  ' contains "NAME=VALUE" strings comprising HTML form elements. 
+		  ' contains "NAME=VALUE" strings comprising HTML form elements.
 		  ' WriteTo is an optional Writeable object (e.g. BinaryStream); downloaded data will be written to this
 		  ' object directly. If WriteTo is Nil then use the GetDownloadedData method to get any downloaded data.
 		  ' This method will block the calling thread until the transfer completes. All events will be raised
