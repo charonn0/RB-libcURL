@@ -1590,7 +1590,14 @@ End
 	#tag EndEvent
 	#tag Event
 		Sub DebugMessage(MessageType As libcURL.curl_infotype, data As String)
-		  dbgmsgs.Insert(0, MessageType:data)
+		  If MessageType = libcURL.curl_infotype.header_out Then
+		    Dim msgs() As String = SplitB(data.Trim, EndOfLine.Windows)
+		    For i As Integer = 0 To UBound(msgs)
+		      dbgmsgs.Insert(0, MessageType:msgs(i))
+		    Next
+		  Else
+		    dbgmsgs.Insert(0, MessageType:data)
+		  End If
 		  ProgressTimer.Mode = Timer.ModeSingle
 		End Sub
 	#tag EndEvent
