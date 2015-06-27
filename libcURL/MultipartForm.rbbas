@@ -2,41 +2,33 @@
 Protected Class MultipartForm
 Inherits libcURL.cURLHandle
 	#tag Method, Flags = &h0
-		Function AddElement(Name As String, Value As Variant) As Boolean
-		  ' Adds the passed Value to the form using the specified name.
-		  ' Value may be a String, FolderItem, or Integer. All other types,
-		  ' including Nil, will raise an exception.
+		Function AddElement(Name As String, Value As FolderItem, ContentType As String = "") As Boolean
+		  ' Adds the passed file to the form using the specified name.
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_formadd.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm.AddElement
 		  
-		  Dim ValueType As Integer = VarType(Value)
-		  Select Case ValueType ' marshal the value
-		  Case Variant.TypeObject
-		    Select Case Value
-		    Case IsA FolderItem
-		      Dim f As FolderItem = Value
-		      If f.Exists And Not f.Directory Then
-		        mLastError = curl_formadd(FirstItem, LastItem, CURLFORM_COPYNAME, Name, CURLFORM_FILE, f.AbsolutePath, CURLFORM_END)
-		        Return mLastError = 0
-		      End If
-		    End Select
-		  Case Variant.TypeInteger, Variant.TypeString
-		    mLastError = curl_formadd(FirstItem, LastItem, CURLFORM_COPYNAME, Name, CURLFORM_COPYCONTENTS, Value.StringValue, CURLFORM_END)
+		  If Value.Exists And Not Value.Directory Then
+		    If ContentType <> "" Then
+		      mLastError = curl_formadd(FirstItem, LastItem, CURLFORM_COPYNAME, Name, CURLFORM_FILE, Value.AbsolutePath, CURLFORM_CONTENTTYPE, ContentType, CURLFORM_END)
+		    Else
+		      mLastError = curl_formadd(FirstItem, LastItem, CURLFORM_COPYNAME, Name, CURLFORM_FILE, Value.AbsolutePath, CURLFORM_END)
+		    End If
 		    Return mLastError = 0
-		  End Select
-		  
-		  Dim err As RuntimeException
-		  If mLastError <> 0 Then
-		    err = New cURLException(Me)
-		  ElseIf Value IsA FolderItem Then
-		    err = New IOException
-		    err.Message = "Value does not exist or is a directory." ' bad file
-		  Else
-		    err = New TypeMismatchException
-		    err.Message = "Value is of unsupported vartype: " + Str(ValueType) ' bad type
 		  End If
-		  Raise err
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function AddElement(Name As String, Value As String) As Boolean
+		  ' Adds the passed Value to the form using the specified name.
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/curl_formadd.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm.AddElement
+		  
+		  mLastError = curl_formadd(FirstItem, LastItem, CURLFORM_COPYNAME, Name, CURLFORM_COPYCONTENTS, Value, CURLFORM_END)
+		  Return mLastError = 0
+		  
 		End Function
 	#tag EndMethod
 
@@ -91,7 +83,14 @@ Inherits libcURL.cURLHandle
 		  Me.Constructor()
 		  If FromDict = Nil Then Raise New NilObjectException
 		  For Each item As String In FromDict.Keys
-		    If Not Me.AddElement(item, FromDict.Value(item)) Then Raise New cURLException(Me)
+		    Dim value As Variant = FromDict.Value(item)
+		    If VarType(value) = Variant.TypeString Then
+		      
+		    ElseIf VarType(value) = Variant.TypeObject And value IsA FolderItem Then
+		      If Not Me.AddElement(item, FolderItem(value)) Then Raise New cURLException(Me)
+		    Else
+		      Raise New UnsupportedFormatException
+		    End If
 		  Next
 		End Sub
 	#tag EndMethod
@@ -156,6 +155,9 @@ Inherits libcURL.cURLHandle
 		Protected LastItem As Ptr
 	#tag EndProperty
 
+
+	#tag Constant, Name = CURLFORM_CONTENTTYPE, Type = Double, Dynamic = False, Default = \"14", Scope = Protected
+	#tag EndConstant
 
 	#tag Constant, Name = CURLFORM_COPYCONTENTS, Type = Double, Dynamic = False, Default = \"4", Scope = Protected
 	#tag EndConstant
