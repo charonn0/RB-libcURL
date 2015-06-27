@@ -81,7 +81,7 @@ Inherits libcURL.cURLHandle
 	#tag Method, Flags = &h0
 		Function Operator_Compare(OtherForm As libcURL.MultipartForm) As Integer
 		  Dim i As Integer = Super.Operator_Compare(OtherForm)
-		  If i = 0 Then Return Sign(mHandle - OtherForm.Handle)
+		  If i = 0 Then i = Sign(mHandle - OtherForm.Handle)
 		  Return i
 		End Function
 	#tag EndMethod

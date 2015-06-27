@@ -101,7 +101,7 @@ Inherits libcURL.cURLHandle
 	#tag Method, Flags = &h0
 		Function Operator_Compare(OtherShare As libcURL.ShareHandle) As Integer
 		  Dim i As Integer = Super.Operator_Compare(OtherShare)
-		  If i = 0 Then Return Sign(mHandle - OtherShare.Handle)
+		  If i = 0 Then i = Sign(mHandle - OtherShare.Handle)
 		  Return i
 		End Function
 	#tag EndMethod

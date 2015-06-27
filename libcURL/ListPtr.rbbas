@@ -55,7 +55,7 @@ Inherits libcURL.cURLHandle
 	#tag Method, Flags = &h0
 		Function Operator_Compare(OtherList As libcURL.ListPtr) As Integer
 		  Dim i As Integer = Super.Operator_Compare(OtherList)
-		  If i = 0 Then Return Sign(mHandle - OtherList.Handle)
+		  If i = 0 Then i = Sign(mHandle - OtherList.Handle)
 		  Return i
 		End Function
 	#tag EndMethod

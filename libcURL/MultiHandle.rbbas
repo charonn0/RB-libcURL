@@ -81,7 +81,7 @@ Inherits libcURL.cURLHandle
 	#tag Method, Flags = &h0
 		Function Operator_Compare(OtherMulti As libcURL.MultiHandle) As Integer
 		  Dim i As Integer = Super.Operator_Compare(OtherMulti)
-		  If i = 0 Then Return Sign(mHandle - OtherMulti.Handle)
+		  If i = 0 Then i = Sign(mHandle - OtherMulti.Handle)
 		  Return i
 		End Function
 	#tag EndMethod
