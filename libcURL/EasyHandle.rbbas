@@ -73,7 +73,20 @@ Inherits libcURL.cURLHandle
 		  If mHandle > 0 Then
 		    Instances.Value(mHandle) = New WeakRef(Me)
 		    InitCallbacks(Me)
-		    If CopyOpts.Verbose Then Me.Verbose = True
+		    Me.Verbose = CopyOpts.Verbose
+		    Me.UseErrorBuffer = CopyOpts.UseErrorBuffer
+		    mAutoDisconnect = CopyOpts.AutoDisconnect
+		    mCA_ListFile = CopyOpts.CA_ListFile
+		    mConnectionTimeout = CopyOpts.ConnectionTimeout
+		    mCookieJar = CopyOpts.CookieJar
+		    mFailOnServerError = CopyOpts.FailOnServerError
+		    mFollowRedirects = CopyOpts.FollowRedirects
+		    mPassword = CopyOpts.Password
+		    mSecure = CopyOpts.Secure
+		    mTimeOut = CopyOpts.TimeOut
+		    mUploadMode = CopyOpts.UploadMode
+		    mUserAgent = CopyOpts.UserAgent
+		    mUsername = CopyOpts.Username
 		  Else
 		    mLastError = libcURL.Errors.INIT_FAILED
 		    Raise New cURLException(Me)
