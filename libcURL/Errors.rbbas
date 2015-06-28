@@ -141,6 +141,9 @@ Protected Module Errors
 	#tag Constant, Name = NOT_BUILT_IN, Type = Double, Dynamic = False, Default = \"4", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = NOT_INITIALIZED, Type = Double, Dynamic = False, Default = \"-5", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = NO_TARGET, Type = Double, Dynamic = False, Default = \"-2", Scope = Protected
 	#tag EndConstant
 

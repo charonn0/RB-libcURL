@@ -6,6 +6,7 @@ Inherits libcURL.cURLHandle
 		  ' Appends the passed string to the list. If the List is NULL it will be created.
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_slist_append.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ListPtr.Append
 		  
 		  Dim p As Ptr = curl_slist_append(List, s)
 		  If p <> Nil Then
@@ -19,6 +20,9 @@ Inherits libcURL.cURLHandle
 		Sub Constructor(ListPtr As Ptr = Nil, GlobalInitFlags As Integer = libcURL.CURL_GLOBAL_NOTHING)
 		  ' Creates a linked list that is managed by libcURL. Pass a Ptr to the first item in an existing list,
 		  ' or Nil to create an empty list.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ListPtr.Constructor
 		  
 		  // Calling the overridden superclass constructor.
 		  // Constructor(GlobalInitFlags As Integer) -- From libcURL.cURLHandle
@@ -46,14 +50,12 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Handle() As Integer
-		  ' This method returns a Ptr to the header list which can be passed back to libcURL
-		  Return Integer(List)
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Function Operator_Compare(OtherList As libcURL.ListPtr) As Integer
+		  ' Overloads the comparison operator(=), permitting direct comparisons between instances of ListPtr
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ListPtr.Operator_Compare
+		  
 		  Dim i As Integer = Super.Operator_Compare(OtherList)
 		  If i = 0 Then i = Sign(mHandle - OtherList.Handle)
 		  Return i
@@ -62,8 +64,16 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Sub Operator_Convert(From() As String)
-		  Me.Free()
-		  Me.Constructor()
+		  ' Overloads the conversion operator(=), permitting implicit and explicit conversion from a string array into a ListPtr
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ListPtr.Operator_Convert
+		  
+		  If mLastError = libcURL.Errors.NOT_INITIALIZED Then
+		    Me.Constructor()
+		  Else
+		    Me.Free()
+		  End If
 		  For i As Integer = 0 To UBound(From)
 		    If Not Me.Append(From(i)) Then Raise New cURLException(Me)
 		  Next

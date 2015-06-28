@@ -16,6 +16,7 @@ Implements ErrorSetter
 		    Raise err
 		  End If
 		  
+		  mLastError = 0 ' clears the NOT_INITIALIZED default value
 		  If InitFlags = Nil Then InitFlags = New Dictionary
 		  If Not InitFlags.HasKey(GlobalInitFlags) Then
 		    mLastError = curl_global_init(GlobalInitFlags)
@@ -49,7 +50,7 @@ Implements ErrorSetter
 		Function Flags() As Integer
 		  ' The global initialization flags that were passed to the instance Constructor
 		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLHandle.Flags
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLHandle.Flags
 		  
 		  Return mFlags
 		End Function
@@ -102,7 +103,7 @@ Implements ErrorSetter
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected mLastError As Integer
+		Protected mLastError As Integer = libcURL.Errors.NOT_INITIALIZED
 	#tag EndProperty
 
 
