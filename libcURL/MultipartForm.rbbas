@@ -72,6 +72,11 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Function Operator_Compare(OtherForm As libcURL.MultipartForm) As Integer
+		  ' Overloads the comparison operator(=), permitting direct comparisons between instances of MultipartForm.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm.Operator_Compare
+		  
 		  Dim i As Integer = Super.Operator_Compare(OtherForm)
 		  If i = 0 Then i = Sign(mHandle - OtherForm.Handle)
 		  Return i
@@ -80,14 +85,23 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Sub Operator_Convert(FromDict As Dictionary)
+		  ' Overloads the conversion operator(=), permitting implicit and explicit conversion from a Dictionary 
+		  ' into a MultipartForm. The dictionary contains NAME:VALUE pairs comprising HTML form elements: NAME 
+		  ' is a string containing the form-element name; VALUE may be a string or a FolderItem.
+		  '
+		  ' See: 
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm.Operator_Convert
+		  
 		  Me.Constructor()
 		  If FromDict = Nil Then Raise New NilObjectException
 		  For Each item As String In FromDict.Keys
 		    Dim value As Variant = FromDict.Value(item)
 		    If VarType(value) = Variant.TypeString Then
+		      If Not Me.AddElement(item, value.StringValue) Then Raise New cURLException(Me)
 		      
 		    ElseIf VarType(value) = Variant.TypeObject And value IsA FolderItem Then
 		      If Not Me.AddElement(item, FolderItem(value)) Then Raise New cURLException(Me)
+		      
 		    Else
 		      Raise New UnsupportedFormatException
 		    End If
@@ -102,6 +116,7 @@ Inherits libcURL.cURLHandle
 		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_formget.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm.Serialize
 		  
 		  If FirstItem = Nil Then Return ""
 		  If Not libcURL.Version.IsAtLeast(7, 15, 5) Then
