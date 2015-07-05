@@ -1424,19 +1424,19 @@ End
 #tag Events Features
 	#tag Event
 		Sub Open()
-		  If libcURL.Version.ASYNCHDNS Then Me.AddRow("Async DNS supported")
-		  If libcURL.Version.CONV Then Me.AddRow("Character conversion supported")
-		  If libcURL.Version.DEBUG Then Me.AddRow("Built with debug capabilities")
-		  If libcURL.Version.GSSNEGOTIATE Then Me.AddRow("Negotiate auth support")
-		  If libcURL.Version.IDN Then Me.AddRow("International Domain Names support")
-		  If libcURL.Version.KERBEROS4 Then Me.AddRow("kerberos auth is supported")
-		  If libcURL.Version.IPV6 Then Me.AddRow("IPv6-enabled")
-		  If libcURL.Version.LARGEFILE Then Me.AddRow("supports files bigger than 2GB")
-		  If libcURL.Version.LibZ.IsAvailable Then Me.AddRow("libz features are present")
-		  If libcURL.Version.NTLM Then Me.AddRow("NTLM auth is supported")
+		  If libcURL.Version.ASYNCHDNS Then Me.AddRow("Asynchronous DNS")
+		  If libcURL.Version.CONV Then Me.AddRow("Encoding conversion")
+		  If libcURL.Version.DEBUG Then Me.AddRow("Debug capabilities")
+		  If libcURL.Version.GSSNEGOTIATE Then Me.AddRow("Negotiate auth")
+		  If libcURL.Version.IDN Then Me.AddRow("International Domain Names")
+		  If libcURL.Version.KERBEROS4 Then Me.AddRow("kerberos auth")
+		  If libcURL.Version.IPV6 Then Me.AddRow("IPv6")
+		  If libcURL.Version.LARGEFILE Then Me.AddRow("Files larger than 2GB")
+		  If libcURL.Version.LibZ.IsAvailable Then Me.AddRow("libz decompression")
+		  If libcURL.Version.NTLM Then Me.AddRow("NTLM auth")
 		  If libcURL.Version.SPNEGO Then Me.AddRow("SPNEGO auth")
-		  If libcURL.Version.SSL Then Me.AddRow("SSL options are present")
-		  If libcURL.Version.SSPI Then Me.AddRow("SSPI is supported")
+		  If libcURL.Version.SSL Then Me.AddRow("SSL")
+		  If libcURL.Version.SSPI Then Me.AddRow("SSPI")
 		End Sub
 	#tag EndEvent
 #tag EndEvents

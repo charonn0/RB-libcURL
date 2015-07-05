@@ -52,7 +52,7 @@ Inherits libcURL.cURLManager
 
 	#tag Method, Flags = &h0
 		Sub Post(URL As String, FormData As Dictionary, WriteTo As Writeable = Nil)
-		  ' Asynchronously POST the passed FormData via HTTP(S) using multipart/form-data encoding. The FormData dictionary
+		  ' Synchronously POST the passed FormData via HTTP(S) using multipart/form-data encoding. The FormData dictionary
 		  ' contains NAME:VALUE pairs comprising HTML form elements. NAME is a string containing the form-element name; VALUE
 		  ' may be a string or a FolderItem.
 		  ' The protocol is inferred from the URL; explictly specify the protocol in the URL to avoid bad guesses.
@@ -97,7 +97,7 @@ Inherits libcURL.cURLManager
 
 	#tag Method, Flags = &h0
 		Function Post(URL As String, PostFields() As String, WriteTo As Writeable = Nil) As Boolean
-		  ' Asynchronously POST the passed PostFields via HTTP(S) using application/x-www-form-urlencoded. The PostFields array
+		  ' Synchronously POST the passed PostFields via HTTP(S) using application/x-www-form-urlencoded. The PostFields array
 		  ' contains "NAME=VALUE" strings comprising HTML form elements.
 		  ' WriteTo is an optional Writeable object (e.g. BinaryStream); downloaded data will be written to this
 		  ' object directly. If WriteTo is Nil then use the GetDownloadedData method to get any downloaded data.
@@ -141,7 +141,7 @@ Inherits libcURL.cURLManager
 
 	#tag Method, Flags = &h0
 		Function Put(URL As String, ReadFrom As Readable, WriteTo As Writeable = Nil) As Boolean
-		  ' Asynchronously performs an upload using protocol-appropriate semantics (http PUT, ftp STOR, etc.)
+		  ' Synchronously performs an upload using protocol-appropriate semantics (http PUT, ftp STOR, etc.)
 		  ' The protocol is inferred from the URL; explictly specify the protocol in the URL to avoid bad guesses.
 		  ' WriteTo is an optional Writeable object (e.g. BinaryStream); downloaded data will be written to this
 		  ' object directly. If WriteTo is Nil then use the GetDownloadedData method to get any downloaded data.
