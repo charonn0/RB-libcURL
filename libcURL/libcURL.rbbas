@@ -9,11 +9,11 @@ Protected Module libcURL
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Function curl_easy_escape Lib "libcurl" (EasyHandle As Integer, char As Ptr, Length As Integer) As Ptr
+		Private Soft Declare Function curl_easy_escape Lib "libcurl" (EasyHandle As Integer, CharBuffer As Ptr, Length As Integer) As Ptr
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Function curl_easy_getinfo Lib "libcurl" (EasyHandle As Integer, infoCode As Integer, buffer As Ptr) As Integer
+		Private Soft Declare Function curl_easy_getinfo Lib "libcurl" (EasyHandle As Integer, InfoCode As Integer, Buffer As Ptr) As Integer
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
@@ -45,7 +45,7 @@ Protected Module libcURL
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Function curl_easy_strerror Lib "libcurl" (errNo As Integer) As Ptr
+		Private Soft Declare Function curl_easy_strerror Lib "libcurl" (EasyError As Integer) As CString
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
@@ -115,15 +115,7 @@ Protected Module libcURL
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Function curl_multi_assign Lib "libcurl" (MultiHandle As Integer, SockFD As Integer, sockptr As Ptr) As Integer
-	#tag EndExternalMethod
-
-	#tag ExternalMethod, Flags = &h21
 		Private Soft Declare Function curl_multi_cleanup Lib "libcurl" (MultiHandle As Integer) As Integer
-	#tag EndExternalMethod
-
-	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Function curl_multi_fdset Lib "libcurl" (MultiHandle As Integer, ByRef read_fd As Integer, ByRef write_fd As Integer, ByRef exc_fd As Integer, ByRef max_fd As Integer) As Integer
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
@@ -147,11 +139,7 @@ Protected Module libcURL
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Function curl_multi_socket_action Lib "libcurl" (MultiHandle As Integer, sock_fd As Integer, ev_bitmask As Integer, ByRef running_handles As Integer) As Integer
-	#tag EndExternalMethod
-
-	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Function curl_multi_strerror Lib "libcurl" (errNo As Integer) As Ptr
+		Private Soft Declare Function curl_multi_strerror Lib "libcurl" (errNo As Integer) As CString
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
@@ -171,7 +159,7 @@ Protected Module libcURL
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Function curl_share_strerror Lib "libcurl" (errNo As Integer) As Ptr
+		Private Soft Declare Function curl_share_strerror Lib "libcurl" (errNo As Integer) As CString
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
@@ -212,43 +200,57 @@ Protected Module libcURL
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function FormatError(cURLError As Integer) As String
+		Protected Function FormatError(cURLError As Integer, Encoding As TextEncoding = Nil) As String
 		  ' Translates libcurl error numbers to messages
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_strerror.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.FormatError
 		  
 		  If Not libcURL.IsAvailable Then Return "libcURL is not available or is an unsupported version."
-		  Dim mb As MemoryBlock = curl_easy_strerror(cURLError)
-		  Return mb.CString(0)
+		  Dim msg As String = curl_easy_strerror(cURLError)
+		  If Encoding <> Nil Then
+		    Return ConvertEncoding(msg, Encoding)
+		  Else
+		    Return DefineEncoding(msg, Encodings.ASCII)
+		  End If
+		  
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function FormatMultiError(cURLMultiError As Integer) As String
+		Protected Function FormatMultiError(cURLMultiError As Integer, Encoding As TextEncoding = Nil) As String
 		  ' Translates libcurl multi error numbers to messages
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_strerror.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.FormatMultiError
 		  
 		  If Not libcURL.IsAvailable Then Return "libcURL is not available or is an unsupported version."
-		  Dim mb As MemoryBlock = curl_multi_strerror(cURLMultiError)
-		  Return mb.CString(0)
+		  Dim msg As String = curl_multi_strerror(cURLMultiError)
+		  If Encoding <> Nil Then
+		    Return ConvertEncoding(msg, Encoding)
+		  Else
+		    Return DefineEncoding(msg, Encodings.ASCII)
+		  End If
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function FormatShareError(cURLShareError As Integer) As String
+		Protected Function FormatShareError(cURLShareError As Integer, Encoding As TextEncoding = Nil) As String
 		  ' Translates libcurl share error numbers to messages
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_share_strerror.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.FormatShareError
 		  
 		  If Not libcURL.IsAvailable Then Return "libcURL is not available or is an unsupported version."
-		  Dim mb As MemoryBlock = curl_share_strerror(cURLShareError)
-		  Return mb.CString(0)
+		  Dim msg As String = curl_share_strerror(cURLShareError)
+		  If Encoding <> Nil Then
+		    Return ConvertEncoding(msg, Encoding)
+		  Else
+		    Return DefineEncoding(msg, Encodings.ASCII)
+		  End If
+		  
 		End Function
 	#tag EndMethod
 
