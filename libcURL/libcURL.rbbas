@@ -255,7 +255,7 @@ Protected Module libcURL
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function Get(URL As String, TimeOut As Integer, ByRef Headers As InternetHeaders, ByRef StatusCode As Integer, Username As String = "", Password As String = "") As MemoryBlock
+		Attributes( deprecated = "libcURL.cURLClient.Get" ) Protected Function Get(URL As String, TimeOut As Integer, ByRef Headers As InternetHeaders, ByRef StatusCode As Integer, Username As String = "", Password As String = "") As MemoryBlock
 		  ' Synchronously performs a retrieval using protocol-appropriate semantics (http GET, ftp RETR, etc.)
 		  ' The protocol is inferred from the URL; explictly specify the protocol in the URL to avoid bad guesses.
 		  ' Pass a connection TimeOut interval (in seconds), or 0 to wait forever. Pass an InternetHeaders instance and
@@ -306,7 +306,7 @@ Protected Module libcURL
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function Post(FormData As Dictionary, URL As String, TimeOut As Integer, ByRef Headers As InternetHeaders, ByRef StatusCode As Integer, Username As String = "", Password As String = "") As MemoryBlock
+		Attributes( deprecated = "libcURL.cURLClient.Post" ) Protected Function Post(FormData As Dictionary, URL As String, TimeOut As Integer, ByRef Headers As InternetHeaders, ByRef StatusCode As Integer, Username As String = "", Password As String = "") As MemoryBlock
 		  ' Synchronously POST the passed FormData via HTTP(S) using multipart/form-data encoding. The FormData dictionary
 		  ' contains NAME:VALUE pairs comprising HTML form elements. NAME is a string containing the form-element name; VALUE
 		  ' may be a string or a FolderItem. Pass a connection TimeOut interval (in seconds), or 0 to wait forever. Pass an
@@ -324,7 +324,7 @@ Protected Module libcURL
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function Put(File As FolderItem, URL As String, TimeOut As Integer, ByRef Headers As InternetHeaders, ByRef StatusCode As Integer, Username As String = "", Password As String = "") As MemoryBlock
+		Attributes( deprecated = "libcURL.cURLClient.Put" ) Protected Function Put(File As FolderItem, URL As String, TimeOut As Integer, ByRef Headers As InternetHeaders, ByRef StatusCode As Integer, Username As String = "", Password As String = "") As MemoryBlock
 		  ' Synchronously uploads the passed FolderItem using protocol-appropriate semantics (http PUT, ftp STOR, etc.)
 		  ' The protocol is inferred from the URL; explictly specify the protocol in the URL to avoid bad guesses. The
 		  ' path part of the URL specifies the remote directory and file name to store the file under. Pass a connection
