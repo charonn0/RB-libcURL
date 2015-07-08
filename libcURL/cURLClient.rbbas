@@ -52,7 +52,7 @@ Inherits libcURL.cURLManager
 
 	#tag Method, Flags = &h0
 		Sub Post(URL As String, FormData As Dictionary, WriteTo As Writeable = Nil)
-		  ' Synchronously POST the passed FormData via HTTP(S) using multipart/form-data encoding. The FormData dictionary
+		  ' Asynchronously POST the passed FormData via HTTP(S) using multipart/form-data encoding. The FormData dictionary
 		  ' contains NAME:VALUE pairs comprising HTML form elements. NAME is a string containing the form-element name; VALUE
 		  ' may be a string or a FolderItem.
 		  ' The protocol is inferred from the URL; explictly specify the protocol in the URL to avoid bad guesses.
@@ -60,14 +60,14 @@ Inherits libcURL.cURLManager
 		  ' object directly. If WriteTo is Nil then use the GetDownloadedData method to get any downloaded data.
 		  ' The transfer will be performed on the event loop (main thread).
 		  
-		  Me.SetFormData(FormData)
+		  Me.EasyItem.SetFormData(FormData)
 		  Me.Perform(URL, Nil, WriteTo)
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function Post(URL As String, FormData As Dictionary, WriteTo As Writeable = Nil) As Boolean
-		  ' Asynchronously POST the passed FormData via HTTP(S) using multipart/form-data encoding. The FormData dictionary
+		  ' Synchronously POST the passed FormData via HTTP(S) using multipart/form-data encoding. The FormData dictionary
 		  ' contains NAME:VALUE pairs comprising HTML form elements. NAME is a string containing the form-element name; VALUE
 		  ' may be a string or a FolderItem.
 		  ' WriteTo is an optional Writeable object (e.g. BinaryStream); downloaded data will be written to this
@@ -75,7 +75,7 @@ Inherits libcURL.cURLManager
 		  ' This method will block the calling thread until the transfer completes. All events will be raised
 		  ' on the calling thread.
 		  
-		  Me.SetFormData(FormData)
+		  Me.EasyItem.SetFormData(FormData)
 		  Return Me.Perform(URL, Nil, WriteTo)
 		End Function
 	#tag EndMethod
@@ -90,7 +90,7 @@ Inherits libcURL.cURLManager
 		  ' object directly. If WriteTo is Nil then use the GetDownloadedData method to get any downloaded data.
 		  ' The transfer will be performed on the event loop (main thread).
 		  
-		  Me.SetFormData(PostFields)
+		  Me.EasyItem.SetFormData(PostFields)
 		  Me.Perform(URL, Nil, WriteTo)
 		End Sub
 	#tag EndMethod
@@ -104,7 +104,7 @@ Inherits libcURL.cURLManager
 		  ' This method will block the calling thread until the transfer completes. All events will be raised
 		  ' on the calling thread.
 		  
-		  Me.SetFormData(PostFields)
+		  Me.EasyItem.SetFormData(PostFields)
 		  Return Me.Perform(URL, Nil, WriteTo)
 		End Function
 	#tag EndMethod

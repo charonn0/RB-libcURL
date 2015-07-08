@@ -1,6 +1,17 @@
 #tag Class
 Protected Class EasyHandle
 Inherits libcURL.cURLHandle
+	#tag Method, Flags = &h0
+		Sub ClearFormData()
+		  If Not Me.SetOption(libcURL.Opts.POSTFIELDSIZE, -1) Then Raise New libcURL.cURLException(Me)
+		  If Not Me.SetOption(libcURL.Opts.COPYPOSTFIELDS, Nil) Then Raise New libcURL.cURLException(Me)
+		  If Not Me.SetOption(libcURL.Opts.HTTPPOST, Nil) Then Raise New libcURL.cURLException(Me)
+		  mForm = Nil
+		  If Not Me.SetOption(libcURL.Opts.HTTPGET, True) Then Raise New libcURL.cURLException(Me)
+		  
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h21
 		Private Shared Function CloseCallback(UserData As Integer, Socket As Integer) As Integer
 		  ' This method is invoked by libcURL. DO NOT CALL THIS METHOD
@@ -440,6 +451,28 @@ Inherits libcURL.cURLHandle
 		  
 		  Break ' UserData does not refer to a valid instance!
 		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub SetFormData(FormData As Dictionary)
+		  Dim frm As libcURL.MultipartForm
+		  If FormData <> Nil Then frm = FormData
+		  If Not Me.SetOption(libcURL.Opts.HTTPPOST, frm) Then Raise New libcURL.cURLException(Me)
+		  mForm = frm
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub SetFormData(FormData() As String)
+		  'For i As Integer = 0 To UBound(FormData)
+		  'FormData(i) = URLEncode(FormData(i))
+		  'Next
+		  
+		  Dim data As String = Join(FormData, "&")
+		  If Not Me.SetOption(libcURL.Opts.POSTFIELDSIZE, data.LenB) Then Raise New libcURL.cURLException(Me)
+		  If Not Me.SetOption(libcURL.Opts.COPYPOSTFIELDS, data) Then Raise New libcURL.cURLException(Me)
+		  
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -1086,6 +1119,10 @@ Inherits libcURL.cURLHandle
 
 	#tag Property, Flags = &h21
 		Private mFollowRedirects As Boolean
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mForm As libcURL.MultipartForm
 	#tag EndProperty
 
 	#tag Property, Flags = &h21

@@ -1,17 +1,6 @@
 #tag Class
 Protected Class cURLManager
 	#tag Method, Flags = &h0
-		Sub ClearFormData()
-		  If Not mEasyItem.SetOption(libcURL.Opts.POSTFIELDSIZE, -1) Then Raise New libcURL.cURLException(mEasyItem)
-		  If Not mEasyItem.SetOption(libcURL.Opts.COPYPOSTFIELDS, Nil) Then Raise New libcURL.cURLException(mEasyItem)
-		  If Not mEasyItem.SetOption(libcURL.Opts.HTTPPOST, Nil) Then Raise New libcURL.cURLException(mEasyItem)
-		  mForm = Nil
-		  If Not mEasyItem.SetOption(libcURL.Opts.HTTPGET, True) Then Raise New libcURL.cURLException(mEasyItem)
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Sub Close()
 		  mMultiItem = Nil
 		  mEasyItem = Nil
@@ -152,28 +141,6 @@ Protected Class cURLManager
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub SetFormData(FormData As Dictionary)
-		  Dim frm As libcURL.MultipartForm
-		  If FormData <> Nil Then frm = FormData
-		  If Not mEasyItem.SetOption(libcURL.Opts.HTTPPOST, frm) Then Raise New libcURL.cURLException(mEasyItem)
-		  mForm = frm
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub SetFormData(FormData() As String)
-		  'For i As Integer = 0 To UBound(FormData)
-		  'FormData(i) = URLEncode(FormData(i))
-		  'Next
-		  
-		  Dim data As String = Join(FormData, "&")
-		  If Not mEasyItem.SetOption(libcURL.Opts.POSTFIELDSIZE, data.LenB) Then Raise New libcURL.cURLException(mEasyItem)
-		  If Not mEasyItem.SetOption(libcURL.Opts.COPYPOSTFIELDS, data) Then Raise New libcURL.cURLException(mEasyItem)
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Function SetOption(OptionNumber As Integer, NewValue As Variant) As Boolean
 		  If mEasyItem <> Nil Then Return mEasyItem.SetOption(OptionNumber, NewValue)
 		End Function
@@ -286,7 +253,7 @@ Protected Class cURLManager
 		    RaiseEvent TransferComplete(Me.GetInfo(libcURL.Info.SIZE_DOWNLOAD).Int32Value, Me.GetInfo(libcURL.Info.SIZE_UPLOAD).Int32Value)
 		  End If
 		  mIsTransferComplete = True
-		  ClearFormData()
+		  mEasyItem.ClearFormData()
 		  mEasyItem.UploadMode = False
 		  mUpload = Nil
 		  If Item.LastError <> cURLCode Then ErrorSetter(Item).LastError = cURLCode
@@ -321,10 +288,6 @@ Protected Class cURLManager
 
 	#tag Property, Flags = &h21
 		Private mEasyItem As libcURL.EasyHandle
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private mForm As libcURL.MultipartForm
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
