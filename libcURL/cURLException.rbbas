@@ -11,11 +11,11 @@ Inherits RuntimeException
 		  Case Me.ErrorNumber = libcURL.Errors.FEATURE_UNAVAILABLE
 		    Me.Message = "A required feature is not available in the installed version of libcURL."
 		    
-		  Case Me.ErrorNumber = libcURL.Errors.NOT_INITIALIZED
-		    Me.Message = "libcURL has not yet been initialized."
-		    
 		  Case Not libcURL.IsAvailable
 		    Me.Message = "libcURL is not available or is an unsupported version."
+		    
+		  Case Me.ErrorNumber = libcURL.Errors.NOT_INITIALIZED
+		    Me.Message = "libcURL has not yet been initialized."
 		    
 		  Case ErrantItem IsA libcURL.ShareHandle
 		    Me.Message = libcURL.FormatShareError(Me.ErrorNumber)
