@@ -12,6 +12,12 @@ Inherits libcURL.cURLHandle
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Sub ClearSessionCookies()
+		  If Not Me.SetOption(libcURL.Opts.COOKIESESSION, True) Then Raise New cURLException(Me)
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h21
 		Private Shared Function CloseCallback(UserData As Integer, Socket As Integer) As Integer
 		  ' This method is invoked by libcURL. DO NOT CALL THIS METHOD
