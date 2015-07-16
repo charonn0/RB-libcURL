@@ -156,8 +156,8 @@ Inherits libcURL.cURLManager
 
 	#tag Note, Name = Using this class
 		This class provides synchronous and asynchronous transfers with full support for RB/Xojo threads. Transfers are initiated
-		by calling one of the transfer methods: Get, Post, and Put. Despite the HTTP-specific names, Get and Put can be used to tranfer 
-		files over any protocol libcURL supports.
+		by calling one of the transfer methods: Get, Head, Post, and Put. The names of these methods are borrowed from HTTP but do 
+		not imply HTTP as the protocol (except Post.) 
 		
 		There are two versions of each method: synchronous and asynchronous. When dealing with libcURL and REALbasic, a major issue
 		comes up with threading. RB/Xojo threads, being platform-generic abstractions, are not the sort of threads that libcURL understands. 
@@ -168,7 +168,7 @@ Inherits libcURL.cURLManager
 		The synchronous versions of the transfer methods will perform the entire transfer on the calling thread, and then return a
 		Boolean indicating success (True) or failure (False). The asynchronous versions will activate a Timer that performs a little
 		bit of the transfer on every run of the event loop. Both versions will raise events, and both versions can ignore the events
-		by using the GetDownloadedData, GetResponseHeaders, and GetStatusCode methods.
+		by using the IsTransferComplete, GetDownloadedData, GetResponseHeaders, and GetStatusCode methods.
 	#tag EndNote
 
 
