@@ -923,12 +923,13 @@ Inherits libcURL.cURLHandle
 		#tag EndGetter
 		#tag Setter
 			Set
-			  ' Sets the timeout period, in seconds, after which a transfer should be aborted. The default is 0, which
-			  ' means wait forever.
+			  ' Sets the connection timeout in seconds. libcURL will abort the attempt if no connection is established before 
+			  ' time expires. If a connection is aborted due to the timeout elapsing EasyHandle.LastError will be 
+			  ' libcURL.Errors.TIMEOUT (28). The default is 300 seconds. 
 			  '
 			  ' See:
-			  ' http://curl.haxx.se/libcurl/c/CURLOPT_TIMEOUT.html
-			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Timeout
+			  ' http://curl.haxx.se/libcurl/c/CURLOPT_CONNECTTIMEOUT.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.ConnectionTimeout
 			  
 			  If Not Me.SetOption(libcURL.Opts.CONNECTTIMEOUT, value) Then Raise New cURLException(Me)
 			  mConnectionTimeout = value
@@ -1294,8 +1295,10 @@ Inherits libcURL.cURLHandle
 		#tag EndGetter
 		#tag Setter
 			Set
-			  ' Sets the timeout period, in seconds, after which a transfer should be aborted. The default is 0, which
-			  ' means wait forever.
+			  ' Sets the timeout period, in seconds, for the entire transfer (including time spent establishing the 
+			  ' connection.) libcURL will abort the if the transfer has not completed before time expires. If a 
+			  ' transfer is aborted due to the timeout elapsing EasyHandle.LastError will be libcURL.Errors.TIMEOUT (28). 
+			  ' A timeout of zero means no timeout (wait forever) and is the default.
 			  '
 			  ' See:
 			  ' http://curl.haxx.se/libcurl/c/CURLOPT_TIMEOUT.html
