@@ -8,7 +8,7 @@ Implements ErrorSetter
 		  ' libcURL if GlobalInitFlags is not among them.
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_global_init.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLHandle.Constructor
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLHandle.Constructor
 		  
 		  If Not libcURL.IsAvailable Then
 		    Dim err As New PlatformNotSupportedException
