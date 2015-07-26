@@ -2,7 +2,8 @@
 **RB-libcURL** is a [libcURL](http://curl.haxx.se/libcurl/c/libcurl.html) [binding](http://en.wikipedia.org/wiki/Language_binding) for Realbasic and Xojo projects. It is designed and tested on Windows 7 against [curl-7.40.0-devel-mingw32](http://curl.haxx.se/gknw.net/7.40.0/dist-w32/curl-7.40.0-devel-mingw32.zip) and associated security and compression libraries ([more platforms](http://curl.haxx.se/download.html)). The minimum supported libcURL version is [7.15.2](https://github.com/charonn0/RB-libcURL/wiki/libcURL.IsAvailable). 
 
 ##Hilights
-* [Synchronous and asynchronous](https://github.com/charonn0/RB-libcURL/wiki/Synchronous-vs.-Asynchronous-methods) transfers using any protocol supported by libcURL
+* [Synchronous and asynchronous](https://github.com/charonn0/RB-libcURL/wiki/Synchronous-vs.-Asynchronous-methods) transfers 
+* Use any supported protocol (libcURL's HTTP/1.1 support is particularly good)
 * Full support for [RB/Xojo threads](https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.PerformOnce)
 * [Stream-oriented](https://github.com/charonn0/RB-libcURL/wiki/cURLManager.Perform), using Xojo's built-in [Readable](http://docs.xojo.com/index.php/Readable) and [Writeable](http://docs.xojo.com/index.php/Writeable) interfaces. 
 * [Easy to use](https://github.com/charonn0/RB-libcURL/wiki/cURLClient), but still exposing [the full range of libcURL's features](https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle).
