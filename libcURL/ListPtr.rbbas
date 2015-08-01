@@ -17,7 +17,7 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Constructor(ListPtr As Ptr = Nil, GlobalInitFlags As Integer = libcURL.CURL_GLOBAL_NOTHING)
+		Sub Constructor(ListPtr As Ptr = Nil, GlobalInitFlags As Integer = libcURL.CURL_GLOBAL_DEFAULT)
 		  ' Creates a linked list that is managed by libcURL. Pass a Ptr to the first item in an existing list,
 		  ' or Nil to create an empty list.
 		  '
