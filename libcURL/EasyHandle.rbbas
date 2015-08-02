@@ -258,8 +258,15 @@ Inherits libcURL.cURLHandle
 		  End If
 		  
 		  If libcURL.Version.SSL Then
-		    If Not Sender.SetOption(libcURL.Opts.SSL_CTX_DATA, Sender.Handle) Then Raise New cURLException(Sender)
-		    If Not Sender.SetOption(libcURL.Opts.SSL_CTX_FUNCTION, AddressOf SSLInitCallback) Then Raise New cURLException(Sender)
+		    If Sender.SetOption(libcURL.Opts.SSL_CTX_DATA, Sender.Handle) Then 
+		      If Not Sender.SetOption(libcURL.Opts.SSL_CTX_FUNCTION, AddressOf SSLInitCallback) Then Raise New cURLException(Sender)
+		    ElseIf Sender.LastError <> libcURL.Errors.NOT_BUILT_IN Then
+		      Raise New cURLException(Sender)
+		    Else
+		      If Sender.Verbose Then
+		        System.DebugLog("libcURL 0x" + Hex(Sender.Handle) + " (RB-libcURL): Callbacks are not supported by the selected SSL library.") 
+		      End If
+		    End If
 		  End If
 		  
 		  If libcURL.Version.IsAtLeast(7, 21, 7) Then
