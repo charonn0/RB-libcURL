@@ -222,7 +222,6 @@ Protected Class cURLManager
 	#tag Method, Flags = &h21
 		Private Function _ProgressHandler(Sender As libcURL.EasyHandle, dlTotal As UInt64, dlnow As UInt64, ultotal As UInt64, ulnow As UInt64) As Boolean
 		  #pragma Unused Sender
-		  'If ulnow > 0 or ultotal > 0 Then Break
 		  Return RaiseEvent Progress(dlTotal, dlnow, ultotal, ulnow)
 		End Function
 	#tag EndMethod
