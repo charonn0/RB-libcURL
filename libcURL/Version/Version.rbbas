@@ -78,16 +78,18 @@ Protected Module Version
 		  Dim ve As CURLVersion = libcURL.Version.Struct
 		  Dim p1 As Ptr = ve.Protocols.Ptr(0)
 		  Dim mb As MemoryBlock = p1
-		  ' Note that the following line fails on my Linux Vm
-		  ' The docs say that the Protocols list is terminated
-		  ' by an empty entry, but on Linux the final entry is
-		  ' not empty.
-		  Dim s As String = mb.WString(0) + Chr(0)
-		  s = DefineEncoding(s, Encodings.ASCII)
-		  prots = Split(s, Chr(0))
-		  For i As Integer = UBound(prots) DownTo 0
-		    If prots(i).Trim = "" Then prots.Remove(i)
-		  Next
+		  Dim s As String
+		  Dim i As Integer
+		  Do
+		    s = mb.CString(i)
+		    Dim isPrintable As Boolean = (AscB(LeftB(s, 1)) > 65 And AscB(LeftB(s, 1)) < 91) Or (AscB(LeftB(s, 1)) > 96 And AscB(LeftB(s, 1)) < 123)
+		    If isPrintable Then ' not empty, and letters only
+		      prots.Append(s)
+		      i = i + s.LenB + 1
+		    Else
+		      Exit Do
+		    End If
+		  Loop Until UBound(prots) > 99 ' If we get this far then we're probably reading random garbage, so bail out
 		  Return prots
 		End Function
 	#tag EndMethod
