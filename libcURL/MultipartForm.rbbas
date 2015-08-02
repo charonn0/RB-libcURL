@@ -85,11 +85,11 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Sub Operator_Convert(FromDict As Dictionary)
-		  ' Overloads the conversion operator(=), permitting implicit and explicit conversion from a Dictionary 
-		  ' into a MultipartForm. The dictionary contains NAME:VALUE pairs comprising HTML form elements: NAME 
+		  ' Overloads the conversion operator(=), permitting implicit and explicit conversion from a Dictionary
+		  ' into a MultipartForm. The dictionary contains NAME:VALUE pairs comprising HTML form elements: NAME
 		  ' is a string containing the form-element name; VALUE may be a string or a FolderItem.
 		  '
-		  ' See: 
+		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm.Operator_Convert
 		  
 		  Me.Constructor()
