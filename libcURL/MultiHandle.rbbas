@@ -341,7 +341,7 @@ Inherits libcURL.cURLHandle
 	#tag EndConstant
 
 
-	#tag Structure, Name = CURLMsg, Flags = &h21
+	#tag Structure, Name = CURLMsg, Flags = &h1
 		msg As Integer
 		  easy_handle As Integer
 		Data As Ptr
