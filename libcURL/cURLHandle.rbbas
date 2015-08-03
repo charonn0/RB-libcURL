@@ -82,8 +82,8 @@ Implements ErrorSetter
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Function Operator_Compare(OtherHandle As libcURL.cURLHandle) As Integer
+	#tag Method, Flags = &h1
+		Protected Function Operator_Compare(OtherHandle As libcURL.cURLHandle) As Integer
 		  If OtherHandle Is Nil Then Return 1
 		  Return Sign(Me.Flags - OtherHandle.Flags)
 		End Function
