@@ -92,7 +92,11 @@ Inherits libcURL.cURLHandle
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm.Operator_Convert
 		  
-		  Me.Constructor()
+		  If mLastError = libcURL.Errors.NOT_INITIALIZED Then
+		    Me.Constructor()
+		  Else
+		    Me.Destructor()
+		  End If
 		  If FromDict = Nil Then Raise New NilObjectException
 		  For Each item As String In FromDict.Keys
 		    Dim value As Variant = FromDict.Value(item)
