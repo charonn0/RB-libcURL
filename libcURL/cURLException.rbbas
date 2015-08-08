@@ -15,6 +15,8 @@ Inherits RuntimeException
 		    Me.Message = "libcURL is not available or is an unsupported version."
 		    
 		  Case Me.ErrorNumber = libcURL.Errors.NOT_INITIALIZED
+		    ' This indicates that cURLHandle.Constructor has not yet run, but ErrantItem is not Nil (e.g. an error in Operator_Convert)
+		    ' cURLHandle.Constructor MUST be called from subclass constructors, else this error will be raised.
 		    Me.Message = "libcURL has not yet been initialized."
 		    
 		  Case ErrantItem IsA libcURL.ShareHandle
@@ -24,7 +26,7 @@ Inherits RuntimeException
 		    Me.Message = libcURL.FormatMultiError(Me.ErrorNumber)
 		    
 		  Else
-		    Me.Message = libcURL.FormatError(Me.ErrorNumber) + "(" + libcURL.Errors.Name(Me.ErrorNumber) + ")"
+		    Me.Message = libcURL.FormatError(Me.ErrorNumber) + " (" + libcURL.Errors.Name(Me.ErrorNumber) + ")"
 		    
 		  End Select
 		  If ErrantItem IsA libcURL.EasyHandle Then
