@@ -3,6 +3,11 @@ Protected Class cURLException
 Inherits RuntimeException
 	#tag Method, Flags = &h1000
 		Sub Constructor(ErrantItem As libcURL.cURLHandle)
+		  If ErrantItem Is Nil Then 
+		    Me.Message = "Unknown error."
+		    Me.ErrorNumber = 0
+		    Return
+		  End If
 		  Me.ErrorNumber = ErrantItem.LastError
 		  Select Case True
 		  Case Me.ErrorNumber = libcURL.Errors.INIT_FAILED
