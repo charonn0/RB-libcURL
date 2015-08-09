@@ -95,7 +95,7 @@ Inherits libcURL.cURLHandle
 		  If mLastError = libcURL.Errors.NOT_INITIALIZED Then
 		    Me.Constructor()
 		  Else
-		    Me.Destructor()
+		    Me.Destructor() ' free the previous form data
 		  End If
 		  If FromDict = Nil Then Raise New NilObjectException
 		  For Each item As String In FromDict.Keys

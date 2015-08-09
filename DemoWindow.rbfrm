@@ -12,7 +12,7 @@ Begin Window DemoWindow
    LiveResize      =   True
    MacProcID       =   0
    MaxHeight       =   32000
-   MaximizeButton  =   False
+   MaximizeButton  =   True
    MaxWidth        =   32000
    MenuBar         =   ""
    MenuBarVisible  =   True
