@@ -165,9 +165,13 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Function QueryInterval() As Integer
-		  ' Returns libcURL's best estimate for an optimum interval, in milliseconds, between calls to PerformOnce. An interval of 0 means
+		  ' Returns libcURL's best estimate for an optimum interval, in milliseconds, between calls to PerformOnce. An interval of 1 means
 		  ' that PerformOnce may be called immediately.
+		  '
+		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_timeout.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.QueryInterval
+		  
 		  Dim i As Integer
 		  If libcURL.Version.IsAtLeast(7, 15, 4) Then
 		    mLastError = curl_multi_timeout(mHandle, i)
@@ -175,7 +179,7 @@ Inherits libcURL.cURLHandle
 		    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
 		  End If
 		  If mLastError <> 0 Or i <= 0 Then i = 1 ' immediately
-		  Return i 
+		  Return i
 		  
 		End Function
 	#tag EndMethod
