@@ -28,7 +28,7 @@ Begin Window DemoWindow
       AutoDeactivate  =   True
       Bold            =   ""
       Enabled         =   True
-      Height          =   309
+      Height          =   282
       HelpTag         =   ""
       Index           =   -2147483648
       InitialParent   =   ""
@@ -49,9 +49,9 @@ Begin Window DemoWindow
       TextFont        =   "System"
       TextSize        =   0
       TextUnit        =   0
-      Top             =   92
+      Top             =   119
       Underline       =   ""
-      Value           =   2
+      Value           =   0
       Visible         =   True
       Width           =   596
       Begin Listbox Debug
@@ -72,7 +72,7 @@ Begin Window DemoWindow
          GridLinesVertical=   0
          HasHeading      =   True
          HeadingIndex    =   -1
-         Height          =   147
+         Height          =   120
          HelpTag         =   ""
          Hierarchical    =   ""
          Index           =   -2147483648
@@ -96,7 +96,7 @@ Begin Window DemoWindow
          TextFont        =   "System"
          TextSize        =   0
          TextUnit        =   0
-         Top             =   246
+         Top             =   273
          Underline       =   ""
          UseFocusRing    =   True
          Visible         =   True
@@ -115,7 +115,7 @@ Begin Window DemoWindow
          DataSource      =   ""
          Enabled         =   True
          Format          =   ""
-         Height          =   134
+         Height          =   107
          HelpTag         =   ""
          HideSelection   =   True
          Index           =   -2147483648
@@ -143,7 +143,7 @@ Begin Window DemoWindow
          TextFont        =   "System"
          TextSize        =   0
          TextUnit        =   0
-         Top             =   259
+         Top             =   286
          Underline       =   ""
          UseFocusRing    =   True
          Visible         =   True
@@ -167,7 +167,7 @@ Begin Window DemoWindow
          GridLinesVertical=   0
          HasHeading      =   True
          HeadingIndex    =   -1
-         Height          =   185
+         Height          =   158
          HelpTag         =   ""
          Hierarchical    =   ""
          Index           =   -2147483648
@@ -191,7 +191,7 @@ Begin Window DemoWindow
          TextFont        =   "System"
          TextSize        =   0
          TextUnit        =   0
-         Top             =   122
+         Top             =   149
          Underline       =   ""
          UseFocusRing    =   True
          Visible         =   True
@@ -216,7 +216,7 @@ Begin Window DemoWindow
          GridLinesVertical=   0
          HasHeading      =   True
          HeadingIndex    =   -1
-         Height          =   185
+         Height          =   158
          HelpTag         =   ""
          Hierarchical    =   ""
          Index           =   -2147483648
@@ -240,7 +240,7 @@ Begin Window DemoWindow
          TextFont        =   "System"
          TextSize        =   0
          TextUnit        =   0
-         Top             =   122
+         Top             =   149
          Underline       =   ""
          UseFocusRing    =   True
          Visible         =   True
@@ -289,7 +289,7 @@ Begin Window DemoWindow
          TextFont        =   "System"
          TextSize        =   0
          TextUnit        =   0
-         Top             =   123
+         Top             =   150
          Underline       =   ""
          UseFocusRing    =   True
          Visible         =   True
@@ -338,7 +338,7 @@ Begin Window DemoWindow
          TextFont        =   "System"
          TextSize        =   0
          TextUnit        =   0
-         Top             =   121
+         Top             =   148
          Underline       =   ""
          UseFocusRing    =   True
          Visible         =   True
@@ -872,7 +872,7 @@ Begin Window DemoWindow
       TextUnit        =   0
       Top             =   0
       Underline       =   ""
-      Value           =   1
+      Value           =   3
       Visible         =   True
       Width           =   246
       Begin PushButton PushButton1
@@ -1289,6 +1289,37 @@ Begin Window DemoWindow
       Top             =   437
       Width           =   32
    End
+   Begin PushButton PauseButton
+      AutoDeactivate  =   True
+      Bold            =   ""
+      ButtonStyle     =   0
+      Cancel          =   ""
+      Caption         =   "Pause"
+      Default         =   ""
+      Enabled         =   False
+      Height          =   22
+      HelpTag         =   ""
+      Index           =   -2147483648
+      InitialParent   =   ""
+      Italic          =   ""
+      Left            =   9
+      LockBottom      =   ""
+      LockedInPosition=   False
+      LockLeft        =   True
+      LockRight       =   ""
+      LockTop         =   True
+      Scope           =   0
+      TabIndex        =   13
+      TabPanelIndex   =   0
+      TabStop         =   True
+      TextFont        =   "System"
+      TextSize        =   0
+      TextUnit        =   0
+      Top             =   85
+      Underline       =   ""
+      Visible         =   True
+      Width           =   80
+   End
 End
 #tag EndWindow
 
@@ -1304,6 +1335,8 @@ End
 
 	#tag Method, Flags = &h21
 		Private Sub Populate()
+		  PauseButton.Enabled = False
+		  PauseButton.Caption = "Pause"
 		  Dim cURLCode As Integer = Client.LastError
 		  If Not CheckBox1.Value Then
 		    DownloadOutput.Text = Client.GetDownloadedData()
@@ -1386,6 +1419,10 @@ End
 
 	#tag Property, Flags = &h21
 		Private mURL As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private ThreadStream As BinaryStream
 	#tag EndProperty
 
 
@@ -1586,6 +1623,8 @@ End
 		  #pragma Unused BytesRead
 		  #pragma Unused BytesWritten
 		  GUITimer.Mode = Timer.ModeSingle
+		  If ThreadStream <> Nil Then ThreadStream.Close
+		  ThreadStream = Nil
 		End Sub
 	#tag EndEvent
 	#tag Event
@@ -1605,7 +1644,7 @@ End
 #tag Events GetThread
 	#tag Event
 		Sub Run()
-		  If Not Client.Get(mURL) Then
+		  If Not Client.Get(mURL, ThreadStream) Then
 		    Break
 		  End If
 		End Sub
@@ -1649,6 +1688,7 @@ End
 		    Dim f As FolderItem = GetSaveFolderItem("", "")
 		    bs = BinaryStream.Create(f, True)
 		  End If
+		  PauseButton.Enabled = True
 		  Client.Get(TextField1.Text, bs)
 		End Sub
 	#tag EndEvent
@@ -1657,6 +1697,11 @@ End
 	#tag Event
 		Sub Action()
 		  mURL = TextField1.Text
+		  If CheckBox1.Value Then
+		    Dim f As FolderItem = GetSaveFolderItem("", "")
+		    ThreadStream = BinaryStream.Create(f, True)
+		  End If
+		  PauseButton.Enabled = True
 		  GetThread.Run
 		End Sub
 	#tag EndEvent
@@ -1664,6 +1709,7 @@ End
 #tag Events PushButton3
 	#tag Event
 		Sub Action()
+		  PauseButton.Enabled = True
 		  Dim f As FolderItem = GetOpenFolderItem("")
 		  Dim bs As BinaryStream = BinaryStream.Open(f)
 		  Client.Put(TextField1.Text, bs)
@@ -1673,6 +1719,7 @@ End
 #tag Events PushButton4
 	#tag Event
 		Sub Action()
+		  PauseButton.Enabled = True
 		  mPutTarget = GetOpenFolderItem("")
 		  mURL = TextField1.Text
 		  PutThread.Run
@@ -1683,6 +1730,7 @@ End
 	#tag Event
 		Sub Action()
 		  If FormValue <> Nil Then
+		    PauseButton.Enabled = True
 		    If FormValue.Right = 0 Then ' URLEncoded
 		      Dim frm() As String = FormValue.Left
 		      Client.Post(TextField1.Text, frm)
@@ -1699,7 +1747,7 @@ End
 #tag Events PushButton6
 	#tag Event
 		Sub Action()
-		  
+		  PauseButton.Enabled = True
 		  mURL = TextField1.Text
 		  PostThread.Run
 		End Sub
@@ -1718,6 +1766,7 @@ End
 #tag Events PushButton8
 	#tag Event
 		Sub Action()
+		  PauseButton.Enabled = True
 		  mURL = TextField1.Text
 		  HeadThread.Run
 		End Sub
@@ -1726,6 +1775,7 @@ End
 #tag Events PushButton9
 	#tag Event
 		Sub Action()
+		  PauseButton.Enabled = True
 		  Client.Head(TextField1.Text)
 		End Sub
 	#tag EndEvent
@@ -1753,6 +1803,7 @@ End
 		      Debug.ScrollPosition = Debug.ListCount
 		  Loop
 		  ShowErrorBuffer()
+		  
 		End Sub
 	#tag EndEvent
 #tag EndEvents
@@ -1761,6 +1812,18 @@ End
 		Sub Run()
 		  If Not Client.Head(mURL) Then
 		    Break
+		  End If
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events PauseButton
+	#tag Event
+		Sub Action()
+		  If Me.Caption = "Pause" Then
+		    If Client.EasyItem.Pause Then Me.Caption = "Resume"
+		    
+		  Else
+		    If Client.EasyItem.Resume Then Me.Caption = "Pause"
 		  End If
 		End Sub
 	#tag EndEvent
