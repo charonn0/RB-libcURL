@@ -33,7 +33,10 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Function Count() As Integer
-		  ' Returns the number of strings in the list
+		  ' Returns the number of strings in the list.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ListPtr.Count
 		  
 		  Dim p As Ptr = List
 		  Dim i As Integer
@@ -68,6 +71,9 @@ Inherits libcURL.cURLHandle
 		  ' Reads the string located at Index. The first item is at Index=0
 		  ' If the list does not contain a string at Index, an OutOfBoundsException will be raised.
 		  ' If the next link points to an invalid Ptr, a NilObjectException will be raised.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ListPtr.Item
 		  
 		  Dim p As Ptr = List
 		  Dim i As Integer
