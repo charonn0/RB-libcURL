@@ -31,6 +31,20 @@ Inherits libcURL.cURLHandle
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function Count() As Integer
+		  ' Returns the number of strings in the list
+		  
+		  Dim p As Ptr = List
+		  Dim i As Integer
+		  Do Until p = Nil
+		    i = i + 1
+		    p = p.Ptr(4)
+		  Loop
+		  Return i
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h21
 		Private Sub Destructor()
 		  Me.Free()
@@ -50,6 +64,36 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function Item(Index As Integer) As String
+		  ' Reads the string located at Index. The first item is at Index=0
+		  ' If the list does not contain a string at Index, an OutOfBoundsException will be raised.
+		  ' If the next link points to an invalid Ptr, a NilObjectException will be raised.
+		  
+		  Dim p As Ptr = List
+		  Dim i As Integer
+		  Do
+		    If i < Index Then
+		      Dim nxt As Ptr = p.Ptr(4)
+		      If nxt <> Nil Then 
+		        p = nxt
+		      Else
+		        Raise New NilObjectException
+		      End If
+		      
+		    ElseIf i = Index Then
+		      Dim mb As MemoryBlock = p.Ptr(0)
+		      If mb = Nil Then Return ""
+		      Return mb.CString(0)
+		      
+		    Else
+		      Raise New OutOfBoundsException
+		    End If
+		    i = i + 1
+		  Loop
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function Operator_Compare(OtherList As libcURL.ListPtr) As Integer
 		  ' Overloads the comparison operator(=), permitting direct comparisons between instances of ListPtr
 		  '
@@ -63,8 +107,27 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function Operator_Convert() As String()
+		  ' Overloads the conversion operator(=), permitting implicit and explicit conversion from a ListPtr into a string array
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ListPtr.Operator_Convert
+		  
+		  If mLastError = libcURL.Errors.NOT_INITIALIZED Then Raise New cURLException(Me)
+		  
+		  Dim ret() As String
+		  Dim c As Integer = Me.Count - 1
+		  For i As Integer = 0 To c
+		    ret.Append(Me.Item(i))
+		  Next
+		  Return ret
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub Operator_Convert(From() As String)
 		  ' Overloads the conversion operator(=), permitting implicit and explicit conversion from a string array into a ListPtr
+		  ' The converted array is a copy of the ListPtr contents
 		  '
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ListPtr.Operator_Convert
