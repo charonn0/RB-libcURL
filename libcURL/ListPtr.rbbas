@@ -109,6 +109,7 @@ Inherits libcURL.cURLHandle
 	#tag Method, Flags = &h0
 		Function Operator_Convert() As String()
 		  ' Overloads the conversion operator(=), permitting implicit and explicit conversion from a ListPtr into a string array
+		  ' The converted array is a copy of the ListPtr contents
 		  '
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ListPtr.Operator_Convert
@@ -127,7 +128,6 @@ Inherits libcURL.cURLHandle
 	#tag Method, Flags = &h0
 		Sub Operator_Convert(From() As String)
 		  ' Overloads the conversion operator(=), permitting implicit and explicit conversion from a string array into a ListPtr
-		  ' The converted array is a copy of the ListPtr contents
 		  '
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ListPtr.Operator_Convert
