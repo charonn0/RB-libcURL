@@ -148,6 +148,9 @@ Protected Class cURLManager
 
 	#tag Method, Flags = &h0
 		Sub SetRequestHeaders(Headers As InternetHeaders)
+		  ' Subsequent calls to this method will append the headers to the previously set headers. Headers will persist from transfer
+		  ' to transfer. Pass NIL to clear all previously set headers.
+		  
 		  If Headers <> Nil Then
 		    If mRequestHeaders = Nil Then mRequestHeaders = New libcURL.ListPtr
 		    For i As Integer = 0 To Headers.Count - 1

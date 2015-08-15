@@ -4,20 +4,14 @@ Inherits libcURL.cURLHandle
 	#tag Method, Flags = &h0
 		Function AddItem(Item As libcURL.EasyHandle) As Boolean
 		  ' Add a EasyHandle to the multistack. The EasyHandle should have all of its options already set and ready to go.
-		  ' You may not add an item while a call to PerformOnce has not yet returned. Doing so will raise an IllegalLockingException.
 		  ' A EasyHandle may belong to only one MultiHandle object at a time. Passing an owned EasyHandle will fail.
 		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_add_handle.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.AddItem
 		  
-		  StackLock.Enter
-		  Try
-		    mLastError = curl_multi_add_handle(mHandle, Item.Handle)
-		    If mLastError = 0 Then Instances.Value(Item.Handle) = Item
-		  Finally
-		    StackLock.Leave
-		  End Try
+		  mLastError = curl_multi_add_handle(mHandle, Item.Handle)
+		  If mLastError = 0 Then Instances.Value(Item.Handle) = Item
 		  Return mLastError = 0
 		End Function
 	#tag EndMethod
@@ -55,7 +49,6 @@ Inherits libcURL.cURLHandle
 		    Raise New cURLException(Me)
 		  End If
 		  Instances = New Dictionary
-		  StackLock = New CriticalSection
 		End Sub
 	#tag EndMethod
 
@@ -120,7 +113,8 @@ Inherits libcURL.cURLHandle
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_info_read.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.PerformOnce
 		  
-		  StackLock.Enter
+		  If StackLocked Then Raise New IllegalLockingException
+		  StackLocked = True
 		  Try
 		    Dim c As Integer
 		    mLastError = curl_multi_perform(mHandle, c) ' on exit, 'c' will contain the number of easy handles with unfinished business.
@@ -138,7 +132,7 @@ Inherits libcURL.cURLHandle
 		      Loop Until c <= 0
 		    End If
 		  Finally
-		    StackLock.Leave
+		    StackLocked = False
 		  End Try
 		  Return ((mLastError = 0 Or mLastError = CURLM_CALL_MULTI_PERFORM) And Instances.Count > 0)
 		End Function
@@ -200,20 +194,14 @@ Inherits libcURL.cURLHandle
 	#tag Method, Flags = &h0
 		Function RemoveItem(Item As libcURL.EasyHandle) As Boolean
 		  ' Removes the passed EasyHandle from the multistack. If there no more EasyHandles then turns off the PerformTimer.
-		  ' You may not remove an item while a call to PerformOnce has not yet returned. Doing so will raise an IllegalLockingException.
 		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_remove_handle.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.RemoveItem
 		  
-		  StackLock.Enter
-		  Try
-		    mLastError = curl_multi_remove_handle(mHandle, Item.Handle)
-		    If Instances.HasKey(Item.Handle) Then Instances.Remove(Item.Handle)
-		    If Instances.Count = 0 And PerformTimer <> Nil Then PerformTimer.Mode = Timer.ModeOff
-		  Finally
-		    StackLock.Leave
-		  End Try
+		  mLastError = curl_multi_remove_handle(mHandle, Item.Handle)
+		  If Instances.HasKey(Item.Handle) Then Instances.Remove(Item.Handle)
+		  If Instances.Count = 0 And PerformTimer <> Nil Then PerformTimer.Mode = Timer.ModeOff
 		  Return mLastError = 0
 		End Function
 	#tag EndMethod
@@ -332,7 +320,7 @@ Inherits libcURL.cURLHandle
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private StackLock As CriticalSection
+		Private StackLocked As Boolean
 	#tag EndProperty
 
 
