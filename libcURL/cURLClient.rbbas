@@ -33,7 +33,7 @@ Inherits libcURL.cURLManager
 		  ' The protocol is inferred from the URL; explictly specify the protocol in the URL to avoid bad guesses.
 		  ' The transfer will be performed on the event loop (main thread).
 		  
-		  Call Me.EasyItem.SetOption(libcURL.Opts.NOBODY, True)
+		  Call Me.SetOption(libcURL.Opts.NOBODY, True)
 		  Me.Perform(URL, Nil, Nil)
 		End Sub
 	#tag EndMethod
@@ -45,7 +45,7 @@ Inherits libcURL.cURLManager
 		  ' This method will block the calling thread until the transfer completes. All events will be raised
 		  ' on the calling thread.
 		  
-		  Call Me.EasyItem.SetOption(libcURL.Opts.NOBODY, True)
+		  Call Me.SetOption(libcURL.Opts.NOBODY, True)
 		  Return Me.Perform(URL, Nil, Nil)
 		End Function
 	#tag EndMethod

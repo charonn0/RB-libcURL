@@ -1270,8 +1270,8 @@ Begin Window DemoWindow
       Index           =   -2147483648
       Left            =   224
       LockedInPosition=   False
-      Mode            =   0
-      Period          =   1
+      Mode            =   1
+      Period          =   10
       Scope           =   0
       TabPanelIndex   =   0
       Top             =   437
@@ -1332,6 +1332,25 @@ End
 		End Sub
 	#tag EndEvent
 
+
+	#tag Method, Flags = &h21
+		Private Sub DoProgress()
+		  ProgressDownload.Value = mdlnow * 100 / mdlTotal
+		  ProgressUpload.Value = mulnow * 100 / mulTotal
+		  
+		  Do Until UBound(dbgmsgs) = -1
+		    Dim p As Pair = dbgmsgs.Pop
+		    Dim MessageType As libcURL.curl_infotype = p.Left
+		    Dim data As String = p.Right
+		    If MessageType = libcURL.curl_infotype.data_in Or MessageType = libcURL.curl_infotype.data_out _
+		      Or MessageType = libcURL.curl_infotype.ssl_in Or MessageType = libcURL.curl_infotype.ssl_out Then Continue
+		      Debug.AddRow(libcURL.curl_infoname(MessageType), data.Trim)
+		      Debug.ScrollPosition = Debug.ListCount
+		  Loop
+		  ShowErrorBuffer()
+		  
+		End Sub
+	#tag EndMethod
 
 	#tag Method, Flags = &h21
 		Private Sub Populate()
@@ -1609,7 +1628,11 @@ End
 		  mdltotal = dlTotal
 		  mulnow = ulnow
 		  multotal = ultotal
-		  ProgressTimer.Mode = Timer.ModeSingle
+		  If App.CurrentThread = Nil Then ' main thread
+		    DoProgress()
+		  ElseIf ProgressTimer <> Nil Then
+		    ProgressTimer.Mode = Timer.ModeSingle
+		  End If
 		End Function
 	#tag EndEvent
 	#tag Event
@@ -1790,20 +1813,7 @@ End
 #tag Events ProgressTimer
 	#tag Event
 		Sub Action()
-		  ProgressDownload.Value = mdlnow * 100 / mdlTotal
-		  ProgressUpload.Value = mulnow * 100 / mulTotal
-		  
-		  Do Until UBound(dbgmsgs) = -1
-		    Dim p As Pair = dbgmsgs.Pop
-		    Dim MessageType As libcURL.curl_infotype = p.Left
-		    Dim data As String = p.Right
-		    If MessageType = libcURL.curl_infotype.data_in Or MessageType = libcURL.curl_infotype.data_out _
-		      Or MessageType = libcURL.curl_infotype.ssl_in Or MessageType = libcURL.curl_infotype.ssl_out Then Continue
-		      Debug.AddRow(libcURL.curl_infoname(MessageType), data.Trim)
-		      Debug.ScrollPosition = Debug.ListCount
-		  Loop
-		  ShowErrorBuffer()
-		  
+		  DoProgress()
 		End Sub
 	#tag EndEvent
 #tag EndEvents
