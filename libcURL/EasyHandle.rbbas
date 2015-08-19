@@ -212,10 +212,8 @@ Inherits libcURL.cURLHandle
 		    If Me.GetInfo(InfoType, mb) Then Return mb.DoubleValue(0)
 		    
 		  Case libcURL.Info.SSL_ENGINES, libcURL.Info.COOKIELIST
-		    Dim p As Ptr = New MemoryBlock(4)
-		    mb = New MemoryBlock(4)
-		    mb.Ptr(0) = p
-		    If Me.GetInfo(InfoType, mb) Then Return New libcURL.ListPtr(p)
+		    mb = New MemoryBlock(8)
+		    If Me.GetInfo(InfoType, mb) And mb.Ptr(0) <> Nil Then Return New libcURL.ListPtr(mb.Ptr(0))
 		    
 		  Else
 		    Dim err As New TypeMismatchException
