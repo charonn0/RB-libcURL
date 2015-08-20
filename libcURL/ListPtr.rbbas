@@ -75,6 +75,7 @@ Inherits libcURL.cURLHandle
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ListPtr.Item
 		  
+		  If List = Nil Then Raise New OutOfBoundsException
 		  Dim p As Ptr = List
 		  Dim i As Integer
 		  Do
