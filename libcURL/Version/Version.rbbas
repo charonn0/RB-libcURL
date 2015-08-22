@@ -83,13 +83,13 @@ Protected Module Version
 		  Do
 		    s = mb.CString(i)
 		    Dim isPrintable As Boolean = (AscB(LeftB(s, 1)) > 65 And AscB(LeftB(s, 1)) < 91) Or (AscB(LeftB(s, 1)) > 96 And AscB(LeftB(s, 1)) < 123)
-		    If isPrintable Then ' not empty, and letters only
+		    If isPrintable Then ' not empty, first char is a letter
 		      prots.Append(s)
 		      i = i + s.LenB + 1
 		    Else
 		      Exit Do
 		    End If
-		  Loop Until UBound(prots) > 99 ' If we get this far then we're probably reading random garbage, so bail out
+		  Loop Until UBound(prots) > 50 ' If we get this far then we're probably reading random garbage, so bail out
 		  Return prots
 		End Function
 	#tag EndMethod
