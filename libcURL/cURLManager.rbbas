@@ -131,6 +131,7 @@ Protected Class cURLManager
 		  mDownload = WriteTo
 		  mDownloadMB = Nil
 		  mUpload = ReadFrom
+		  If mEasyItem.UseErrorBuffer Then mEasyItem.UseErrorBuffer = True ' clears the previous buffer, if any
 		  If mRequestHeaders <> Nil Then
 		    If Not mEasyItem.SetOption(libcURL.Opts.HTTPHEADER, mRequestHeaders) Then Raise New libcURL.cURLException(mEasyItem)
 		  End If
