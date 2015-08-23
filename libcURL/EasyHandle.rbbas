@@ -877,6 +877,9 @@ Inherits libcURL.cURLHandle
 		#tag Setter
 			Set
 			  ' If true, libcURL will close sockets immediately after the transfer completes.
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.AutoDisconnect
 			  
 			  If Not Me.SetOption(libcURL.Opts.FORBID_REUSE, value) Then Raise New cURLException(Me)
 			  If Not Me.SetOption(libcURL.Opts.FRESH_CONNECT, value) Then Raise New cURLException(Me)
