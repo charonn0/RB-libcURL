@@ -52,7 +52,8 @@ Inherits libcURL.cURLHandle
 		Private Shared Function FormGetCallback(UserData As Integer, Buffer As Ptr, Length As Integer) As Integer
 		  #pragma X86CallingConvention CDecl
 		  
-		  Dim bs As BinaryStream = Instances.Lookup(UserData, Nil)
+		  Dim bs As BinaryStream = FormGetStreams.Lookup(UserData, Nil)
+		  
 		  If bs <> Nil Then
 		    Dim mb As MemoryBlock = Buffer
 		    bs.Write(mb.StringValue(0, Length))
@@ -130,10 +131,10 @@ Inherits libcURL.cURLHandle
 		  
 		  Dim mb As New MemoryBlock(0)
 		  Dim formstream As New BinaryStream(mb)
-		  If Instances = Nil Then Instances = New Dictionary
-		  Instances.Value(Me.Handle) = formstream
+		  If FormGetStreams = Nil Then FormGetStreams = New Dictionary
+		  FormGetStreams.Value(Me.Handle) = formstream
 		  mLastError = curl_formget(FirstItem, Me.Handle, AddressOf FormGetCallback)
-		  Instances.Remove(Me.Handle)
+		  FormGetStreams.Remove(Me.Handle)
 		  formstream.Close
 		  If mLastError <> 0 Then Raise New cURLException(Me)
 		  Return mb
@@ -167,7 +168,7 @@ Inherits libcURL.cURLHandle
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private Shared Instances As Dictionary
+		Private Shared FormGetStreams As Dictionary
 	#tag EndProperty
 
 	#tag Property, Flags = &h1

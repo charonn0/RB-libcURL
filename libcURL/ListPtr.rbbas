@@ -70,21 +70,21 @@ Inherits libcURL.cURLHandle
 		Function Item(Index As Integer) As String
 		  ' Reads the string located at Index. The first item is at Index=0
 		  ' If the list does not contain a string at Index, an OutOfBoundsException will be raised.
-		  ' If the next link points to an invalid Ptr, a NilObjectException will be raised.
+		  ' If the list is empty then a NilObjectException will be raised.
 		  '
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ListPtr.Item
 		  
-		  If List = Nil Then Raise New OutOfBoundsException
+		  If List = Nil Then Raise New NilObjectException
 		  Dim p As Ptr = List
 		  Dim i As Integer
 		  Do
 		    If i < Index Then
 		      Dim nxt As Ptr = p.Ptr(4)
-		      If nxt <> Nil Then 
+		      If nxt <> Nil Then
 		        p = nxt
 		      Else
-		        Raise New NilObjectException
+		        Raise New OutOfBoundsException
 		      End If
 		      
 		    ElseIf i = Index Then
