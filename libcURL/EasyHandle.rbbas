@@ -777,12 +777,18 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Function _curlRead(char As Ptr, size As Integer, nmemb As Integer) As Integer
+		Private Function _curlRead(char As MemoryBlock, size As Integer, nmemb As Integer) As Integer
 		  ' This method is the intermediary between ReadCallback and the DataNeeded event.
 		  ' DO NOT CALL THIS METHOD
 		  
 		  Dim sz As Integer = nmemb * size
-		  Return RaiseEvent DataNeeded(char, sz)
+		  If UploadStream Is Nil Then
+		    Return RaiseEvent DataNeeded(char, sz)
+		  Else
+		    Dim mb As MemoryBlock = UploadStream.Read(sz)
+		    char.StringValue(0, mb.Size) = mb.StringValue(0, mb.Size)
+		    Return mb.Size
+		  End If
 		End Function
 	#tag EndMethod
 
@@ -806,12 +812,16 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Function _curlWrite(char As Ptr, size As Integer, nmemb As Integer) As Integer
+		Private Function _curlWrite(char As MemoryBlock, size As Integer, nmemb As Integer) As Integer
 		  ' This method is the intermediary between WriteCallback and the DataAvailable event.
 		  ' DO NOT CALL THIS METHOD
 		  
-		  Dim mb As MemoryBlock = char
-		  Return RaiseEvent DataAvailable(mb.StringValue(0, nmemb * size))
+		  If DownloadStream Is Nil Then
+		    Return RaiseEvent DataAvailable(char.StringValue(0, nmemb * size))
+		  Else
+		    DownloadStream.Write(char.StringValue(0, nmemb * size))
+		    Return nmemb * size
+		  End If
 		  
 		End Function
 	#tag EndMethod
@@ -1027,6 +1037,10 @@ Inherits libcURL.cURLHandle
 		#tag EndSetter
 		CookieJar As FolderItem
 	#tag EndComputedProperty
+
+	#tag Property, Flags = &h0
+		DownloadStream As Writeable
+	#tag EndProperty
 
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
@@ -1367,6 +1381,10 @@ Inherits libcURL.cURLHandle
 		#tag EndSetter
 		UploadMode As Boolean
 	#tag EndComputedProperty
+
+	#tag Property, Flags = &h0
+		UploadStream As Readable
+	#tag EndProperty
 
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
