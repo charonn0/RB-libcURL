@@ -11,8 +11,8 @@ Protected Class cURLManager
 		Sub Constructor()
 		  mEasyItem = New libcURL.EasyHandle
 		  AddHandler mEasyItem.CreateSocket, WeakAddressOf _CreateSocketHandler
-		  AddHandler mEasyItem.DataAvailable, WeakAddressOf _DataAvailableHandler
-		  AddHandler mEasyItem.DataNeeded, WeakAddressOf _DataNeededHandler
+		  'AddHandler mEasyItem.DataAvailable, WeakAddressOf _DataAvailableHandler
+		  'AddHandler mEasyItem.DataNeeded, WeakAddressOf _DataNeededHandler
 		  AddHandler mEasyItem.DebugMessage, WeakAddressOf _DebugMessageHandler
 		  AddHandler mEasyItem.Disconnected, WeakAddressOf _DisconnectedHandler
 		  AddHandler mEasyItem.HeaderReceived, WeakAddressOf _HeaderReceivedHandler
@@ -53,8 +53,8 @@ Protected Class cURLManager
 		  
 		  If mDownloadMB <> Nil Then Return mDownloadMB
 		  Dim data As New MemoryBlock(0)
-		  If mDownload = Nil Or Not mDownload IsA BinaryStream Then Return data
-		  Dim bs As BinaryStream = BinaryStream(mDownload)
+		  If mEasyItem.DownloadStream = Nil Or Not mEasyItem.DownloadStream IsA BinaryStream Then Return data
+		  Dim bs As BinaryStream = BinaryStream(mEasyItem.DownloadStream)
 		  bs.Position = 0
 		  Dim out As New BinaryStream(data)
 		  While Not bs.EOF
@@ -128,10 +128,15 @@ Protected Class cURLManager
 		  mIsTransferComplete = False
 		  mEasyItem.URL = URL
 		  mHeaders = Nil
-		  mDownload = WriteTo
-		  mDownloadMB = Nil
-		  mUpload = ReadFrom
+		  If WriteTo = Nil Then
+		    mDownloadMB = New MemoryBlock(0)
+		    WriteTo = New BinaryStream(mDownloadMB)
+		  Else
+		    mDownloadMB = Nil
 		  End If
+		  mEasyItem.DownloadStream = WriteTo
+		  mEasyItem.UploadStream = ReadFrom
+		  If mEasyItem.UseErrorBuffer Then mEasyItem.UseErrorBuffer = True ' clears the previous buffer, if any
 		  
 		  If Not mMultiItem.AddItem(mEasyItem) Then Raise New libcURL.cURLException(mMultiItem)
 		  
@@ -159,34 +164,6 @@ Protected Class cURLManager
 		  #pragma Unused Sender
 		  #pragma Unused Socket
 		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Function _DataAvailableHandler(Sender As libcURL.EasyHandle, NewData As MemoryBlock) As Integer
-		  #pragma Unused Sender
-		  If mDownload = Nil Then
-		    mDownloadMB = New MemoryBlock(0)
-		    mDownload = New BinaryStream(mDownloadMB)
-		  End If
-		  mDownload.Write(NewData)
-		  Return NewData.Size
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Function _DataNeededHandler(Sender As libcURL.EasyHandle, Buffer As MemoryBlock, MaxLength As Integer) As Integer
-		  #pragma Unused Sender
-		  
-		  If mUpload <> Nil Then
-		    Dim data As MemoryBlock = mUpload.Read(MaxLength)
-		    Buffer.StringValue(0, data.Size) = data
-		    Return data.Size
-		  End If
-		  
-		  If mEasyItem.Verbose Then RaiseEvent DebugMessage(curl_infotype.RB_libcURL, "Abort: No stream to upload!")
-		  ' LastError will be libcURL.Errors.ABORTED_BY_CALLBACK(42)
-		  Return libcURL.CURL_READFUNC_ABORT
-		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
@@ -222,8 +199,8 @@ Protected Class cURLManager
 		Private Function _SeekStreamHandler(Sender As libcURL.EasyHandle, Offset As Integer, Origin As Integer) As Boolean
 		  #pragma Unused Sender
 		  #pragma Unused Origin
-		  If mUpload <> Nil And mUpload IsA BinaryStream Then
-		    Dim bs As BinaryStream = BinaryStream(mUpload)
+		  If mEasyItem.UploadStream <> Nil And mEasyItem.UploadStream IsA BinaryStream Then
+		    Dim bs As BinaryStream = BinaryStream(mEasyItem.UploadStream)
 		    If bs.Length <= Offset And Offset > 0 Then
 		      bs.Position = Offset
 		      Return bs.Position = Offset
@@ -235,7 +212,7 @@ Protected Class cURLManager
 	#tag Method, Flags = &h21
 		Private Sub _TransferCompleteHandler(Sender As libcURL.MultiHandle, Item As libcURL.EasyHandle)
 		  #pragma Unused Sender
-		  If mDownload <> Nil And mDownload IsA BinaryStream And mDownloadMB <> Nil Then BinaryStream(mDownload).Close
+		  If mEasyItem.DownloadStream <> Nil And mEasyItem.DownloadStream IsA BinaryStream And mDownloadMB <> Nil Then BinaryStream(mEasyItem.DownloadStream).Close
 		  Dim status As Integer = Item.LastError
 		  If status <> 0 Then
 		    RaiseEvent Error(status)
@@ -245,7 +222,6 @@ Protected Class cURLManager
 		  mIsTransferComplete = True
 		  mEasyItem.ClearFormData()
 		  mEasyItem.UploadMode = False
-		  mUpload = Nil
 		  If Item.LastError <> status Then ErrorSetter(Item).LastError = status
 		End Sub
 	#tag EndMethod
@@ -269,10 +245,6 @@ Protected Class cURLManager
 
 
 	#tag Property, Flags = &h21
-		Private mDownload As Writeable
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
 		Private mDownloadMB As MemoryBlock
 	#tag EndProperty
 
@@ -294,10 +266,6 @@ Protected Class cURLManager
 
 	#tag Property, Flags = &h21
 		Private mRequestHeaders As libcURL.ListPtr
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private mUpload As Readable
 	#tag EndProperty
 
 
