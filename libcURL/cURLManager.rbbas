@@ -131,9 +131,6 @@ Protected Class cURLManager
 		  mDownload = WriteTo
 		  mDownloadMB = Nil
 		  mUpload = ReadFrom
-		  If mEasyItem.UseErrorBuffer Then mEasyItem.UseErrorBuffer = True ' clears the previous buffer, if any
-		  If mRequestHeaders <> Nil Then
-		    If Not mEasyItem.SetOption(libcURL.Opts.HTTPHEADER, mRequestHeaders) Then Raise New libcURL.cURLException(mEasyItem)
 		  End If
 		  
 		  If Not mMultiItem.AddItem(mEasyItem) Then Raise New libcURL.cURLException(mMultiItem)
@@ -148,22 +145,13 @@ Protected Class cURLManager
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub SetRequestHeaders(Headers As InternetHeaders)
+		Function SetRequestHeader(Name As String, Value As String) As Boolean
 		  ' Subsequent calls to this method will append the headers to the previously set headers. Headers will persist from transfer
-		  ' to transfer. Pass NIL to clear all previously set headers.
+		  ' to transfer. Pass an empty value to clear that header.
 		  
-		  If Headers <> Nil Then
-		    If mRequestHeaders = Nil Then mRequestHeaders = New libcURL.ListPtr
-		    For i As Integer = 0 To Headers.Count - 1
-		      Call mRequestHeaders.Append(Headers.Name(i) + ": " + Headers.Value(Headers.Name(i)))
-		    Next
-		  Else
-		    If Not mEasyItem.SetOption(libcURL.Opts.HTTPHEADER, Nil) Then Raise New libcURL.cURLException(mEasyItem)
-		    mRequestHeaders = Nil
-		  End If
-		  
-		  
-		End Sub
+		  mRequestHeaders = mEasyItem.SetRequestHeader(mRequestHeaders, Name, Value)
+		  Return mRequestHeaders <> Nil
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
