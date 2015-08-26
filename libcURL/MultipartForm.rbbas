@@ -10,11 +10,10 @@ Inherits libcURL.cURLHandle
 		  
 		  If Value.Exists And Not Value.Directory Then
 		    If ContentType <> "" Then
-		      mLastError = curl_formadd(FirstItem, LastItem, CURLFORM_COPYNAME, Name, CURLFORM_FILE, Value.AbsolutePath, CURLFORM_CONTENTTYPE, ContentType, CURLFORM_END)
+		      Return FormAdd(CURLFORM_COPYNAME, Name, CURLFORM_FILE, Value.AbsolutePath, CURLFORM_CONTENTTYPE, ContentType)
 		    Else
-		      mLastError = curl_formadd(FirstItem, LastItem, CURLFORM_COPYNAME, Name, CURLFORM_FILE, Value.AbsolutePath, CURLFORM_END)
+		      Return FormAdd(CURLFORM_COPYNAME, Name, CURLFORM_FILE, Value.AbsolutePath)
 		    End If
-		    Return mLastError = 0
 		  End If
 		End Function
 	#tag EndMethod
@@ -26,9 +25,7 @@ Inherits libcURL.cURLHandle
 		  ' http://curl.haxx.se/libcurl/c/curl_formadd.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm.AddElement
 		  
-		  mLastError = curl_formadd(FirstItem, LastItem, CURLFORM_COPYNAME, Name, CURLFORM_COPYCONTENTS, Value, CURLFORM_END)
-		  Return mLastError = 0
-		  
+		  Return FormAdd(CURLFORM_COPYNAME, Name, CURLFORM_COPYCONTENTS, Value)
 		End Function
 	#tag EndMethod
 
@@ -42,10 +39,18 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h21
 		Private Sub Destructor()
-		  If libcURL.IsAvailable And FirstItem <> Nil Then libcURL.curl_formfree(FirstItem)
-		  FirstItem = Nil
+		  If libcURL.IsAvailable And mHandle <> 0 Then libcURL.curl_formfree(mHandle)
+		  mHandle = 0
 		  LastItem = Nil
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function FormAdd(Option As Integer, Value As String, Option1 As Integer = CURLFORM_END, Value1 As String = "", Option2 As Integer = CURLFORM_END, Value2 As String = "", Option3 As Integer = CURLFORM_END, Value3 As String = "", Option4 As Integer = CURLFORM_END, Value4 As String = "") As Boolean
+		  mLastError = curl_formadd(mHandle, LastItem, Option, Value, Option1, Value1, Option2, Value2, Option3, Value3, Option4, Value4, CURLFORM_END)
+		  Return mLastError = 0
+		  
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
@@ -61,13 +66,6 @@ Inherits libcURL.cURLHandle
 		  End If
 		  
 		  Break ' UserData does not refer to a valid stream!
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function Handle() As Integer
-		  ' This method returns a Ptr to the form structure which can be passed back to libcURL
-		  Return Integer(FirstItem)
 		End Function
 	#tag EndMethod
 
@@ -123,21 +121,37 @@ Inherits libcURL.cURLHandle
 		  ' http://curl.haxx.se/libcurl/c/curl_formget.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm.Serialize
 		  
-		  If FirstItem = Nil Then Return ""
+		  Dim mb As New MemoryBlock(0)
+		  Dim formstream As New BinaryStream(mb)
+		  If Me.Serialize(formstream) Then
+		    formstream.Close
+		    Return mb
+		  Else
+		    If mLastError <> 0 Then Raise New cURLException(Me)
+		  End If
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Serialize(WriteTo As Writeable) As Boolean
+		  ' Serialize the form structure into the passed object. The serialized form may be used with
+		  ' other HTTP libraries, including the built-in HTTPSocket.
+		  '
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/curl_formget.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm.Serialize
+		  
+		  If mHandle = 0 Then Return False
 		  If Not libcURL.Version.IsAtLeast(7, 15, 5) Then
 		    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
 		    Raise New cURLException(Me)
 		  End If
 		  
-		  Dim mb As New MemoryBlock(0)
-		  Dim formstream As New BinaryStream(mb)
 		  If FormGetStreams = Nil Then FormGetStreams = New Dictionary
-		  FormGetStreams.Value(Me.Handle) = formstream
-		  mLastError = curl_formget(FirstItem, Me.Handle, AddressOf FormGetCallback)
-		  FormGetStreams.Remove(Me.Handle)
-		  formstream.Close
-		  If mLastError <> 0 Then Raise New cURLException(Me)
-		  Return mb
+		  FormGetStreams.Value(mHandle) = WriteTo
+		  mLastError = curl_formget(mHandle, mHandle, AddressOf FormGetCallback)
+		  FormGetStreams.Remove(mHandle)
+		  Return mLastError = 0
 		End Function
 	#tag EndMethod
 
@@ -162,10 +176,6 @@ Inherits libcURL.cURLHandle
 		  Call sock.Perform("http://www.example.com/submit.php", 5)
 	#tag EndNote
 
-
-	#tag Property, Flags = &h1
-		Protected FirstItem As Ptr
-	#tag EndProperty
 
 	#tag Property, Flags = &h21
 		Private Shared FormGetStreams As Dictionary
