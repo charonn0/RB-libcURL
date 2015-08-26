@@ -607,6 +607,28 @@ Inherits libcURL.cURLHandle
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function SetRequestHeader(Optional List As libcURL.ListPtr, Name As String, Value As String) As libcURL.ListPtr
+		  ' Subsequent calls to this method will append the headers to the previously set headers. Headers will persist from transfer
+		  ' to transfer. Pass NIL to clear all previously set headers.
+		  
+		  If List = Nil Then
+		    List = Array(Name + ": " + Value)
+		  Else
+		    Dim s() As String = List
+		    If Not Me.SetOption(libcURL.Opts.HTTPHEADER, Nil) Then Raise New libcURL.cURLException(Me)
+		    For i As Integer = UBound(s) DownTo 0
+		      If NthField(s(i), ":", 1).Trim = Name Then s.Remove(i)
+		    Next
+		    List = s
+		    If Not List.Append(Name + ": " + Value) Then Raise New cURLException(List)
+		  End If
+		  
+		  If Not Me.SetOption(libcURL.Opts.HTTPHEADER, List) Then Raise New libcURL.cURLException(Me)
+		  Return List
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h21
 		Private Shared Function SSLInitCallback(Handle As Integer, SSLCTXStruct As Ptr, UserData As Integer) As Integer
 		  ' This method is invoked by libcURL. DO NOT CALL THIS METHOD
