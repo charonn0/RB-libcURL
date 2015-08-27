@@ -42,8 +42,8 @@ To perform one or more transfers in a non-halting manner use the `MultiHandle` c
 
 ##Examples
 * [HTTP GET](https://github.com/charonn0/RB-libcURL/wiki/HTTP-GET-Example)
+* [HTTP GET with a persistent connection](https://github.com/charonn0/RB-libcURL/wiki/HTTP-persistent-connection-example)
 * [HTTP HEAD](https://github.com/charonn0/RB-libcURL/wiki/HTTP-HEAD-Example)
-* [HTTP Pipelining](https://github.com/charonn0/RB-libcURL/wiki/HTTP-Pipelining-Example)
 * [HTTP POST](https://github.com/charonn0/RB-libcURL/wiki/HTTP-POST-Example)
 * [FTP Download](https://github.com/charonn0/RB-libcURL/wiki/FTP-RETR-Example)
 * [FTP Upload](https://github.com/charonn0/RB-libcURL/wiki/FTP-STOR-Example)
