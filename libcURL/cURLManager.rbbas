@@ -17,7 +17,7 @@ Protected Class cURLManager
 		  AddHandler mEasyItem.Disconnected, WeakAddressOf _DisconnectedHandler
 		  AddHandler mEasyItem.HeaderReceived, WeakAddressOf _HeaderReceivedHandler
 		  AddHandler mEasyItem.Progress, WeakAddressOf _ProgressHandler
-		  AddHandler mEasyItem.SeekStream, WeakAddressOf _SeekStreamHandler
+		  'AddHandler mEasyItem.SeekStream, WeakAddressOf _SeekStreamHandler
 		  
 		  mMultiItem = New libcURL.MultiHandle
 		  AddHandler mMultiItem.TransferComplete, WeakAddressOf _TransferCompleteHandler
@@ -152,10 +152,10 @@ Protected Class cURLManager
 	#tag Method, Flags = &h0
 		Function SetRequestHeader(Name As String, Value As String) As Boolean
 		  ' Subsequent calls to this method will append the headers to the previously set headers. Headers will persist from transfer
-		  ' to transfer. Pass an empty value to clear that header.
+		  ' to transfer. Pass an empty value to clear the named header. Pass an empty name to clear all headers.
 		  
 		  mRequestHeaders = mEasyItem.SetRequestHeader(mRequestHeaders, Name, Value)
-		  Return mRequestHeaders <> Nil
+		  Return (mRequestHeaders <> Nil Or Name = "")
 		End Function
 	#tag EndMethod
 
@@ -192,20 +192,6 @@ Protected Class cURLManager
 		Private Function _ProgressHandler(Sender As libcURL.EasyHandle, dlTotal As UInt64, dlnow As UInt64, ultotal As UInt64, ulnow As UInt64) As Boolean
 		  #pragma Unused Sender
 		  Return RaiseEvent Progress(dlTotal, dlnow, ultotal, ulnow)
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Function _SeekStreamHandler(Sender As libcURL.EasyHandle, Offset As Integer, Origin As Integer) As Boolean
-		  #pragma Unused Sender
-		  #pragma Unused Origin
-		  If mEasyItem.UploadStream <> Nil And mEasyItem.UploadStream IsA BinaryStream Then
-		    Dim bs As BinaryStream = BinaryStream(mEasyItem.UploadStream)
-		    If bs.Length <= Offset And Offset > 0 Then
-		      bs.Position = Offset
-		      Return bs.Position = Offset
-		    End If
-		  End If
 		End Function
 	#tag EndMethod
 

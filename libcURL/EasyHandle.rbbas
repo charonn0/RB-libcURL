@@ -84,7 +84,8 @@ Inherits libcURL.cURLHandle
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Constructor
 		  
 		  If CopyOpts = Nil Or CopyOpts.Handle = 0 Then Raise New NilObjectException
-		  
+		  // Calling the overridden superclass constructor.
+		  // Constructor(GlobalInitFlags As Integer) -- From libcURL.cURLHandle
 		  Super.Constructor(CopyOpts.Flags)
 		  mHandle = curl_easy_duphandle(CopyOpts.Handle)
 		  If mHandle > 0 Then
@@ -609,23 +610,34 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Function SetRequestHeader(Optional List As libcURL.ListPtr, Name As String, Value As String) As libcURL.ListPtr
-		  ' Subsequent calls to this method will append the headers to the previously set headers. Headers will persist from transfer
-		  ' to transfer. Pass NIL to clear all previously set headers.
+		  ' Subsequent calls to this method will append the headers to the List parameter. You must maintain a reference to the List until 
+		  ' it is no longer in use by libcURL. Pass the List reference back to this function when adding subsequent headers.
+		  ' If Name is "" (empty string), then any previously set headers will be cleared and this function returns Nil. The List may then 
+		  ' be safely destroyed. If List is not specified then a new List is returned.
+		  '
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/CURLOPT_HTTPHEADER.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.SetRequestHeader
 		  
-		  If List = Nil Then
-		    List = Array(Name + ": " + Value)
-		  Else
+		  If List = Nil And Name <> "" Then ' Add first header
+		    List = Array(Name + ": " + Value) ' array converts to ListPtr
+		    
+		  ElseIf Name <> "" Then ' append another header
 		    Dim s() As String = List
-		    If Not Me.SetOption(libcURL.Opts.HTTPHEADER, Nil) Then Raise New libcURL.cURLException(Me)
+		    If Not Me.SetOption(libcURL.Opts.HTTPHEADER, Nil) Then Raise New cURLException(Me)
 		    If Name = "" And Value = "" Then Return Nil
 		    For i As Integer = UBound(s) DownTo 0
 		      If NthField(s(i), ":", 1).Trim = Name Then s.Remove(i)
 		    Next
 		    List = s
 		    If Not List.Append(Name + ": " + Value) Then Raise New cURLException(List)
+		    
+		  Else' clear all headers
+		    List = Nil
+		    
 		  End If
 		  
-		  If Not Me.SetOption(libcURL.Opts.HTTPHEADER, List) Then Raise New libcURL.cURLException(Me)
+		  If Not Me.SetOption(libcURL.Opts.HTTPHEADER, List) Then Raise New cURLException(Me)
 		  Return List
 		End Function
 	#tag EndMethod
