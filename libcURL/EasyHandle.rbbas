@@ -617,6 +617,7 @@ Inherits libcURL.cURLHandle
 		  Else
 		    Dim s() As String = List
 		    If Not Me.SetOption(libcURL.Opts.HTTPHEADER, Nil) Then Raise New libcURL.cURLException(Me)
+		    If Name = "" And Value = "" Then Return Nil
 		    For i As Integer = UBound(s) DownTo 0
 		      If NthField(s(i), ":", 1).Trim = Name Then s.Remove(i)
 		    Next
