@@ -798,7 +798,16 @@ Inherits libcURL.cURLHandle
 		  ' This method is the intermediary between SeekCallback and the SeekStream event.
 		  ' DO NOT CALL THIS METHOD
 		  
-		  If RaiseEvent SeekStream(Offset, Origin) Then Return 0
+		  If UploadStream Is Nil Then
+		    If RaiseEvent SeekStream(Offset, Origin) Then Return 0
+		  ElseIf UploadStream IsA BinaryStream Then
+		    Dim bs As BinaryStream = BinaryStream(UploadStream)
+		    If bs.Length <= Offset And Offset > -1 Then
+		      bs.Position = Offset
+		      Return 0
+		    End If
+		  End If
+		  
 		  Return 2 ' fail seek, but libcURL can try to work around it.
 		End Function
 	#tag EndMethod
