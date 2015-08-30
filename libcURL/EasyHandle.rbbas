@@ -1331,7 +1331,10 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  return mSecure
+			  If mSecure Then
+			    Dim v As Integer = Me.GetInfo(libcURL.Info.SSL_VERIFYRESULT)
+			    Return v = 0
+			  End If
 			End Get
 		#tag EndGetter
 		#tag Setter
