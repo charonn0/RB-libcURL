@@ -799,7 +799,7 @@ Inherits libcURL.cURLHandle
 		    Return RaiseEvent DataNeeded(char, sz)
 		  Else
 		    Dim mb As MemoryBlock = UploadStream.Read(sz)
-		    char.StringValue(0, mb.Size) = mb.StringValue(0, mb.Size)
+		    If mb.Size > 0 Then char.StringValue(0, mb.Size) = mb.StringValue(0, mb.Size)
 		    Return mb.Size
 		  End If
 		End Function
