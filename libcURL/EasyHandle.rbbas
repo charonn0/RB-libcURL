@@ -94,9 +94,8 @@ Inherits libcURL.cURLHandle
 		    Me.Verbose = CopyOpts.Verbose
 		    Me.UseErrorBuffer = CopyOpts.UseErrorBuffer
 		    mAutoDisconnect = CopyOpts.AutoDisconnect
-		    mCA_ListFile = CopyOpts.CA_ListFile
-		    mConnectionTimeout = CopyOpts.ConnectionTimeout
-		    mCookieJar = CopyOpts.CookieJar
+		    Me.ConnectionTimeout = CopyOpts.ConnectionTimeout
+		    mHTTPVersion = CopyOpts.HTTPVersion
 		    mFailOnServerError = CopyOpts.FailOnServerError
 		    mFollowRedirects = CopyOpts.FollowRedirects
 		    mPassword = CopyOpts.Password
