@@ -1,6 +1,15 @@
 ##Introduction
 **RB-libcURL** is a [libcURL](http://curl.haxx.se/libcurl/c/libcurl.html) [binding](http://en.wikipedia.org/wiki/Language_binding) for Realbasic and Xojo projects. It is designed and tested on Windows 7 against [curl-7.40.0-devel-mingw32](http://curl.haxx.se/gknw.net/7.40.0/dist-w32/curl-7.40.0-devel-mingw32.zip) and associated security and compression libraries ([more platforms](http://curl.haxx.se/download.html)). The minimum supported libcURL version is [7.15.2](https://github.com/charonn0/RB-libcURL/wiki/libcURL.IsAvailable). 
 
+##Example
+This example performs a synchronous HTTP GET request on the calling thread. [More examples](https://github.com/charonn0/RB-libcURL/wiki#examples).
+```vbnet
+  Dim curl As New cURLClient
+  Dim page As String
+  If curl.Get("http://www.example.com/index.html") Then 
+    page = curl.GetDownloadedData
+  End If
+```
 ##Hilights
 * [Synchronous and asynchronous](https://github.com/charonn0/RB-libcURL/wiki/Synchronous-vs.-Asynchronous-methods) transfers 
 * Use any supported protocol (DICT, FILE, FTP, FTPS, Gopher, HTTP(1.0, 1.1, and 2.0), HTTPS, IMAP, IMAPS, LDAP, LDAPS, POP3, POP3S, RTMP, RTSP, SCP, SFTP, SMTP, SMTPS, Telnet and TFTP).
