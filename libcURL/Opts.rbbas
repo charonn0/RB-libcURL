@@ -342,6 +342,9 @@ Protected Module Opts
 	#tag Constant, Name = SSLKEYTYPE, Type = Double, Dynamic = False, Default = \"10088", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = SSLVERSION, Type = Double, Dynamic = False, Default = \"32", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = SSL_CIPHER_LIST, Type = Double, Dynamic = False, Default = \"10083", Scope = Protected
 	#tag EndConstant
 

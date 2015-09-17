@@ -172,6 +172,15 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Function ErrorBuffer() As String
+		  ' Returns a copy of contents of the error buffer, or an empty string. The contents of this buffer will persist 
+		  ' between transfers; it is NOT automatically cleared. To clear the buffer set UseErrorBuffer to True (even if 
+		  ' it's already True)
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.ErrorBuffer
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.UseErrorBuffer
+		  ' http://curl.haxx.se/libcurl/c/CURLOPT_ERRORBUFFER.html
+		  
 		  If mErrorBuffer <> Nil Then Return mErrorBuffer.CString(0)
 		End Function
 	#tag EndMethod
@@ -256,7 +265,7 @@ Inherits libcURL.cURLHandle
 		  End If
 		  
 		  If libcURL.Version.SSL Then
-		    If Sender.SetOption(libcURL.Opts.SSL_CTX_DATA, Sender.Handle) Then 
+		    If Sender.SetOption(libcURL.Opts.SSL_CTX_DATA, Sender.Handle) Then
 		      If Not Sender.SetOption(libcURL.Opts.SSL_CTX_FUNCTION, AddressOf SSLInitCallback) Then Raise New cURLException(Sender)
 		    Else
 		      If Sender.Verbose Then
@@ -608,9 +617,9 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Function SetRequestHeader(Optional List As libcURL.ListPtr, Name As String, Value As String) As libcURL.ListPtr
-		  ' Subsequent calls to this method will append the headers to the List parameter. You must maintain a reference to the List until 
+		  ' Subsequent calls to this method will append the headers to the List parameter. You must maintain a reference to the List until
 		  ' it is no longer in use by libcURL. Pass the List reference back to this function when adding subsequent headers.
-		  ' If Name is "" (empty string), then any previously set headers will be cleared and this function returns Nil. The List may then 
+		  ' If Name is "" (empty string), then any previously set headers will be cleared and this function returns Nil. The List may then
 		  ' be safely destroyed. If List is not specified then a new List is returned.
 		  '
 		  ' See:

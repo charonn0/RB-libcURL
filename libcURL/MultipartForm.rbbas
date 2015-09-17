@@ -66,6 +66,7 @@ Inherits libcURL.cURLHandle
 		  End If
 		  
 		  Break ' UserData does not refer to a valid stream!
+		  
 		End Function
 	#tag EndMethod
 
@@ -147,6 +148,7 @@ Inherits libcURL.cURLHandle
 		    Raise New cURLException(Me)
 		  End If
 		  
+		  ' The form will be serialized one element at a time via several invocations of the FormGetCallback
 		  If FormGetStreams = Nil Then FormGetStreams = New Dictionary
 		  FormGetStreams.Value(mHandle) = WriteTo
 		  mLastError = curl_formget(mHandle, mHandle, AddressOf FormGetCallback)
