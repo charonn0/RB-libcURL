@@ -1,5 +1,9 @@
 ##Introduction
-**RB-libcURL** is a [libcURL](http://curl.haxx.se/libcurl/c/libcurl.html) [binding](http://en.wikipedia.org/wiki/Language_binding) for Realbasic and Xojo projects. It is designed and tested on Windows 7 against [curl-7.40.0-devel-mingw32](http://curl.haxx.se/gknw.net/7.40.0/dist-w32/curl-7.40.0-devel-mingw32.zip) and associated security and compression libraries ([more platforms](http://curl.haxx.se/download.html)). The minimum supported libcURL version is [7.15.2](https://github.com/charonn0/RB-libcURL/wiki/libcURL.IsAvailable). 
+[libcurl](http://curl.haxx.se/libcurl/c/libcurl.html) is a cross-platform multi-protocol network transfer library. It is widely used both as a stand-alone command-line utility and as a standard or optional library for [many programming languages](http://curl.haxx.se/libcurl/bindings.html) and development environments.
+
+**RB-libcURL** is a libcurl [binding](http://en.wikipedia.org/wiki/Language_binding) for Realbasic and Xojo ("classic" framework) projects. It is designed and tested using REALstudio 2011r4.3 on Windows 7 against [curl-7.40.0-devel-mingw32](http://curl.haxx.se/gknw.net/7.40.0/dist-w32/curl-7.40.0-devel-mingw32.zip) and associated security (e.g. OpenSSL, SChannel, etc.) and compression (i.e. zlib) libraries. Library binaries for [other platforms](http://curl.haxx.se/download.html) are available, or can built from source. 
+
+The minimum supported libcURL version is [7.15.2](https://github.com/charonn0/RB-libcURL/wiki/libcURL.IsAvailable). The recommended minimum version is [7.21.7](http://curl.haxx.se/mail/lib-2011-06/0155.html). Versions prior to 7.21.7 will function with degraded features, but versions prior to 7.15.2 will not function properly at all.
 
 ##Example
 This example performs a synchronous HTTP GET request on the calling thread. [More examples](https://github.com/charonn0/RB-libcURL/wiki#examples).
@@ -13,7 +17,7 @@ This example performs a synchronous HTTP GET request on the calling thread. [Mor
 ##Hilights
 * [Synchronous and asynchronous](https://github.com/charonn0/RB-libcURL/wiki/Synchronous-vs.-Asynchronous-methods) transfers 
 * Use any supported protocol (DICT, FILE, FTP, FTPS, Gopher, HTTP(1.0, 1.1, and 2.0), HTTPS, IMAP, IMAPS, LDAP, LDAPS, POP3, POP3S, RTMP, RTSP, SCP, SFTP, SMTP, SMTPS, Telnet and TFTP).
-* SSL/TLS with [certificate validation](https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Secure).
+* SSL/TLS with [certificate validation](https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Secure), using any one of several SSL libraries.
 * Full support for [RB/Xojo threads](https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.PerformOnce)
 * Automatic decompression (gzip, deflate, etc.) using zlib.
 * [Stream-oriented](https://github.com/charonn0/RB-libcURL/wiki/cURLManager.Perform), using Xojo's built-in [Readable](http://docs.xojo.com/index.php/Readable) and [Writeable](http://docs.xojo.com/index.php/Writeable) interfaces. Download or upload directly to or from a file, MemoryBlock, or your own custom class.
