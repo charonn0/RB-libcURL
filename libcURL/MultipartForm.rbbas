@@ -57,11 +57,11 @@ Inherits libcURL.cURLHandle
 		Private Shared Function FormGetCallback(UserData As Integer, Buffer As Ptr, Length As Integer) As Integer
 		  #pragma X86CallingConvention CDecl
 		  
-		  Dim bs As BinaryStream = FormGetStreams.Lookup(UserData, Nil)
+		  Dim stream As Writeable = FormGetStreams.Lookup(UserData, Nil)
 		  
-		  If bs <> Nil Then
+		  If stream <> Nil Then
 		    Dim mb As MemoryBlock = Buffer
-		    bs.Write(mb.StringValue(0, Length))
+		    stream.Write(mb.StringValue(0, Length))
 		    Return Length
 		  End If
 		  
@@ -145,10 +145,10 @@ Inherits libcURL.cURLHandle
 		  If mHandle = 0 Then Return False
 		  If Not libcURL.Version.IsAtLeast(7, 15, 5) Then
 		    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
-		    Raise New cURLException(Me)
+		    Return False
 		  End If
 		  
-		  ' The form will be serialized one element at a time via several invocations of the FormGetCallback
+		  ' The form will be serialized one element at a time via several invocations of FormGetCallback
 		  If FormGetStreams = Nil Then FormGetStreams = New Dictionary
 		  FormGetStreams.Value(mHandle) = WriteTo
 		  mLastError = curl_formget(mHandle, mHandle, AddressOf FormGetCallback)
