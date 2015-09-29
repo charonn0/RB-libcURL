@@ -126,7 +126,7 @@ Protected Class cURLManager
 	#tag Method, Flags = &h21
 		Private Sub QueueTransfer(URL As String, ReadFrom As Readable, WriteTo As Writeable)
 		  mIsTransferComplete = False
-		  mEasyItem.URL = URL
+		  If URL.Trim <> "" Then mEasyItem.URL = URL
 		  mHeaders = Nil
 		  If WriteTo = Nil Then
 		    mDownloadMB = New MemoryBlock(0)
