@@ -473,11 +473,9 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub SetFormData(FormData As Dictionary)
-		  Dim frm As libcURL.MultipartForm
-		  If FormData <> Nil Then frm = FormData
-		  If Not Me.SetOption(libcURL.Opts.HTTPPOST, frm) Then Raise New libcURL.cURLException(Me)
-		  mForm = frm
+		Sub SetFormData(FormData As libcURL.MultipartForm)
+		  If Not Me.SetOption(libcURL.Opts.HTTPPOST, FormData) Then Raise New libcURL.cURLException(Me)
+		  mForm = FormData
 		End Sub
 	#tag EndMethod
 
