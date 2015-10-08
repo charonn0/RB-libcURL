@@ -124,10 +124,17 @@ Inherits libcURL.cURLHandle
 		  If mLastError = libcURL.Errors.NOT_INITIALIZED Then Raise New cURLException(Me)
 		  
 		  Dim ret() As String
-		  Dim c As Integer = Me.Count - 1
-		  For i As Integer = 0 To c
-		    ret.Append(Me.Item(i))
-		  Next
+		  Dim p As Ptr = List
+		  Do Until p = Nil
+		    Dim txt, nxt As Ptr
+		    txt = p.Ptr(0)
+		    nxt = p.Ptr(4)
+		    p = nxt
+		    Dim mb As MemoryBlock = txt
+		    If mb = Nil Then Continue
+		    ret.Append(mb.CString(0))
+		  Loop
+		  
 		  Return ret
 		End Function
 	#tag EndMethod
