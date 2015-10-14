@@ -113,12 +113,18 @@ Protected Module Version
 		  Static mStruct As CURLVersion
 		  Static init As Boolean
 		  If Not init And System.IsFunctionAvailable("curl_version_info", "libcurl") Then
-		    init = True
-		    If curl_global_init(CURL_GLOBAL_NOTHING) = 0 Then
+		    Dim error As Integer = curl_global_init(CURL_GLOBAL_DEFAULT) ' do not try to replace with cURLHandle, which performs version checks
+		    If error = 0 Then
+		      init = True
 		      Dim ve As MemoryBlock
-		      ve = curl_version_info(CURLVERSION_FOURTH) ' do not try to replace with cURLHandle, which performs version checks
+		      ve = curl_version_info(CURLVERSION_FOURTH)
 		      mStruct.StringValue(TargetLittleEndian) = ve.StringValue(0, mStruct.Size)
 		      curl_global_cleanup()
+		    Else
+		      Dim err As New cURLException(Nil)
+		      err.ErrorNumber = error
+		      err.Message = libcURL.FormatError(error)
+		      Raise err
 		    End If
 		  End If
 		  If init Then Return mStruct
