@@ -560,6 +560,11 @@ Inherits libcURL.cURLHandle
 		      Dim mb As MemoryBlock = FolderItem(NewValue).AbsolutePath + Chr(0)
 		      Return Me.SetOptionPtr(OptionNumber, mb)
 		      
+		    Case IsA Dictionary ' assume a multipart form
+		      Dim form As Dictionary = NewValue
+		      mForm = form
+		      Return SetOption(OptionNumber, mForm)
+		      
 		    Case IsA libcURL.cURLHandle
 		      Dim cURL As libcURL.cURLHandle = NewValue
 		      Return Me.SetOption(OptionNumber, cURL.Handle)
