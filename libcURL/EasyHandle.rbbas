@@ -474,6 +474,7 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Sub SetFormData(FormData As libcURL.MultipartForm)
+		  Me.ClearFormData
 		  If Not Me.SetOption(libcURL.Opts.HTTPPOST, FormData) Then Raise New libcURL.cURLException(Me)
 		  mForm = FormData
 		End Sub
@@ -485,6 +486,7 @@ Inherits libcURL.cURLHandle
 		  'FormData(i) = URLEncode(FormData(i))
 		  'Next
 		  
+		  Me.ClearFormData
 		  Dim data As String = Join(FormData, "&")
 		  If Not Me.SetOption(libcURL.Opts.POSTFIELDSIZE, data.LenB) Then Raise New libcURL.cURLException(Me)
 		  If Not Me.SetOption(libcURL.Opts.COPYPOSTFIELDS, data) Then Raise New libcURL.cURLException(Me)
