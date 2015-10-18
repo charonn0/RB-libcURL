@@ -100,6 +100,9 @@ Inherits libcURL.cURLHandle
 		    mFollowRedirects = CopyOpts.FollowRedirects
 		    mPassword = CopyOpts.Password
 		    mSecure = CopyOpts.Secure
+		    mCA_ListFile = CopyOpts.CA_ListFile
+		    mConnectionType = CopyOpts.ConnectionType
+		    mCookieJar = CopyOpts.CookieJar
 		    mTimeOut = CopyOpts.TimeOut
 		    mUploadMode = CopyOpts.UploadMode
 		    mUserAgent = CopyOpts.UserAgent
