@@ -37,6 +37,51 @@ Inherits libcURL.cURLHandle
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		 Shared Function Deserialize(FormData As String) As libcURL.MultipartForm
+		  Dim form As New MultipartForm
+		  Dim Boundary As String = NthField(FormData, EndOfLine.Windows, 1)
+		  If Left(Boundary, Len("Content-Type:")) <> "Content-Type:" Then Raise New UnsupportedFormatException
+		  Boundary = NthField(Boundary, "boundary=", 2).Trim
+		  Dim elements() As String = Split(FormData, "--" + Boundary)
+		  
+		  Dim ecount As Integer = UBound(elements)
+		  Dim names() As String
+		  For i As Integer = 1 To ecount
+		    Dim line As String = NthField(elements(i).LTrim, EndOfLine.Windows, 1)
+		    Dim name As String = NthField(line, ";", 2)
+		    name = NthField(name, "=", 2)
+		    name = ReplaceAll(name, """", "")
+		    If name.Trim = "" Then Continue For i
+		    Dim j As Integer
+		    Dim nm As String = name
+		    Do Until names.IndexOf(nm) = -1
+		      j = j + 1
+		      nm = name + Str(j)
+		    Loop
+		    names.Append(nm)
+		    If CountFields(line, ";") < 3 Then 'form field
+		      If Not form.AddElement(nm, NthField(elements(i), EndOfLine.Windows + EndOfLine.Windows, 2)) Then Raise New libcURL.cURLException(form)
+		    Else 'file field
+		      Dim filename As String = NthField(line, ";", 3)
+		      filename = NthField(filename, "=", 2)
+		      filename = ReplaceAll(filename, """", "")
+		      Dim tmp As FolderItem = SpecialFolder.Temporary.Child(filename)
+		      Dim bs As BinaryStream = BinaryStream.Create(tmp, True)
+		      Dim filedata As MemoryBlock = elements(i)
+		      Dim t As Integer = InStr(filedata, EndOfLine.Windows + EndOfLine.Windows) + 3
+		      filedata = filedata.StringValue(t, filedata.Size - t - 2)
+		      bs.Write(filedata)
+		      bs.Close
+		      If Not form.AddElement(nm, tmp) Then Raise New libcURL.cURLException(form)
+		    End If
+		  Next
+		  
+		  Return form
+		  
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h21
 		Private Sub Destructor()
 		  If libcURL.IsAvailable And mHandle <> 0 Then libcURL.curl_formfree(mHandle)
