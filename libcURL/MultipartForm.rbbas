@@ -46,22 +46,14 @@ Inherits libcURL.cURLHandle
 		  Dim elements() As String = Split(FormData, "--" + Boundary)
 		  
 		  Dim ecount As Integer = UBound(elements)
-		  Dim names() As String
 		  For i As Integer = 1 To ecount
 		    Dim line As String = NthField(elements(i).LTrim, EndOfLine.Windows, 1)
 		    Dim name As String = NthField(line, ";", 2)
 		    name = NthField(name, "=", 2)
 		    name = ReplaceAll(name, """", "")
 		    If name.Trim = "" Then Continue For i
-		    Dim j As Integer
-		    Dim nm As String = name
-		    Do Until names.IndexOf(nm) = -1
-		      j = j + 1
-		      nm = name + Str(j)
-		    Loop
-		    names.Append(nm)
 		    If CountFields(line, ";") < 3 Then 'form field
-		      If Not form.AddElement(nm, NthField(elements(i), EndOfLine.Windows + EndOfLine.Windows, 2)) Then Raise New libcURL.cURLException(form)
+		      If Not form.AddElement(name, NthField(elements(i), EndOfLine.Windows + EndOfLine.Windows, 2)) Then Raise New libcURL.cURLException(form)
 		    Else 'file field
 		      Dim filename As String = NthField(line, ";", 3)
 		      filename = NthField(filename, "=", 2)
@@ -73,7 +65,7 @@ Inherits libcURL.cURLHandle
 		      filedata = filedata.StringValue(t, filedata.Size - t - 2)
 		      bs.Write(filedata)
 		      bs.Close
-		      If Not form.AddElement(nm, tmp) Then Raise New libcURL.cURLException(form)
+		      If Not form.AddElement(name, tmp) Then Raise New libcURL.cURLException(form)
 		    End If
 		  Next
 		  
