@@ -1,6 +1,17 @@
 #tag Class
 Protected Class App
 Inherits Application
+	#tag Event
+		Sub Open()
+		  If Testing.RunTests() Then
+		    MsgBox("All Tests passed!")
+		  Else
+		    MsgBox("Test failed!")
+		  End If
+		End Sub
+	#tag EndEvent
+
+
 	#tag Constant, Name = kEditClear, Type = String, Dynamic = False, Default = \"&Delete", Scope = Public
 		#Tag Instance, Platform = Windows, Language = Default, Definition  = \"&Delete"
 		#Tag Instance, Platform = Linux, Language = Default, Definition  = \"&Delete"
