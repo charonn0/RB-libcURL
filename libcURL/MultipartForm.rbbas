@@ -92,6 +92,21 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h1
 		Protected Function FormAdd(Option As Integer, Value As String, Option1 As Integer = CURLFORM_END, Value1 As String = "", Option2 As Integer = CURLFORM_END, Value2 As String = "", Option3 As Integer = CURLFORM_END, Value3 As String = "", Option4 As Integer = CURLFORM_END, Value4 As String = "") As Boolean
+		  ' This helper function is a wrapper for the variadic external method curl_formadd, which expects a special 
+		  ' sentinel value (CURLFORM_END) as a marker for the end of the parameters. The sentinel value will be passed
+		  ' automatically.
+		  '
+		  ' For example, this snippet adds two string fields and a file field in one call:
+		  '
+		  '  FormAdd(CURLFORM_COPYNAME, "Upload", CURLFORM_FILE, MyFolderItem.AbsolutePath, _
+		  '          CURLFORM_COPYNAME, "Username", CURLFORM_COPYCONTENTS, "Bob", _
+		  '          CURLFORM_COPYNAME, "Password", CURLFORM_COPYCONTENTS, "hunter2")
+		  '
+		  ' Note how each field is passed as a pair of parameters. At least 1 and up to 5 pairs of parameters may be passed at once.
+		  '
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/curl_formadd.html
+		  
 		  mLastError = curl_formadd(mHandle, LastItem, Option, Value, Option1, Value1, Option2, Value2, Option3, Value3, Option4, Value4, CURLFORM_END)
 		  Return mLastError = 0
 		  
