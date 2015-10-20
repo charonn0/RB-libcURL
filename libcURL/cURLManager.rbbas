@@ -208,7 +208,6 @@ Protected Class cURLManager
 		  End If
 		  mIsTransferComplete = True
 		  mEasyItem.ClearFormData()
-		  mEasyItem.UploadMode = False
 		  If Item.LastError <> status Then ErrorSetter(Item).LastError = status
 		End Sub
 	#tag EndMethod
