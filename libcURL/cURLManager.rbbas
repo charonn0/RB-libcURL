@@ -184,6 +184,7 @@ Protected Class cURLManager
 		Private Sub _HeaderReceivedHandler(Sender As libcURL.EasyHandle, HeaderLine As String)
 		  #pragma Unused Sender
 		  If mHeaders = Nil Then mHeaders = New InternetHeaders
+		  If HeaderLine.Trim = "" Then Return
 		  mHeaders.AppendHeader(NthField(HeaderLine, ": ", 1), NthField(HeaderLine, ": ", 2))
 		End Sub
 	#tag EndMethod
