@@ -18,6 +18,24 @@ Protected Class CookieEngine
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function DeleteAll() As Boolean
+		  Return Owner.SetOption(libcURL.Opts.COOKIELIST, "ALL")
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function DeleteSessionCookies() As Boolean
+		  If libcURL.Version.IsAtLeast(7, 17, 1) Then
+		    Return Owner.SetOption(libcURL.Opts.COOKIELIST, "SESS")
+		  Else
+		    ErrorSetter(Owner).LastError = libcURL.Errors.FEATURE_UNAVAILABLE
+		    Return False
+		  End If
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function Domain(Index As Integer) As String
 		  ' Returns the domain for the cookie at Index. If the domain is empty then the
 		  ' cookie is sent to all hosts.
@@ -80,6 +98,12 @@ Protected Class CookieEngine
 	#tag Method, Flags = &h0
 		Function Name(Index As Integer) As String
 		  Return NthField(Me.Item(Index), Chr(9), 6)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function NewSession() As Boolean
+		  Return Owner.SetOption(libcURL.Opts.COOKIESESSION, True)
 		End Function
 	#tag EndMethod
 
