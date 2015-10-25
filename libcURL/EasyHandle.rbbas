@@ -13,8 +13,8 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub ClearSessionCookies()
-		  If Not Me.SetOption(libcURL.Opts.COOKIESESSION, True) Then Raise New cURLException(Me)
+		Attributes( deprecated = "libcURL.CookieEngine.NewSession" )  Sub ClearSessionCookies()
+		  If Not Me.CookieEngine.NewSession Then Raise New cURLException(Me)
 		End Sub
 	#tag EndMethod
 
@@ -1071,7 +1071,7 @@ Inherits libcURL.cURLHandle
 			  Me.CookieEngine.CookieJar = value
 			End Set
 		#tag EndSetter
-		CookieJar As FolderItem
+		Attributes( deprecated = "libcURL.EasyHandle.CookieEngine.CookieJar" ) CookieJar As FolderItem
 	#tag EndComputedProperty
 
 	#tag Property, Flags = &h0
