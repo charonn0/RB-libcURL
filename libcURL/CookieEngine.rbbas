@@ -46,12 +46,12 @@ Protected Class CookieEngine
 
 	#tag Method, Flags = &h0
 		Function Expired(Index As Integer) As Boolean
-		  ' Returns True if the cookie at Index is expired. Session cookies don't expire.
+		  ' Returns True if the cookie at Index has expired. Session cookies don't expire.
 		  
 		  Dim d As Date = Me.Expiry(Index)
 		  If d <> Nil Then 
 		    Dim now As New Date
-		    Return d.TotalSeconds > now.TotalSeconds
+		    Return d.TotalSeconds < now.TotalSeconds
 		  End If
 		End Function
 	#tag EndMethod
@@ -66,9 +66,7 @@ Protected Class CookieEngine
 		  Else
 		    d.TotalSeconds = d.TotalSeconds + 86400
 		  End If
-		  If Not Me.SetCookie(Me.Name(Index), Me.Value(Index), Me.Domain(Index), d, Me.Path(Index)) Then 
-		    Raise New libcURL.cURLException(Owner)
-		  End If
+		  Me.Expiry(Index) = d
 		End Sub
 	#tag EndMethod
 
