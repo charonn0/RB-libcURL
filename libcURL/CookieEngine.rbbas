@@ -105,7 +105,6 @@ Protected Class CookieEngine
 		  Else
 		    ErrorSetter(Owner).LastError = libcURL.Errors.FEATURE_UNAVAILABLE
 		  End If
-		  Return OK
 		End Function
 	#tag EndMethod
 
