@@ -217,12 +217,15 @@ Protected Class CookieEngine
 			  If value = Nil Or value.Directory Then
 			    If Not Owner.SetOption(libcURL.Opts.COOKIEFILE, Nil) Then Raise New cURLException(Owner)
 			    If Not Owner.SetOption(libcURL.Opts.COOKIEJAR, Nil) Then Raise New cURLException(Owner)
+			    mEnabled = False
 			  Else
 			    If Not Owner.SetOption(libcURL.Opts.COOKIEFILE, value) Then Raise New cURLException(Owner)
 			    If Not Owner.SetOption(libcURL.Opts.COOKIEJAR, value) Then Raise New cURLException(Owner)
+			    mEnabled = True
 			  End If
 			  
 			  mCookieJar = value
+			  
 			End Set
 		#tag EndSetter
 		CookieJar As FolderItem
