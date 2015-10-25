@@ -91,14 +91,19 @@ Protected Class CookieEngine
 
 	#tag Method, Flags = &h0
 		Function Flush(CookieJar As FolderItem = Nil) As Boolean
-		  Dim OK As Boolean
-		  If CookieJar <> Nil Then
-		    Dim tmp As FolderItem = Me.CookieJar
-		    Me.CookieJar = CookieJar
-		    OK = Owner.SetOption(libcURL.Opts.COOKIELIST, "FLUSH")
-		    Me.CookieJar = tmp
-		  ElseIf Me.CookieJar <> Nil Then
-		    OK = Owner.SetOption(libcURL.Opts.COOKIELIST, "FLUSH")
+		  If libcURL.Version.IsAtLeast(7, 17, 1) Then
+		    Dim OK As Boolean
+		    If CookieJar <> Nil Then
+		      Dim tmp As FolderItem = Me.CookieJar
+		      Me.CookieJar = CookieJar
+		      OK = Owner.SetOption(libcURL.Opts.COOKIELIST, "FLUSH")
+		      Me.CookieJar = tmp
+		    ElseIf Me.CookieJar <> Nil Then
+		      OK = Owner.SetOption(libcURL.Opts.COOKIELIST, "FLUSH")
+		    End If
+		    Return OK
+		  Else
+		    ErrorSetter(Owner).LastError = libcURL.Errors.FEATURE_UNAVAILABLE
 		  End If
 		  Return OK
 		End Function
@@ -163,6 +168,26 @@ Protected Class CookieEngine
 	#tag Method, Flags = &h0
 		Function Path(Index As Integer) As String
 		  Return NthField(Me.Item(Index), Chr(9), 3)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Reload(CookieJar As FolderItem = Nil) As Boolean
+		  If libcURL.Version.IsAtLeast(7, 17, 1) Then
+		    Dim OK As Boolean
+		    If CookieJar <> Nil Then
+		      Dim tmp As FolderItem = Me.CookieJar
+		      Me.CookieJar = CookieJar
+		      OK = Owner.SetOption(libcURL.Opts.COOKIELIST, "RELOAD")
+		      Me.CookieJar = tmp
+		    ElseIf Me.CookieJar <> Nil Then
+		      OK = Owner.SetOption(libcURL.Opts.COOKIELIST, "RELOAD")
+		    End If
+		    Return OK
+		  Else
+		    ErrorSetter(Owner).LastError = libcURL.Errors.FEATURE_UNAVAILABLE
+		  End If
+		  
 		End Function
 	#tag EndMethod
 
