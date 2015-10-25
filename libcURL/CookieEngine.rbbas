@@ -116,27 +116,13 @@ Protected Class CookieEngine
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Lookup(CookieName As String, CookieDomain As String, IncludeExpired As Boolean = False) As Integer
-		  Dim index, c As Integer
-		  c = Me.Count
-		  For i As Integer = 0 To c - 1
-		    index = Me.Lookup(CookieName, CookieDomain, i)
-		    If index > -1 Then
-		      If IncludeExpired Or Not Me.Expired(index) Then Return index
-		      i = index + 1
-		    Else
-		      Exit For
-		    End If
-		  Next
-		  Return -1
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function Lookup(CookieName As String, CookieDomain As String, StartWith As Integer) As Integer
+		Function Lookup(CookieName As String, CookieDomain As String, IncludeExpired As Boolean =False, StartWith As Integer = 0) As Integer
 		  Dim c As Integer = Me.Count
 		  For i As Integer = StartWith To c - 1
-		    If Me.Name(i) = CookieName And CookieDomain <> "" And CookieDomain = Me.Domain(i) Then Return i
+		    If Me.Name(i) = CookieName And (CookieDomain = "" Or CookieDomain = Me.Domain(i)) Then 
+		      If IncludeExpired Or Not Me.Expired(i) Then Continue
+		      Return i
+		    End If
 		  Next
 		  Return -1
 		End Function
