@@ -96,12 +96,11 @@ Protected Class CookieEngine
 		      Me.CookieJar = CookieJar
 		      OK = Owner.SetOption(libcURL.Opts.COOKIELIST, "FLUSH")
 		      Me.CookieJar = tmp
-		    ElseIf Me.CookieJar <> Nil Then
-		      OK = Owner.SetOption(libcURL.Opts.COOKIELIST, "FLUSH")
 		    End If
-		    Return OK
+		    Return Owner.SetOption(libcURL.Opts.COOKIELIST, "FLUSH")
 		  Else
 		    ErrorSetter(Owner).LastError = libcURL.Errors.FEATURE_UNAVAILABLE
+		    Return False
 		  End If
 		End Function
 	#tag EndMethod
