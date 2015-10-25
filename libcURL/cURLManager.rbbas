@@ -151,7 +151,7 @@ Protected Class cURLManager
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function SetCookie(Name As String, Value As String, Domain As String, Expires As Date = Nil, Path As String = "") As Boolean
+		Function SetCookie(Name As String, Value As String, Domain As String = "", Expires As Date = Nil, Path As String = "") As Boolean
 		  Return mEasyItem.CookieEngine.SetCookie(Name, Value, Domain, Expires, Path)
 		End Function
 	#tag EndMethod
