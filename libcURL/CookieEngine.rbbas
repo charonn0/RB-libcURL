@@ -8,6 +8,9 @@ Protected Class CookieEngine
 
 	#tag Method, Flags = &h0
 		Function Count() As Integer
+		  ' Returns the number of cookies currently collected. This number includes
+		  ' expired cookies.
+		  
 		  Dim cookies As libcURL.ListPtr = Owner.GetInfo(libcURL.Info.COOKIELIST)
 		  If cookies = Nil Then Return 0
 		  Return cookies.Count
@@ -16,12 +19,18 @@ Protected Class CookieEngine
 
 	#tag Method, Flags = &h0
 		Function Domain(Index As Integer) As String
+		  ' Returns the domain for the cookie at Index. If the domain is empty then the
+		  ' cookie is sent to all hosts.
+		  
 		  Return NthField(Me.Item(Index), Chr(9), 1)
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function Expiry(Index As Integer) As Date
+		  ' Returns the expiration date for the cookie at Index. If the cookie is a session cookie
+		  ' then the return value will be Nil.
+		  
 		  Dim d As Date
 		  If libcURL.ParseDate(NthField(Me.Item(Index), Chr(9), 5), d) Then Return d
 		End Function
@@ -29,6 +38,7 @@ Protected Class CookieEngine
 
 	#tag Method, Flags = &h0
 		Sub Expiry(Index As Integer, Assigns NewExpiry As Date)
+		  ' Sets the expiration date for the cookie at Index
 		  If Not Me.SetCookie(Me.Name(Index), Me.Value(Index), Me.Domain(Index), NewExpiry, Me.Path(Index)) Then Raise New libcURL.cURLException(Owner)
 		End Sub
 	#tag EndMethod
