@@ -46,25 +46,8 @@ Protected Class cURLManager
 
 	#tag Method, Flags = &h0
 		Function GetCookie(Name As String, Domain As String, IncludeExpired As Boolean = False) As String
-		  Dim index, count As Integer
-		  count = mEasyItem.CookieEngine.Count
-		  For i As Integer = 0 To count - 1
-		    index = mEasyItem.CookieEngine.Lookup(Name, Domain, i)
-		    If index > -1 Then
-		      If mEasyItem.CookieEngine.Domain(index) = Domain Then
-		        Dim d As Date = mEasyItem.CookieEngine.Expiry(index)
-		        If d <> Nil Then
-		          Dim now As New Date
-		          If Not IncludeExpired And now.TotalSeconds > d.TotalSeconds Then Return "" ' expired
-		        End If
-		        Return mEasyItem.CookieEngine.Value(index)
-		      End If
-		      i = index + 1
-		    Else
-		      Exit For
-		    End If
-		  Next
-		  
+		  Dim index As Integer = mEasyItem.CookieEngine.Lookup(Name, Domain, IncludeExpired)
+		  If index > -1 Then Return mEasyItem.CookieEngine.Item(index)
 		End Function
 	#tag EndMethod
 
