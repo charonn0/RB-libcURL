@@ -168,8 +168,9 @@ Protected Class CookieEngine
 
 	#tag Method, Flags = &h0
 		Function SetCookie(Name As String, Value As String, Domain As String, Expires As Date = Nil, Path As String = "") As Boolean
-		  If Name <> "" And Value = "" Then Expires = New Date(1970, 1, 1)  ' effectively deletes the cookie
-		  Dim c As String = "Set-Cookie: " + Name + "=" + Value + "; Domain=" + Domain
+		  If Name <> "" And Value = "" And Expires = Nil Then Expires = New Date(1970, 1, 1)  ' effectively deletes the cookie
+		  Dim c As String = "Set-Cookie: " + Name + "=" + Value 
+		  If Domain <> "" Then c = c + "; Domain=" + Domain
 		  If Path <> "" Then c = c + "; path=" + Path
 		  If Expires <> Nil Then c = c + "; Expires=" + libcURL.ParseDate(Expires)
 		  Return Owner.SetOption(libcURL.Opts.COOKIELIST, c)
@@ -252,5 +253,45 @@ Protected Class CookieEngine
 	#tag EndProperty
 
 
+	#tag ViewBehavior
+		#tag ViewProperty
+			Name="Enabled"
+			Group="Behavior"
+			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Index"
+			Visible=true
+			Group="ID"
+			InitialValue="-2147483648"
+			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Left"
+			Visible=true
+			Group="Position"
+			InitialValue="0"
+			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Name"
+			Visible=true
+			Group="ID"
+			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Super"
+			Visible=true
+			Group="ID"
+			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Top"
+			Visible=true
+			Group="Position"
+			InitialValue="0"
+			InheritedFrom="Object"
+		#tag EndViewProperty
+	#tag EndViewBehavior
 End Class
 #tag EndClass
