@@ -45,6 +45,30 @@ Protected Class cURLManager
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function GetCookie(Name As String, Domain As String, IncludeExpired As Boolean = False) As String
+		  Dim index, count As Integer
+		  count = mEasyItem.CookieEngine.Count
+		  For i As Integer = 0 To count - 1
+		    index = mEasyItem.CookieEngine.Lookup(Name, Domain, i)
+		    If index > -1 Then
+		      If mEasyItem.CookieEngine.Domain(index) = Domain Then
+		        Dim d As Date = mEasyItem.CookieEngine.Expiry(index)
+		        If d <> Nil Then
+		          Dim now As New Date
+		          If Not IncludeExpired And now.TotalSeconds > d.TotalSeconds Then Return "" ' expired
+		        End If
+		        Return mEasyItem.CookieEngine.Value(index)
+		      End If
+		      i = index + 1
+		    Else
+		      Exit For
+		    End If
+		  Next
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function GetDownloadedData() As MemoryBlock
 		  ' Returns a MemoryBlock containing all data which was downloaded during the most recent transfer.
 		  ' If you passed a Writeable object to any of the transfer methods (get, post, put) then this
@@ -141,6 +165,12 @@ Protected Class cURLManager
 		  If Not mMultiItem.AddItem(mEasyItem) Then Raise New libcURL.cURLException(mMultiItem)
 		  
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function SetCookie(Name As String, Value As String, Domain As String, Expires As Date = Nil, Path As String = "") As Boolean
+		  Return mEasyItem.CookieEngine.SetCookie(Name, Value, Domain, Expires, Path)
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
