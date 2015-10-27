@@ -40,7 +40,7 @@ Protected Class CookieEngine
 		  ' Returns the domain for the cookie at Index. If the domain is empty then the
 		  ' cookie is sent to all hosts.
 		  
-		  Return NthField(Me.Item(Index), Chr(9), 1)
+		  Return NthField(Me.StringValue(Index), Chr(9), 1)
 		End Function
 	#tag EndMethod
 
@@ -76,7 +76,7 @@ Protected Class CookieEngine
 		  ' then the return value will be Nil.
 		  
 		  Dim d As Date
-		  If libcURL.ParseDate(NthField(Me.Item(Index), Chr(9), 5), d) Then Return d
+		  If libcURL.ParseDate(NthField(Me.StringValue(Index), Chr(9), 5), d) Then Return d
 		End Function
 	#tag EndMethod
 
@@ -106,21 +106,14 @@ Protected Class CookieEngine
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Item(Index As Integer) As String
-		  Dim cookies As libcURL.ListPtr = Owner.GetInfo(libcURL.Info.COOKIELIST)
-		  If cookies = Nil Then Raise New NilObjectException
-		  If Index < 0 Or Index > cookies.Count - 1 Then Raise New OutOfBoundsException
-		  Return cookies.Item(Index)
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function Lookup(CookieName As String, CookieDomain As String, IncludeExpired As Boolean =False, StartWith As Integer = 0) As Integer
+		Function Lookup(CookieName As String, CookieDomain As String, StartWith As Integer = 0) As Integer
 		  Dim c As Integer = Me.Count
 		  For i As Integer = StartWith To c - 1
-		    If Me.Name(i) = CookieName And (CookieDomain = "" Or CookieDomain = Me.Domain(i)) Then 
-		      If IncludeExpired Or Not Me.Expired(i) Then Continue
-		      Return i
+		    Dim n As String = Me.Name(i)
+		    If n = CookieName Then
+		      If CookieDomain = "" Or CookieDomain = Me.Domain(i) Then
+		        Return i
+		      End If
 		    End If
 		  Next
 		  Return -1
@@ -129,7 +122,7 @@ Protected Class CookieEngine
 
 	#tag Method, Flags = &h0
 		Function Name(Index As Integer) As String
-		  Return NthField(Me.Item(Index), Chr(9), 6)
+		  Return NthField(Me.StringValue(Index), Chr(9), 6)
 		End Function
 	#tag EndMethod
 
@@ -149,7 +142,7 @@ Protected Class CookieEngine
 
 	#tag Method, Flags = &h0
 		Function Path(Index As Integer) As String
-		  Return NthField(Me.Item(Index), Chr(9), 3)
+		  Return NthField(Me.StringValue(Index), Chr(9), 3)
 		End Function
 	#tag EndMethod
 
@@ -175,8 +168,7 @@ Protected Class CookieEngine
 
 	#tag Method, Flags = &h0
 		Function SetCookie(Name As String, Value As String, Domain As String, Expires As Date = Nil, Path As String = "") As Boolean
-		  If Name <> "" And Value = "" And Expires = Nil Then Expires = New Date(1970, 1, 1)  ' effectively deletes the cookie
-		  Dim c As String = "Set-Cookie: " + Name + "=" + Value 
+		  Dim c As String = "Set-Cookie: " + Name + "=" + Value
 		  If Domain <> "" Then c = c + "; Domain=" + Domain
 		  If Path <> "" Then c = c + "; path=" + Path
 		  If Expires <> Nil Then c = c + "; Expires=" + libcURL.ParseDate(Expires)
@@ -185,8 +177,16 @@ Protected Class CookieEngine
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function StringValue(Index As Integer) As String
+		  Dim cookies As libcURL.ListPtr = Owner.GetInfo(libcURL.Info.COOKIELIST)
+		  If cookies = Nil Then Raise New NilObjectException
+		  Return cookies.Item(Index)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function Value(Index As Integer) As String
-		  Return NthField(Me.Item(Index), Chr(9), 7)
+		  Return NthField(Me.StringValue(Index), Chr(9), 7)
 		End Function
 	#tag EndMethod
 
@@ -195,6 +195,22 @@ Protected Class CookieEngine
 		  If Not Me.SetCookie(Me.Name(Index), NewValue, Me.Domain(Index), Me.Expiry(Index), Me.Path(Index)) Then Raise New libcURL.cURLException(Owner)
 		End Sub
 	#tag EndMethod
+
+
+	#tag Note, Name = About this class
+		This class provides accessor methods to control libcurl's internal cookie engine.
+		The cookie engine works much like that of a web browser, automatically collecting
+		cookies when they are received and sending them back when appropriate.
+		
+		The cookie engine indexes cookies by cookie name and by domain name. Cookies are
+		only sent if the remote host matches the domain. 
+		
+		You may set/update cookies by calling the SetCookie method. If you are connecting to 
+		multiple servers then you should always specify a domain name when setting cookies.
+		Cookies without a domain ("") will be sent to ALL hosts, will not be updated
+		if a remote host uses the Set-Cookie header, and will be sent in addition to any
+		same-named cookies which do specify a domain.
+	#tag EndNote
 
 
 	#tag ComputedProperty, Flags = &h0
@@ -242,7 +258,7 @@ Protected Class CookieEngine
 			  If value Then
 			    If Not Owner.SetOption(libcURL.Opts.COOKIEFILE, "") Then Raise New cURLException(Owner)
 			  Else
-			    If Not Owner.SetOption(libcURL.Opts.COOKIEFILE, Nil) Then Raise New cURLException(Owner)
+			    CookieJar = Nil
 			  End If
 			  mEnabled = value
 			End Set
