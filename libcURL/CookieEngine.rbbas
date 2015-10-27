@@ -45,32 +45,6 @@ Protected Class CookieEngine
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Expired(Index As Integer) As Boolean
-		  ' Returns True if the cookie at Index has expired. Session cookies don't expire.
-		  
-		  Dim d As Date = Me.Expiry(Index)
-		  If d <> Nil Then 
-		    Dim now As New Date
-		    Return d.TotalSeconds < now.TotalSeconds
-		  End If
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub Expired(Index As Integer, Assigns NewBool As Boolean)
-		  ' Expires the cookie at Index. Expired cookies will not be sent.
-		  
-		  Dim d As New Date
-		  If NewBool Then
-		    d.TotalSeconds = d.TotalSeconds - 86400
-		  Else
-		    d.TotalSeconds = d.TotalSeconds + 86400
-		  End If
-		  Me.Expiry(Index) = d
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Function Expiry(Index As Integer) As Date
 		  ' Returns the expiration date for the cookie at Index. If the cookie is a session cookie
 		  ' then the return value will be Nil.
