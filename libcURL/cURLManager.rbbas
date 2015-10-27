@@ -32,6 +32,12 @@ Protected Class cURLManager
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function Cookies() As libcURL.CookieEngine
+		  Return mEasyItem.CookieEngine
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h21
 		Private Sub Destructor()
 		  Me.Close()
@@ -45,9 +51,9 @@ Protected Class cURLManager
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function GetCookie(Name As String, Domain As String, IncludeExpired As Boolean = False) As String
-		  Dim index As Integer = mEasyItem.CookieEngine.Lookup(Name, Domain, IncludeExpired)
-		  If index > -1 Then Return mEasyItem.CookieEngine.Item(index)
+		Function GetCookie(Name As String, Domain As String) As String
+		  Dim index As Integer = mEasyItem.CookieEngine.Lookup(Name, Domain)
+		  If index > -1 Then Return mEasyItem.CookieEngine.StringValue(index)
 		End Function
 	#tag EndMethod
 
@@ -151,7 +157,7 @@ Protected Class cURLManager
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function SetCookie(Name As String, Value As String, Domain As String = "", Expires As Date = Nil, Path As String = "") As Boolean
+		Function SetCookie(Name As String, Value As String, Domain As String, Expires As Date = Nil, Path As String = "") As Boolean
 		  Return mEasyItem.CookieEngine.SetCookie(Name, Value, Domain, Expires, Path)
 		End Function
 	#tag EndMethod
