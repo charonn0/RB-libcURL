@@ -24,7 +24,7 @@ Protected Class CookieEngine
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function DeleteSessionCookies() As Boolean
+		Function DeleteSession() As Boolean
 		  If libcURL.Version.IsAtLeast(7, 17, 1) Then
 		    Return Owner.SetOption(libcURL.Opts.COOKIELIST, "SESS")
 		  Else
