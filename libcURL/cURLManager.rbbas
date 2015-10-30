@@ -53,7 +53,7 @@ Protected Class cURLManager
 	#tag Method, Flags = &h0
 		Function GetCookie(Name As String, Domain As String) As String
 		  Dim index As Integer = mEasyItem.CookieEngine.Lookup(Name, Domain)
-		  If index > -1 Then Return mEasyItem.CookieEngine.StringValue(index)
+		  If index > -1 Then Return mEasyItem.CookieEngine.Value(index)
 		End Function
 	#tag EndMethod
 
