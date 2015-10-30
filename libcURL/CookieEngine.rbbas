@@ -8,8 +8,7 @@ Protected Class CookieEngine
 
 	#tag Method, Flags = &h0
 		Function Count() As Integer
-		  ' Returns the number of cookies currently collected. This number includes
-		  ' expired cookies.
+		  ' Returns the number of unexpired cookies currently collected. 
 		  
 		  Dim cookies As libcURL.ListPtr = Owner.GetInfo(libcURL.Info.COOKIELIST)
 		  If cookies = Nil Then Return 0
@@ -19,12 +18,15 @@ Protected Class CookieEngine
 
 	#tag Method, Flags = &h0
 		Function DeleteAll() As Boolean
+		  ' Clears all cookies.
 		  Return Owner.SetOption(libcURL.Opts.COOKIELIST, "ALL")
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function DeleteSession() As Boolean
+		  ' Deletes all session cookies. Session cookies are those without an explicit expiration date.
+		  
 		  If libcURL.Version.IsAtLeast(7, 17, 1) Then
 		    Return Owner.SetOption(libcURL.Opts.COOKIELIST, "SESS")
 		  Else
@@ -81,6 +83,9 @@ Protected Class CookieEngine
 
 	#tag Method, Flags = &h0
 		Function Lookup(CookieName As String, CookieDomain As String, StartWith As Integer = 0) As Integer
+		  ' Locates the index of the cookie matching the CookieName and CookieDomain parameters.
+		  ' If CookieDomain is "" then all domains match.
+		  
 		  Dim c As Integer = Me.Count
 		  For i As Integer = StartWith To c - 1
 		    Dim n As String = Me.Name(i)
@@ -96,12 +101,15 @@ Protected Class CookieEngine
 
 	#tag Method, Flags = &h0
 		Function Name(Index As Integer) As String
+		  ' Returns the name of the Cookie at Index
 		  Return NthField(Me.StringValue(Index), Chr(9), 6)
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function NewSession() As Boolean
+		  ' Ignores but does not delete all existing cookies which do not have an explicit expiration date.
+		  
 		  Return Owner.SetOption(libcURL.Opts.COOKIESESSION, True)
 		End Function
 	#tag EndMethod
@@ -116,6 +124,8 @@ Protected Class CookieEngine
 
 	#tag Method, Flags = &h0
 		Function Path(Index As Integer) As String
+		  ' Returns the cookie's path parameter
+		  
 		  Return NthField(Me.StringValue(Index), Chr(9), 3)
 		End Function
 	#tag EndMethod
