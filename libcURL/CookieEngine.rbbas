@@ -3,22 +3,23 @@ Protected Class CookieEngine
 	#tag Method, Flags = &h0
 		Sub Constructor(Owner As libcURL.EasyHandle)
 		  mOwner = New WeakRef(Owner)
+		  mDirty = True
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function Count() As Integer
-		  ' Returns the number of unexpired cookies currently collected. 
+		  ' Returns the number of unexpired cookies currently collected.
 		  
-		  Dim cookies As libcURL.ListPtr = Owner.GetInfo(libcURL.Info.COOKIELIST)
-		  If cookies = Nil Then Return 0
-		  Return cookies.Count
+		  Return CookieList.Count
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function DeleteAll() As Boolean
 		  ' Clears all cookies.
+		  
+		  mDirty = True
 		  Return Owner.SetOption(libcURL.Opts.COOKIELIST, "ALL")
 		End Function
 	#tag EndMethod
@@ -28,6 +29,7 @@ Protected Class CookieEngine
 		  ' Deletes all session cookies. Session cookies are those without an explicit expiration date.
 		  
 		  If libcURL.Version.IsAtLeast(7, 17, 1) Then
+		    mDirty = True
 		    Return Owner.SetOption(libcURL.Opts.COOKIELIST, "SESS")
 		  Else
 		    ErrorSetter(Owner).LastError = libcURL.Errors.FEATURE_UNAVAILABLE
@@ -85,6 +87,7 @@ Protected Class CookieEngine
 		      OK = Owner.SetOption(libcURL.Opts.COOKIELIST, "FLUSH")
 		      Me.CookieJar = tmp
 		    End If
+		    mDirty = True
 		    Return Owner.SetOption(libcURL.Opts.COOKIELIST, "FLUSH")
 		  Else
 		    ErrorSetter(Owner).LastError = libcURL.Errors.FEATURE_UNAVAILABLE
@@ -113,8 +116,7 @@ Protected Class CookieEngine
 		  
 		  Dim c As Integer = Me.Count
 		  For i As Integer = StartWith To c - 1
-		    Dim n As String = Me.Name(i)
-		    If n = CookieName Then
+		    If CookieName = "" Or Me.Name(i) = CookieName Then
 		      If CookieDomain = "" Or CookieDomain = Me.Domain(i) Then
 		        Return i
 		      End If
@@ -135,6 +137,7 @@ Protected Class CookieEngine
 		Function NewSession() As Boolean
 		  ' Ignores but does not delete all existing cookies which do not have an explicit expiration date.
 		  
+		  mDirty = True
 		  Return Owner.SetOption(libcURL.Opts.COOKIESESSION, True)
 		End Function
 	#tag EndMethod
@@ -167,6 +170,7 @@ Protected Class CookieEngine
 		    ElseIf Me.CookieJar <> Nil Then
 		      OK = Owner.SetOption(libcURL.Opts.COOKIELIST, "RELOAD")
 		    End If
+		    mDirty = True
 		    Return OK
 		  Else
 		    ErrorSetter(Owner).LastError = libcURL.Errors.FEATURE_UNAVAILABLE
@@ -182,6 +186,7 @@ Protected Class CookieEngine
 		  If Path <> "" Then c = c + "; path=" + Path
 		  If Expires <> Nil Then c = c + "; Expires=" + libcURL.ParseDate(Expires)
 		  If HTTPOnly Then c = c + "; httpOnly"
+		  mDirty = True
 		  Return Owner.SetOption(libcURL.Opts.COOKIELIST, c)
 		End Function
 	#tag EndMethod
@@ -259,6 +264,19 @@ Protected Class CookieEngine
 		CookieJar As FolderItem
 	#tag EndComputedProperty
 
+	#tag ComputedProperty, Flags = &h1
+		#tag Getter
+			Get
+			  If mDirty Or mCookieList = Nil Then 
+			    mCookieList = Owner.GetInfo(libcURL.Info.COOKIELIST)
+			    mDirty = False
+			  End If
+			  return mCookieList
+			End Get
+		#tag EndGetter
+		Protected CookieList As libcURL.ListPtr
+	#tag EndComputedProperty
+
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
@@ -280,6 +298,14 @@ Protected Class CookieEngine
 
 	#tag Property, Flags = &h21
 		Private mCookieJar As FolderItem
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mCookieList As libcURL.ListPtr
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mDirty As Boolean
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
