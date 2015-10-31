@@ -192,10 +192,22 @@ Protected Class CookieEngine
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function StringValue(Index As Integer) As String
-		  Dim cookies As libcURL.ListPtr = Owner.GetInfo(libcURL.Info.COOKIELIST)
-		  If cookies = Nil Then Raise New NilObjectException
-		  Return cookies.Item(Index)
+		Function StringValue(Index As Integer, StringFormat As Integer = libcURL.CookieEngine.FORMAT_NETSCAPE) As String
+		  Select Case StringFormat
+		  Case FORMAT_NETSCAPE
+		    Return CookieList.Item(Index)
+		    
+		  Case FORMAT_HTTP
+		    Dim c As String = "Set-Cookie: " + Me.Name(Index) + "=" + Me.Value(Index)
+		    If Me.Domain(Index) <> "" Then c = c + "; Domain=" + Me.Domain(Index)
+		    If Me.Path(Index) <> "" Then c = c + "; path=" + Me.Path(Index)
+		    If Me.Expiry(Index) <> Nil Then c = c + "; Expires=" + libcURL.ParseDate(Me.Expiry(Index))
+		    If Me.HTTPOnly(Index) Then c = c + "; httpOnly"
+		    Return c
+		    
+		  Else
+		    Raise New UnsupportedFormatException
+		  End Select
 		End Function
 	#tag EndMethod
 
@@ -315,6 +327,13 @@ Protected Class CookieEngine
 	#tag Property, Flags = &h21
 		Private mOwner As WeakRef
 	#tag EndProperty
+
+
+	#tag Constant, Name = FORMAT_HTTP, Type = Double, Dynamic = False, Default = \"2", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = FORMAT_NETSCAPE, Type = Double, Dynamic = False, Default = \"1", Scope = Public
+	#tag EndConstant
 
 
 	#tag ViewBehavior
