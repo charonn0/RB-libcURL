@@ -51,8 +51,12 @@ Protected Class CookieEngine
 		  ' Returns the expiration date for the cookie at Index. If the cookie is a session cookie
 		  ' then the return value will be Nil.
 		  
-		  Dim d As Date
-		  If libcURL.ParseDate(NthField(Me.StringValue(Index), Chr(9), 5), d) Then Return d
+		  Dim d As New Date(1970, 1, 1, 0, 0, 0, 0.0) 'UNIX epoch
+		  Dim count As Integer = Val(NthField(Me.StringValue(Index), Chr(9), 5))
+		  If count > 0 Then
+		    d.TotalSeconds = d.TotalSeconds + count
+		    Return d
+		  End If
 		End Function
 	#tag EndMethod
 
