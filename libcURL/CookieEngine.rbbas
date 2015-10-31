@@ -42,7 +42,13 @@ Protected Class CookieEngine
 		  ' Returns the domain for the cookie at Index. If the domain is empty then the
 		  ' cookie is sent to all hosts.
 		  
-		  Return NthField(Me.StringValue(Index), Chr(9), 1)
+		  Const HTTPONLY = "#HttpOnly_"
+		  Static sz As Integer = HTTPONLY.Len
+		  Dim dm As String = NthField(Me.StringValue(Index), Chr(9), 1)
+		  
+		  If Left(dm, sz) = HTTPONLY Then dm = Right(dm, dm.Len - sz)
+		  If Left(dm, sz + 1) = "." + HTTPONLY Then dm = Right(dm, dm.Len - (sz + 1))
+		  Return dm
 		End Function
 	#tag EndMethod
 
@@ -63,7 +69,9 @@ Protected Class CookieEngine
 	#tag Method, Flags = &h0
 		Sub Expiry(Index As Integer, Assigns NewExpiry As Date)
 		  ' Sets the expiration date for the cookie at Index
-		  If Not Me.SetCookie(Me.Name(Index), Me.Value(Index), Me.Domain(Index), NewExpiry, Me.Path(Index)) Then Raise New libcURL.cURLException(Owner)
+		  If Not Me.SetCookie(Me.Name(Index), Me.Value(Index), Me.Domain(Index), NewExpiry, Me.Path(Index), Me.HTTPOnly(Index)) Then 
+		    Raise New libcURL.cURLException(Owner)
+		  End If
 		End Sub
 	#tag EndMethod
 
@@ -82,6 +90,19 @@ Protected Class CookieEngine
 		    ErrorSetter(Owner).LastError = libcURL.Errors.FEATURE_UNAVAILABLE
 		    Return False
 		  End If
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function HTTPOnly(Index As Integer) As Boolean
+		  ' Returns the domain for the cookie at Index. If the domain is empty then the
+		  ' cookie is sent to all hosts.
+		  
+		  Const HTTPONLY = "#HttpOnly_"
+		  Static sz As Integer = HTTPONLY.Len
+		  Dim dm As String = NthField(Me.StringValue(Index), Chr(9), 1)
+		  
+		  Return (Left(dm, sz) = HTTPONLY) Or Left(dm, sz + 1) = "." + HTTPONLY
 		End Function
 	#tag EndMethod
 
@@ -155,11 +176,12 @@ Protected Class CookieEngine
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function SetCookie(Name As String, Value As String, Domain As String, Expires As Date = Nil, Path As String = "") As Boolean
+		Function SetCookie(Name As String, Value As String, Domain As String, Expires As Date = Nil, Path As String = "", HTTPOnly As Boolean = False) As Boolean
 		  Dim c As String = "Set-Cookie: " + Name + "=" + Value
 		  If Domain <> "" Then c = c + "; Domain=" + Domain
 		  If Path <> "" Then c = c + "; path=" + Path
 		  If Expires <> Nil Then c = c + "; Expires=" + libcURL.ParseDate(Expires)
+		  If HTTPOnly Then c = c + "; httpOnly"
 		  Return Owner.SetOption(libcURL.Opts.COOKIELIST, c)
 		End Function
 	#tag EndMethod
@@ -180,7 +202,9 @@ Protected Class CookieEngine
 
 	#tag Method, Flags = &h0
 		Sub Value(Index As Integer, Assigns NewValue As String)
-		  If Not Me.SetCookie(Me.Name(Index), NewValue, Me.Domain(Index), Me.Expiry(Index), Me.Path(Index)) Then Raise New libcURL.cURLException(Owner)
+		  If Not Me.SetCookie(Me.Name(Index), NewValue, Me.Domain(Index), Me.Expiry(Index), Me.Path(Index), Me.HTTPOnly(Index)) Then 
+		    Raise New libcURL.cURLException(Owner)
+		  End If
 		End Sub
 	#tag EndMethod
 
