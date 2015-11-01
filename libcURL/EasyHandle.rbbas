@@ -958,6 +958,27 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  return mAutoReferer
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  ' If true, libcURL will close sockets immediately after the transfer completes.
+			  '
+			  ' See:
+			  ' http://curl.haxx.se/libcurl/c/CURLOPT_AUTOREFERER.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.AutoReferer
+			  
+			  If Not Me.SetOption(libcURL.Opts.AUTOREFERER, value) Then Raise New cURLException(Me)
+			  mAutoReferer = value
+			End Set
+		#tag EndSetter
+		AutoReferer As Boolean
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
 			  ' Gets the PEM file (or a directory of PEM files) containing one or more certificate authorities libcURL
 			  ' will trust to verify the peer with. If no file/folder is specified (default) then returns Nil.
 			  
@@ -1174,6 +1195,10 @@ Inherits libcURL.cURLHandle
 
 	#tag Property, Flags = &h21
 		Private mAutoDisconnect As Boolean = False
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mAutoReferer As Boolean
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
