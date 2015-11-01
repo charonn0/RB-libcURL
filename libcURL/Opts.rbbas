@@ -3,6 +3,9 @@ Protected Module Opts
 	#tag Constant, Name = ACCEPT_ENCODING, Type = Double, Dynamic = False, Default = \"10102", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = AUTOREFERER, Type = Double, Dynamic = False, Default = \"58", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = CAINFO, Type = Double, Dynamic = False, Default = \"10065", Scope = Protected
 	#tag EndConstant
 
