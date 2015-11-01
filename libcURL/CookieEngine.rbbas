@@ -180,14 +180,20 @@ Protected Class CookieEngine
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function SetCookie(RawCookie As String) As Boolean
+		  mDirty = True
+		  Return Owner.SetOption(libcURL.Opts.COOKIELIST, RawCookie)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function SetCookie(Name As String, Value As String, Domain As String, Expires As Date = Nil, Path As String = "", HTTPOnly As Boolean = False) As Boolean
 		  Dim c As String = "Set-Cookie: " + Name + "=" + Value
 		  If Domain <> "" Then c = c + "; Domain=" + Domain
 		  If Path <> "" Then c = c + "; path=" + Path
 		  If Expires <> Nil Then c = c + "; Expires=" + libcURL.ParseDate(Expires)
 		  If HTTPOnly Then c = c + "; httpOnly"
-		  mDirty = True
-		  Return Owner.SetOption(libcURL.Opts.COOKIELIST, c)
+		  Return Me.SetCookie(c)
 		End Function
 	#tag EndMethod
 
