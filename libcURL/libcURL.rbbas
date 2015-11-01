@@ -283,6 +283,61 @@ Protected Module libcURL
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
+		Protected Function ParseDate(DateItem As Date) As String
+		  Dim dt As String
+		  DateItem.GMTOffset = 0
+		  Select Case DateItem.DayOfWeek
+		  Case 1
+		    dt = dt + "Sun, "
+		  Case 2
+		    dt = dt + "Mon, "
+		  Case 3
+		    dt = dt + "Tue, "
+		  Case 4
+		    dt = dt + "Wed, "
+		  Case 5
+		    dt = dt + "Thu, "
+		  Case 6
+		    dt = dt + "Fri, "
+		  Case 7
+		    dt = dt + "Sat, "
+		  End Select
+		  
+		  dt = dt  + Format(DateItem.Day, "00") + " "
+		  
+		  Select Case DateItem.Month
+		  Case 1
+		    dt = dt + "Jan "
+		  Case 2
+		    dt = dt + "Feb "
+		  Case 3
+		    dt = dt + "Mar "
+		  Case 4
+		    dt = dt + "Apr "
+		  Case 5
+		    dt = dt + "May "
+		  Case 6
+		    dt = dt + "Jun "
+		  Case 7
+		    dt = dt + "Jul "
+		  Case 8
+		    dt = dt + "Aug "
+		  Case 9
+		    dt = dt + "Sep "
+		  Case 10
+		    dt = dt + "Oct "
+		  Case 11
+		    dt = dt + "Nov "
+		  Case 12
+		    dt = dt + "Dec "
+		  End Select
+		  
+		  dt = dt  + Format(DateItem.Year, "0000") + " " + Format(DateItem.Hour, "00") + ":" + Format(DateItem.Minute, "00") + ":" + Format(DateItem.Second, "00") + " GMT"
+		  Return dt
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
 		Protected Function ParseDate(RawDate As String, ByRef Parsed As Date) As Boolean
 		  ' Parses the passed date string into the referenced Date object.
 		  ' If parsing was successful, returns True and instantiates the passed date reference; else, returns false.

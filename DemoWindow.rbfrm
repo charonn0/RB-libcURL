@@ -367,6 +367,7 @@ Begin Window DemoWindow
          Selectable      =   False
          TabIndex        =   2
          TabPanelIndex   =   3
+         TabStop         =   True
          Text            =   "CA List:"
          TextAlign       =   2
          TextColor       =   &h000000
@@ -401,6 +402,7 @@ Begin Window DemoWindow
          Selectable      =   False
          TabIndex        =   3
          TabPanelIndex   =   3
+         TabStop         =   True
          Text            =   "Client certificate:"
          TextAlign       =   2
          TextColor       =   &h000000
@@ -435,6 +437,7 @@ Begin Window DemoWindow
          Selectable      =   True
          TabIndex        =   4
          TabPanelIndex   =   3
+         TabStop         =   True
          Text            =   "Not specified"
          TextAlign       =   0
          TextColor       =   &h00464646
@@ -531,6 +534,7 @@ Begin Window DemoWindow
          Selectable      =   True
          TabIndex        =   7
          TabPanelIndex   =   3
+         TabStop         =   True
          Text            =   "Not specified"
          TextAlign       =   0
          TextColor       =   &h00464646
@@ -689,6 +693,7 @@ Begin Window DemoWindow
          Selectable      =   True
          TabIndex        =   12
          TabPanelIndex   =   3
+         TabStop         =   True
          Text            =   "Not specified"
          TextAlign       =   0
          TextColor       =   &h00464646
@@ -723,6 +728,7 @@ Begin Window DemoWindow
          Selectable      =   False
          TabIndex        =   13
          TabPanelIndex   =   3
+         TabStop         =   True
          Text            =   "Cookiejar:"
          TextAlign       =   2
          TextColor       =   &h000000
@@ -737,13 +743,17 @@ Begin Window DemoWindow
       End
    End
    Begin cURLClient Client
+      Enabled         =   True
       Height          =   32
       Index           =   -2147483648
       Left            =   7
       LockedInPosition=   False
       Scope           =   0
+      TabIndex        =   1
       TabPanelIndex   =   0
+      TabStop         =   True
       Top             =   437
+      Visible         =   True
       Width           =   32
    End
    Begin TextField TextField1
@@ -789,6 +799,7 @@ Begin Window DemoWindow
       Width           =   335
    End
    Begin Thread GetThread
+      Enabled         =   True
       Height          =   32
       Index           =   -2147483648
       Left            =   43
@@ -796,11 +807,15 @@ Begin Window DemoWindow
       Priority        =   5
       Scope           =   0
       StackSize       =   0
+      TabIndex        =   3
       TabPanelIndex   =   0
+      TabStop         =   True
       Top             =   437
+      Visible         =   True
       Width           =   32
    End
    Begin Thread PutThread
+      Enabled         =   True
       Height          =   32
       Index           =   -2147483648
       Left            =   80
@@ -808,11 +823,15 @@ Begin Window DemoWindow
       Priority        =   5
       Scope           =   0
       StackSize       =   0
+      TabIndex        =   4
       TabPanelIndex   =   0
+      TabStop         =   True
       Top             =   437
+      Visible         =   True
       Width           =   32
    End
    Begin Thread PostThread
+      Enabled         =   True
       Height          =   32
       Index           =   -2147483648
       Left            =   117
@@ -820,8 +839,11 @@ Begin Window DemoWindow
       Priority        =   5
       Scope           =   0
       StackSize       =   0
+      TabIndex        =   5
       TabPanelIndex   =   0
+      TabStop         =   True
       Top             =   437
+      Visible         =   True
       Width           =   32
    End
    Begin ProgressBar ProgressUpload
@@ -839,7 +861,9 @@ Begin Window DemoWindow
       LockTop         =   True
       Maximum         =   100
       Scope           =   0
+      TabIndex        =   6
       TabPanelIndex   =   0
+      TabStop         =   True
       Top             =   35
       Value           =   0
       Visible         =   True
@@ -1202,7 +1226,9 @@ Begin Window DemoWindow
       LockTop         =   True
       Maximum         =   100
       Scope           =   0
+      TabIndex        =   8
       TabPanelIndex   =   0
+      TabStop         =   True
       Top             =   47
       Value           =   0
       Visible         =   True
@@ -1254,6 +1280,7 @@ Begin Window DemoWindow
       Width           =   332
    End
    Begin Timer GUITimer
+      Enabled         =   True
       Height          =   32
       Index           =   -2147483648
       Left            =   190
@@ -1261,11 +1288,15 @@ Begin Window DemoWindow
       Mode            =   0
       Period          =   1
       Scope           =   0
+      TabIndex        =   10
       TabPanelIndex   =   0
+      TabStop         =   True
       Top             =   437
+      Visible         =   True
       Width           =   32
    End
    Begin Timer ProgressTimer
+      Enabled         =   True
       Height          =   32
       Index           =   -2147483648
       Left            =   224
@@ -1273,11 +1304,15 @@ Begin Window DemoWindow
       Mode            =   1
       Period          =   10
       Scope           =   0
+      TabIndex        =   11
       TabPanelIndex   =   0
+      TabStop         =   True
       Top             =   437
+      Visible         =   True
       Width           =   32
    End
    Begin Thread HeadThread
+      Enabled         =   True
       Height          =   32
       Index           =   -2147483648
       Left            =   155
@@ -1285,8 +1320,11 @@ Begin Window DemoWindow
       Priority        =   5
       Scope           =   0
       StackSize       =   0
+      TabIndex        =   12
       TabPanelIndex   =   0
+      TabStop         =   True
       Top             =   437
+      Visible         =   True
       Width           =   32
    End
    Begin PushButton PauseButton
@@ -1583,7 +1621,7 @@ End
 #tag Events CookieJarUnset
 	#tag Event
 		Sub Action()
-		  Client.EasyItem.CookieJar = Nil
+		  Client.EasyItem.CookieEngine.CookieJar = Nil
 		End Sub
 	#tag EndEvent
 #tag EndEvents
@@ -1597,8 +1635,8 @@ End
 		    f = GetSaveFolderItem(cURLTypes.NetscapeCookieJar, "cookie.jar")
 		  End If
 		  If f <> Nil Then
-		    Client.EasyItem.CookieJar = f
-		    CookieJar.Text = Client.EasyItem.CookieJar.AbsolutePath
+		    Client.EasyItem.CookieEngine.CookieJar = f
+		    CookieJar.Text = Client.EasyItem.CookieEngine.CookieJar.AbsolutePath
 		  End If
 		End Sub
 	#tag EndEvent
@@ -1608,8 +1646,8 @@ End
 		Sub MouseUp(X As Integer, Y As Integer)
 		  #pragma Unused X
 		  #pragma Unused Y
-		  If Client.EasyItem.CookieJar <> Nil Then
-		    Client.EasyItem.CookieJar.Parent.Launch
+		  If Client.EasyItem.CookieEngine.CookieJar <> Nil Then
+		    Client.EasyItem.CookieEngine.CookieJar.Parent.Launch
 		  End If
 		End Sub
 	#tag EndEvent

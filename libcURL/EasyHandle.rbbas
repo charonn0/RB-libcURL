@@ -13,8 +13,8 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub ClearSessionCookies()
-		  If Not Me.SetOption(libcURL.Opts.COOKIESESSION, True) Then Raise New cURLException(Me)
+		Attributes( deprecated = "libcURL.CookieEngine.NewSession" )  Sub ClearSessionCookies()
+		  If Not Me.CookieEngine.NewSession Then Raise New cURLException(Me)
 		End Sub
 	#tag EndMethod
 
@@ -172,8 +172,8 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Function ErrorBuffer() As String
-		  ' Returns a copy of contents of the error buffer, or an empty string. The contents of this buffer will persist 
-		  ' between transfers; it is NOT automatically cleared. To clear the buffer set UseErrorBuffer to True (even if 
+		  ' Returns a copy of contents of the error buffer, or an empty string. The contents of this buffer will persist
+		  ' between transfers; it is NOT automatically cleared. To clear the buffer set UseErrorBuffer to True (even if
 		  ' it's already True)
 		  '
 		  ' See:
@@ -1044,9 +1044,19 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  If mCookieEngine = Nil Then mCookieEngine = New libcURL.CookieEngine(Me)
+			  return mCookieEngine
+			End Get
+		#tag EndGetter
+		CookieEngine As libcURL.CookieEngine
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
 			  ' Gets the local file to be used as cookie storage. If no file/folder is specified (default) then returns Nil.
 			  
-			  return mCookieJar
+			  return Me.CookieEngine.CookieJar
 			End Get
 		#tag EndGetter
 		#tag Setter
@@ -1058,18 +1068,10 @@ Inherits libcURL.cURLHandle
 			  ' http://curl.haxx.se/libcurl/c/CURLOPT_COOKIEFILE.html
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.CookieJar
 			  
-			  If value = Nil Or value.Directory Then
-			    If Not Me.SetOption(libcURL.Opts.COOKIEFILE, Nil) Then Raise New cURLException(Me)
-			    If Not Me.SetOption(libcURL.Opts.COOKIEJAR, Nil) Then Raise New cURLException(Me)
-			  Else
-			    If Not Me.SetOption(libcURL.Opts.COOKIEFILE, value) Then Raise New cURLException(Me)
-			    If Not Me.SetOption(libcURL.Opts.COOKIEJAR, value) Then Raise New cURLException(Me)
-			  End If
-			  
-			  mCookieJar = value
+			  Me.CookieEngine.CookieJar = value
 			End Set
 		#tag EndSetter
-		CookieJar As FolderItem
+		Attributes( deprecated = "libcURL.EasyHandle.CookieEngine.CookieJar" ) CookieJar As FolderItem
 	#tag EndComputedProperty
 
 	#tag Property, Flags = &h0
@@ -1191,7 +1193,7 @@ Inherits libcURL.cURLHandle
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private mCookieJar As FolderItem
+		Private mCookieEngine As libcURL.CookieEngine
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
