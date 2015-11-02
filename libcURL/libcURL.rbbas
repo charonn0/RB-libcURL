@@ -493,6 +493,16 @@ Protected Module libcURL
 	#tag EndConstant
 
 
+	#tag Enum, Name = CURLAUTH, Type = Integer, Flags = &h1
+		BASIC=1
+		  DIGEST=2
+		  DIGEST_IE=16
+		  NEGOTIATE=4
+		  NTLM=8
+		  NTLM_WB=32
+		ANY=&hFFFFFFFF
+	#tag EndEnum
+
 	#tag Enum, Name = curl_infotype, Flags = &h1
 		text
 		  header_in
