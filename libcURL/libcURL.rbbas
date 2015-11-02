@@ -515,6 +515,15 @@ Protected Module libcURL
 		RB_libcURL
 	#tag EndEnum
 
+	#tag Enum, Name = ProxyType, Type = Integer, Flags = &h1
+		HTTP=0
+		  HTTP1_0=1
+		  SOCKS4=4
+		  SOCKS4A=6
+		  SOCKS5=5
+		SOCKS5_HOSTNAME=7
+	#tag EndEnum
+
 
 	#tag ViewBehavior
 		#tag ViewProperty

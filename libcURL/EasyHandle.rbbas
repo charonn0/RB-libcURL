@@ -208,11 +208,18 @@ Inherits libcURL.cURLHandle
 		    End If
 		    
 		  Case libcURL.Info.RESPONSE_CODE, libcURL.Info.HTTP_CONNECTCODE, libcURL.Info.FILETIME, libcURL.Info.REDIRECT_COUNT, libcURL.Info.HEADER_SIZE, _
-		    libcURL.Info.REQUEST_SIZE, libcURL.Info.SSL_VERIFYRESULT, libcURL.Info.HTTPAUTH_AVAIL, libcURL.Info.OS_ERRNO, libcURL.Info.NUM_CONNECTS, _
-		    libcURL.Info.PRIMARY_PORT, libcURL.Info.LOCAL_PORT, libcURL.Info.LASTSOCKET, libcURL.Info.CONDITION_UNMET, libcURL.Info.RTSP_CLIENT_CSEQ, _
-		    libcURL.Info.RTSP_SERVER_CSEQ, libcURL.Info.RTSP_CSEQ_RECV
+		    libcURL.Info.REQUEST_SIZE, libcURL.Info.SSL_VERIFYRESULT, libcURL.Info.OS_ERRNO, _
+		    libcURL.Info.NUM_CONNECTS, libcURL.Info.PRIMARY_PORT, libcURL.Info.LOCAL_PORT, libcURL.Info.LASTSOCKET, libcURL.Info.CONDITION_UNMET, _
+		    libcURL.Info.RTSP_CLIENT_CSEQ, libcURL.Info.RTSP_SERVER_CSEQ, libcURL.Info.RTSP_CSEQ_RECV
 		    mb = New MemoryBlock(4)
 		    If Me.GetInfo(InfoType, mb) Then Return mb.Int32Value(0)
+		    
+		  Case libcurl.Info.PROXYAUTH_AVAIL, libcURL.Info.HTTPAUTH_AVAIL
+		    mb = New MemoryBlock(4)
+		    If Me.GetInfo(InfoType, mb) Then
+		      Dim h As libcURL.HTTPAuthMethods = mb.Int32Value(0)
+		      Return h
+		    End If
 		    
 		  Case libcURL.Info.TOTAL_TIME, libcURL.Info.NAMELOOKUP_TIME, libcURL.Info.CONNECT_TIME, libcURL.Info.APPCONNECT_TIME, libcURL.Info.PRETRANSFER_TIME, _
 		    libcURL.Info.STARTTRANSFER_TIME, libcURL.Info.REDIRECT_TIME, libcURL.Info.SIZE_DOWNLOAD, libcURL.Info.SIZE_UPLOAD, libcURL.Info.SPEED_DOWNLOAD, _
@@ -1246,6 +1253,10 @@ Inherits libcURL.cURLHandle
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
+		Private mProxyEngine As libcURL.ProxyEngine
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
 		Private mSecure As Boolean
 	#tag EndProperty
 
@@ -1353,6 +1364,16 @@ Inherits libcURL.cURLHandle
 			End Set
 		#tag EndSetter
 		Port As Integer
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  If mProxyEngine = Nil Then mProxyEngine = New libcURL.ProxyEngine(Me)
+			  return mProxyEngine
+			End Get
+		#tag EndGetter
+		ProxyEngine As libcURL.ProxyEngine
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
@@ -1629,6 +1650,11 @@ Inherits libcURL.cURLHandle
 	#tag ViewBehavior
 		#tag ViewProperty
 			Name="AutoDisconnect"
+			Group="Behavior"
+			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="AutoReferer"
 			Group="Behavior"
 			Type="Boolean"
 		#tag EndViewProperty
