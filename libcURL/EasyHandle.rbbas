@@ -104,6 +104,7 @@ Inherits libcURL.cURLHandle
 		    mUploadMode = CopyOpts.UploadMode
 		    mUserAgent = CopyOpts.UserAgent
 		    mUsername = CopyOpts.Username
+		    mHTTPCompression = CopyOpts.HTTPCompression
 		  Else
 		    mLastError = libcURL.Errors.INIT_FAILED
 		    Raise New cURLException(Me)
@@ -1148,6 +1149,25 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  return mHTTPCompression
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  If libcURL.Version.LibZ.IsAvailable Then
+			    If Not Me.SetOption(libcURL.Opts.ACCEPT_ENCODING, "") Then Raise New cURLException(Me)
+			    mHTTPCompression = value
+			  Else
+			    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
+			  End If
+			End Set
+		#tag EndSetter
+		HTTPCompression As Boolean
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
 			  ' Gets the version of HTTP to be used. Returns HTTP_VERSION_1_0, HTTP_VERSION_1_1, HTTP_VERSION_2_0, or HTTP_VERSION_NONE
 			  return mHTTPVersion
 			End Get
@@ -1235,6 +1255,10 @@ Inherits libcURL.cURLHandle
 
 	#tag Property, Flags = &h21
 		Private mForm As libcURL.MultipartForm
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mHTTPCompression As Boolean
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -1629,6 +1653,11 @@ Inherits libcURL.cURLHandle
 	#tag ViewBehavior
 		#tag ViewProperty
 			Name="AutoDisconnect"
+			Group="Behavior"
+			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="AutoReferer"
 			Group="Behavior"
 			Type="Boolean"
 		#tag EndViewProperty
