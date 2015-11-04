@@ -1243,6 +1243,21 @@ Inherits libcURL.cURLHandle
 		Private mAutoReferer As Boolean
 	#tag EndProperty
 
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  return mMaxRedirects
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  If Not Me.SetOption(libcURL.Opts.MAXREDIRS, value) Then Raise New libcURL.cURLException(Me)
+			  mMaxRedirects = value
+			End Set
+		#tag EndSetter
+		MaxRedirects As Integer
+	#tag EndComputedProperty
+
 	#tag Property, Flags = &h21
 		Private mCA_ListFile As FolderItem
 	#tag EndProperty
@@ -1289,6 +1304,10 @@ Inherits libcURL.cURLHandle
 
 	#tag Property, Flags = &h21
 		Private mHTTPVersion As Integer
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mMaxRedirects As Integer = -1
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
