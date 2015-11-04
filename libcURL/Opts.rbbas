@@ -231,6 +231,9 @@ Protected Module Opts
 	#tag Constant, Name = POSTQUOTE, Type = Double, Dynamic = False, Default = \"10039", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = POSTREDIR, Type = Double, Dynamic = False, Default = \"161", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = PREQUOTE, Type = Double, Dynamic = False, Default = \"10093", Scope = Protected
 	#tag EndConstant
 

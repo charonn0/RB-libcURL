@@ -1168,6 +1168,28 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  return mHTTPPreserveMethod
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  If Not libcURL.Version.IsAtLeast(7, 17, 1) Then
+			    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
+			    Return
+			  End If
+			  
+			  Dim mask As Integer
+			  If value Then mask = 7 ' CURL_REDIR_POST_ALL
+			  If Not Me.SetOption(libcURL.Opts.POSTREDIR, mask) Then Raise New libcURL.cURLException(Me)
+			  mHTTPPreserveMethod = value
+			End Set
+		#tag EndSetter
+		HTTPPreserveMethod As Boolean
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
 			  ' Gets the version of HTTP to be used. Returns HTTP_VERSION_1_0, HTTP_VERSION_1_1, HTTP_VERSION_2_0, or HTTP_VERSION_NONE
 			  return mHTTPVersion
 			End Get
@@ -1259,6 +1281,10 @@ Inherits libcURL.cURLHandle
 
 	#tag Property, Flags = &h21
 		Private mHTTPCompression As Boolean
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mHTTPPreserveMethod As Boolean
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
