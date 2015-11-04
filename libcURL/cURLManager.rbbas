@@ -9,7 +9,16 @@ Protected Class cURLManager
 
 	#tag Method, Flags = &h0
 		Sub Constructor()
-		  mEasyItem = New libcURL.EasyHandle
+		  If mEasyItem = Nil Then
+		    mEasyItem = New libcURL.EasyHandle
+		    mEasyItem.UserAgent = libcURL.Version.Name
+		    mEasyItem.Secure = True
+		    mEasyItem.CA_ListFile = libcURL.Default_CA_File
+		    mEasyItem.FailOnServerError = True
+		    mEasyItem.FollowRedirects = True
+		    mEasyItem.AutoReferer = True
+		    mEasyItem.HTTPCompression = True
+		  End If
 		  AddHandler mEasyItem.CreateSocket, WeakAddressOf _CreateSocketHandler
 		  'AddHandler mEasyItem.DataAvailable, WeakAddressOf _DataAvailableHandler
 		  'AddHandler mEasyItem.DataNeeded, WeakAddressOf _DataNeededHandler
@@ -21,15 +30,13 @@ Protected Class cURLManager
 		  
 		  mMultiItem = New libcURL.MultiHandle
 		  AddHandler mMultiItem.TransferComplete, WeakAddressOf _TransferCompleteHandler
-		  mEasyItem.UserAgent = libcURL.Version.Name
-		  mEasyItem.Secure = True
-		  mEasyItem.CA_ListFile = libcURL.Default_CA_File
-		  mEasyItem.FailOnServerError = True
-		  mEasyItem.FollowRedirects = True
-		  mEasyItem.AutoReferer = True
-		  If libcURL.Version.LibZ.IsAvailable Then
-		    If Not mEasyItem.SetOption(libcURL.Opts.ACCEPT_ENCODING, "") Then Raise New cURLException(mEasyItem)
-		  End If
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Constructor(CopyOpts As libcURL.cURLManager)
+		  mEasyItem = New libcURL.EasyHandle(CopyOpts.EasyItem)
+		  Me.Constructor()
 		End Sub
 	#tag EndMethod
 
