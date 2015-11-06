@@ -71,6 +71,7 @@ Protected Class ProxyEngine
 		  
 		  If Not Owner.SetOption(libcURL.Opts.PROXYAUTH, NewAuthMask.Mask) Then Return False
 		  mAuthMethods = NewAuthMask.Mask
+		  Return True
 		End Function
 	#tag EndMethod
 
