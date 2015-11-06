@@ -12,7 +12,7 @@ Protected Class ProxyEngine
 		  ' Specify the hostname only; i.e. if the URL is "http://www.example.com" then "www.example.com"
 		  ' is the Hostname.
 		  '
-		  ' See: 
+		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/CURLOPT_NOPROXY.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ProxyEngine.ExcludeHost
 		  
@@ -22,9 +22,22 @@ Protected Class ProxyEngine
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function GetAuthMethods() As libcURL.HTTPAuthMethods
+		  ' Gets an object which represents the available/allowed proxy authentication methods.
+		  '
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/CURLINFO_PROXYAUTH_AVAIL.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ProxyEngine.HTTPAuthMethods
+		  
+		  If mAuthMethods = Nil Then mAuthMethods = Owner.GetInfo(libcURL.Info.PROXYAUTH_AVAIL)
+		  return mAuthMethods
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function IncludeHost(Hostname As String) As Boolean
-		  ' Removes the specified Hostname from the proxy exclusion list. By default, all hosts are proxied, 
-		  ' so you needn't call this method unless you have previously excluded the Hostname. Specify the 
+		  ' Removes the specified Hostname from the proxy exclusion list. By default, all hosts are proxied,
+		  ' so you needn't call this method unless you have previously excluded the Hostname. Specify the
 		  ' hostname only; i.e. if the URL is "http://www.example.com" then "www.example.com" is the Hostname.
 		  '
 		  ' See:
@@ -49,10 +62,23 @@ Protected Class ProxyEngine
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function SetAuthMethods(NewAuthMask As libcURL.HTTPAuthMethods) As Boolean
+		  ' Sets the available/allowed proxy authentication methods.
+		  '
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/CURLOPT_PROXYAUTH.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ProxyEngine.HTTPAuthMethods
+		  
+		  If Not Owner.SetOption(libcURL.Opts.PROXYAUTH, NewAuthMask.Mask) Then Return False
+		  mAuthMethods = NewAuthMask.Mask
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function SetProxyHeader(HeaderName As String, HeaderValue As String) As Boolean
 		  ' Sets a header to send to the proxy. Not all proxy types support this feature.
-		  ' Subsequent calls to this method will append the header to the previously set headers. 
-		  ' Headers will persist from transfer to transfer. Pass an empty value to clear the named 
+		  ' Subsequent calls to this method will append the header to the previously set headers.
+		  ' Headers will persist from transfer to transfer. Pass an empty value to clear the named
 		  ' header. Pass an empty name to clear all headers.
 		  '
 		  ' See:
@@ -91,7 +117,6 @@ Protected Class ProxyEngine
 	#tag Note, Name = About this class
 		This class provides accessor methods to specify a proxy server for use with some or
 		all transfers performed with a particular EasyHandle.
-		
 	#tag EndNote
 
 
@@ -109,7 +134,7 @@ Protected Class ProxyEngine
 		#tag EndGetter
 		#tag Setter
 			Set
-			  ' Sets proxy's URL or IP address. IPv6 addresses must be enclosed in square brackets []. 
+			  ' Sets proxy's URL or IP address. IPv6 addresses must be enclosed in square brackets [].
 			  '
 			  ' See:
 			  ' http://curl.haxx.se/libcurl/c/CURLOPT_PROXY.html
@@ -120,34 +145,6 @@ Protected Class ProxyEngine
 			End Set
 		#tag EndSetter
 		Address As String
-	#tag EndComputedProperty
-
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
-			  ' Gets an object which represents the available/allowed proxy authentication methods.
-			  '
-			  ' See:
-			  ' http://curl.haxx.se/libcurl/c/CURLINFO_PROXYAUTH_AVAIL.html
-			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ProxyEngine.HTTPAuthMethods
-			  
-			  If mAuthMethods = Nil Then mAuthMethods = Owner.GetInfo(libcURL.Info.PROXYAUTH_AVAIL)
-			  return mAuthMethods
-			End Get
-		#tag EndGetter
-		#tag Setter
-			Set
-			  ' Sets the available/allowed proxy authentication methods.
-			  '
-			  ' See:
-			  ' http://curl.haxx.se/libcurl/c/CURLOPT_PROXYAUTH.html
-			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ProxyEngine.HTTPAuthMethods
-			  
-			  If Not Owner.SetOption(libcURL.Opts.PROXYAUTH, value.Mask) Then Raise New libcURL.cURLException(Owner)
-			  mAuthMethods = value.Mask
-			End Set
-		#tag EndSetter
-		AuthMethods As libcURL.HTTPAuthMethods
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
