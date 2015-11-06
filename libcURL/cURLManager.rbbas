@@ -153,6 +153,12 @@ Protected Class cURLManager
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function Proxy() As libcURL.ProxyEngine
+		  Return mEasyItem.ProxyEngine
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h21
 		Private Sub QueueTransfer(URL As String, ReadFrom As Readable, WriteTo As Writeable)
 		  mIsTransferComplete = False
