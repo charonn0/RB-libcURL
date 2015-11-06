@@ -16,7 +16,7 @@ Protected Class HTTPAuthMethods
 		Function Mask() As Integer
 		  Dim m As Integer
 		  If Basic Then m = Integer(CURLAUTH.BASIC)
-		  If Digest Then m = mask Or Integer(CURLAUTH.DIGEST)
+		  If Digest Then m = m Or Integer(CURLAUTH.DIGEST)
 		  If Digest_IE Then m = m Or Integer(CURLAUTH.DIGEST_IE)
 		  If Negotiate Then m = m Or Integer(CURLAUTH.NEGOTIATE)
 		  If NTLM Then m = m Or Integer(CURLAUTH.NTLM)
