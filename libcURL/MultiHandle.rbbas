@@ -44,7 +44,7 @@ Inherits libcURL.cURLHandle
 		  Super.Constructor(GlobalInitFlags)
 		  
 		  mHandle = curl_multi_init()
-		  If Me.Handle <= 0 Then
+		  If mHandle <= 0 Then
 		    mLastError = libcURL.Errors.INIT_FAILED
 		    Raise New cURLException(Me)
 		  End If

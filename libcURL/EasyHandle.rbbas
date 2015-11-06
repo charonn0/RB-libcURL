@@ -104,6 +104,7 @@ Inherits libcURL.cURLHandle
 		    mUploadMode = CopyOpts.UploadMode
 		    mUserAgent = CopyOpts.UserAgent
 		    mUsername = CopyOpts.Username
+		    mHTTPCompression = CopyOpts.HTTPCompression
 		  Else
 		    mLastError = libcURL.Errors.INIT_FAILED
 		    Raise New cURLException(Me)
@@ -829,9 +830,9 @@ Inherits libcURL.cURLHandle
 		  ' This method is the intermediary between SeekCallback and the SeekStream event.
 		  ' DO NOT CALL THIS METHOD
 		  
-		  If UploadStream Is Nil Then
+		  If UploadStream Is Nil Or Not UploadStream IsA BinaryStream Then
 		    If RaiseEvent SeekStream(Offset, Origin) Then Return 0
-		  ElseIf UploadStream IsA BinaryStream Then
+		  Else
 		    Dim bs As BinaryStream = BinaryStream(UploadStream)
 		    If bs.Length <= Offset And Offset > -1 Then
 		      bs.Position = Offset
@@ -1155,6 +1156,47 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  return mHTTPCompression
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  If libcURL.Version.LibZ.IsAvailable Then
+			    If Not Me.SetOption(libcURL.Opts.ACCEPT_ENCODING, "") Then Raise New cURLException(Me)
+			    mHTTPCompression = value
+			  Else
+			    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
+			  End If
+			End Set
+		#tag EndSetter
+		HTTPCompression As Boolean
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  return mHTTPPreserveMethod
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  If Not libcURL.Version.IsAtLeast(7, 17, 1) Then
+			    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
+			    Return
+			  End If
+			  
+			  Dim mask As Integer
+			  If value Then mask = 7 ' CURL_REDIR_POST_ALL
+			  If Not Me.SetOption(libcURL.Opts.POSTREDIR, mask) Then Raise New libcURL.cURLException(Me)
+			  mHTTPPreserveMethod = value
+			End Set
+		#tag EndSetter
+		HTTPPreserveMethod As Boolean
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
 			  ' Gets the version of HTTP to be used. Returns HTTP_VERSION_1_0, HTTP_VERSION_1_1, HTTP_VERSION_2_0, or HTTP_VERSION_NONE
 			  return mHTTPVersion
 			End Get
@@ -1208,6 +1250,21 @@ Inherits libcURL.cURLHandle
 		Private mAutoReferer As Boolean
 	#tag EndProperty
 
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  return mMaxRedirects
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  If Not Me.SetOption(libcURL.Opts.MAXREDIRS, value) Then Raise New libcURL.cURLException(Me)
+			  mMaxRedirects = value
+			End Set
+		#tag EndSetter
+		MaxRedirects As Integer
+	#tag EndComputedProperty
+
 	#tag Property, Flags = &h21
 		Private mCA_ListFile As FolderItem
 	#tag EndProperty
@@ -1245,7 +1302,19 @@ Inherits libcURL.cURLHandle
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
+		Private mHTTPCompression As Boolean
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mHTTPPreserveMethod As Boolean
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
 		Private mHTTPVersion As Integer
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mMaxRedirects As Integer = -1
 	#tag EndProperty
 
 	#tag Property, Flags = &h21

@@ -9,7 +9,16 @@ Protected Class cURLManager
 
 	#tag Method, Flags = &h0
 		Sub Constructor()
-		  mEasyItem = New libcURL.EasyHandle
+		  If mEasyItem = Nil Then
+		    mEasyItem = New libcURL.EasyHandle
+		    mEasyItem.UserAgent = libcURL.Version.Name
+		    mEasyItem.Secure = True
+		    mEasyItem.CA_ListFile = libcURL.Default_CA_File
+		    mEasyItem.FailOnServerError = True
+		    mEasyItem.FollowRedirects = True
+		    mEasyItem.AutoReferer = True
+		    mEasyItem.HTTPCompression = True
+		  End If
 		  AddHandler mEasyItem.CreateSocket, WeakAddressOf _CreateSocketHandler
 		  'AddHandler mEasyItem.DataAvailable, WeakAddressOf _DataAvailableHandler
 		  'AddHandler mEasyItem.DataNeeded, WeakAddressOf _DataNeededHandler
@@ -21,15 +30,13 @@ Protected Class cURLManager
 		  
 		  mMultiItem = New libcURL.MultiHandle
 		  AddHandler mMultiItem.TransferComplete, WeakAddressOf _TransferCompleteHandler
-		  mEasyItem.UserAgent = libcURL.Version.Name
-		  mEasyItem.Secure = True
-		  mEasyItem.CA_ListFile = libcURL.Default_CA_File
-		  mEasyItem.FailOnServerError = True
-		  mEasyItem.FollowRedirects = True
-		  mEasyItem.AutoReferer = True
-		  If libcURL.Version.LibZ.IsAvailable Then
-		    If Not mEasyItem.SetOption(libcURL.Opts.ACCEPT_ENCODING, "") Then Raise New cURLException(mEasyItem)
-		  End If
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Constructor(CopyOpts As libcURL.cURLManager)
+		  mEasyItem = New libcURL.EasyHandle(CopyOpts.EasyItem)
+		  Me.Constructor()
 		End Sub
 	#tag EndMethod
 
@@ -129,9 +136,18 @@ Protected Class cURLManager
 		Function Perform(URL As String, ReadFrom As Readable, WriteTo As Writeable) As Boolean
 		  ' Perform the transfer on the calling thread.
 		  
+		  Dim QueryInterval As Integer
+		  
 		  QueueTransfer(URL, ReadFrom, WriteTo)
 		  While mMultiItem.PerformOnce()
-		    App.YieldToNextThread
+		    QueryInterval = mMultiItem.QueryInterval()
+		    If QueryInterval > 1 And App.CurrentThread <> Nil Then
+		      System.DebugLog("Sleep for " + Format(QueryInterval, "############0") + " ms")
+		      App.SleepCurrentThread(QueryInterval)
+		    Else
+		      System.DebugLog("Yielding.")
+		      App.YieldToNextThread
+		    End If
 		  Wend
 		  Return mEasyItem.LastError = 0
 		End Function
