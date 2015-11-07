@@ -27,7 +27,7 @@ Protected Class ProxyEngine
 		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/CURLINFO_PROXYAUTH_AVAIL.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ProxyEngine.HTTPAuthMethods
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.HTTPAuthMethods
 		  
 		  If mAuthMethods = Nil Then mAuthMethods = Owner.GetInfo(libcURL.Info.PROXYAUTH_AVAIL)
 		  return mAuthMethods
