@@ -69,7 +69,7 @@ Protected Class ProxyEngine
 		  ' http://curl.haxx.se/libcurl/c/CURLOPT_PROXYAUTH.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ProxyEngine.HTTPAuthMethods
 		  
-		  If Not Owner.SetOption(libcURL.Opts.PROXYAUTH, NewAuthMask.Mask) Then Return False
+		  If Not Owner.SetOption(libcURL.Opts.PROXYAUTH, NewAuthMask) Then Return False
 		  mAuthMethods = NewAuthMask.Mask
 		  Return True
 		End Function

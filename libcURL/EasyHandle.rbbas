@@ -573,6 +573,10 @@ Inherits libcURL.cURLHandle
 		      mForm = form
 		      Return SetOption(OptionNumber, mForm)
 		      
+		    Case IsA libcURL.HTTPAuthMethods
+		      Dim auth As HTTPAuthMethods = NewValue
+		      Return Me.SetOption(OptionNumber, auth.Mask)
+		      
 		    Case IsA libcURL.cURLHandle
 		      Dim cURL As libcURL.cURLHandle = NewValue
 		      Return Me.SetOption(OptionNumber, cURL.Handle)
