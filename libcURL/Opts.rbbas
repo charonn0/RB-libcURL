@@ -123,6 +123,9 @@ Protected Module Opts
 	#tag Constant, Name = HEADERFUNCTION, Type = Double, Dynamic = False, Default = \"20079", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = HTTPAUTH, Type = Double, Dynamic = False, Default = \"107", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = HTTPGET, Type = Double, Dynamic = False, Default = \"80", Scope = Protected
 	#tag EndConstant
 

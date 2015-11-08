@@ -187,6 +187,19 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function GetAuthMethods() As libcURL.HTTPAuthMethods
+		  ' Gets an object which represents the available/allowed HTTP authentication methods.
+		  '
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/CURLINFO_HTTPAUTH_AVAIL.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.GetAuthMethods
+		  
+		  If mAuthMethods = Nil Then mAuthMethods = Me.GetInfo(libcURL.Info.HTTPAUTH_AVAIL)
+		  return mAuthMethods
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function GetInfo(InfoType As Integer) As Variant
 		  ' Calls curl_easy_getinfo. Returns a Variant suitable to contain the InfoType requested. If the InfoType is not
 		  ' among the values marshalled below, a TypeMismatchException will be raised.
@@ -477,6 +490,20 @@ Inherits libcURL.cURLHandle
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function SetAuthMethods(NewAuthMask As libcURL.HTTPAuthMethods) As Boolean
+		  ' Sets the available/allowed proxy authentication methods.
+		  '
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/CURLOPT_HTTPAUTH.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.SetAuthMethods
+		  
+		  If Not Me.SetOption(libcURL.Opts.HTTPAUTH, NewAuthMask) Then Return False
+		  mAuthMethods = NewAuthMask.Mask
+		  Return True
 		End Function
 	#tag EndMethod
 
@@ -1245,6 +1272,10 @@ Inherits libcURL.cURLHandle
 		#tag EndSetter
 		LocalPort As Integer
 	#tag EndComputedProperty
+
+	#tag Property, Flags = &h21
+		Private mAuthMethods As libcURL.HTTPAuthMethods
+	#tag EndProperty
 
 	#tag Property, Flags = &h21
 		Private mAutoDisconnect As Boolean = False
