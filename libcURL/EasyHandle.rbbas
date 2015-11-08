@@ -790,9 +790,14 @@ Inherits libcURL.cURLHandle
 		  Dim mb As MemoryBlock = data
 		  Dim s As String = mb.StringValue(0, size)
 		  #If Debugbuild And RBVersion < 2013 Then
-		    If info <> curl_infotype.data_in And info <> curl_infotype.data_out Then
-		      System.DebugLog("libcURL 0x" + Hex(mHandle) + " (" + curl_infoname(info) + "): " + s)  ' The Xojo IDE crashes here
-		    End If
+		    Dim l As String = "libcURL(0x" + Hex(mHandle) + ") " + curl_infoname(info) + ": "
+		    Select Case info
+		    Case curl_infotype.data_in, curl_infotype.data_out, curl_infotype.ssl_in, curl_infotype.ssl_out
+		      l = l + Format(s.LenB, "###,###,###,###,###0") + " bytes"
+		    Else
+		      l = l + s
+		    End Select
+		    System.DebugLog(l)
 		  #endif
 		  RaiseEvent DebugMessage(info, s)
 		  Return size
@@ -1783,6 +1788,16 @@ Inherits libcURL.cURLHandle
 			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
+			Name="HTTPCompression"
+			Group="Behavior"
+			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="HTTPPreserveMethod"
+			Group="Behavior"
+			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="HTTPVersion"
 			Group="Behavior"
 			Type="Integer"
@@ -1804,6 +1819,11 @@ Inherits libcURL.cURLHandle
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="LocalPort"
+			Group="Behavior"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="MaxRedirects"
 			Group="Behavior"
 			Type="Integer"
 		#tag EndViewProperty

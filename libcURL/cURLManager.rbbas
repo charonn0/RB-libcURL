@@ -145,7 +145,7 @@ Protected Class cURLManager
 		      System.DebugLog("Sleep for " + Format(QueryInterval, "############0") + " ms")
 		      App.SleepCurrentThread(QueryInterval)
 		    Else
-		      System.DebugLog("Yielding.")
+		      'System.DebugLog("Yielding.")
 		      App.YieldToNextThread
 		    End If
 		  Wend
