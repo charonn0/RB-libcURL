@@ -81,121 +81,29 @@ Protected Class HTTPAuthMethods
 	#tag EndMethod
 
 
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
-			  return mBasic
-			End Get
-		#tag EndGetter
-		#tag Setter
-			Set
-			  mBasic = value
-			End Set
-		#tag EndSetter
+	#tag Property, Flags = &h0
 		Basic As Boolean
-	#tag EndComputedProperty
+	#tag EndProperty
 
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
-			  return mDigest
-			End Get
-		#tag EndGetter
-		#tag Setter
-			Set
-			  mDigest = value
-			End Set
-		#tag EndSetter
+	#tag Property, Flags = &h0
 		Digest As Boolean
-	#tag EndComputedProperty
+	#tag EndProperty
 
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
-			  return mDigest_IE
-			End Get
-		#tag EndGetter
-		#tag Setter
-			Set
-			  If libcURL.Version.IsAtLeast(7, 19, 3) Then
-			    mDigest_IE = value
-			  Else
-			    mDigest_IE = False
-			  End If
-			End Set
-		#tag EndSetter
+	#tag Property, Flags = &h0
 		Digest_IE As Boolean
-	#tag EndComputedProperty
-
-	#tag Property, Flags = &h21
-		Private mBasic As Boolean
 	#tag EndProperty
 
-	#tag Property, Flags = &h21
-		Private mDigest As Boolean
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private mDigest_IE As Boolean
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private mNegotiate As Boolean
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private mNTLM As Boolean
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private mNTLM_WB As Boolean
-	#tag EndProperty
-
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
-			  return mNegotiate
-			End Get
-		#tag EndGetter
-		#tag Setter
-			Set
-			  mNegotiate = value
-			End Set
-		#tag EndSetter
+	#tag Property, Flags = &h0
 		Negotiate As Boolean
-	#tag EndComputedProperty
+	#tag EndProperty
 
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
-			  return mNTLM
-			End Get
-		#tag EndGetter
-		#tag Setter
-			Set
-			  mNTLM = value
-			End Set
-		#tag EndSetter
+	#tag Property, Flags = &h0
 		NTLM As Boolean
-	#tag EndComputedProperty
+	#tag EndProperty
 
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
-			  return mNTLM_WB
-			End Get
-		#tag EndGetter
-		#tag Setter
-			Set
-			  If libcURL.Version.IsAtLeast(7, 22, 0) Then
-			    mNTLM_WB = value
-			  Else
-			    mNTLM_WB = False
-			  End If
-			End Set
-		#tag EndSetter
+	#tag Property, Flags = &h0
 		NTLM_WB As Boolean
-	#tag EndComputedProperty
+	#tag EndProperty
 
 
 	#tag ViewBehavior
