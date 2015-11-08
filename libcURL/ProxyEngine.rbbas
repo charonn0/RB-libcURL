@@ -53,6 +53,12 @@ Protected Class ProxyEngine
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function IsProxied(Hostname As String) As Boolean
+		  Return (mAddress <> "" And mExclusions.IndexOf(Hostname) = -1)
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h1
 		Protected Function Owner() As libcURL.EasyHandle
 		  If mOwner <> Nil And Not (mOwner.Value Is Nil) And mOwner.Value IsA libcURL.EasyHandle Then
