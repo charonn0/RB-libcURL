@@ -3,6 +3,9 @@ Protected Module Opts
 	#tag Constant, Name = ACCEPT_ENCODING, Type = Double, Dynamic = False, Default = \"10102", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = APPEND, Type = Double, Dynamic = False, Default = \"50", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = AUTOREFERER, Type = Double, Dynamic = False, Default = \"58", Scope = Protected
 	#tag EndConstant
 
@@ -82,6 +85,9 @@ Protected Module Opts
 	#tag EndConstant
 
 	#tag Constant, Name = FAILONERROR, Type = Double, Dynamic = False, Default = \"45", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = FILETIME, Type = Double, Dynamic = False, Default = \"69", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = FOLLOWLOCATION, Type = Double, Dynamic = False, Default = \"52", Scope = Protected
@@ -301,6 +307,9 @@ Protected Module Opts
 	#tag EndConstant
 
 	#tag Constant, Name = RESOLVE, Type = Double, Dynamic = False, Default = \"10203", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = RESUME_FROM, Type = Double, Dynamic = False, Default = \"21", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = RTSP_SESSION_ID, Type = Double, Dynamic = False, Default = \"10190", Scope = Protected
