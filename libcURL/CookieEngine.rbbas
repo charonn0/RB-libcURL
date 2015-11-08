@@ -110,14 +110,17 @@ Protected Class CookieEngine
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Lookup(CookieName As String, CookieDomain As String, StartWith As Integer = 0) As Integer
+		Function Lookup(CookieName As String, CookieDomain As String, StartWith As Integer = 0, Strict As Boolean = True) As Integer
 		  ' Locates the index of the cookie matching the CookieName and CookieDomain parameters.
 		  ' If CookieDomain is "" then all domains match.
 		  
 		  Dim c As Integer = Me.Count
 		  For i As Integer = StartWith To c - 1
-		    If CookieName = "" Or Me.Name(i) = CookieName Then
-		      If CookieDomain = "" Or CookieDomain = Me.Domain(i) Then
+		    Dim n, d As String
+		    n = Me.Name(i)
+		    If CookieName = "" Or n = CookieName Or (Not Strict And InStr(n, CookieName) > 0) Then
+		      d = Me.Domain(i)
+		      If CookieDomain = "" Or CookieDomain = d Or "." + CookieDomain = d Or (Not Strict And InStr(d, CookieDomain) > 0) Then
 		        Return i
 		      End If
 		    End If
