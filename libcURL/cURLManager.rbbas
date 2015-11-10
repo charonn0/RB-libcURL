@@ -136,17 +136,17 @@ Protected Class cURLManager
 		Function Perform(URL As String, ReadFrom As Readable, WriteTo As Writeable) As Boolean
 		  ' Perform the transfer on the calling thread.
 		  
-		  Dim QueryInterval As Integer
-		  
 		  QueueTransfer(URL, ReadFrom, WriteTo)
+		  Dim now As Double = Microseconds
+		  If mInterval < 1 Then mInterval = now
 		  While mMultiItem.PerformOnce()
-		    QueryInterval = mMultiItem.QueryInterval()
-		    If QueryInterval > 1 And App.CurrentThread <> Nil Then
-		      System.DebugLog("Sleep for " + Format(QueryInterval, "############0") + " ms")
-		      App.SleepCurrentThread(QueryInterval)
+		    Dim qinterval As Integer = mMultiItem.QueryInterval
+		    If qinterval < 1 Then qinterval = 1
+		    If mInterval <= now Then
+		      mInterval = now + (qinterval * 1000)
+		      App.SleepCurrentThread(qinterval)
 		    Else
-		      'System.DebugLog("Yielding.")
-		      App.YieldToNextThread
+		      App.SleepCurrentThread(1)
 		    End If
 		  Wend
 		  Return mEasyItem.LastError = 0
@@ -282,6 +282,10 @@ Protected Class cURLManager
 
 	#tag Property, Flags = &h21
 		Private mHeaders As InternetHeaders
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mInterval As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
