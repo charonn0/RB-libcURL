@@ -149,7 +149,8 @@ Protected Class ProxyEngine
 		#tag EndGetter
 		#tag Setter
 			Set
-			  ' Sets proxy's URL or IP address. IPv6 addresses must be enclosed in square brackets [].
+			  ' Sets proxy's URL or IP address. IPv6 addresses must be enclosed in square brackets []. Set this
+			  ' to the empty string ("") to disable the proxy.
 			  '
 			  ' See:
 			  ' http://curl.haxx.se/libcurl/c/CURLOPT_PROXY.html
