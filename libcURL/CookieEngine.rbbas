@@ -98,8 +98,7 @@ Protected Class CookieEngine
 
 	#tag Method, Flags = &h0
 		Function HTTPOnly(Index As Integer) As Boolean
-		  ' Returns the domain for the cookie at Index. If the domain is empty then the
-		  ' cookie is sent to all hosts.
+		  ' Returns True if the cookie at Index should not be available to non-HTTP APIs (e.g. Javascript)
 		  
 		  Const HTTPONLY = "#HttpOnly_"
 		  Static sz As Integer = HTTPONLY.Len
