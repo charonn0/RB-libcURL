@@ -55,7 +55,15 @@ Protected Class ProxyEngine
 
 	#tag Method, Flags = &h0
 		Function IsProxied(Hostname As String) As Boolean
-		  Return (mAddress <> "" And mExclusions.IndexOf(Hostname) = -1)
+		  If mAddress = "" Then 
+		    Return False
+		  Else
+		    For Each host As String In mExclusions
+		      Dim h As String = Right(Hostname, host.Len)
+		      If h = host And Mid(Hostname, Hostname.Len - h.Len, 1) = "." Then Return False
+		    Next
+		    Return True
+		  End If
 		End Function
 	#tag EndMethod
 
