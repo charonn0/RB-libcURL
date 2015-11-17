@@ -167,7 +167,7 @@ Begin Window DemoWindow
          GridLinesVertical=   0
          HasHeading      =   True
          HeadingIndex    =   -1
-         Height          =   158
+         Height          =   80
          HelpTag         =   ""
          Hierarchical    =   ""
          Index           =   -2147483648
@@ -175,7 +175,7 @@ Begin Window DemoWindow
          InitialValue    =   "Supported Protocols"
          Italic          =   ""
          Left            =   11
-         LockBottom      =   True
+         LockBottom      =   False
          LockedInPosition=   False
          LockLeft        =   True
          LockRight       =   False
@@ -195,7 +195,7 @@ Begin Window DemoWindow
          Underline       =   ""
          UseFocusRing    =   True
          Visible         =   True
-         Width           =   290
+         Width           =   200
          _ScrollWidth    =   -1
       End
       Begin Listbox Features
@@ -216,18 +216,18 @@ Begin Window DemoWindow
          GridLinesVertical=   0
          HasHeading      =   True
          HeadingIndex    =   -1
-         Height          =   158
+         Height          =   80
          HelpTag         =   ""
          Hierarchical    =   ""
          Index           =   -2147483648
          InitialParent   =   "TabPanel2"
          InitialValue    =   "Available Features"
          Italic          =   ""
-         Left            =   305
+         Left            =   11
          LockBottom      =   True
          LockedInPosition=   False
          LockLeft        =   True
-         LockRight       =   True
+         LockRight       =   False
          LockTop         =   True
          RequiresSelection=   ""
          Scope           =   0
@@ -240,11 +240,11 @@ Begin Window DemoWindow
          TextFont        =   "System"
          TextSize        =   0
          TextUnit        =   0
-         Top             =   149
+         Top             =   237
          Underline       =   ""
          UseFocusRing    =   True
          Visible         =   True
-         Width           =   287
+         Width           =   200
          _ScrollWidth    =   -1
       End
       Begin Listbox Headers
@@ -734,6 +734,473 @@ Begin Window DemoWindow
          Underline       =   ""
          Visible         =   True
          Width           =   94
+      End
+      Begin Label Label6
+         AutoDeactivate  =   True
+         Bold            =   ""
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel2"
+         Italic          =   ""
+         Left            =   224
+         LockBottom      =   ""
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   ""
+         LockTop         =   True
+         Multiline       =   ""
+         Scope           =   0
+         Selectable      =   False
+         TabIndex        =   22
+         TabPanelIndex   =   3
+         Text            =   "Interface:"
+         TextAlign       =   0
+         TextColor       =   &h000000
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   242
+         Transparent     =   True
+         Underline       =   ""
+         Visible         =   True
+         Width           =   73
+      End
+      Begin ComboBox nic
+         AutoComplete    =   False
+         AutoDeactivate  =   True
+         Bold            =   False
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel2"
+         InitialValue    =   ""
+         Italic          =   False
+         Left            =   302
+         ListIndex       =   0
+         LockBottom      =   True
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   False
+         LockTop         =   True
+         Scope           =   0
+         TabIndex        =   3
+         TabPanelIndex   =   3
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0.0
+         TextUnit        =   0
+         Top             =   242
+         Underline       =   False
+         UseFocusRing    =   True
+         Visible         =   True
+         Width           =   174
+      End
+      Begin CheckBox Verbose
+         AutoDeactivate  =   True
+         Bold            =   ""
+         Caption         =   "Verbose"
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel2"
+         Italic          =   ""
+         Left            =   356
+         LockBottom      =   ""
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   ""
+         LockTop         =   True
+         Scope           =   0
+         State           =   0
+         TabIndex        =   21
+         TabPanelIndex   =   3
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   210
+         Underline       =   ""
+         Value           =   False
+         Visible         =   True
+         Width           =   120
+      End
+      Begin CheckBox Secure
+         AutoDeactivate  =   True
+         Bold            =   ""
+         Caption         =   "Validate SSL"
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel2"
+         Italic          =   ""
+         Left            =   356
+         LockBottom      =   ""
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   ""
+         LockTop         =   True
+         Scope           =   0
+         State           =   0
+         TabIndex        =   20
+         TabPanelIndex   =   3
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   190
+         Underline       =   ""
+         Value           =   False
+         Visible         =   True
+         Width           =   120
+      End
+      Begin CheckBox HTTPPreserveMethod
+         AutoDeactivate  =   True
+         Bold            =   ""
+         Caption         =   "Preserve method"
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel2"
+         Italic          =   ""
+         Left            =   356
+         LockBottom      =   ""
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   ""
+         LockTop         =   True
+         Scope           =   0
+         State           =   0
+         TabIndex        =   19
+         TabPanelIndex   =   3
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   170
+         Underline       =   ""
+         Value           =   False
+         Visible         =   True
+         Width           =   120
+      End
+      Begin CheckBox HTTPCompress
+         AutoDeactivate  =   True
+         Bold            =   ""
+         Caption         =   "gzip,deflate"
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel2"
+         Italic          =   ""
+         Left            =   356
+         LockBottom      =   ""
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   ""
+         LockTop         =   True
+         Scope           =   0
+         State           =   0
+         TabIndex        =   18
+         TabPanelIndex   =   3
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   150
+         Underline       =   ""
+         Value           =   False
+         Visible         =   True
+         Width           =   120
+      End
+      Begin CheckBox FollowRedirects
+         AutoDeactivate  =   True
+         Bold            =   ""
+         Caption         =   "Follow redirects"
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel2"
+         Italic          =   ""
+         Left            =   224
+         LockBottom      =   ""
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   ""
+         LockTop         =   True
+         Scope           =   0
+         State           =   0
+         TabIndex        =   17
+         TabPanelIndex   =   3
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   210
+         Underline       =   ""
+         Value           =   False
+         Visible         =   True
+         Width           =   120
+      End
+      Begin CheckBox Autoreferer
+         AutoDeactivate  =   True
+         Bold            =   ""
+         Caption         =   "AutoReferrer"
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel2"
+         Italic          =   ""
+         Left            =   224
+         LockBottom      =   ""
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   ""
+         LockTop         =   True
+         Scope           =   0
+         State           =   0
+         TabIndex        =   16
+         TabPanelIndex   =   3
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   190
+         Underline       =   ""
+         Value           =   False
+         Visible         =   True
+         Width           =   120
+      End
+      Begin CheckBox AutoDisconnect
+         AutoDeactivate  =   True
+         Bold            =   ""
+         Caption         =   "Autodisconnect"
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel2"
+         Italic          =   ""
+         Left            =   224
+         LockBottom      =   ""
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   ""
+         LockTop         =   True
+         Scope           =   0
+         State           =   0
+         TabIndex        =   15
+         TabPanelIndex   =   3
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   170
+         Underline       =   ""
+         Value           =   False
+         Visible         =   True
+         Width           =   120
+      End
+      Begin CheckBox FailOnError
+         AutoDeactivate  =   True
+         Bold            =   ""
+         Caption         =   "Fail on error"
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel2"
+         Italic          =   ""
+         Left            =   224
+         LockBottom      =   ""
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   ""
+         LockTop         =   True
+         Scope           =   0
+         State           =   0
+         TabIndex        =   14
+         TabPanelIndex   =   3
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   150
+         Underline       =   ""
+         Value           =   False
+         Visible         =   True
+         Width           =   120
+      End
+      Begin Label Label7
+         AutoDeactivate  =   True
+         Bold            =   ""
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel2"
+         Italic          =   ""
+         Left            =   224
+         LockBottom      =   ""
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   ""
+         LockTop         =   True
+         Multiline       =   ""
+         Scope           =   0
+         Selectable      =   False
+         TabIndex        =   23
+         TabPanelIndex   =   3
+         Text            =   "Proxy server:"
+         TextAlign       =   0
+         TextColor       =   &h000000
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   267
+         Transparent     =   True
+         Underline       =   ""
+         Visible         =   True
+         Width           =   73
+      End
+      Begin TextField ProxyServer
+         AcceptTabs      =   ""
+         Alignment       =   0
+         AutoDeactivate  =   True
+         AutomaticallyCheckSpelling=   False
+         BackColor       =   &hFFFFFF
+         Bold            =   ""
+         Border          =   True
+         CueText         =   ""
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Format          =   ""
+         Height          =   22
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel2"
+         Italic          =   ""
+         Left            =   302
+         LimitText       =   0
+         LockBottom      =   ""
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   ""
+         LockTop         =   True
+         Mask            =   ""
+         Password        =   ""
+         ReadOnly        =   ""
+         Scope           =   0
+         TabIndex        =   24
+         TabPanelIndex   =   3
+         TabStop         =   True
+         Text            =   ""
+         TextColor       =   &h000000
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   267
+         Underline       =   ""
+         UseFocusRing    =   True
+         Visible         =   True
+         Width           =   174
+      End
+      Begin Label Label8
+         AutoDeactivate  =   True
+         Bold            =   ""
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel2"
+         Italic          =   ""
+         Left            =   224
+         LockBottom      =   ""
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   ""
+         LockTop         =   True
+         Multiline       =   ""
+         Scope           =   0
+         Selectable      =   False
+         TabIndex        =   25
+         TabPanelIndex   =   3
+         Text            =   "Proxy type:"
+         TextAlign       =   0
+         TextColor       =   &h000000
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   290
+         Transparent     =   True
+         Underline       =   ""
+         Visible         =   True
+         Width           =   73
+      End
+      Begin ComboBox nic1
+         AutoComplete    =   False
+         AutoDeactivate  =   True
+         Bold            =   False
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel2"
+         InitialValue    =   "Socks 4\r\nSocks 4A\r\nSocks 5\r\nSocks 5A\r\nHTTP\r\nHTTP 1.0"
+         Italic          =   False
+         Left            =   302
+         ListIndex       =   0
+         LockBottom      =   True
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   False
+         LockTop         =   True
+         Scope           =   0
+         TabIndex        =   26
+         TabPanelIndex   =   3
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0.0
+         TextUnit        =   0
+         Top             =   290
+         Underline       =   False
+         UseFocusRing    =   True
+         Visible         =   True
+         Width           =   174
       End
    End
    Begin cURLClient Client
@@ -1620,6 +2087,179 @@ End
 		  #pragma Unused Y
 		  Return True
 		End Function
+	#tag EndEvent
+#tag EndEvents
+#tag Events nic
+	#tag Event
+		Sub Open()
+		  Dim i As Integer
+		  For i = 0 To System.NetworkInterfaceCount - 1
+		    Me.AddRow(System.GetNetworkInterface(i).IPAddress)
+		    If System.GetNetworkInterface(i).IPAddress <> "0.0.0.0" Then
+		      Me.RowTag(i) = System.GetNetworkInterface(i)
+		    End If
+		  Next
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Sub Change()
+		  If Me.ListIndex > -1 Then Client.EasyItem.NetworkInterface = Me.RowTag(Me.ListIndex)
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events Verbose
+	#tag Event
+		Sub Open()
+		  If Client.EasyItem.Verbose Then
+		    Me.State = CheckBox.CheckedStates.Checked
+		  Else
+		    Me.State = CheckBox.CheckedStates.Unchecked
+		  End If
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Sub Action()
+		  Client.EasyItem.Verbose = Me.Value
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events Secure
+	#tag Event
+		Sub Open()
+		  If Client.EasyItem.Secure Then
+		    Me.State = CheckBox.CheckedStates.Checked
+		  Else
+		    Me.State = CheckBox.CheckedStates.Unchecked
+		  End If
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Sub Action()
+		  Client.EasyItem.Secure = Me.Value
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events HTTPPreserveMethod
+	#tag Event
+		Sub Open()
+		  If Client.EasyItem.HTTPPreserveMethod Then
+		    Me.State = CheckBox.CheckedStates.Checked
+		  Else
+		    Me.State = CheckBox.CheckedStates.Unchecked
+		  End If
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Sub Action()
+		  Client.EasyItem.HTTPPreserveMethod = Me.Value
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events HTTPCompress
+	#tag Event
+		Sub Open()
+		  If Client.EasyItem.HTTPCompression Then
+		    Me.State = CheckBox.CheckedStates.Checked
+		  Else
+		    Me.State = CheckBox.CheckedStates.Unchecked
+		  End If
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Sub Action()
+		  Client.EasyItem.HTTPCompression = Me.Value
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events FollowRedirects
+	#tag Event
+		Sub Open()
+		  If Client.EasyItem.FollowRedirects Then
+		    Me.State = CheckBox.CheckedStates.Checked
+		  Else
+		    Me.State = CheckBox.CheckedStates.Unchecked
+		  End If
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Sub Action()
+		  Client.EasyItem.FollowRedirects = Me.Value
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events Autoreferer
+	#tag Event
+		Sub Open()
+		  If Client.EasyItem.AutoReferer Then
+		    Me.State = CheckBox.CheckedStates.Checked
+		  Else
+		    Me.State = CheckBox.CheckedStates.Unchecked
+		  End If
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Sub Action()
+		  Client.EasyItem.AutoReferer = Me.Value
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events AutoDisconnect
+	#tag Event
+		Sub Open()
+		  If Client.EasyItem.AutoDisconnect Then
+		    Me.State = CheckBox.CheckedStates.Checked
+		  Else
+		    Me.State = CheckBox.CheckedStates.Unchecked
+		  End If
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Sub Action()
+		  Client.EasyItem.AutoDisconnect = Me.Value
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events FailOnError
+	#tag Event
+		Sub Open()
+		  If Client.EasyItem.FailOnServerError Then
+		    Me.State = CheckBox.CheckedStates.Checked
+		  Else
+		    Me.State = CheckBox.CheckedStates.Unchecked
+		  End If
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Sub Action()
+		  Client.EasyItem.FailOnServerError = Me.Value
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events ProxyServer
+	#tag Event
+		Sub TextChange()
+		  Client.Proxy.Address = Me.Text
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events nic1
+	#tag Event
+		Sub Change()
+		  Select Case Me.Text
+		  Case "Socks 4"
+		    Client.Proxy.Type = libcURL.ProxyType.SOCKS4
+		  Case "Socks 4A"
+		    Client.Proxy.Type = libcURL.ProxyType.SOCKS4A
+		  Case "Socks 5"
+		    Client.Proxy.Type = libcURL.ProxyType.SOCKS5
+		  Case "Socks 5A"
+		    Client.Proxy.Type = libcURL.ProxyType.SOCKS5_HOSTNAME
+		  Case "HTTP"
+		    Client.Proxy.Type = libcURL.ProxyType.HTTP
+		  Case "HTTP 1.0"
+		    Client.Proxy.Type = libcURL.ProxyType.HTTP1_0
+		  End Select
+		End Sub
 	#tag EndEvent
 #tag EndEvents
 #tag Events Client
