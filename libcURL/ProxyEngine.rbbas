@@ -2,6 +2,11 @@
 Protected Class ProxyEngine
 	#tag Method, Flags = &h0
 		Sub Constructor(Owner As libcURL.EasyHandle)
+		  ' Creates a new instance of ProxyEngine for the EasyHandle whose proxy settings are to be manipulated
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ProxyEngine.Constructor
+		  
 		  mOwner = New WeakRef(Owner)
 		End Sub
 	#tag EndMethod
@@ -55,7 +60,14 @@ Protected Class ProxyEngine
 
 	#tag Method, Flags = &h0
 		Function IsProxied(Hostname As String) As Boolean
-		  If mAddress = "" Then 
+		  ' Returns True if requests to Hostname will be proxied. Specify the hostname only; i.e. if 
+		  ' the URL is http://www.example.com/foo.txt then www.example.com is the hostname. If no 
+		  ' proxy is configured then all hosts return False.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ProxyEngine.IsProxied
+		  
+		  If mAddress = "" Then
 		    Return False
 		  Else
 		    For Each host As String In mExclusions
@@ -171,6 +183,11 @@ Protected Class ProxyEngine
 		#tag EndGetter
 		#tag Setter
 			Set
+			  ' If True, then libcURL will tunnel through the proxy server instead of relay requests through it
+			  ' 
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ProxyEngine.HTTPTunnel
+			  
 			  If Not Owner.SetOption(libcURL.Opts.HTTPPROXYTUNNEL, value) Then Raise New libcURL.cURLException(Owner)
 			  mHTTPTunnel = value
 			End Set
@@ -230,6 +247,11 @@ Protected Class ProxyEngine
 		#tag EndGetter
 		#tag Setter
 			Set
+			  ' The proxy authentication password, if any.
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ProxyEngine.Password
+			  
 			  If Not Owner.SetOption(libcURL.Opts.PROXYUSERPWD, Me.Username + ":" + value) Then Raise New libcURL.cURLException(Owner)
 			  mPassword = value
 			End Set
@@ -245,6 +267,11 @@ Protected Class ProxyEngine
 		#tag EndGetter
 		#tag Setter
 			Set
+			  ' The proxy server's port
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ProxyEngine.Port
+			  
 			  If Not Owner.SetOption(libcURL.Opts.PROXYPORT, value) Then Raise New libcURL.cURLException(Owner)
 			  mPort = value
 			End Set
@@ -260,6 +287,12 @@ Protected Class ProxyEngine
 		#tag EndGetter
 		#tag Setter
 			Set
+			  ' The proxy service name, if any.
+			  '
+			  ' See:
+			  ' http://curl.haxx.se/libcurl/c/CURLOPT_PROXY_SERVICE_NAME.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ProxyEngine.ServiceName
+			  
 			  If libcURL.Version.IsAtLeast(7, 43, 0) Then
 			    If Not Owner.SetOption(libcURL.Opts.PROXY_SERVICE_NAME, value) Then Raise New libcURL.cURLException(Owner)
 			    mServiceName = value
@@ -279,6 +312,11 @@ Protected Class ProxyEngine
 		#tag EndGetter
 		#tag Setter
 			Set
+			  ' The type of proxy server to be used.
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ProxyEngine.Type
+			  
 			  If Not Owner.SetOption(libcURL.Opts.PROXYTYPE, Integer(value)) Then Raise New libcURL.cURLException(Owner)
 			  mType = value
 			End Set
@@ -294,6 +332,11 @@ Protected Class ProxyEngine
 		#tag EndGetter
 		#tag Setter
 			Set
+			  ' The proxy authentication username, if any.
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ProxyEngine.Username
+			  
 			  If Not Owner.SetOption(libcURL.Opts.PROXYUSERPWD, value + ":" + Me.Password) Then Raise New libcURL.cURLException(Owner)
 			  mUsername = value
 			End Set
