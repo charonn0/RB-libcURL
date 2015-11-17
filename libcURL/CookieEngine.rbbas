@@ -2,6 +2,11 @@
 Protected Class CookieEngine
 	#tag Method, Flags = &h0
 		Sub Constructor(Owner As libcURL.EasyHandle)
+		  ' Creates a new instance of CookieEngine for the EasyHandle whose cookies are to be manipulated
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine.Constructor
+		  
 		  mOwner = New WeakRef(Owner)
 		  mDirty = True
 		End Sub
@@ -9,7 +14,10 @@ Protected Class CookieEngine
 
 	#tag Method, Flags = &h0
 		Function Count() As Integer
-		  ' Returns the number of unexpired cookies currently collected.
+		  ' Counts the number of unexpired cookies currently collected.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine.Count
 		  
 		  Return CookieList.Count
 		End Function
@@ -17,7 +25,10 @@ Protected Class CookieEngine
 
 	#tag Method, Flags = &h0
 		Function DeleteAll() As Boolean
-		  ' Clears all cookies.
+		  ' Clears all cookies, expired or not.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine.DeleteAll
 		  
 		  mDirty = True
 		  Return Owner.SetOption(libcURL.Opts.COOKIELIST, "ALL")
@@ -27,6 +38,9 @@ Protected Class CookieEngine
 	#tag Method, Flags = &h0
 		Function DeleteSession() As Boolean
 		  ' Deletes all session cookies. Session cookies are those without an explicit expiration date.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine.DeleteSession
 		  
 		  If libcURL.Version.IsAtLeast(7, 17, 1) Then
 		    mDirty = True
@@ -41,8 +55,11 @@ Protected Class CookieEngine
 
 	#tag Method, Flags = &h0
 		Function Domain(Index As Integer) As String
-		  ' Returns the domain for the cookie at Index. If the domain is empty then the
-		  ' cookie is sent to all hosts.
+		  ' Returns the domain for the cookie at Index. If the domain is empty then the cookie is sent to all hosts and will not
+		  ' be updated should a server send the Set-Cookie header.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine.Domain
 		  
 		  Const HTTPONLY = "#HttpOnly_"
 		  Static sz As Integer = HTTPONLY.Len
@@ -56,8 +73,10 @@ Protected Class CookieEngine
 
 	#tag Method, Flags = &h0
 		Function Expiry(Index As Integer) As Date
-		  ' Returns the expiration date for the cookie at Index. If the cookie is a session cookie
-		  ' then the return value will be Nil.
+		  ' Returns the expiration date for the cookie at Index. If the cookie is a session cookie then the return value will be Nil.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine.Expiry
 		  
 		  Dim d As New Date(1970, 1, 1, 0, 0, 0, 0.0) 'UNIX epoch
 		  Dim count As Integer = Val(NthField(Me.StringValue(Index), Chr(9), 5))
@@ -70,20 +89,30 @@ Protected Class CookieEngine
 
 	#tag Method, Flags = &h0
 		Sub Expiry(Index As Integer, Assigns NewExpiry As Date)
-		  ' Sets the expiration date for the cookie at Index
-		  If Not Me.SetCookie(Me.Name(Index), Me.Value(Index), Me.Domain(Index), NewExpiry, Me.Path(Index), Me.HTTPOnly(Index)) Then 
+		  ' Sets the expiration date for the cookie at Index. To make the cookie into a session cookie pass NIL; to
+		  ' delete a cookie set its expiration date in the past.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine.Expiry
+		  
+		  If Not Me.SetCookie(Me.Name(Index), Me.Value(Index), Me.Domain(Index), NewExpiry, Me.Path(Index), Me.HTTPOnly(Index)) Then
 		    Raise New libcURL.cURLException(Owner)
 		  End If
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Flush(CookieJar As FolderItem = Nil) As Boolean
+		Function Flush(CookieFile As FolderItem = Nil) As Boolean
+		  ' Flushes all cookies to a file. If no CookieFile is specified then the cookiejar is used.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine.Flush
+		  
 		  If libcURL.Version.IsAtLeast(7, 17, 1) Then
 		    Dim OK As Boolean
-		    If CookieJar <> Nil Then
+		    If CookieFile <> Nil Then
 		      Dim tmp As FolderItem = Me.CookieJar
-		      Me.CookieJar = CookieJar
+		      Me.CookieJar = CookieFile
 		      OK = Owner.SetOption(libcURL.Opts.COOKIELIST, "FLUSH")
 		      Me.CookieJar = tmp
 		    End If
@@ -99,6 +128,9 @@ Protected Class CookieEngine
 	#tag Method, Flags = &h0
 		Function HTTPOnly(Index As Integer) As Boolean
 		  ' Returns True if the cookie at Index should not be available to non-HTTP APIs (e.g. Javascript)
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine.HTTPOnly
 		  
 		  Const HTTPONLY = "#HttpOnly_"
 		  Static sz As Integer = HTTPONLY.Len
@@ -110,8 +142,13 @@ Protected Class CookieEngine
 
 	#tag Method, Flags = &h0
 		Function Lookup(CookieName As String, CookieDomain As String, StartWith As Integer = 0, Strict As Boolean = True) As Integer
-		  ' Locates the index of the cookie matching the CookieName and CookieDomain parameters.
-		  ' If CookieDomain is "" then all domains match.
+		  ' Locates the index of the cookie matching the CookieName and CookieDomain parameters. To continue searching from 
+		  ' a previous index specify the StartWith parameter. If CookieDomain is "" then all domains match. If CookieName 
+		  ' is "" then all cookies for CookieDomain match. If Strict is False, then a cookie will match if the name and 
+		  ' domain contain the CookieName and CookieDomain parameters.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine.Lookup
 		  
 		  Dim c As Integer = Me.Count
 		  For i As Integer = StartWith To c - 1
@@ -131,13 +168,20 @@ Protected Class CookieEngine
 	#tag Method, Flags = &h0
 		Function Name(Index As Integer) As String
 		  ' Returns the name of the Cookie at Index
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine.Name
+		  
 		  Return NthField(Me.StringValue(Index), Chr(9), 6)
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function NewSession() As Boolean
-		  ' Ignores but does not delete all existing cookies which do not have an explicit expiration date.
+		  ' Expires all cookies which do not have an explicit expiration date.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine.NewSession
 		  
 		  mDirty = True
 		  Return Owner.SetOption(libcURL.Opts.COOKIESESSION, True)
@@ -154,19 +198,27 @@ Protected Class CookieEngine
 
 	#tag Method, Flags = &h0
 		Function Path(Index As Integer) As String
-		  ' Returns the cookie's path parameter
+		  ' Returns the remote path associated with the cookie at Index.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine.Path
 		  
 		  Return NthField(Me.StringValue(Index), Chr(9), 3)
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Reload(CookieJar As FolderItem = Nil) As Boolean
+		Function Reload(CookieFile As FolderItem = Nil) As Boolean
+		  ' Reloads the cookie list from the CookieFile. If no CookieFile is specified then the CookieJar is used.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine.Reload
+		  
 		  If libcURL.Version.IsAtLeast(7, 17, 1) Then
 		    Dim OK As Boolean
-		    If CookieJar <> Nil Then
+		    If CookieFile <> Nil Then
 		      Dim tmp As FolderItem = Me.CookieJar
-		      Me.CookieJar = CookieJar
+		      Me.CookieJar = CookieFile
 		      OK = Owner.SetOption(libcURL.Opts.COOKIELIST, "RELOAD")
 		      Me.CookieJar = tmp
 		    ElseIf Me.CookieJar <> Nil Then
@@ -183,6 +235,14 @@ Protected Class CookieEngine
 
 	#tag Method, Flags = &h0
 		Function SetCookie(RawCookie As String) As Boolean
+		  ' Sets a cookie for the cookie engine to use. If a cookie with the same name and domain already exists it will be updated. 
+		  ' You may pass either Netscape cookie jar lines or HTTP Set-Cookie header lines. (See: CookieEngine.StringValue for details.)
+		  '
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/CURLOPT_COOKIELIST.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine.SetCookie
+		  
+		  If no expiration date is specified then the cookie will be a "session" cookie.
 		  mDirty = True
 		  Return Owner.SetOption(libcURL.Opts.COOKIELIST, RawCookie)
 		End Function
@@ -190,6 +250,14 @@ Protected Class CookieEngine
 
 	#tag Method, Flags = &h0
 		Function SetCookie(Name As String, Value As String, Domain As String, Expires As Date = Nil, Path As String = "", HTTPOnly As Boolean = False) As Boolean
+		  ' Sets a cookie for the cookie engine to use. If a cookie with the same name and domain already exists it will be updated. If 
+		  ' no domain is specified then the cookie will be sent with all transfers and cannot be modified by a server-set cookie; always 
+		  ' specify a domain if more than one server will be contacted.
+		  '
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/CURLOPT_COOKIELIST.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine.SetCookie
+		  
 		  Dim c As String = "Set-Cookie: " + Name + "=" + Value
 		  If Domain <> "" Then c = c + "; Domain=" + Domain
 		  If Path <> "" Then c = c + "; path=" + Path
@@ -201,6 +269,11 @@ Protected Class CookieEngine
 
 	#tag Method, Flags = &h0
 		Function StringValue(Index As Integer, StringFormat As Integer = libcURL.CookieEngine.FORMAT_NETSCAPE) As String
+		  ' Returns the string value of the cookie at Index using the format specified by StringFormat.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine.StringValue
+		  
 		  Select Case StringFormat
 		  Case FORMAT_NETSCAPE
 		    Return CookieList.Item(Index)
@@ -221,13 +294,23 @@ Protected Class CookieEngine
 
 	#tag Method, Flags = &h0
 		Function Value(Index As Integer) As String
+		  ' Gets the value of the cookie at Index.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine.Value
+		  
 		  Return NthField(Me.StringValue(Index), Chr(9), 7)
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub Value(Index As Integer, Assigns NewValue As String)
-		  If Not Me.SetCookie(Me.Name(Index), NewValue, Me.Domain(Index), Me.Expiry(Index), Me.Path(Index), Me.HTTPOnly(Index)) Then 
+		  ' Sets the value of the cookie at Index.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine.Value
+		  
+		  If Not Me.SetCookie(Me.Name(Index), NewValue, Me.Domain(Index), Me.Expiry(Index), Me.Path(Index), Me.HTTPOnly(Index)) Then
 		    Raise New libcURL.cURLException(Owner)
 		  End If
 		End Sub
@@ -287,7 +370,7 @@ Protected Class CookieEngine
 	#tag ComputedProperty, Flags = &h1
 		#tag Getter
 			Get
-			  If mDirty Or mCookieList = Nil Then 
+			  If mDirty Or mCookieList = Nil Then
 			    mCookieList = Owner.GetInfo(libcURL.Info.COOKIELIST)
 			    mDirty = False
 			  End If
@@ -305,6 +388,11 @@ Protected Class CookieEngine
 		#tag EndGetter
 		#tag Setter
 			Set
+			  ' Enables/disables the cookie engine
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine.Enabled
+			  
 			  If value Then
 			    If Not Owner.SetOption(libcURL.Opts.COOKIEFILE, "") Then Raise New cURLException(Owner)
 			  Else
