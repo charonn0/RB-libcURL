@@ -51,7 +51,7 @@ Begin Window DemoWindow
       TextUnit        =   0
       Top             =   119
       Underline       =   ""
-      Value           =   0
+      Value           =   2
       Visible         =   True
       Width           =   596
       Begin Listbox Debug
@@ -367,7 +367,6 @@ Begin Window DemoWindow
          Selectable      =   False
          TabIndex        =   2
          TabPanelIndex   =   3
-         TabStop         =   True
          Text            =   "CA List:"
          TextAlign       =   2
          TextColor       =   &h000000
@@ -402,7 +401,6 @@ Begin Window DemoWindow
          Selectable      =   False
          TabIndex        =   3
          TabPanelIndex   =   3
-         TabStop         =   True
          Text            =   "Client certificate:"
          TextAlign       =   2
          TextColor       =   &h000000
@@ -437,7 +435,6 @@ Begin Window DemoWindow
          Selectable      =   True
          TabIndex        =   4
          TabPanelIndex   =   3
-         TabStop         =   True
          Text            =   "Not specified"
          TextAlign       =   0
          TextColor       =   &h00464646
@@ -534,7 +531,6 @@ Begin Window DemoWindow
          Selectable      =   True
          TabIndex        =   7
          TabPanelIndex   =   3
-         TabStop         =   True
          Text            =   "Not specified"
          TextAlign       =   0
          TextColor       =   &h00464646
@@ -693,7 +689,6 @@ Begin Window DemoWindow
          Selectable      =   True
          TabIndex        =   12
          TabPanelIndex   =   3
-         TabStop         =   True
          Text            =   "Not specified"
          TextAlign       =   0
          TextColor       =   &h00464646
@@ -728,7 +723,6 @@ Begin Window DemoWindow
          Selectable      =   False
          TabIndex        =   13
          TabPanelIndex   =   3
-         TabStop         =   True
          Text            =   "Cookiejar:"
          TextAlign       =   2
          TextColor       =   &h000000
@@ -743,17 +737,13 @@ Begin Window DemoWindow
       End
    End
    Begin cURLClient Client
-      Enabled         =   True
       Height          =   32
       Index           =   -2147483648
       Left            =   7
       LockedInPosition=   False
       Scope           =   0
-      TabIndex        =   1
       TabPanelIndex   =   0
-      TabStop         =   True
       Top             =   437
-      Visible         =   True
       Width           =   32
    End
    Begin TextField TextField1
@@ -799,7 +789,6 @@ Begin Window DemoWindow
       Width           =   335
    End
    Begin Thread GetThread
-      Enabled         =   True
       Height          =   32
       Index           =   -2147483648
       Left            =   43
@@ -807,15 +796,11 @@ Begin Window DemoWindow
       Priority        =   5
       Scope           =   0
       StackSize       =   0
-      TabIndex        =   3
       TabPanelIndex   =   0
-      TabStop         =   True
       Top             =   437
-      Visible         =   True
       Width           =   32
    End
    Begin Thread PutThread
-      Enabled         =   True
       Height          =   32
       Index           =   -2147483648
       Left            =   80
@@ -823,15 +808,11 @@ Begin Window DemoWindow
       Priority        =   5
       Scope           =   0
       StackSize       =   0
-      TabIndex        =   4
       TabPanelIndex   =   0
-      TabStop         =   True
       Top             =   437
-      Visible         =   True
       Width           =   32
    End
    Begin Thread PostThread
-      Enabled         =   True
       Height          =   32
       Index           =   -2147483648
       Left            =   117
@@ -839,11 +820,8 @@ Begin Window DemoWindow
       Priority        =   5
       Scope           =   0
       StackSize       =   0
-      TabIndex        =   5
       TabPanelIndex   =   0
-      TabStop         =   True
       Top             =   437
-      Visible         =   True
       Width           =   32
    End
    Begin ProgressBar ProgressUpload
@@ -861,9 +839,7 @@ Begin Window DemoWindow
       LockTop         =   True
       Maximum         =   100
       Scope           =   0
-      TabIndex        =   6
       TabPanelIndex   =   0
-      TabStop         =   True
       Top             =   35
       Value           =   0
       Visible         =   True
@@ -1226,9 +1202,7 @@ Begin Window DemoWindow
       LockTop         =   True
       Maximum         =   100
       Scope           =   0
-      TabIndex        =   8
       TabPanelIndex   =   0
-      TabStop         =   True
       Top             =   47
       Value           =   0
       Visible         =   True
@@ -1280,7 +1254,6 @@ Begin Window DemoWindow
       Width           =   332
    End
    Begin Timer GUITimer
-      Enabled         =   True
       Height          =   32
       Index           =   -2147483648
       Left            =   190
@@ -1288,15 +1261,11 @@ Begin Window DemoWindow
       Mode            =   0
       Period          =   1
       Scope           =   0
-      TabIndex        =   10
       TabPanelIndex   =   0
-      TabStop         =   True
       Top             =   437
-      Visible         =   True
       Width           =   32
    End
    Begin Timer ProgressTimer
-      Enabled         =   True
       Height          =   32
       Index           =   -2147483648
       Left            =   224
@@ -1304,15 +1273,11 @@ Begin Window DemoWindow
       Mode            =   1
       Period          =   10
       Scope           =   0
-      TabIndex        =   11
       TabPanelIndex   =   0
-      TabStop         =   True
       Top             =   437
-      Visible         =   True
       Width           =   32
    End
    Begin Thread HeadThread
-      Enabled         =   True
       Height          =   32
       Index           =   -2147483648
       Left            =   155
@@ -1320,11 +1285,8 @@ Begin Window DemoWindow
       Priority        =   5
       Scope           =   0
       StackSize       =   0
-      TabIndex        =   12
       TabPanelIndex   =   0
-      TabStop         =   True
       Top             =   437
-      Visible         =   True
       Width           =   32
    End
    Begin PushButton PauseButton
@@ -1400,6 +1362,8 @@ End
 		  Else
 		    DownloadOutput.Text = ""
 		  End If
+		  Dim BytesRead As Integer = Client.GetInfo(libcURL.Info.SIZE_DOWNLOAD).Int32Value
+		  Dim BytesWritten As Integer = Client.GetInfo(libcURL.Info.SIZE_UPLOAD).Int32Value
 		  CurlInfo.DeleteAllRows
 		  Headers.DeleteAllRows
 		  ShowErrorBuffer()
@@ -1407,25 +1371,24 @@ End
 		    Dim err As String = libcURL.Errors.Name(cURLCode) + "(" + Str(cURLCode) + "): " + libcURL.FormatError(cURLCode)
 		    Call MsgBox(err, 16, "libcURL error")
 		  Else
-		    Dim BytesRead As Integer = Client.GetInfo(libcURL.Info.SIZE_DOWNLOAD).Int32Value
-		    Dim BytesWritten As Integer = Client.GetInfo(libcURL.Info.SIZE_UPLOAD).Int32Value
 		    MsgBox("Transfer completed (" + Str(BytesWritten) + " bytes written, " + Str(BytesRead) +" bytes read) with status: " + Str(Client.GetStatusCode))
-		    CurlInfo.AddRow("EFFECTIVE_URL", Client.GetInfo(libcURL.Info.EFFECTIVE_URL))
-		    CurlInfo.AddRow("REDIRECT_COUNT", Str(Client.GetInfo(libcURL.Info.REDIRECT_COUNT).Int32Value))
-		    CurlInfo.AddRow("REDIRECT_URL", Client.GetInfo(libcURL.Info.REDIRECT_URL))
-		    CurlInfo.AddRow("CONTENT_TYPE", Client.GetInfo(libcURL.Info.CONTENT_TYPE))
-		    CurlInfo.AddRow("FTP_ENTRY_PATH", Client.GetInfo(libcURL.Info.FTP_ENTRY_PATH))
-		    CurlInfo.AddRow("RESPONSE_CODE", Str(Client.GetInfo(libcURL.Info.RESPONSE_CODE).Int32Value))
-		    CurlInfo.AddRow("NUM_CONNECTS", Str(Client.GetInfo(libcURL.Info.NUM_CONNECTS).Int32Value))
-		    CurlInfo.AddRow("OS_ERRNO", Str(Client.GetInfo(libcURL.Info.OS_ERRNO).Int32Value))
-		    CurlInfo.AddRow("SIZE_DOWNLOAD", Str(BytesRead))
-		    CurlInfo.AddRow("SIZE_UPLOAD", Str(BytesWritten))
-		    Dim h As InternetHeaders = Client.GetResponseHeaders
-		    If h <> Nil Then
-		      For i As Integer = 0 To h.Count - 1
-		        Headers.AddRow(h.Name(i), h.Value(i))
-		      Next
-		    End If
+		  End If
+		  
+		  CurlInfo.AddRow("EFFECTIVE_URL", Client.GetInfo(libcURL.Info.EFFECTIVE_URL))
+		  CurlInfo.AddRow("REDIRECT_COUNT", Str(Client.GetInfo(libcURL.Info.REDIRECT_COUNT).Int32Value))
+		  CurlInfo.AddRow("REDIRECT_URL", Client.GetInfo(libcURL.Info.REDIRECT_URL))
+		  CurlInfo.AddRow("CONTENT_TYPE", Client.GetInfo(libcURL.Info.CONTENT_TYPE))
+		  CurlInfo.AddRow("FTP_ENTRY_PATH", Client.GetInfo(libcURL.Info.FTP_ENTRY_PATH))
+		  CurlInfo.AddRow("RESPONSE_CODE", Str(Client.GetInfo(libcURL.Info.RESPONSE_CODE).Int32Value))
+		  CurlInfo.AddRow("NUM_CONNECTS", Str(Client.GetInfo(libcURL.Info.NUM_CONNECTS).Int32Value))
+		  CurlInfo.AddRow("OS_ERRNO", Str(Client.GetInfo(libcURL.Info.OS_ERRNO).Int32Value))
+		  CurlInfo.AddRow("SIZE_DOWNLOAD", Str(BytesRead))
+		  CurlInfo.AddRow("SIZE_UPLOAD", Str(BytesWritten))
+		  Dim h As InternetHeaders = Client.GetResponseHeaders
+		  If h <> Nil Then
+		    For i As Integer = 0 To h.Count - 1
+		      Headers.AddRow(h.Name(i), h.Value(i))
+		    Next
 		  End If
 		End Sub
 	#tag EndMethod
