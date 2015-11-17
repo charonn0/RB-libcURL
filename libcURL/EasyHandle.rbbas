@@ -559,7 +559,7 @@ Inherits libcURL.cURLHandle
 		    libcURL.Opts.DEBUGFUNCTION, libcURL.Opts.HEADERFUNCTION, libcURL.Opts.OPENSOCKETFUNCTION, libcURL.Opts.PROGRESSFUNCTION, _
 		    libcURL.Opts.READFUNCTION, libcURL.Opts.SSL_CTX_FUNCTION, libcURL.Opts.WRITEFUNCTION, libcURL.Opts.SHARE, _
 		    libcURL.Opts.COOKIEJAR, libcURL.Opts.COOKIEFILE, libcURL.Opts.HTTPPOST, libcURL.Opts.CAINFO, libcURL.Opts.CAPATH, _
-		    libcURL.Opts.NETINTERFACE, libcURL.Opts.ERRORBUFFER, libcURL.Opts.COPYPOSTFIELDS)
+		    libcURL.Opts.NETINTERFACE, libcURL.Opts.ERRORBUFFER, libcURL.Opts.COPYPOSTFIELDS, libcURL.Opts.ACCEPT_ENCODING)
 		    ' These option numbers explicitly accept NULL. Refer to the curl documentation on the individual option numbers for details.
 		    If Nilable.IndexOf(OptionNumber) > -1 Then
 		      Return Me.SetOptionPtr(OptionNumber, Nil)
@@ -1198,7 +1198,11 @@ Inherits libcURL.cURLHandle
 		#tag Setter
 			Set
 			  If libcURL.Version.LibZ.IsAvailable Then
-			    If Not Me.SetOption(libcURL.Opts.ACCEPT_ENCODING, "") Then Raise New cURLException(Me)
+			    If value Then
+			      If Not Me.SetOption(libcURL.Opts.ACCEPT_ENCODING, "") Then Raise New cURLException(Me)
+			    Else
+			      If Not Me.SetOption(libcURL.Opts.ACCEPT_ENCODING, Nil) Then Raise New cURLException(Me)
+			    End If
 			    mHTTPCompression = value
 			  Else
 			    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
