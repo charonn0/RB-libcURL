@@ -425,7 +425,7 @@ Protected Module libcURL
 		  ' Returns the Data encoded using percent encoding as defined in rfc2396
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_escape.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLEncode
+		  ' https://github.com/charonn0/RB-libcURL/wiki/URLEncode
 		  
 		  If EasyItem = Nil Then EasyItem = New libcURL.EasyHandle
 		  If Not libcURL.Version.IsAtLeast(7, 15, 4) Then
