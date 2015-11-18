@@ -524,6 +524,16 @@ Protected Module libcURL
 		SOCKS5_HOSTNAME=7
 	#tag EndEnum
 
+	#tag Enum, Name = SSLVersion, Type = Integer, Flags = &h1
+		Default=0
+		  TLSv1=1
+		  SSLv2=2
+		  SSLv3=3
+		  TLSv1_0=4
+		  TLSv1_1=5
+		TLSv1_2=6
+	#tag EndEnum
+
 
 	#tag ViewBehavior
 		#tag ViewProperty
