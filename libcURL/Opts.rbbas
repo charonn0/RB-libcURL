@@ -123,6 +123,9 @@ Protected Module Opts
 	#tag Constant, Name = FTP_FILEMETHOD, Type = Double, Dynamic = False, Default = \"138", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = HEADER, Type = Double, Dynamic = False, Default = \"42", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = HEADERDATA, Type = Double, Dynamic = False, Default = \"10029", Scope = Protected
 	#tag EndConstant
 
