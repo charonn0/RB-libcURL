@@ -1948,19 +1948,23 @@ End
 #tag Events Features
 	#tag Event
 		Sub Open()
+		  If libcURL.Version.SSL Then Me.AddRow("SSL/TLS security")
+		  If libcURL.Version.HTTP2 Then Me.AddRow("HTTP 2.0")
 		  If libcURL.Version.ASYNCHDNS Then Me.AddRow("Asynchronous DNS")
+		  If libcURL.Version.IDN Then Me.AddRow("International Domain Names")
+		  If libcURL.Version.IPV6 Then Me.AddRow("IPv6")
+		  If libcURL.Version.LARGEFILE Then Me.AddRow("Files >2GB")
+		  If libcURL.Version.LibZ.IsAvailable Then Me.AddRow("HTTP decompression")
 		  If libcURL.Version.CONV Then Me.AddRow("Encoding conversion")
 		  If libcURL.Version.DEBUG Then Me.AddRow("Debug capabilities")
+		  If libcURL.Version.DEBUG Then Me.AddRow("Memory debug capabilities")
 		  If libcURL.Version.GSSNEGOTIATE Then Me.AddRow("Negotiate auth")
-		  If libcURL.Version.IDN Then Me.AddRow("International Domain Names")
-		  If libcURL.Version.KERBEROS4 Then Me.AddRow("kerberos auth")
-		  If libcURL.Version.IPV6 Then Me.AddRow("IPv6")
-		  If libcURL.Version.LARGEFILE Then Me.AddRow("Files larger than 2GB")
-		  If libcURL.Version.LibZ.IsAvailable Then Me.AddRow("libz decompression")
+		  If libcURL.Version.KERBEROS4 Then Me.AddRow("Kerberos 4")
+		  If libcURL.Version.KERBEROS5 Then Me.AddRow("Kerberos 5")
 		  If libcURL.Version.NTLM Then Me.AddRow("NTLM auth")
 		  If libcURL.Version.SPNEGO Then Me.AddRow("SPNEGO auth")
-		  If libcURL.Version.SSL Then Me.AddRow("SSL")
-		  If libcURL.Version.SSPI Then Me.AddRow("SSPI")
+		  If libcURL.Version.SSPI Then Me.AddRow("Microsoft SSPI")
+		  If libcURL.Version.SSPI Then Me.AddRow("TLS-SRP")
 		End Sub
 	#tag EndEvent
 #tag EndEvents
