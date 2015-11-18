@@ -1374,6 +1374,10 @@ Inherits libcURL.cURLHandle
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
+		Private mSSLVersion As libcURL.SSLVersion = libcURL.SSLVersion.Default
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
 		Private mTimeOut As Integer = 0
 	#tag EndProperty
 
@@ -1533,6 +1537,24 @@ Inherits libcURL.cURLHandle
 			End Set
 		#tag EndSetter
 		Secure As Boolean
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  ' Gets the version of SSL/TLS to be used.
+			  return mSSLVersion
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  ' Sets the version of SSL/TLS to be used.
+			  
+			  If Not Me.SetOption(libcURL.Opts.SSLVERSION, Integer(value)) Then Raise New cURLException(Me)
+			  mSSLVersion = value
+			End Set
+		#tag EndSetter
+		SSLVersion As libcURL.SSLVersion
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
