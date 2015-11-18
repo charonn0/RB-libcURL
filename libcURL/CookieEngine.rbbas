@@ -242,7 +242,6 @@ Protected Class CookieEngine
 		  ' http://curl.haxx.se/libcurl/c/CURLOPT_COOKIELIST.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine.SetCookie
 		  
-		  If no expiration date is specified then the cookie will be a "session" cookie.
 		  mDirty = True
 		  Return Owner.SetOption(libcURL.Opts.COOKIELIST, RawCookie)
 		End Function
