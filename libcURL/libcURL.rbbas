@@ -290,7 +290,7 @@ Protected Module libcURL
 		  Dim input As New BinaryStream(cURLCommandLine)
 		  Dim tmp As String
 		  Dim quote As Boolean
-		  
+		  Dim frm As libcURL.MultipartForm
 		  Do Until input.EOF
 		    Dim char As String = input.Read(1)
 		    Select Case char
@@ -368,6 +368,29 @@ Protected Module libcURL
 		    Case arg = "--sslv3", arg = "-3"
 		      c.EasyItem.SSLVersion = libcURL.SSLVersion.SSLv3
 		      
+		    Case arg = "--form", arg = "-F"
+		      Dim name, value As String
+		      name = NthField(output(i + 1), "=", 1)
+		      value = Right(output(i + 1), output(i + 1).Len - (name.Len + 1))
+		      If Left(value, 1) = "@" Then ' file
+		        Dim type As String
+		        If NthField(value, ";", 2) <> "" Then 
+		          type = NthField(value, ";", 2)
+		          value = Replace(value, ";" + type, "")
+		        End If
+		        Dim f As FolderItem = GetFolderItem(Right(value, value.Len - 1))
+		        If f <> Nil And f.Exists And Not f.Directory Then
+		          If frm = Nil Then frm = New libcURL.MultipartForm
+		          If Not frm.AddElement(name, f, type) Then Return Nil
+		        Else
+		          Return Nil
+		        End If
+		      Else
+		        If frm = Nil Then frm = New libcURL.MultipartForm
+		        If Not frm.AddElement(name, value) Then Return Nil
+		      End If
+		      i = i + 1
+		      
 		    Case arg = "--ipv4", arg = "-4"
 		      If Not c.SetOption(libcURL.Opts.DNS_LOCAL_IP4, True) Then Return Nil
 		      
@@ -383,7 +406,7 @@ Protected Module libcURL
 		      
 		    Case arg = "--cookie", StrComp("-b", arg, 1) = 0
 		      If Not c.Cookies.Enabled Then c.Cookies.Enabled = True
-		      If Not c.Cookies.SetCookie(output(i + 1)) Then Return Nil
+		      If Not c.Cookies.SetCookie("Set-Cookie: " + output(i + 1)) Then Return Nil
 		      i = i + 1
 		      
 		    Case arg = "--cookie-jar", StrComp("-c", arg, 1) = 0
@@ -462,6 +485,7 @@ Protected Module libcURL
 		      End If
 		    End Select
 		  Next
+		  If frm <> Nil Then c.EasyItem.SetFormData(frm)
 		  If url.Trim <> "" Then c.EasyItem.URL = url
 		  Return c
 		  
