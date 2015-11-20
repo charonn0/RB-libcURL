@@ -257,6 +257,7 @@ Protected Class cURLManager
 		  End If
 		  mIsTransferComplete = True
 		  mEasyItem.ClearFormData()
+		  If Cookies.Enabled Then Cookies.Invalidate
 		  If Item.LastError <> status Then ErrorSetter(Item).LastError = status
 		End Sub
 	#tag EndMethod

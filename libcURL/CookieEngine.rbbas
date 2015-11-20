@@ -8,7 +8,7 @@ Protected Class CookieEngine
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine.Constructor
 		  
 		  mOwner = New WeakRef(Owner)
-		  mDirty = True
+		  Me.Invalidate
 		End Sub
 	#tag EndMethod
 
@@ -30,7 +30,7 @@ Protected Class CookieEngine
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine.DeleteAll
 		  
-		  mDirty = True
+		  Me.Invalidate
 		  Return Owner.SetOption(libcURL.Opts.COOKIELIST, "ALL")
 		End Function
 	#tag EndMethod
@@ -43,7 +43,7 @@ Protected Class CookieEngine
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine.DeleteSession
 		  
 		  If libcURL.Version.IsAtLeast(7, 17, 1) Then
-		    mDirty = True
+		    Me.Invalidate
 		    Return Owner.SetOption(libcURL.Opts.COOKIELIST, "SESS")
 		  Else
 		    ErrorSetter(Owner).LastError = libcURL.Errors.FEATURE_UNAVAILABLE
@@ -116,7 +116,7 @@ Protected Class CookieEngine
 		      OK = Owner.SetOption(libcURL.Opts.COOKIELIST, "FLUSH")
 		      Me.CookieJar = tmp
 		    End If
-		    mDirty = True
+		    Me.Invalidate
 		    Return Owner.SetOption(libcURL.Opts.COOKIELIST, "FLUSH")
 		  Else
 		    ErrorSetter(Owner).LastError = libcURL.Errors.FEATURE_UNAVAILABLE
@@ -141,10 +141,16 @@ Protected Class CookieEngine
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub Invalidate()
+		  mDirty = True
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function Lookup(CookieName As String, CookieDomain As String, StartWith As Integer = 0, Strict As Boolean = True) As Integer
-		  ' Locates the index of the cookie matching the CookieName and CookieDomain parameters. To continue searching from 
-		  ' a previous index specify the StartWith parameter. If CookieDomain is "" then all domains match. If CookieName 
-		  ' is "" then all cookies for CookieDomain match. If Strict is False, then a cookie will match if the name and 
+		  ' Locates the index of the cookie matching the CookieName and CookieDomain parameters. To continue searching from
+		  ' a previous index specify the StartWith parameter. If CookieDomain is "" then all domains match. If CookieName
+		  ' is "" then all cookies for CookieDomain match. If Strict is False, then a cookie will match if the name and
 		  ' domain contain the CookieName and CookieDomain parameters.
 		  '
 		  ' See:
@@ -183,7 +189,7 @@ Protected Class CookieEngine
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine.NewSession
 		  
-		  mDirty = True
+		  Me.Invalidate
 		  Return Owner.SetOption(libcURL.Opts.COOKIESESSION, True)
 		End Function
 	#tag EndMethod
@@ -224,7 +230,7 @@ Protected Class CookieEngine
 		    ElseIf Me.CookieJar <> Nil Then
 		      OK = Owner.SetOption(libcURL.Opts.COOKIELIST, "RELOAD")
 		    End If
-		    mDirty = True
+		    Me.Invalidate
 		    Return OK
 		  Else
 		    ErrorSetter(Owner).LastError = libcURL.Errors.FEATURE_UNAVAILABLE
@@ -235,22 +241,22 @@ Protected Class CookieEngine
 
 	#tag Method, Flags = &h0
 		Function SetCookie(RawCookie As String) As Boolean
-		  ' Sets a cookie for the cookie engine to use. If a cookie with the same name and domain already exists it will be updated. 
+		  ' Sets a cookie for the cookie engine to use. If a cookie with the same name and domain already exists it will be updated.
 		  ' You may pass either Netscape cookie jar lines or HTTP Set-Cookie header lines. (See: CookieEngine.StringValue for details.)
 		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/CURLOPT_COOKIELIST.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine.SetCookie
 		  
-		  mDirty = True
+		  Me.Invalidate
 		  Return Owner.SetOption(libcURL.Opts.COOKIELIST, RawCookie)
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function SetCookie(Name As String, Value As String, Domain As String, Expires As Date = Nil, Path As String = "", HTTPOnly As Boolean = False) As Boolean
-		  ' Sets a cookie for the cookie engine to use. If a cookie with the same name and domain already exists it will be updated. If 
-		  ' no domain is specified then the cookie will be sent with all transfers and cannot be modified by a server-set cookie; always 
+		  ' Sets a cookie for the cookie engine to use. If a cookie with the same name and domain already exists it will be updated. If
+		  ' no domain is specified then the cookie will be sent with all transfers and cannot be modified by a server-set cookie; always
 		  ' specify a domain if more than one server will be contacted.
 		  '
 		  ' See:
