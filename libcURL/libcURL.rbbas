@@ -321,29 +321,38 @@ Protected Module libcURL
 		  For i As Integer = 0 To UBound(output)
 		    Dim arg As String = output(i)
 		    Select Case True
-		    Case StrComp(arg, "-h", 1) = 0
+		    Case StrComp(arg, "-h", 1) = 0 ' help
 		      Break
-		    Case StrComp(arg, "-H", 1) = 0 ' set header
+		    Case arg = "--header", StrComp(arg, "-H", 1) = 0 ' set header
 		      Dim name, value As String
 		      name = NthField(output(i + 1), ": ", 1)
 		      value = Right(output(i + 1), output(i + 1).Len - (name.Len + 2))
 		      Select Case name
 		      Case "Cookie"
 		        If Not Client.Cookies.Enabled Then Client.Cookies.Enabled = True
-		        If Not Client.Cookies.SetCookie(output(i + 1)) Then Return False
+		        If Not Client.Cookies.SetCookie(output(i + 1)) Then
+		          Break
+		          Return False
+		        End If
 		        
 		      Case "Connection"
 		        Client.EasyItem.AutoDisconnect = (value = "close")
 		        
 		      Case "Referer"
 		        Client.EasyItem.AutoReferer = True
-		        If Not Client.SetRequestHeader(name, value) Then Return False
+		        If Not Client.SetRequestHeader(name, value) Then
+		          Break
+		          Return False
+		        End If
 		        
 		      Case "User-Agent", "-A"
 		        Client.EasyItem.UserAgent = value
 		        
 		      Else
-		        If Not Client.SetRequestHeader(name, value) Then Return False
+		        If Not Client.SetRequestHeader(name, value) Then
+		          Break
+		          Return False
+		        End If
 		      End Select
 		      i = i + 1
 		      
@@ -368,7 +377,7 @@ Protected Module libcURL
 		    Case arg = "--sslv3", arg = "-3"
 		      Client.EasyItem.SSLVersion = libcURL.SSLVersion.SSLv3
 		      
-		    Case arg = "--form", arg = "-F"
+		    Case arg = "--form", StrComp(arg, "-F", 1) = 0
 		      Dim name, value As String
 		      name = NthField(output(i + 1), "=", 1)
 		      value = Right(output(i + 1), output(i + 1).Len - (name.Len + 1))
@@ -381,21 +390,33 @@ Protected Module libcURL
 		        Dim f As FolderItem = GetFolderItem(Right(value, value.Len - 1))
 		        If f <> Nil And f.Exists And Not f.Directory Then
 		          If frm = Nil Then frm = New libcURL.MultipartForm
-		          If Not frm.AddElement(name, f, type) Then Return False
+		          If Not frm.AddElement(name, f, type) Then
+		            Break
+		            Return False
+		          End If
 		        Else
 		          Return False
 		        End If
 		      Else
 		        If frm = Nil Then frm = New libcURL.MultipartForm
-		        If Not frm.AddElement(name, value) Then Return False
+		        If Not frm.AddElement(name, value) Then
+		          Break
+		          Return False
+		        End If
 		      End If
 		      i = i + 1
 		      
 		    Case arg = "--ipv4", arg = "-4"
-		      If Not Client.SetOption(libcURL.Opts.DNS_LOCAL_IP4, True) Then Return False
+		      If Not Client.SetOption(libcURL.Opts.DNS_LOCAL_IP4, True) Then
+		        Break
+		        Return False
+		      End If
 		      
 		    Case arg = "--ipv6", arg = "-6"
-		      If Not Client.SetOption(libcURL.Opts.DNS_LOCAL_IP6, True) Then Return False
+		      If Not Client.SetOption(libcURL.Opts.DNS_LOCAL_IP6, True) Then
+		        Break
+		        Return False
+		      End If
 		      
 		    Case arg = "--append", StrComp("-a", arg, 1) = 0
 		      'Client.EasyItem.SSLVersion = libcURL.SSLVersion.TLSv1
@@ -406,7 +427,10 @@ Protected Module libcURL
 		      
 		    Case arg = "--cookie", StrComp("-b", arg, 1) = 0
 		      If Not Client.Cookies.Enabled Then Client.Cookies.Enabled = True
-		      If Not Client.Cookies.SetCookie("Set-Cookie: " + output(i + 1)) Then Return False
+		      If Not Client.Cookies.SetCookie("Set-Cookie: " + output(i + 1)) Then
+		        Break
+		        Return False
+		      End If
 		      i = i + 1
 		      
 		    Case arg = "--cookie-jar", StrComp("-c", arg, 1) = 0
@@ -414,19 +438,31 @@ Protected Module libcURL
 		      i = i + 1
 		      
 		    Case arg = "--head", StrComp("-I", arg, 1) = 0
-		      If Not Client.SetOption(libcURL.Opts.NOBODY, True) Then Return False
+		      If Not Client.SetOption(libcURL.Opts.NOBODY, True) Then
+		        Break
+		        Return False
+		      End If
 		      
 		    Case arg = "--continue-at", StrComp("-C", arg, 1) = 0
-		      'If Not Client.Cookies.CookieJar = GetFolderItem(output(i + 1)) Then Return False
+		      'If Not Client.Cookies.CookieJar = GetFolderItem(output(i + 1)) Then
+		      'Break
+		      'Return False
+		      'End If
 		      
 		    Case arg = "--referer", StrComp("-e", arg, 1) = 0
 		      Client.EasyItem.AutoReferer = True
-		      If Not Client.SetRequestHeader("Referer", output(i + 1)) Then Return False
+		      If Not Client.SetRequestHeader("Referer", output(i + 1)) Then
+		        Break
+		        Return False
+		      End If
 		      i = i + 1
 		      
 		    Case arg = "--noproxy"
 		      For Each host As String In Split(output(i + 1), ",")
-		        If Not Client.Proxy.ExcludeHost(host) Then Return False
+		        If Not Client.Proxy.ExcludeHost(host) Then
+		          Break
+		          Return False
+		        End If
 		      Next
 		      i = i + 1
 		      
@@ -434,26 +470,38 @@ Protected Module libcURL
 		      Dim name, value As String
 		      name = NthField(output(i + 1), ": ", 1)
 		      value = Right(output(i + 1), output(i + 1).Len - (name.Len + 2))
-		      If Not Client.Proxy.SetProxyHeader(name, value) Then Return False
+		      If Not Client.Proxy.SetProxyHeader(name, value) Then
+		        Break
+		        Return False
+		      End If
 		      
 		    Case arg = "--insecure", StrComp("-k", arg, 1) = 0
 		      Client.EasyItem.Secure = False
 		      
 		    Case arg = "--ftp-create-dirs"
-		      If Not Client.SetOption(libcURL.Opts.FTP_CREATE_MISSING_DIRS, True) Then Return False
+		      If Not Client.SetOption(libcURL.Opts.FTP_CREATE_MISSING_DIRS, True) Then
+		        Break
+		        Return False
+		      End If
 		      
 		    Case arg = "--fail", StrComp("-f", arg, 1) = 0
 		      Client.EasyItem.FailOnServerError = True
 		      
 		    Case arg = "--include", StrComp("-i", arg, 1) = 0
-		      If Not Client.SetOption(libcURL.Opts.HEADER, True) Then Return False
+		      If Not Client.SetOption(libcURL.Opts.HEADER, True) Then
+		        Break
+		        Return False
+		      End If
 		      
 		    Case arg = "--proxytunnel", StrComp("-p", arg, 1) = 0
 		      Client.Proxy.HTTPTunnel = True
 		      
 		    Case arg = "--quote", StrComp("-Q", arg, 1) = 0
 		      Dim l As libcURL.ListPtr = Split(output(i + 1), ",")
-		      If Not Client.EasyItem.SetOption(libcURL.Opts.QUOTE, l) Then Return False
+		      If Not Client.EasyItem.SetOption(libcURL.Opts.QUOTE, l) Then
+		        Break
+		        Return False
+		      End If
 		      i = i + 1
 		      
 		    Case arg = "--user", StrComp("-u", arg, 1) = 0
@@ -481,7 +529,10 @@ Protected Module libcURL
 		      i = i + 1
 		      
 		    Case arg = "--request", StrComp("-X", arg, 1) = 0
-		      If Not Client.SetHTTPRequestMethod(output(i + 1)) Then Return False
+		      If Not Client.SetHTTPRequestMethod(output(i + 1)) Then
+		        Break
+		        Return False
+		      End If
 		      i = i + 1
 		      
 		    Case arg = "--proxy", StrComp("-x", arg, 1) = 0
@@ -489,7 +540,10 @@ Protected Module libcURL
 		      i = i + 1
 		      
 		    Case arg = "--range", StrComp("-r", arg, 1) = 0
-		      If Not Client.SetOption(libcURL.Opts.RANGE, output(i + 1)) Then Return False
+		      If Not Client.SetOption(libcURL.Opts.RANGE, output(i + 1)) Then
+		        Break
+		        Return False
+		      End If
 		      i = i + 1
 		      
 		    Case arg = "--location", StrComp("-L", arg, 1) = 0
