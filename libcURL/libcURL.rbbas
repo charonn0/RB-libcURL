@@ -283,7 +283,7 @@ Protected Module libcURL
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function ParseCommandLine(cURLCommandLine As String, ByRef Client As libcURL.cURLClient) As Boolean
+		Protected Function ParseCommandLine(cURLCommandLine As String, Client As libcURL.cURLClient) As Boolean
 		  Dim output() As String
 		  Dim url As String
 		  
@@ -509,7 +509,8 @@ Protected Module libcURL
 		      If url = "" Then
 		        url = output(i)
 		      Else
-		        Break
+		        System.DebugLog("Unknown curl command-line option '" + output(i) + "'")
+		        Return False
 		      End If
 		    End Select
 		  Next
