@@ -284,6 +284,13 @@ Protected Module libcURL
 
 	#tag Method, Flags = &h1
 		Protected Function ParseCommandLine(cURLCommandLine As String, Client As libcURL.cURLClient) As Boolean
+		  ' Parses a curl command line and sets the corresponding options on the passed instance of cURLClient.
+		  ' If all arguments were processed successfully this method returns True
+		  ' 
+		  ' See:
+		  ' http://curl.haxx.se/docs/manpage.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ParseCommandLine
+		  
 		  Dim output() As String
 		  Dim url As String
 		  
