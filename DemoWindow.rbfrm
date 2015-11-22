@@ -42,7 +42,7 @@ Begin Window DemoWindow
       Panels          =   ""
       Scope           =   0
       SmallTabs       =   ""
-      TabDefinition   =   "Information\rOutput\rFeatures"
+      TabDefinition   =   "Information\rOutput\rFeatures\rCommand Line"
       TabIndex        =   11
       TabPanelIndex   =   0
       TabStop         =   True
@@ -51,7 +51,7 @@ Begin Window DemoWindow
       TextUnit        =   0
       Top             =   119
       Underline       =   ""
-      Value           =   2
+      Value           =   3
       Visible         =   True
       Width           =   596
       Begin Listbox Debug
@@ -1202,6 +1202,117 @@ Begin Window DemoWindow
          Visible         =   True
          Width           =   174
       End
+      Begin Label Label9
+         AutoDeactivate  =   True
+         Bold            =   ""
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel2"
+         Italic          =   ""
+         Left            =   20
+         LockBottom      =   ""
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   ""
+         LockTop         =   True
+         Multiline       =   ""
+         Scope           =   0
+         Selectable      =   False
+         TabIndex        =   1
+         TabPanelIndex   =   4
+         Text            =   "Enter a curl command line:"
+         TextAlign       =   0
+         TextColor       =   &h000000
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   148
+         Transparent     =   True
+         Underline       =   ""
+         Visible         =   True
+         Width           =   560
+      End
+      Begin PushButton PushButton10
+         AutoDeactivate  =   True
+         Bold            =   ""
+         ButtonStyle     =   0
+         Cancel          =   ""
+         Caption         =   "Parse"
+         Default         =   ""
+         Enabled         =   True
+         Height          =   22
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel2"
+         Italic          =   ""
+         Left            =   268
+         LockBottom      =   ""
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   ""
+         LockTop         =   True
+         Scope           =   0
+         TabIndex        =   2
+         TabPanelIndex   =   4
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   371
+         Underline       =   ""
+         Visible         =   True
+         Width           =   80
+      End
+      Begin TextArea CmdLine
+         AcceptTabs      =   ""
+         Alignment       =   0
+         AutoDeactivate  =   True
+         AutomaticallyCheckSpelling=   True
+         BackColor       =   &hFFFFFF
+         Bold            =   ""
+         Border          =   True
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Format          =   ""
+         Height          =   195
+         HelpTag         =   ""
+         HideSelection   =   True
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel2"
+         Italic          =   ""
+         Left            =   20
+         LimitText       =   0
+         LockBottom      =   ""
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   ""
+         LockTop         =   True
+         Mask            =   ""
+         Multiline       =   True
+         ReadOnly        =   ""
+         Scope           =   0
+         ScrollbarHorizontal=   ""
+         ScrollbarVertical=   True
+         Styled          =   True
+         TabIndex        =   0
+         TabPanelIndex   =   4
+         TabStop         =   True
+         Text            =   "-H ""X-Header: TestValue1"" --url ""http://192.168.1.10:8080"""
+         TextColor       =   &h000000
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   172
+         Underline       =   ""
+         UseFocusRing    =   True
+         Visible         =   True
+         Width           =   560
+      End
    End
    Begin cURLClient Client
       Height          =   32
@@ -2263,6 +2374,17 @@ End
 		  Case "HTTP 1.0"
 		    Client.Proxy.Type = libcURL.ProxyType.HTTP1_0
 		  End Select
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events PushButton10
+	#tag Event
+		Sub Action()
+		  If Not libcURL.ParseCommandLine(CmdLine.Text, Self.Client) Then 
+		    MsgBox("Unable to parse!")
+		  Else
+		    MsgBox("All options parsed successfully.")
+		  End If
 		End Sub
 	#tag EndEvent
 #tag EndEvents
