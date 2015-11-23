@@ -826,6 +826,13 @@ Protected Module libcURL
 	#tag EndConstant
 
 
+	#tag Enum, Name = ConnectionType, Type = Integer, Flags = &h1
+		NoSSL=0
+		  AttemptSSL=1
+		  SSLControlConnectionOnly
+		SSLForceAll
+	#tag EndEnum
+
 	#tag Enum, Name = CURLAUTH, Type = Integer, Flags = &h1
 		BASIC=1
 		  DIGEST=2

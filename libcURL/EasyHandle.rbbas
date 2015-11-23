@@ -1103,11 +1103,11 @@ Inherits libcURL.cURLHandle
 			  ' http://curl.haxx.se/libcurl/c/CURLOPT_USE_SSL.html
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.ConnectionType
 			  
-			  If Not Me.SetOption(libcURL.Opts.USE_SSL, value) Then Raise New cURLException(Me)
+			  If Not Me.SetOption(libcURL.Opts.USE_SSL, Integer(value)) Then Raise New cURLException(Me)
 			  mConnectionType = value
 			End Set
 		#tag EndSetter
-		ConnectionType As Integer
+		ConnectionType As libcURL.ConnectionType
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
@@ -1326,7 +1326,7 @@ Inherits libcURL.cURLHandle
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private mConnectionType As Integer
+		Private mConnectionType As libcURL.ConnectionType
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
