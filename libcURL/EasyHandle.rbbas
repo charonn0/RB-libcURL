@@ -91,20 +91,34 @@ Inherits libcURL.cURLHandle
 		  If mHandle > 0 Then
 		    Instances.Value(mHandle) = New WeakRef(Me)
 		    InitCallbacks(Me)
-		    Me.Verbose = CopyOpts.Verbose
-		    Me.UseErrorBuffer = CopyOpts.UseErrorBuffer
+		    If CopyOpts.mAuthMethods <> Nil Then Call Me.SetAuthMethods(CopyOpts.GetAuthMethods)
 		    mAutoDisconnect = CopyOpts.AutoDisconnect
-		    Me.ConnectionTimeout = CopyOpts.ConnectionTimeout
-		    mHTTPVersion = CopyOpts.HTTPVersion
+		    mAutoReferer = CopyOpts.AutoReferer
+		    If CopyOpts.mCA_ListFile <> Nil Then Me.CA_ListFile = CopyOpts.CA_ListFile
+		    mConnectionTimeout = CopyOpts.ConnectionTimeout
+		    mConnectionType = CopyOpts.ConnectionType
+		    Me.CookieEngine.Enabled = CopyOpts.CookieEngine.Enabled
+		    Me.UseErrorBuffer = CopyOpts.UseErrorBuffer
 		    mFailOnServerError = CopyOpts.FailOnServerError
 		    mFollowRedirects = CopyOpts.FollowRedirects
+		    mHTTPCompression = CopyOpts.HTTPCompression
+		    mHTTPPreserveMethod = CopyOpts.HTTPPreserveMethod
+		    mHTTPVersion = CopyOpts.HTTPVersion
+		    mMaxRedirects = CopyOpts.MaxRedirects
 		    mPassword = CopyOpts.Password
+		    If CopyOpts.mProxyEngine <> Nil Then 
+		      Me.ProxyEngine.Address = CopyOpts.ProxyEngine.Address
+		      If CopyOpts.ProxyEngine.Port <> 1080 Then Me.ProxyEngine.Port = CopyOpts.ProxyEngine.Port
+		      If CopyOpts.ProxyEngine.Type <> libcURL.ProxyType.HTTP Then Me.ProxyEngine.Type = CopyOpts.ProxyEngine.Type
+		    End If
 		    mSecure = CopyOpts.Secure
+		    If CopyOpts.SSLVersion <> libcURL.SSLVersion.Default Then mSSLVersion = CopyOpts.SSLVersion
 		    mTimeOut = CopyOpts.TimeOut
 		    mUploadMode = CopyOpts.UploadMode
 		    mUserAgent = CopyOpts.UserAgent
 		    mUsername = CopyOpts.Username
-		    mHTTPCompression = CopyOpts.HTTPCompression
+		    Me.Verbose = CopyOpts.Verbose
+		    
 		  Else
 		    mLastError = libcURL.Errors.INIT_FAILED
 		    Raise New cURLException(Me)
@@ -462,9 +476,38 @@ Inherits libcURL.cURLHandle
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Reset
 		  
 		  curl_easy_reset(mHandle)
-		  mLastError = 0
+		  mAuthMethods = Nil
+		  mAutoDisconnect = False
+		  mAutoReferer = False
+		  mCA_ListFile = Nil
+		  mConnectionTimeout = 300
+		  mConnectionType = libcURL.ConnectionType.NoSSL
+		  mCookieEngine = Nil
+		  mErrorBuffer = Nil
+		  mFailOnServerError = False
+		  mFollowRedirects = False
+		  mForm = Nil
+		  mHTTPCompression = False
+		  mHTTPVersion = 0
+		  mMaxRedirects = -1
+		  mPassword = ""
+		  mProxyEngine = Nil
+		  mSecure = True
+		  mSSLVersion = libcURL.SSLVersion.Default
+		  mTimeOut = 0
+		  mUploadMode = False
+		  mUserAgent = ""
+		  mUsername = ""
+		  mVerbose = False
 		  InitCallbacks(Me)
-		  Me.Verbose = mVerbose
+		  mLastError = 0
+		  
+		  
+		  
+		  
+		  
+		  
+		  
 		  
 		End Sub
 	#tag EndMethod
