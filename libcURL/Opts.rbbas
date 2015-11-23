@@ -45,6 +45,9 @@ Protected Module Opts
 	#tag Constant, Name = COPYPOSTFIELDS, Type = Double, Dynamic = False, Default = \"10165", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = CRLF, Type = Double, Dynamic = False, Default = \"27", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = CRLFILE, Type = Double, Dynamic = False, Default = \"10169", Scope = Protected
 	#tag EndConstant
 
@@ -388,6 +391,12 @@ Protected Module Opts
 	#tag EndConstant
 
 	#tag Constant, Name = SSL_CTX_FUNCTION, Type = Double, Dynamic = False, Default = \"20108", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = SSL_ENABLE_ALPN, Type = Double, Dynamic = False, Default = \"226", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = SSL_ENABLE_NPN, Type = Double, Dynamic = False, Default = \"225", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = SSL_VERIFYHOST, Type = Double, Dynamic = False, Default = \"81", Scope = Protected

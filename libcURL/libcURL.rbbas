@@ -286,7 +286,7 @@ Protected Module libcURL
 		Protected Function ParseCommandLine(cURLCommandLine As String, Client As libcURL.cURLClient) As Boolean
 		  ' Parses a curl command line and sets the corresponding options on the passed instance of cURLClient.
 		  ' If all arguments were processed successfully this method returns True
-		  ' 
+		  '
 		  ' See:
 		  ' http://curl.haxx.se/docs/manpage.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ParseCommandLine
@@ -425,9 +425,6 @@ Protected Module libcURL
 		        Return False
 		      End If
 		      
-		    Case arg = "--append", StrComp("-a", arg, 1) = 0
-		      'Client.EasyItem.SSLVersion = libcURL.SSLVersion.TLSv1
-		      
 		    Case arg = "--connect-timeout"
 		      Client.EasyItem.ConnectionTimeout = Val(output(i + 1))
 		      i = i + 1
@@ -450,11 +447,18 @@ Protected Module libcURL
 		        Return False
 		      End If
 		      
+		    Case arg = "--append", StrComp("-a", arg, 1) = 0
+		      If Not Client.SetOption(libcURL.Opts.APPEND, True) Then
+		        Break
+		        Return False
+		      End If
+		      
 		    Case arg = "--continue-at", StrComp("-C", arg, 1) = 0
-		      'If Not Client.Cookies.CookieJar = GetFolderItem(output(i + 1)) Then
-		      'Break
-		      'Return False
-		      'End If
+		      If Not Client.SetOption(libcURL.Opts.RESUME_FROM, Val(output(i + 1))) Then
+		        Break
+		        Return False
+		      End If
+		      i = i + 1
 		      
 		    Case arg = "--referer", StrComp("-e", arg, 1) = 0
 		      Client.EasyItem.AutoReferer = True
@@ -485,6 +489,18 @@ Protected Module libcURL
 		    Case arg = "--insecure", StrComp("-k", arg, 1) = 0
 		      Client.EasyItem.Secure = False
 		      
+		    Case arg = "--no-npn"
+		      If Not Client.SetOption(libcURL.Opts.SSL_ENABLE_NPN, False) Then
+		        Break
+		        Return False
+		      End If
+		      
+		    Case arg = "--no-alpn"
+		      If Not Client.SetOption(libcURL.Opts.SSL_ENABLE_ALPN, False) Then
+		        Break
+		        Return False
+		      End If
+		      
 		    Case arg = "--ftp-create-dirs"
 		      If Not Client.SetOption(libcURL.Opts.FTP_CREATE_MISSING_DIRS, True) Then
 		        Break
@@ -499,6 +515,24 @@ Protected Module libcURL
 		        Break
 		        Return False
 		      End If
+		      
+		    Case arg = "--crlf"
+		      If Not Client.SetOption(libcURL.Opts.CRLF, True) Then
+		        Break
+		        Return False
+		      End If
+		      
+		    Case arg = "--crlfile"
+		      Dim f As FolderItem = GetFolderItem(output(i + 1))
+		      If f = Nil Or Not f.Exists Or f.Directory Then 
+		        Break
+		        Return False
+		      End If
+		      If Not Client.EasyItem.SetOption(libcURL.Opts.CRLFILE, f) Then
+		        Break
+		        Return False
+		      End If
+		      i = i + 1
 		      
 		    Case arg = "--proxytunnel", StrComp("-p", arg, 1) = 0
 		      Client.Proxy.HTTPTunnel = True
