@@ -411,7 +411,9 @@ Inherits libcURL.cURLHandle
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_recv.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Read
 		  
-		  If Not libcURL.Version.IsAtLeast(7, 18, 2) Then
+		  Static IsAvailable As Boolean
+		  If Not IsAvailable Then IsAvailable = libcURL.Version.IsAtLeast(7, 18, 2)
+		  If Not IsAvailable Then
 		    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
 		    Raise New cURLException(Me)
 		  End If
@@ -722,7 +724,9 @@ Inherits libcURL.cURLHandle
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_send.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Write
 		  
-		  If Not libcURL.Version.IsAtLeast(7, 18, 2) Then
+		  Static IsAvailable As Boolean
+		  If Not IsAvailable Then IsAvailable = libcURL.Version.IsAtLeast(7, 18, 2)
+		  If Not IsAvailable Then
 		    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
 		    Raise New cURLException(Me)
 		  End If

@@ -166,8 +166,10 @@ Inherits libcURL.cURLHandle
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_timeout.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.QueryInterval
 		  
+		  Static IsAvailable As Boolean
+		  If Not IsAvailable Then IsAvailable = libcURL.Version.IsAtLeast(7, 15, 4)
 		  Dim i As Integer
-		  If libcURL.Version.IsAtLeast(7, 15, 4) Then
+		  If IsAvailable Then
 		    mLastError = curl_multi_timeout(mHandle, i)
 		  Else
 		    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
