@@ -37,6 +37,43 @@ Inherits libcURL.cURLHandle
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		 Shared Function Deserialize(FormData As String) As libcURL.MultipartForm
+		  Dim form As New MultipartForm
+		  Dim Boundary As String = NthField(FormData, EndOfLine.Windows, 1)
+		  If Left(Boundary, Len("Content-Type:")) <> "Content-Type:" Then Raise New UnsupportedFormatException
+		  Boundary = NthField(Boundary, "boundary=", 2).Trim
+		  Dim elements() As String = Split(FormData, "--" + Boundary)
+		  
+		  Dim ecount As Integer = UBound(elements)
+		  For i As Integer = 1 To ecount
+		    Dim line As String = NthField(elements(i).LTrim, EndOfLine.Windows, 1)
+		    Dim name As String = NthField(line, ";", 2)
+		    name = NthField(name, "=", 2)
+		    name = ReplaceAll(name, """", "")
+		    If name.Trim = "" Then Continue For i
+		    If CountFields(line, ";") < 3 Then 'form field
+		      If Not form.AddElement(name, NthField(elements(i), EndOfLine.Windows + EndOfLine.Windows, 2)) Then Raise New libcURL.cURLException(form)
+		    Else 'file field
+		      Dim filename As String = NthField(line, ";", 3)
+		      filename = NthField(filename, "=", 2)
+		      filename = ReplaceAll(filename, """", "")
+		      Dim tmp As FolderItem = SpecialFolder.Temporary.Child(filename)
+		      Dim bs As BinaryStream = BinaryStream.Create(tmp, True)
+		      Dim filedata As MemoryBlock = elements(i)
+		      Dim t As Integer = InStr(filedata, EndOfLine.Windows + EndOfLine.Windows) + 3
+		      filedata = filedata.StringValue(t, filedata.Size - t - 2)
+		      bs.Write(filedata)
+		      bs.Close
+		      If Not form.AddElement(name, tmp) Then Raise New libcURL.cURLException(form)
+		    End If
+		  Next
+		  
+		  Return form
+		  
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h21
 		Private Sub Destructor()
 		  If libcURL.IsAvailable And mHandle <> 0 Then libcURL.curl_formfree(mHandle)
@@ -47,6 +84,21 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h1
 		Protected Function FormAdd(Option As Integer, Value As String, Option1 As Integer = CURLFORM_END, Value1 As String = "", Option2 As Integer = CURLFORM_END, Value2 As String = "", Option3 As Integer = CURLFORM_END, Value3 As String = "", Option4 As Integer = CURLFORM_END, Value4 As String = "") As Boolean
+		  ' This helper function is a wrapper for the variadic external method curl_formadd, which expects a special 
+		  ' sentinel value (CURLFORM_END) as a marker for the end of the parameters. The sentinel value will be passed
+		  ' automatically.
+		  '
+		  ' For example, this snippet adds two string fields and a file field in one call:
+		  '
+		  '  FormAdd(CURLFORM_COPYNAME, "Upload", CURLFORM_FILE, MyFolderItem.AbsolutePath, _
+		  '          CURLFORM_COPYNAME, "Username", CURLFORM_COPYCONTENTS, "Bob", _
+		  '          CURLFORM_COPYNAME, "Password", CURLFORM_COPYCONTENTS, "hunter2")
+		  '
+		  ' Note how each field is passed as a pair of parameters. At least 1 and up to 5 pairs of parameters may be passed at once.
+		  '
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/curl_formadd.html
+		  
 		  mLastError = curl_formadd(mHandle, LastItem, Option, Value, Option1, Value1, Option2, Value2, Option3, Value3, Option4, Value4, CURLFORM_END)
 		  Return mLastError = 0
 		  

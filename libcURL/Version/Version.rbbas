@@ -135,8 +135,7 @@ Protected Module Version
 	#tag ComputedProperty, Flags = &h1
 		#tag Getter
 			Get
-			  Dim kASYNCHDNS As Integer = ShiftLeft(1, 7)
-			  Return BitAnd(Features, kASYNCHDNS) = kASYNCHDNS  // asynchronous dns resolves
+			  Return BitAnd(Features, FEATURE_ASYNCHDNS) = FEATURE_ASYNCHDNS  // asynchronous dns resolves
 			End Get
 		#tag EndGetter
 		Protected ASYNCHDNS As Boolean
@@ -145,8 +144,7 @@ Protected Module Version
 	#tag ComputedProperty, Flags = &h1
 		#tag Getter
 			Get
-			  Dim kCONV As Integer = ShiftLeft(1, 12)
-			  Return BitAnd(Features, kCONV) = kCONV // character conversions are supported
+			  Return BitAnd(Features, FEATURE_CONV) = FEATURE_CONV // character conversions are supported
 			End Get
 		#tag EndGetter
 		Protected CONV As Boolean
@@ -155,8 +153,16 @@ Protected Module Version
 	#tag ComputedProperty, Flags = &h1
 		#tag Getter
 			Get
-			  Dim kDEBUG As Integer = ShiftLeft(1, 6)
-			  Return BitAnd(Features, kDEBUG) = kDEBUG // built with debug capabilities
+			  Return BitAnd(Features, FEATURE_CURLDEBUG) = FEATURE_CURLDEBUG // built with memory tracking debug capabilities
+			End Get
+		#tag EndGetter
+		Protected CURLDEBUG As Boolean
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h1
+		#tag Getter
+			Get
+			  Return BitAnd(Features, FEATURE_DEBUG) = FEATURE_DEBUG // built with debug capabilities
 			End Get
 		#tag EndGetter
 		Protected DEBUG As Boolean
@@ -165,8 +171,7 @@ Protected Module Version
 	#tag ComputedProperty, Flags = &h1
 		#tag Getter
 			Get
-			  Dim kGSSNEGOTIATE As Integer = ShiftLeft(1, 5)
-			  Return BitAnd(Features, kGSSNEGOTIATE) = kGSSNEGOTIATE // Negotiate auth support
+			  Return BitAnd(Features, FEATURE_GSSNEGOTIATE) = FEATURE_GSSNEGOTIATE // Negotiate auth support
 			End Get
 		#tag EndGetter
 		Protected GSSNEGOTIATE As Boolean
@@ -175,8 +180,16 @@ Protected Module Version
 	#tag ComputedProperty, Flags = &h1
 		#tag Getter
 			Get
-			  Dim kIDN As Integer = ShiftLeft(1, 10)
-			  Return BitAnd(Features, kIDN) = kIDN // International Domain Names support
+			  Return BitAnd(Features, FEATURE_HTTP2) = FEATURE_HTTP2 // HTTP2.0 support
+			End Get
+		#tag EndGetter
+		Protected HTTP2 As Boolean
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h1
+		#tag Getter
+			Get
+			  Return BitAnd(Features, FEATURE_IDN) = FEATURE_IDN // International Domain Names support
 			End Get
 		#tag EndGetter
 		Protected IDN As Boolean
@@ -185,8 +198,7 @@ Protected Module Version
 	#tag ComputedProperty, Flags = &h1
 		#tag Getter
 			Get
-			  Dim kIPV6 As Integer = ShiftLeft(0, 1)
-			  Return BitAnd(Features, kIPV6) = kIPV6 // IPv6-enabled
+			  Return BitAnd(Features, FEATURE_IPV6) = FEATURE_IPV6 // IPv6-enabled
 			End Get
 		#tag EndGetter
 		Protected IPV6 As Boolean
@@ -195,8 +207,7 @@ Protected Module Version
 	#tag ComputedProperty, Flags = &h1
 		#tag Getter
 			Get
-			  Dim kKERBEROS4 As Integer = ShiftLeft(1, 1)
-			  Return BitAnd(Features, kKERBEROS4) = kKERBEROS4 // kerberos auth is supported
+			  Return BitAnd(Features, FEATURE_KERBEROS4) = FEATURE_KERBEROS4 // kerberos 4 auth is supported
 			End Get
 		#tag EndGetter
 		Protected KERBEROS4 As Boolean
@@ -205,8 +216,16 @@ Protected Module Version
 	#tag ComputedProperty, Flags = &h1
 		#tag Getter
 			Get
-			  Dim kLARGEFILE As Integer = ShiftLeft(1, 9)
-			  Return BitAnd(Features, kLARGEFILE) = kLARGEFILE // supports files bigger than 2GB
+			  Return BitAnd(Features, FEATURE_KERBEROS5) = FEATURE_KERBEROS5 // kerberos 5 auth is supported
+			End Get
+		#tag EndGetter
+		Protected KERBEROS5 As Boolean
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h1
+		#tag Getter
+			Get
+			  Return BitAnd(Features, FEATURE_LARGEFILE) = FEATURE_LARGEFILE // supports files bigger than 2GB
 			End Get
 		#tag EndGetter
 		Protected LARGEFILE As Boolean
@@ -215,8 +234,7 @@ Protected Module Version
 	#tag ComputedProperty, Flags = &h1
 		#tag Getter
 			Get
-			  Dim kNTLM As Integer = ShiftLeft(1, 4)
-			  Return BitAnd(Features, kNTLM) = kNTLM // NTLM auth is supported
+			  Return BitAnd(Features, FEATURE_NTLM) = FEATURE_NTLM // NTLM auth is supported
 			End Get
 		#tag EndGetter
 		Protected NTLM As Boolean
@@ -225,8 +243,7 @@ Protected Module Version
 	#tag ComputedProperty, Flags = &h1
 		#tag Getter
 			Get
-			  Dim kSPNEGO As Integer = ShiftLeft(1, 8)
-			  Return BitAnd(Features, kSPNEGO) = kSPNEGO // SPNEGO auth
+			  Return BitAnd(Features, FEATURE_SPNEGO) = FEATURE_SPNEGO // SPNEGO auth
 			End Get
 		#tag EndGetter
 		Protected SPNEGO As Boolean
@@ -235,8 +252,7 @@ Protected Module Version
 	#tag ComputedProperty, Flags = &h1
 		#tag Getter
 			Get
-			  Dim kSSL As Integer = ShiftLeft(1, 2)
-			  Return BitAnd(Features, kSSL) = kSSL // SSL options are present
+			  Return BitAnd(Features, FEATURE_SSL) = FEATURE_SSL // SSL options are present
 			End Get
 		#tag EndGetter
 		Protected SSL As Boolean
@@ -252,8 +268,62 @@ Protected Module Version
 		Protected SSPI As Boolean
 	#tag EndComputedProperty
 
+	#tag ComputedProperty, Flags = &h1
+		#tag Getter
+			Get
+			  Return BitAnd(Features, FEATURE_TLSAUTH_SRP) = FEATURE_TLSAUTH_SRP // TLS-SRP support
+			End Get
+		#tag EndGetter
+		Protected TLS_SRP As Boolean
+	#tag EndComputedProperty
+
 
 	#tag Constant, Name = CURLVERSION_FOURTH, Type = Double, Dynamic = False, Default = \"3", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = FEATURE_ASYNCHDNS, Type = Double, Dynamic = False, Default = \"128", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = FEATURE_CONV, Type = Double, Dynamic = False, Default = \"4096", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = FEATURE_CURLDEBUG, Type = Double, Dynamic = False, Default = \"8192", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = FEATURE_DEBUG, Type = Double, Dynamic = False, Default = \"64", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = FEATURE_GSSNEGOTIATE, Type = Double, Dynamic = False, Default = \"32", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = FEATURE_HTTP2, Type = Double, Dynamic = False, Default = \"65536", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = FEATURE_IDN, Type = Double, Dynamic = False, Default = \"1024", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = FEATURE_IPV6, Type = Double, Dynamic = False, Default = \"1", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = FEATURE_KERBEROS4, Type = Double, Dynamic = False, Default = \"2", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = FEATURE_KERBEROS5, Type = Double, Dynamic = False, Default = \"262144", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = FEATURE_LARGEFILE, Type = Double, Dynamic = False, Default = \"512", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = FEATURE_NTLM, Type = Double, Dynamic = False, Default = \"16", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = FEATURE_SPNEGO, Type = Double, Dynamic = False, Default = \"256", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = FEATURE_SSL, Type = Double, Dynamic = False, Default = \"4", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = FEATURE_TLSAUTH_SRP, Type = Double, Dynamic = False, Default = \"16384", Scope = Private
 	#tag EndConstant
 
 

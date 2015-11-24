@@ -9,7 +9,16 @@ Protected Class cURLManager
 
 	#tag Method, Flags = &h0
 		Sub Constructor()
-		  mEasyItem = New libcURL.EasyHandle
+		  If mEasyItem = Nil Then
+		    mEasyItem = New libcURL.EasyHandle
+		    mEasyItem.UserAgent = libcURL.Version.Name
+		    mEasyItem.Secure = True
+		    mEasyItem.CA_ListFile = libcURL.Default_CA_File
+		    mEasyItem.FailOnServerError = True
+		    mEasyItem.FollowRedirects = True
+		    mEasyItem.AutoReferer = True
+		    mEasyItem.HTTPCompression = True
+		  End If
 		  AddHandler mEasyItem.CreateSocket, WeakAddressOf _CreateSocketHandler
 		  'AddHandler mEasyItem.DataAvailable, WeakAddressOf _DataAvailableHandler
 		  'AddHandler mEasyItem.DataNeeded, WeakAddressOf _DataNeededHandler
@@ -21,15 +30,20 @@ Protected Class cURLManager
 		  
 		  mMultiItem = New libcURL.MultiHandle
 		  AddHandler mMultiItem.TransferComplete, WeakAddressOf _TransferCompleteHandler
-		  mEasyItem.UserAgent = libcURL.Version.Name
-		  mEasyItem.Secure = True
-		  mEasyItem.CA_ListFile = libcURL.Default_CA_File
-		  mEasyItem.FailOnServerError = True
-		  mEasyItem.FollowRedirects = True
-		  If libcURL.Version.LibZ.IsAvailable Then
-		    If Not mEasyItem.SetOption(libcURL.Opts.ACCEPT_ENCODING, "") Then Raise New cURLException(mEasyItem)
-		  End If
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Constructor(CopyOpts As libcURL.cURLManager)
+		  mEasyItem = New libcURL.EasyHandle(CopyOpts.EasyItem)
+		  Me.Constructor()
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Cookies() As libcURL.CookieEngine
+		  Return mEasyItem.CookieEngine
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
@@ -41,6 +55,13 @@ Protected Class cURLManager
 	#tag Method, Flags = &h0
 		Function EasyItem() As libcURL.EasyHandle
 		  Return mEasyItem
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function GetCookie(Name As String, Domain As String) As String
+		  Dim index As Integer = mEasyItem.CookieEngine.Lookup(Name, Domain)
+		  If index > -1 Then Return mEasyItem.CookieEngine.Value(index)
 		End Function
 	#tag EndMethod
 
@@ -116,10 +137,26 @@ Protected Class cURLManager
 		  ' Perform the transfer on the calling thread.
 		  
 		  QueueTransfer(URL, ReadFrom, WriteTo)
+		  Dim now As Double = Microseconds
+		  Dim micro As Double
+		  Dim milli As Integer
+		  If micro < 1 Then micro = now
+		  
 		  While mMultiItem.PerformOnce()
-		    App.YieldToNextThread
+		    If micro <= now + (milli * 1000) Then
+		      milli = mMultiItem.QueryInterval
+		      micro = now + (milli * 1000)
+		    End If
+		    App.SleepCurrentThread(milli)
 		  Wend
+		  
 		  Return mEasyItem.LastError = 0
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Proxy() As libcURL.ProxyEngine
+		  Return mEasyItem.ProxyEngine
 		End Function
 	#tag EndMethod
 
@@ -141,6 +178,18 @@ Protected Class cURLManager
 		  If Not mMultiItem.AddItem(mEasyItem) Then Raise New libcURL.cURLException(mMultiItem)
 		  
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function SetCookie(Name As String, Value As String, Domain As String, Expires As Date = Nil, Path As String = "", HTTPOnly As Boolean = False) As Boolean
+		  Return mEasyItem.CookieEngine.SetCookie(Name, Value, Domain, Expires, Path, HTTPOnly)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function SetHTTPRequestMethod(RequestMethod As String) As Boolean
+		  Return Me.EasyItem.SetOption(libcURL.Opts.CUSTOMREQUEST, RequestMethod)
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -184,6 +233,7 @@ Protected Class cURLManager
 		Private Sub _HeaderReceivedHandler(Sender As libcURL.EasyHandle, HeaderLine As String)
 		  #pragma Unused Sender
 		  If mHeaders = Nil Then mHeaders = New InternetHeaders
+		  If HeaderLine.Trim = "" Then Return
 		  mHeaders.AppendHeader(NthField(HeaderLine, ": ", 1), NthField(HeaderLine, ": ", 2))
 		End Sub
 	#tag EndMethod
@@ -207,7 +257,7 @@ Protected Class cURLManager
 		  End If
 		  mIsTransferComplete = True
 		  mEasyItem.ClearFormData()
-		  mEasyItem.UploadMode = False
+		  If Cookies.Enabled Then Cookies.Invalidate
 		  If Item.LastError <> status Then ErrorSetter(Item).LastError = status
 		End Sub
 	#tag EndMethod
