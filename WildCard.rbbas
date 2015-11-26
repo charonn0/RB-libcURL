@@ -109,6 +109,7 @@ Inherits libcURL.EasyHandle
 		  mRemaining = Remaining
 		  Dim mb As MemoryBlock = Info.FileName
 		  mLastFileName = mb.CString(0)
+		  If mLastFileName = "." Or mLastFileName = ".." Then Return CURL_CHUNK_BGN_FUNC_SKIP
 		  mLastFile = LocalRoot.Child(mLastFileName)
 		  
 		  If RaiseEvent BeginTransfer(mLastFileName, mLastFile) Then Return CURL_CHUNK_BGN_FUNC_SKIP
