@@ -102,6 +102,12 @@ Protected Module Opts
 	#tag Constant, Name = FILETIME, Type = Double, Dynamic = False, Default = \"69", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = FNMATCH_DATA, Type = Double, Dynamic = False, Default = \"10202", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = FNMATCH_FUNCTION, Type = Double, Dynamic = False, Default = \"20200", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = FOLLOWLOCATION, Type = Double, Dynamic = False, Default = \"52", Scope = Protected
 	#tag EndConstant
 
