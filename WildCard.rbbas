@@ -112,13 +112,27 @@ Inherits libcURL.EasyHandle
 		  If mLastFileName = "." Or mLastFileName = ".." Then Return CURL_CHUNK_BGN_FUNC_SKIP
 		  mLastFile = LocalRoot.Child(mLastFileName)
 		  
-		  If RaiseEvent BeginTransfer(mLastFileName, mLastFile) Then Return CURL_CHUNK_BGN_FUNC_SKIP
 		  If mLastFile <> Nil Then
-		    Me.DownloadStream = BinaryStream.Create(mLastFile, False)
-		  Else
-		    Return CURL_CHUNK_BGN_FUNC_FAIL
+		    Select Case Info.FileType
+		    Case FILETYPE_FILE
+		      If RaiseEvent QueueFile(mLastFileName, mLastFile, False) Then Return CURL_CHUNK_BGN_FUNC_SKIP
+		      Try
+		        Me.DownloadStream = BinaryStream.Create(mLastFile, False)
+		      Catch Err As IOException
+		        Me.DownloadStream = Nil
+		      End Try
+		      If Me.DownloadStream <> Nil Then Return CURL_CHUNK_BGN_FUNC_OK
+		      
+		    Case FILETYPE_DIR
+		      Me.DownloadStream = Nil
+		      If RaiseEvent QueueFile(mLastFileName, mLastFile, True) Then Return CURL_CHUNK_BGN_FUNC_SKIP
+		      Return CURL_CHUNK_BGN_FUNC_OK
+		      
+		    Else
+		      Break
+		    End Select
 		  End If
-		  If Me.DownloadStream <> Nil Then Return CURL_CHUNK_BGN_FUNC_OK
+		  
 		  Return CURL_CHUNK_BGN_FUNC_FAIL
 		  
 		End Function
@@ -126,7 +140,6 @@ Inherits libcURL.EasyHandle
 
 	#tag Method, Flags = &h21
 		Private Function _curlChunkEnd() As Integer
-		  If RaiseEvent FinishTransfer(mLastFileName, mLastFile) Then Return CURL_CHUNK_END_FUNC_FAIL ' return true to fail/abort
 		  mLastFileName = ""
 		  mLastFile = Nil
 		  If Me.DownloadStream <> Nil And Me.DownloadStream IsA BinaryStream Then BinaryStream(Me.DownloadStream).Close
@@ -137,11 +150,7 @@ Inherits libcURL.EasyHandle
 
 
 	#tag Hook, Flags = &h0
-		Event BeginTransfer(FileName As String, ByRef LocalFile As FolderItem) As Boolean
-	#tag EndHook
-
-	#tag Hook, Flags = &h0
-		Event FinishTransfer(FileName As String, LocalFile As FolderItem) As Boolean
+		Event QueueFile(RemoteName As String, ByRef LocalFile As FolderItem, IsDirectory As Boolean) As Boolean
 	#tag EndHook
 
 
@@ -177,6 +186,27 @@ Inherits libcURL.EasyHandle
 	#tag Constant, Name = CURL_CHUNK_END_FUNC_OK, Type = Double, Dynamic = False, Default = \"0", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = FILETYPE_BLOCK, Type = Double, Dynamic = False, Default = \"3", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = FILETYPE_CHAR, Type = Double, Dynamic = False, Default = \"4", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = FILETYPE_DIR, Type = Double, Dynamic = False, Default = \"1", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = FILETYPE_FILE, Type = Double, Dynamic = False, Default = \"0", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = FILETYPE_PIPE, Type = Double, Dynamic = False, Default = \"4", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = FILETYPE_SOCKET, Type = Double, Dynamic = False, Default = \"5", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = FILETYPE_SYM, Type = Double, Dynamic = False, Default = \"2", Scope = Private
+	#tag EndConstant
+
 
 	#tag Structure, Name = FileInfo, Flags = &h1
 		FileName As Ptr
@@ -188,17 +218,6 @@ Inherits libcURL.EasyHandle
 		  FileSize As Integer
 		HardLinks As Integer
 	#tag EndStructure
-
-
-	#tag Enum, Name = FileTypes, Type = Integer, Flags = &h1
-		File
-		  Directory
-		  Symlink
-		  BlockDevice
-		  CharacterDevice
-		  NamedPipe
-		Socket
-	#tag EndEnum
 
 
 	#tag ViewBehavior
@@ -223,10 +242,42 @@ Inherits libcURL.EasyHandle
 			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
+			Name="Password"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+			InheritedFrom="libcURL.EasyHandle"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Port"
+			Group="Behavior"
+			Type="Integer"
+			InheritedFrom="libcURL.EasyHandle"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="RemoteIP"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+			InheritedFrom="libcURL.EasyHandle"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Secure"
+			Group="Behavior"
+			Type="Boolean"
+			InheritedFrom="libcURL.EasyHandle"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
 			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="TimeOut"
+			Group="Behavior"
+			Type="Integer"
+			InheritedFrom="libcURL.EasyHandle"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
@@ -234,6 +285,45 @@ Inherits libcURL.EasyHandle
 			Group="Position"
 			InitialValue="0"
 			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="UploadMode"
+			Group="Behavior"
+			Type="Boolean"
+			InheritedFrom="libcURL.EasyHandle"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="URL"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+			InheritedFrom="libcURL.EasyHandle"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="UseErrorBuffer"
+			Group="Behavior"
+			Type="Boolean"
+			InheritedFrom="libcURL.EasyHandle"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="UserAgent"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+			InheritedFrom="libcURL.EasyHandle"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Username"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+			InheritedFrom="libcURL.EasyHandle"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Verbose"
+			Group="Behavior"
+			Type="Boolean"
+			InheritedFrom="libcURL.EasyHandle"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class
