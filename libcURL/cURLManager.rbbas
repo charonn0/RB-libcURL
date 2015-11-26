@@ -41,6 +41,13 @@ Protected Class cURLManager
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub Constructor(ExistingEasy As libcURL.EasyHandle)
+		  mEasyItem = ExistingEasy
+		  Me.Constructor()
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function Cookies() As libcURL.CookieEngine
 		  Return mEasyItem.CookieEngine
 		End Function
