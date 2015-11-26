@@ -75,6 +75,22 @@ Inherits libcURL.EasyHandle
 	#tag EndDelegateDeclaration
 
 	#tag Method, Flags = &h0
+		Function Remaining() As Integer
+		  Return mRemaining
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Reset()
+		  Super.Reset
+		  If Not Me.SetOption(libcURL.Opts.WILDCARDMATCH, True) Then Raise New libcURL.cURLException(Me)
+		  If Not Me.SetOption(libcURL.Opts.CHUNK_BGN_FUNCTION, AddressOf ChunkBeginCallback) Then Raise New libcURL.cURLException(Me)
+		  If Not Me.SetOption(libcURL.Opts.CHUNK_END_FUNCTION, AddressOf ChunkEndCallback) Then Raise New libcURL.cURLException(Me)
+		  If Not Me.SetOption(libcURL.Opts.CHUNK_DATA, mHandle) Then Raise New libcURL.cURLException(Me)
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function SetOption(OptionNumber As Integer, NewValue As Variant) As Boolean
 		  If NewValue IsA cURLChunkBegin Then
 		    Dim p As cURLChunkBegin = NewValue
