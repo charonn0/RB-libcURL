@@ -27,6 +27,7 @@ Inherits libcURL.EasyHandle
 	#tag Method, Flags = &h21
 		Private Shared Function ChunkBeginCallback(ByRef TransferInfo As FileInfo, UserData As Integer, Remaining As Integer) As Integer
 		  #pragma X86CallingConvention CDecl
+		  
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA WildCard Then
@@ -62,6 +63,26 @@ Inherits libcURL.EasyHandle
 		  If Not Me.SetOption(libcURL.Opts.WILDCARDMATCH, True) Then Raise New libcURL.cURLException(Me)
 		  If Not Me.SetOption(libcURL.Opts.CHUNK_BGN_FUNCTION, AddressOf ChunkBeginCallback) Then Raise New libcURL.cURLException(Me)
 		  If Not Me.SetOption(libcURL.Opts.CHUNK_END_FUNCTION, AddressOf ChunkEndCallback) Then Raise New libcURL.cURLException(Me)
+		  If Not Me.SetOption(libcURL.Opts.CHUNK_DATA, mHandle) Then Raise New libcURL.cURLException(Me)
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1000
+		Sub Constructor(CopyOpts As libcURL.EasyHandle)
+		  // Calling the overridden superclass constructor.
+		  // Constructor(CopyOpts As libcURL.EasyHandle) -- From EasyHandle
+		  Super.Constructor(CopyOpts)
+		  If Not libcURL.Version.IsAtLeast(7, 21, 0) Then
+		    Raise New PlatformNotSupportedException
+		  End If
+		  
+		  If CopyOpts IsA WildCard Then 
+		    Me.LocalRoot = WildCard(CopyOpts).LocalRoot
+		  Else
+		    If Not Me.SetOption(libcURL.Opts.WILDCARDMATCH, True) Then Raise New libcURL.cURLException(Me)
+		    If Not Me.SetOption(libcURL.Opts.CHUNK_BGN_FUNCTION, AddressOf ChunkBeginCallback) Then Raise New libcURL.cURLException(Me)
+		    If Not Me.SetOption(libcURL.Opts.CHUNK_END_FUNCTION, AddressOf ChunkEndCallback) Then Raise New libcURL.cURLException(Me)
+		  End If
 		  If Not Me.SetOption(libcURL.Opts.CHUNK_DATA, mHandle) Then Raise New libcURL.cURLException(Me)
 		End Sub
 	#tag EndMethod
