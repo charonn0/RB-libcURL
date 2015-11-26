@@ -105,7 +105,7 @@ Inherits libcURL.EasyHandle
 		  Dim mb As MemoryBlock = Info.FileName
 		  mLastFileName = mb.CString(0)
 		  If mLastFileName = "." Or mLastFileName = ".." Then Return CURL_CHUNK_BGN_FUNC_SKIP
-		  If mLastFile <> Nil Then mLastFile = LocalRoot.Child(mLastFileName)
+		  If mLastFile = Nil And LocalRoot <> Nil Then mLastFile = LocalRoot.Child(mLastFileName)
 		  
 		  Dim p As New Permissions(Info.Perm)
 		  Select Case Info.FileType
