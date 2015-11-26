@@ -1303,8 +1303,8 @@ Inherits libcURL.cURLHandle
 		HTTPVersion As Integer
 	#tag EndComputedProperty
 
-	#tag Property, Flags = &h21
-		Private Shared Instances As Dictionary
+	#tag Property, Flags = &h1
+		Protected Shared Instances As Dictionary
 	#tag EndProperty
 
 	#tag ComputedProperty, Flags = &h0

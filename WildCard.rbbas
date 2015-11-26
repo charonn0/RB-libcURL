@@ -27,8 +27,8 @@ Inherits libcURL.EasyHandle
 	#tag Method, Flags = &h21
 		Private Shared Function ChunkBeginCallback(ByRef TransferInfo As FileInfo, UserData As Integer, Remaining As Integer) As Integer
 		  #pragma X86CallingConvention CDecl
-		  If Chunks = Nil Then Return 0
-		  Dim curl As WeakRef = Chunks.Lookup(UserData, Nil)
+		  If Instances = Nil Then Return 0
+		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA WildCard Then
 		    'Dim info As FileInfo
 		    'Dim mb As MemoryBlock = TransferInfo'.Ptr(0)
@@ -44,8 +44,8 @@ Inherits libcURL.EasyHandle
 	#tag Method, Flags = &h21
 		Private Shared Function ChunkEndCallback(UserData As Integer) As Integer
 		  #pragma X86CallingConvention CDecl
-		  If Chunks = Nil Then Return 0
-		  Dim curl As WeakRef = Chunks.Lookup(UserData, Nil)
+		  If Instances = Nil Then Return 0
+		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA WildCard Then
 		    Return WildCard(curl.Value)._curlChunkEnd()
 		  End If
@@ -66,8 +66,6 @@ Inherits libcURL.EasyHandle
 		  If Not Me.SetOption(libcURL.Opts.CHUNK_BGN_FUNCTION, AddressOf ChunkBeginCallback) Then Raise New libcURL.cURLException(Me)
 		  If Not Me.SetOption(libcURL.Opts.CHUNK_END_FUNCTION, AddressOf ChunkEndCallback) Then Raise New libcURL.cURLException(Me)
 		  If Not Me.SetOption(libcURL.Opts.CHUNK_DATA, mHandle) Then Raise New libcURL.cURLException(Me)
-		  If Chunks = Nil Then Chunks = New Dictionary
-		  Chunks.Value(mHandle) = New WeakRef(Me)
 		End Sub
 	#tag EndMethod
 
@@ -132,10 +130,6 @@ Inherits libcURL.EasyHandle
 		Event FinishTransfer(FileName As String, LocalFile As FolderItem) As Boolean
 	#tag EndHook
 
-
-	#tag Property, Flags = &h21
-		Private Shared Chunks As Dictionary
-	#tag EndProperty
 
 	#tag Property, Flags = &h0
 		LocalRoot As FolderItem
