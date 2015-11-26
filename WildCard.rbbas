@@ -110,28 +110,29 @@ Inherits libcURL.EasyHandle
 		  Dim mb As MemoryBlock = Info.FileName
 		  mLastFileName = mb.CString(0)
 		  If mLastFileName = "." Or mLastFileName = ".." Then Return CURL_CHUNK_BGN_FUNC_SKIP
-		  mLastFile = LocalRoot.Child(mLastFileName)
+		  If mLastFile <> Nil Then mLastFile = LocalRoot.Child(mLastFileName)
 		  
-		  If mLastFile <> Nil Then
-		    Select Case Info.FileType
-		    Case FILETYPE_FILE
-		      If RaiseEvent QueueFile(mLastFileName, mLastFile, False) Then Return CURL_CHUNK_BGN_FUNC_SKIP
-		      Try
-		        Me.DownloadStream = BinaryStream.Create(mLastFile, False)
-		      Catch Err As IOException
-		        Me.DownloadStream = Nil
-		      End Try
-		      If Me.DownloadStream <> Nil Then Return CURL_CHUNK_BGN_FUNC_OK
-		      
-		    Case FILETYPE_DIR
-		      Me.DownloadStream = Nil
-		      If RaiseEvent QueueFile(mLastFileName, mLastFile, True) Then Return CURL_CHUNK_BGN_FUNC_SKIP
+		  Dim p As New Permissions(Info.Perm)
+		  Select Case Info.FileType
+		  Case FILETYPE_FILE
+		    Me.DownloadStream = Nil
+		    If RaiseEvent QueueFile(mLastFileName, mLastFile, False, p) Then Return CURL_CHUNK_BGN_FUNC_SKIP
+		    If mLastFile = Nil Then Return CURL_CHUNK_BGN_FUNC_OK ' the dataavailable event will be raised
+		    Try
+		      Me.DownloadStream = BinaryStream.Create(mLastFile, False)
 		      Return CURL_CHUNK_BGN_FUNC_OK
-		      
-		    Else
-		      Break
-		    End Select
-		  End If
+		    Catch Err As IOException
+		      Return CURL_CHUNK_BGN_FUNC_FAIL
+		    End Try
+		    
+		  Case FILETYPE_DIR
+		    Me.DownloadStream = Nil
+		    If RaiseEvent QueueFile(mLastFileName, mLastFile, True, p) Then Return CURL_CHUNK_BGN_FUNC_SKIP
+		    Return CURL_CHUNK_BGN_FUNC_OK
+		    
+		  Else
+		    Break
+		  End Select
 		  
 		  Return CURL_CHUNK_BGN_FUNC_FAIL
 		  
@@ -150,7 +151,7 @@ Inherits libcURL.EasyHandle
 
 
 	#tag Hook, Flags = &h0
-		Event QueueFile(RemoteName As String, ByRef LocalFile As FolderItem, IsDirectory As Boolean) As Boolean
+		Event QueueFile(RemoteName As String, ByRef LocalFile As FolderItem, IsDirectory As Boolean, UnixPerms As Permissions) As Boolean
 	#tag EndHook
 
 
