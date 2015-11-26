@@ -16,6 +16,13 @@ Inherits libcURL.EasyHandle
 		End Function
 	#tag EndEvent
 
+	#tag Event
+		Function SeekStream(Offset As Integer, Origin As Integer) As Boolean
+		  #pragma Unused Offset
+		  #pragma Unused Origin
+		End Function
+	#tag EndEvent
+
 
 	#tag Method, Flags = &h21
 		Private Shared Function ChunkBeginCallback(ByRef TransferInfo As FileInfo, UserData As Integer, Remaining As Integer) As Integer
