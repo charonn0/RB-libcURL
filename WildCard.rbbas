@@ -165,11 +165,11 @@ Inherits libcURL.EasyHandle
 
 	#tag Structure, Name = FileInfo, Flags = &h1
 		FileName As Ptr
-		  FileType As Int16
-		  Time As Integer
+		  FileType As UInt32
+		  Time As UInt32
 		  Perm As UInt32
-		  UID As Integer
-		  GID As Integer
+		  UID As Int32
+		  GID As Int32
 		  FileSize As Integer
 		HardLinks As Integer
 	#tag EndStructure
