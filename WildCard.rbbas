@@ -69,6 +69,25 @@ Inherits libcURL.EasyHandle
 		Private Delegate Function cURLChunkEnd(UserData As Integer) As Integer
 	#tag EndDelegateDeclaration
 
+	#tag DelegateDeclaration, Flags = &h21
+		Private Delegate Function cURLFNMatch(UserData As Integer, Pattern As Ptr, FileName As Ptr) As Integer
+	#tag EndDelegateDeclaration
+
+	#tag Method, Flags = &h21
+		Private Shared Function FNMatchCallback(UserData As Integer, Pattern As Ptr, FileName As Ptr) As Integer
+		  #pragma X86CallingConvention CDecl
+		  
+		  If Instances = Nil Then Return 0
+		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
+		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA WildCard Then
+		    Return WildCard(curl.Value)._curlFNMatch(Pattern, FileName)
+		  End If
+		  
+		  Break ' UserData does not refer to a valid instance!
+		  Return CURL_FNMATCHFUNC_FAIL
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Function Remaining() As Integer
 		  Return mRemaining
@@ -87,13 +106,17 @@ Inherits libcURL.EasyHandle
 
 	#tag Method, Flags = &h0
 		Function SetOption(OptionNumber As Integer, NewValue As Variant) As Boolean
-		  If NewValue IsA cURLChunkBegin Then
+		  Select Case True
+		  Case NewValue IsA cURLChunkBegin
 		    Dim p As cURLChunkBegin = NewValue
 		    Return Me.SetOptionPtr(OptionNumber, p)
-		  ElseIf NewValue IsA cURLChunkEnd Then
+		  Case NewValue IsA cURLChunkEnd
 		    Dim p As cURLChunkEnd = NewValue
 		    Return Me.SetOptionPtr(OptionNumber, p)
-		  End If
+		  Case NewValue IsA cURLFNMatch
+		    Dim p As cURLFNMatch = NewValue
+		    Return Me.SetOptionPtr(OptionNumber, p)
+		  End Select
 		  
 		  Return Super.SetOption(OptionNumber, NewValue)
 		End Function
@@ -144,14 +167,51 @@ Inherits libcURL.EasyHandle
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h21
+		Private Function _curlFNMatch(Pattern As MemoryBlock, FileName As MemoryBlock) As Integer
+		  If FileName.CString(0) = "." Or FileName.CString(0) = ".." Then Return CURL_FNMATCHFUNC_NOMATCH
+		  If RaiseEvent PatternMatch(Pattern.CString(0), FileName.CString(0)) Then Return CURL_FNMATCHFUNC_MATCH
+		  Return CURL_FNMATCHFUNC_NOMATCH
+		End Function
+	#tag EndMethod
+
+
+	#tag Hook, Flags = &h0
+		Event PatternMatch(Pattern As String, Filename As String) As Boolean
+	#tag EndHook
 
 	#tag Hook, Flags = &h0
 		Event QueueFile(RemoteName As String, ByRef LocalFile As FolderItem, IsDirectory As Boolean, UnixPerms As Permissions) As Boolean
 	#tag EndHook
 
 
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  return mCustomMatch
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  If value Then
+			    If Not Me.SetOption(libcURL.Opts.FNMATCH_FUNCTION, AddressOf FNMatchCallback) Then Raise New libcURL.cURLException(Me)
+			    If Not Me.SetOption(libcURL.Opts.FNMATCH_DATA, mHandle) Then Raise New libcURL.cURLException(Me)
+			  Else
+			    If Not Me.SetOption(libcURL.Opts.FNMATCH_FUNCTION, Nil) Then Raise New libcURL.cURLException(Me)
+			    If Not Me.SetOption(libcURL.Opts.FNMATCH_DATA, 0) Then Raise New libcURL.cURLException(Me)
+			  End If
+			  mCustomMatch = value
+			End Set
+		#tag EndSetter
+		CustomMatch As Boolean
+	#tag EndComputedProperty
+
 	#tag Property, Flags = &h0
 		LocalRoot As FolderItem
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mCustomMatch As Boolean
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
