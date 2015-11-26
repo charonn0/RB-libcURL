@@ -1,29 +1,6 @@
 #tag Class
 Protected Class WildCard
 Inherits libcURL.EasyHandle
-	#tag Event
-		Function DataAvailable(NewData As MemoryBlock) As Integer
-		  #pragma Unused NewData
-		  Break
-		End Function
-	#tag EndEvent
-
-	#tag Event
-		Function DataNeeded(Buffer As MemoryBlock, MaxLength As Integer) As Integer
-		  #pragma Unused Buffer
-		  #pragma Unused MaxLength
-		  Break
-		End Function
-	#tag EndEvent
-
-	#tag Event
-		Function SeekStream(Offset As Integer, Origin As Integer) As Boolean
-		  #pragma Unused Offset
-		  #pragma Unused Origin
-		End Function
-	#tag EndEvent
-
-
 	#tag Method, Flags = &h21
 		Private Shared Function ChunkBeginCallback(ByRef TransferInfo As FileInfo, UserData As Integer, Remaining As Integer) As Integer
 		  #pragma X86CallingConvention CDecl
