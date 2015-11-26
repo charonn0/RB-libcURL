@@ -1,15 +1,32 @@
 #tag Class
 Protected Class WildCard
+Inherits libcURL.EasyHandle
+	#tag Event
+		Function DataAvailable(NewData As MemoryBlock) As Integer
+		  #pragma Unused NewData
+		  Break
+		End Function
+	#tag EndEvent
+
+	#tag Event
+		Function DataNeeded(Buffer As MemoryBlock, MaxLength As Integer) As Integer
+		  #pragma Unused Buffer
+		  #pragma Unused MaxLength
+		  Break
+		End Function
+	#tag EndEvent
+
+
 	#tag Method, Flags = &h21
-		Private Shared Function ChunkBeginCallback(TransferInfo As Ptr, UserData As Integer, Remaining As Integer) As Integer
+		Private Shared Function ChunkBeginCallback(ByRef TransferInfo As FileInfo, UserData As Integer, Remaining As Integer) As Integer
 		  #pragma X86CallingConvention CDecl
-		  If Instances = Nil Then Return 0
-		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
+		  If Chunks = Nil Then Return 0
+		  Dim curl As WeakRef = Chunks.Lookup(UserData, Nil)
 		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA WildCard Then
-		    Dim info As FileInfo
-		    Dim mb As MemoryBlock = TransferInfo.Ptr(0)
-		    info.StringValue(TargetLittleEndian) = mb.StringValue(0, info.Size)
-		    Return WildCard(curl.Value)._curlChunkBegin(info, Remaining)
+		    'Dim info As FileInfo
+		    'Dim mb As MemoryBlock = TransferInfo'.Ptr(0)
+		    'info.StringValue(TargetLittleEndian) = mb.StringValue(0, info.Size)
+		    Return WildCard(curl.Value)._curlChunkBegin(TransferInfo, Remaining)
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
@@ -20,8 +37,8 @@ Protected Class WildCard
 	#tag Method, Flags = &h21
 		Private Shared Function ChunkEndCallback(UserData As Integer) As Integer
 		  #pragma X86CallingConvention CDecl
-		  If Instances = Nil Then Return 0
-		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
+		  If Chunks = Nil Then Return 0
+		  Dim curl As WeakRef = Chunks.Lookup(UserData, Nil)
 		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA WildCard Then
 		    Return WildCard(curl.Value)._curlChunkEnd()
 		  End If
@@ -32,74 +49,103 @@ Protected Class WildCard
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Constructor(Owner As libcURL.EasyHandle)
+		Sub Constructor(GlobalInitFlags As Integer = libcURL.CURL_GLOBAL_DEFAULT)
+		  Super.Constructor(GlobalInitFlags)
 		  If Not libcURL.Version.IsAtLeast(7, 21, 0) Then
 		    Raise New PlatformNotSupportedException
 		  End If
-		  mOwner = Owner
-		  If Not mOwner.SetOption(WILDCARDMATCH, True) Then Raise New libcURL.cURLException(mOwner)
-		  If Not mOwner.SetOptionPtr(CHUNK_BGN_FUNCTION, AddressOf ChunkBeginCallback) Then Raise New libcURL.cURLException(mOwner)
-		  If Not mOwner.SetOptionPtr(CHUNK_END_FUNCTION, AddressOf ChunkEndCallback) Then Raise New libcURL.cURLException(mOwner)
-		  If Not mOwner.SetOption(CHUNK_DATA, mOwner.Handle) Then Raise New libcURL.cURLException(mOwner)
-		  If Instances = Nil Then Instances = New Dictionary
-		  Instances.Value(mOwner.Handle) = New WeakRef(mOwner)
+		  
+		  If Not Me.SetOption(libcURL.Opts.WILDCARDMATCH, True) Then Raise New libcURL.cURLException(Me)
+		  If Not Me.SetOption(libcURL.Opts.CHUNK_BGN_FUNCTION, AddressOf ChunkBeginCallback) Then Raise New libcURL.cURLException(Me)
+		  If Not Me.SetOption(libcURL.Opts.CHUNK_END_FUNCTION, AddressOf ChunkEndCallback) Then Raise New libcURL.cURLException(Me)
+		  If Not Me.SetOption(libcURL.Opts.CHUNK_DATA, mHandle) Then Raise New libcURL.cURLException(Me)
+		  If Chunks = Nil Then Chunks = New Dictionary
+		  Chunks.Value(mHandle) = New WeakRef(Me)
 		End Sub
+	#tag EndMethod
+
+	#tag DelegateDeclaration, Flags = &h21
+		Private Delegate Function cURLChunkBegin(TransferInfo As FileInfo, UserData As Integer, Remaining As Integer) As Integer
+	#tag EndDelegateDeclaration
+
+	#tag DelegateDeclaration, Flags = &h21
+		Private Delegate Function cURLChunkEnd(UserData As Integer) As Integer
+	#tag EndDelegateDeclaration
+
+	#tag Method, Flags = &h0
+		Function SetOption(OptionNumber As Integer, NewValue As Variant) As Boolean
+		  If NewValue IsA cURLChunkBegin Then
+		    Dim p As cURLChunkBegin = NewValue
+		    Return Me.SetOptionPtr(OptionNumber, p)
+		  ElseIf NewValue IsA cURLChunkEnd Then
+		    Dim p As cURLChunkEnd = NewValue
+		    Return Me.SetOptionPtr(OptionNumber, p)
+		  End If
+		  
+		  Return Super.SetOption(OptionNumber, NewValue)
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
 		Private Function _curlChunkBegin(Info As FileInfo, Remaining As Integer) As Integer
-		  mLastFile = Info
 		  mRemaining = Remaining
-		  Dim skip As Boolean
-		  mOwner.DownloadStream = RaiseEvent GetStream(mLastFile.FileName.CString(0), skip)
-		  If skip Then Return CURL_CHUNK_BGN_FUNC_SKIP
-		  If mOwner.DownloadStream <> Nil Then Return CURL_CHUNK_BGN_FUNC_OK
+		  Dim mb As MemoryBlock = Info.FileName
+		  mLastFileName = mb.CString(0)
+		  mLastFile = LocalRoot.Child(mLastFileName)
+		  
+		  If RaiseEvent BeginTransfer(mLastFileName, mLastFile) Then Return CURL_CHUNK_BGN_FUNC_SKIP
+		  If mLastFile <> Nil Then
+		    Me.DownloadStream = BinaryStream.Create(mLastFile, False)
+		  Else
+		    Return CURL_CHUNK_BGN_FUNC_FAIL
+		  End If
+		  If Me.DownloadStream <> Nil Then Return CURL_CHUNK_BGN_FUNC_OK
 		  Return CURL_CHUNK_BGN_FUNC_FAIL
+		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
 		Private Function _curlChunkEnd() As Integer
-		  RaiseEvent FinishStream(mLastFile.FileName.CString(0))
+		  If RaiseEvent FinishTransfer(mLastFileName, mLastFile) Then Return CURL_CHUNK_END_FUNC_FAIL ' return true to fail/abort
+		  mLastFileName = ""
+		  mLastFile = Nil
+		  If Me.DownloadStream <> Nil And Me.DownloadStream IsA BinaryStream Then BinaryStream(Me.DownloadStream).Close
+		  Me.DownloadStream = Nil
 		  Return CURL_CHUNK_END_FUNC_OK
 		End Function
 	#tag EndMethod
 
 
 	#tag Hook, Flags = &h0
-		Event FinishStream(FileName As String)
+		Event BeginTransfer(FileName As String, ByRef LocalFile As FolderItem) As Boolean
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
-		Event GetStream(FileName As String, ByRef Skip As Boolean) As Writeable
+		Event FinishTransfer(FileName As String, LocalFile As FolderItem) As Boolean
 	#tag EndHook
 
 
 	#tag Property, Flags = &h21
-		Private Shared Instances As Dictionary
+		Private Shared Chunks As Dictionary
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		LocalRoot As FolderItem
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private mLastFile As FileInfo
+		Private mLastFile As FolderItem
 	#tag EndProperty
 
-	#tag Property, Flags = &h1
-		Protected mOwner As libcURL.EasyHandle
+	#tag Property, Flags = &h21
+		Private mLastFileName As String
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
 		Private mRemaining As Integer
 	#tag EndProperty
 
-
-	#tag Constant, Name = CHUNK_BGN_FUNCTION, Type = Double, Dynamic = False, Default = \"20198", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = CHUNK_DATA, Type = Double, Dynamic = False, Default = \"10201", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = CHUNK_END_FUNCTION, Type = Double, Dynamic = False, Default = \"20199", Scope = Protected
-	#tag EndConstant
 
 	#tag Constant, Name = CURL_CHUNK_BGN_FUNC_FAIL, Type = Double, Dynamic = False, Default = \"1", Scope = Protected
 	#tag EndConstant
@@ -114,9 +160,6 @@ Protected Class WildCard
 	#tag EndConstant
 
 	#tag Constant, Name = CURL_CHUNK_END_FUNC_OK, Type = Double, Dynamic = False, Default = \"0", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = WILDCARDMATCH, Type = Double, Dynamic = False, Default = \"197", Scope = Protected
 	#tag EndConstant
 
 

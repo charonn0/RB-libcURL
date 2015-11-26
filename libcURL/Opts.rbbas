@@ -15,6 +15,15 @@ Protected Module Opts
 	#tag Constant, Name = CAPATH, Type = Double, Dynamic = False, Default = \"10097", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = CHUNK_BGN_FUNCTION, Type = Double, Dynamic = False, Default = \"20198", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CHUNK_DATA, Type = Double, Dynamic = False, Default = \"10201", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CHUNK_END_FUNCTION, Type = Double, Dynamic = False, Default = \"20199", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = CLOSESOCKETDATA, Type = Double, Dynamic = False, Default = \"10209", Scope = Protected
 	#tag EndConstant
 
@@ -436,6 +445,9 @@ Protected Module Opts
 	#tag EndConstant
 
 	#tag Constant, Name = VERBOSE, Type = Double, Dynamic = False, Default = \"41", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = WILDCARDMATCH, Type = Double, Dynamic = False, Default = \"197", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = WRITEDATA, Type = Double, Dynamic = False, Default = \"10001", Scope = Protected
