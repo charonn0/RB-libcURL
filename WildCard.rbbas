@@ -62,7 +62,7 @@ Inherits libcURL.EasyHandle
 	#tag EndMethod
 
 	#tag DelegateDeclaration, Flags = &h21
-		Private Delegate Function cURLChunkBegin(TransferInfo As FileInfo, UserData As Integer, Remaining As Integer) As Integer
+		Private Delegate Function cURLChunkBegin(ByRef TransferInfo As FileInfo, UserData As Integer, Remaining As Integer) As Integer
 	#tag EndDelegateDeclaration
 
 	#tag DelegateDeclaration, Flags = &h21
