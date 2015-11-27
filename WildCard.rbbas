@@ -185,6 +185,33 @@ Inherits libcURL.EasyHandle
 	#tag EndHook
 
 
+	#tag Note, Name = About this class
+		This class wraps libcURL's built-in FTP WildCard download feature. If libcURL understands the server's LIST response
+		format, then you can use this class to enumerate or download all the files in a remote directory whose name matches 
+		a specific pattern. 
+		
+		Since this class is a subclass of EasyHandle, it can be used anywhere an EasyHandle is expected. This means that you can use
+		classes like cURLClient to conduct WildCard transfers:
+		
+		  Dim outputdir As FolderItem = SelectFolder()
+		  Dim w As New WildCard
+		  w.LocalRoot = outputdir
+		
+		  Dim c As New cURLClient(w) ' pass the WildCard to cURLManager.Constructor(EasyHandle)
+		
+		  If Not c.Get("ftp://ftp.example.com/pub/*.htm*") Then ' use a pattern in the URL
+		    MsgBox("Error: " + Str(c.LastError))
+		  Else
+		    MsgBox("Success!")
+		    outputdir.Launch
+		  End If
+		  
+		See this page for a description of supported patterns: http://curl.haxx.se/libcurl/c/CURLOPT_WILDCARDMATCH.html#DESCRIPTION
+		
+		You may also implement custom pattern matching by setting CustomMatch=True and handling the PatternMatch event.
+	#tag EndNote
+
+
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
@@ -287,6 +314,59 @@ Inherits libcURL.EasyHandle
 
 	#tag ViewBehavior
 		#tag ViewProperty
+			Name="AutoDisconnect"
+			Group="Behavior"
+			Type="Boolean"
+			InheritedFrom="libcURL.EasyHandle"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="AutoReferer"
+			Group="Behavior"
+			Type="Boolean"
+			InheritedFrom="libcURL.EasyHandle"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="ConnectionTimeout"
+			Group="Behavior"
+			Type="Integer"
+			InheritedFrom="libcURL.EasyHandle"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="CustomMatch"
+			Group="Behavior"
+			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="FailOnServerError"
+			Group="Behavior"
+			Type="Boolean"
+			InheritedFrom="libcURL.EasyHandle"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="FollowRedirects"
+			Group="Behavior"
+			Type="Boolean"
+			InheritedFrom="libcURL.EasyHandle"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="HTTPCompression"
+			Group="Behavior"
+			Type="Boolean"
+			InheritedFrom="libcURL.EasyHandle"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="HTTPPreserveMethod"
+			Group="Behavior"
+			Type="Boolean"
+			InheritedFrom="libcURL.EasyHandle"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="HTTPVersion"
+			Group="Behavior"
+			Type="Integer"
+			InheritedFrom="libcURL.EasyHandle"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
@@ -299,6 +379,18 @@ Inherits libcURL.EasyHandle
 			Group="Position"
 			InitialValue="0"
 			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="LocalPort"
+			Group="Behavior"
+			Type="Integer"
+			InheritedFrom="libcURL.EasyHandle"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="MaxRedirects"
+			Group="Behavior"
+			Type="Integer"
+			InheritedFrom="libcURL.EasyHandle"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
