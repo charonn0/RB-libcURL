@@ -498,7 +498,7 @@ Inherits libcURL.cURLHandle
 		  mUploadMode = False
 		  mUserAgent = ""
 		  mUsername = ""
-		  mVerbose = False
+		  Verbose = mVerbose
 		  InitCallbacks(Me)
 		  mLastError = 0
 		  
