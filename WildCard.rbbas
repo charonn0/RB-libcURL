@@ -2,13 +2,16 @@
 Protected Class WildCard
 Inherits libcURL.EasyHandle
 	#tag Method, Flags = &h21
-		Private Shared Function ChunkBeginCallback(ByRef TransferInfo As FileInfo, UserData As Integer, Remaining As Integer) As Integer
+		Private Shared Function ChunkBeginCallback(TransferInfo As Ptr, UserData As Integer, Remaining As Integer) As Integer
 		  #pragma X86CallingConvention CDecl
 		  
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA WildCard Then
-		    Return WildCard(curl.Value)._curlChunkBegin(TransferInfo, Remaining)
+		    Dim mb As MemoryBlock = TransferInfo'.Ptr(0)
+		    Dim info As FileInfo
+		    info.StringValue(TargetLittleEndian) = mb.StringValue(0, info.Size)
+		    Return WildCard(curl.Value)._curlChunkBegin(info, Remaining)
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
@@ -62,7 +65,7 @@ Inherits libcURL.EasyHandle
 	#tag EndMethod
 
 	#tag DelegateDeclaration, Flags = &h21
-		Private Delegate Function cURLChunkBegin(ByRef TransferInfo As FileInfo, UserData As Integer, Remaining As Integer) As Integer
+		Private Delegate Function cURLChunkBegin(TransferInfo As Ptr, UserData As Integer, Remaining As Integer) As Integer
 	#tag EndDelegateDeclaration
 
 	#tag DelegateDeclaration, Flags = &h21
