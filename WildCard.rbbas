@@ -137,7 +137,7 @@ Inherits libcURL.EasyHandle
 		    If RaiseEvent QueueFile(mLastFileName, mLastFile, False, p) Then Return CURL_CHUNK_BGN_FUNC_SKIP
 		    If mLastFile = Nil Then Return CURL_CHUNK_BGN_FUNC_OK ' the dataavailable event will be raised
 		    Try
-		      Me.DownloadStream = BinaryStream.Create(mLastFile, False)
+		      Me.DownloadStream = BinaryStream.Create(mLastFile, OverwriteLocalFiles)
 		      Return CURL_CHUNK_BGN_FUNC_OK
 		    Catch Err As IOException
 		      Return CURL_CHUNK_BGN_FUNC_FAIL
@@ -251,6 +251,10 @@ Inherits libcURL.EasyHandle
 
 	#tag Property, Flags = &h21
 		Private mRemaining As Integer
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		OverwriteLocalFiles As Boolean = False
 	#tag EndProperty
 
 
