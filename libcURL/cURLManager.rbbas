@@ -217,12 +217,6 @@ Protected Class cURLManager
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function SetHTTPRequestMethod(RequestMethod As String) As Boolean
-		  Return Me.EasyItem.SetOption(libcURL.Opts.CUSTOMREQUEST, RequestMethod)
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Function SetOption(OptionNumber As Integer, NewValue As Variant) As Boolean
 		  If mEasyItem <> Nil Then Return mEasyItem.SetOption(OptionNumber, NewValue)
 		End Function
@@ -235,6 +229,12 @@ Protected Class cURLManager
 		  
 		  mRequestHeaders = mEasyItem.SetRequestHeader(mRequestHeaders, Name, Value)
 		  Return (mRequestHeaders <> Nil Or Name = "")
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function SetRequestMethod(RequestMethod As String) As Boolean
+		  Return Me.EasyItem.SetOption(libcURL.Opts.CUSTOMREQUEST, RequestMethod)
 		End Function
 	#tag EndMethod
 

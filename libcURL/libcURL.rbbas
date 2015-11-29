@@ -524,7 +524,7 @@ Protected Module libcURL
 		      
 		    Case arg = "--crlfile"
 		      Dim f As FolderItem = GetFolderItem(output(i + 1))
-		      If f = Nil Or Not f.Exists Or f.Directory Then 
+		      If f = Nil Or Not f.Exists Or f.Directory Then
 		        Break
 		        Return False
 		      End If
@@ -570,7 +570,7 @@ Protected Module libcURL
 		      i = i + 1
 		      
 		    Case arg = "--request", StrComp("-X", arg, 1) = 0
-		      If Not Client.SetHTTPRequestMethod(output(i + 1)) Then
+		      If Not Client.SetRequestMethod(output(i + 1)) Then
 		        Break
 		        Return False
 		      End If
