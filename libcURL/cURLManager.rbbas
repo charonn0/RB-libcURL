@@ -234,7 +234,11 @@ Protected Class cURLManager
 
 	#tag Method, Flags = &h0
 		Function SetRequestMethod(RequestMethod As String) As Boolean
-		  Return Me.EasyItem.SetOption(libcURL.Opts.CUSTOMREQUEST, RequestMethod)
+		  If RequestMethod.Trim <> "" Then 
+		    Return Me.EasyItem.SetOption(libcURL.Opts.CUSTOMREQUEST, RequestMethod)
+		  Else
+		    Return Me.EasyItem.SetOption(libcURL.Opts.CUSTOMREQUEST, Nil)
+		  End If
 		End Function
 	#tag EndMethod
 
