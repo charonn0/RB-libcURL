@@ -1054,7 +1054,8 @@ Inherits libcURL.cURLHandle
 		#tag EndGetter
 		#tag Setter
 			Set
-			  ' If true, libcURL will close sockets immediately after the transfer completes.
+			  ' If true, libcURL will automatically set the HTTP referer header when following a redirect.
+			  ' The default is False.
 			  '
 			  ' See:
 			  ' http://curl.haxx.se/libcurl/c/CURLOPT_AUTOREFERER.html
