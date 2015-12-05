@@ -113,7 +113,10 @@ Inherits libcURL.cURLHandle
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_info_read.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.PerformOnce
 		  
-		  If StackLocked Then Raise New IllegalLockingException
+		  If StackLocked Then 
+		    mLastError = libcURL.Errors.CALL_LOOP_DETECTED
+		    Raise New libcURL.cURLException(Me)
+		  End If
 		  StackLocked = True
 		  Try
 		    Dim c As Integer
