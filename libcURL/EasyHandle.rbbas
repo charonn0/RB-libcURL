@@ -604,7 +604,8 @@ Inherits libcURL.cURLHandle
 		    libcURL.Opts.DEBUGFUNCTION, libcURL.Opts.HEADERFUNCTION, libcURL.Opts.OPENSOCKETFUNCTION, libcURL.Opts.PROGRESSFUNCTION, _
 		    libcURL.Opts.READFUNCTION, libcURL.Opts.SSL_CTX_FUNCTION, libcURL.Opts.WRITEFUNCTION, libcURL.Opts.SHARE, _
 		    libcURL.Opts.COOKIEJAR, libcURL.Opts.COOKIEFILE, libcURL.Opts.HTTPPOST, libcURL.Opts.CAINFO, libcURL.Opts.CAPATH, _
-		    libcURL.Opts.NETINTERFACE, libcURL.Opts.ERRORBUFFER, libcURL.Opts.COPYPOSTFIELDS, libcURL.Opts.ACCEPT_ENCODING)
+		    libcURL.Opts.NETINTERFACE, libcURL.Opts.ERRORBUFFER, libcURL.Opts.COPYPOSTFIELDS, libcURL.Opts.ACCEPT_ENCODING, _
+		    libcURL.Opts.FNMATCH_FUNCTION, libcURL.Opts.CHUNK_BGN_FUNCTION, libcURL.Opts.CHUNK_END_FUNCTION, libcURL.Opts.CHUNK_DATA)
 		    ' These option numbers explicitly accept NULL. Refer to the curl documentation on the individual option numbers for details.
 		    If Nilable.IndexOf(OptionNumber) > -1 Then
 		      Return Me.SetOptionPtr(OptionNumber, Nil)
@@ -1304,8 +1305,8 @@ Inherits libcURL.cURLHandle
 		HTTPVersion As Integer
 	#tag EndComputedProperty
 
-	#tag Property, Flags = &h21
-		Private Shared Instances As Dictionary
+	#tag Property, Flags = &h1
+		Protected Shared Instances As Dictionary
 	#tag EndProperty
 
 	#tag ComputedProperty, Flags = &h0
