@@ -1,5 +1,5 @@
 #tag Class
-Protected Class WildCard
+Protected Class FTPWildCard
 Inherits libcURL.EasyHandle
 	#tag Method, Flags = &h21
 		Private Shared Function ChunkBeginCallback(TransferInfo As Ptr, UserData As Integer, Remaining As Integer) As Integer
@@ -7,11 +7,11 @@ Inherits libcURL.EasyHandle
 		  
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA WildCard Then
+		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA FTPWildCard Then
 		    Dim mb As MemoryBlock = TransferInfo'.Ptr(0)
 		    Dim info As FileInfo
 		    info.StringValue(TargetLittleEndian) = mb.StringValue(0, info.Size)
-		    Return WildCard(curl.Value)._curlChunkBegin(info, Remaining)
+		    Return FTPWildCard(curl.Value)._curlChunkBegin(info, Remaining)
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
@@ -24,8 +24,8 @@ Inherits libcURL.EasyHandle
 		  #pragma X86CallingConvention CDecl
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA WildCard Then
-		    Return WildCard(curl.Value)._curlChunkEnd()
+		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA FTPWildCard Then
+		    Return FTPWildCard(curl.Value)._curlChunkEnd()
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
@@ -56,7 +56,7 @@ Inherits libcURL.EasyHandle
 		    Raise New PlatformNotSupportedException
 		  End If
 		  
-		  If CopyOpts IsA WildCard Then Me.LocalRoot = WildCard(CopyOpts).LocalRoot
+		  If CopyOpts IsA FTPWildCard Then Me.LocalRoot = FTPWildCard(CopyOpts).LocalRoot
 		  If Not Me.SetOption(libcURL.Opts.WILDCARDMATCH, True) Then Raise New libcURL.cURLException(Me)
 		  If Not Me.SetOption(libcURL.Opts.CHUNK_BGN_FUNCTION, AddressOf ChunkBeginCallback) Then Raise New libcURL.cURLException(Me)
 		  If Not Me.SetOption(libcURL.Opts.CHUNK_END_FUNCTION, AddressOf ChunkEndCallback) Then Raise New libcURL.cURLException(Me)
@@ -82,8 +82,8 @@ Inherits libcURL.EasyHandle
 		  
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA WildCard Then
-		    Return WildCard(curl.Value)._curlFNMatch(Pattern, FileName)
+		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA FTPWildCard Then
+		    Return FTPWildCard(curl.Value)._curlFNMatch(Pattern, FileName)
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
@@ -197,10 +197,10 @@ Inherits libcURL.EasyHandle
 		classes like cURLClient to conduct WildCard transfers:
 		
 		  Dim outputdir As FolderItem = SelectFolder()
-		  Dim w As New WildCard
+		  Dim w As New FTPWildCard
 		  w.LocalRoot = outputdir
 		
-		  Dim c As New cURLClient(w) ' pass the WildCard to cURLManager.Constructor(EasyHandle)
+		  Dim c As New cURLClient(w) ' pass the FTPWildCard to cURLManager.Constructor(EasyHandle)
 		
 		  If Not c.Get("ftp://ftp.example.com/pub/*.htm*") Then ' use a pattern in the URL
 		    MsgBox("Error: " + Str(c.LastError))
@@ -404,6 +404,12 @@ Inherits libcURL.EasyHandle
 			Visible=true
 			Group="ID"
 			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="OverwriteLocalFiles"
+			Group="Behavior"
+			InitialValue="False"
+			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Password"
