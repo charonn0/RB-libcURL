@@ -104,6 +104,13 @@ Inherits libcURL.EasyHandle
 		  If Not Me.SetOption(libcURL.Opts.CHUNK_BGN_FUNCTION, AddressOf ChunkBeginCallback) Then Raise New libcURL.cURLException(Me)
 		  If Not Me.SetOption(libcURL.Opts.CHUNK_END_FUNCTION, AddressOf ChunkEndCallback) Then Raise New libcURL.cURLException(Me)
 		  If Not Me.SetOption(libcURL.Opts.CHUNK_DATA, mHandle) Then Raise New libcURL.cURLException(Me)
+		  CustomMatch = mCustomMatch
+		  LocalRoot = Nil
+		  mLastFile = Nil
+		  mLastFileName = ""
+		  mLastError = 0
+		  mRemaining = 0
+		  
 		End Sub
 	#tag EndMethod
 
