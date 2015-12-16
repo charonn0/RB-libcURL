@@ -37,7 +37,8 @@ Inherits libcURL.EasyHandle
 		Sub Constructor(GlobalInitFlags As Integer = libcURL.CURL_GLOBAL_DEFAULT)
 		  Super.Constructor(GlobalInitFlags)
 		  If Not libcURL.Version.IsAtLeast(7, 21, 0) Then
-		    Raise New PlatformNotSupportedException
+		    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
+		    Raise New libcURL.cURLException(Me)
 		  End If
 		  
 		  If Not Me.SetOption(libcURL.Opts.WILDCARDMATCH, True) Then Raise New libcURL.cURLException(Me)
@@ -53,14 +54,20 @@ Inherits libcURL.EasyHandle
 		  // Constructor(CopyOpts As libcURL.EasyHandle) -- From EasyHandle
 		  Super.Constructor(CopyOpts)
 		  If Not libcURL.Version.IsAtLeast(7, 21, 0) Then
-		    Raise New PlatformNotSupportedException
+		    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
+		    Raise New libcURL.cURLException(Me)
 		  End If
 		  
-		  If CopyOpts IsA FTPWildCard Then Me.LocalRoot = FTPWildCard(CopyOpts).LocalRoot
 		  If Not Me.SetOption(libcURL.Opts.WILDCARDMATCH, True) Then Raise New libcURL.cURLException(Me)
 		  If Not Me.SetOption(libcURL.Opts.CHUNK_BGN_FUNCTION, AddressOf ChunkBeginCallback) Then Raise New libcURL.cURLException(Me)
 		  If Not Me.SetOption(libcURL.Opts.CHUNK_END_FUNCTION, AddressOf ChunkEndCallback) Then Raise New libcURL.cURLException(Me)
 		  If Not Me.SetOption(libcURL.Opts.CHUNK_DATA, mHandle) Then Raise New libcURL.cURLException(Me)
+		  
+		  If CopyOpts IsA FTPWildCard Then
+		    Me.LocalRoot = FTPWildCard(CopyOpts).LocalRoot
+		    Me.OverwriteLocalFiles = FTPWildCard(CopyOpts).OverwriteLocalFiles
+		    Me.CustomMatch = FTPWildCard(CopyOpts).CustomMatch
+		  End If
 		End Sub
 	#tag EndMethod
 
