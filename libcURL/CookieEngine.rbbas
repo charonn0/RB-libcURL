@@ -142,6 +142,9 @@ Protected Class CookieEngine
 
 	#tag Method, Flags = &h0
 		Sub Invalidate()
+		  ' Marks the cached cookie list as dirty. You must use this method whenever cookies are modified from outside
+		  ' the CookieEngine class, for example after a transfer has completed.
+		  
 		  mDirty = True
 		End Sub
 	#tag EndMethod
