@@ -40,7 +40,17 @@ Protected Class cURLManager
 
 	#tag Method, Flags = &h0
 		Sub Constructor(CopyOpts As libcURL.cURLManager)
-		  mEasyItem = New libcURL.EasyHandle(CopyOpts.EasyItem)
+		  ' Creates a new instance of cURLManager by cloning the passed cURLManager
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLManager.Constructor
+		  
+		  Select Case CopyOpts.EasyItem
+		  Case IsA FTPWildCard
+		    mEasyItem = New FTPWildCard(CopyOpts.EasyItem)
+		  Else
+		    mEasyItem = New libcURL.EasyHandle(CopyOpts.EasyItem)
+		  End Select
 		  Me.Constructor()
 		End Sub
 	#tag EndMethod
