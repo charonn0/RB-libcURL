@@ -9,6 +9,11 @@ Protected Class cURLManager
 
 	#tag Method, Flags = &h0
 		Sub Constructor()
+		  ' Creates a new instance of cURLManager with default options
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLManager.Constructor
+		  
 		  If mEasyItem = Nil Then
 		    mEasyItem = New libcURL.EasyHandle
 		    mEasyItem.UserAgent = libcURL.Version.Name
@@ -42,6 +47,11 @@ Protected Class cURLManager
 
 	#tag Method, Flags = &h0
 		Sub Constructor(ExistingEasy As libcURL.EasyHandle)
+		  ' Creates a new instance of cURLManager by taking ownership of the passed EasyHandle
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLManager.Constructor
+		  
 		  mEasyItem = ExistingEasy
 		  Me.Constructor()
 		End Sub
