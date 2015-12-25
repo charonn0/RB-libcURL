@@ -3,6 +3,11 @@ Protected Class EasyHandle
 Inherits libcURL.cURLHandle
 	#tag Method, Flags = &h0
 		Sub ClearFormData()
+		  ' Clears all forms and resets upload options
+		  '
+		  ' See: 
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.ClearFormData
+		  
 		  If Not Me.SetOption(libcURL.Opts.POSTFIELDSIZE, -1) Then Raise New libcURL.cURLException(Me)
 		  If Not Me.SetOption(libcURL.Opts.COPYPOSTFIELDS, Nil) Then Raise New libcURL.cURLException(Me)
 		  If Not Me.SetOption(libcURL.Opts.HTTPPOST, Nil) Then Raise New libcURL.cURLException(Me)
@@ -106,7 +111,7 @@ Inherits libcURL.cURLHandle
 		    mHTTPVersion = CopyOpts.HTTPVersion
 		    mMaxRedirects = CopyOpts.MaxRedirects
 		    mPassword = CopyOpts.Password
-		    If CopyOpts.mProxyEngine <> Nil Then 
+		    If CopyOpts.mProxyEngine <> Nil Then
 		      Me.ProxyEngine.Address = CopyOpts.ProxyEngine.Address
 		      If CopyOpts.ProxyEngine.Port <> 1080 Then Me.ProxyEngine.Port = CopyOpts.ProxyEngine.Port
 		      If CopyOpts.ProxyEngine.Type <> libcURL.ProxyType.HTTP Then Me.ProxyEngine.Type = CopyOpts.ProxyEngine.Type
@@ -1844,11 +1849,6 @@ Inherits libcURL.cURLHandle
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="ConnectionTimeout"
-			Group="Behavior"
-			Type="Integer"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="ConnectionType"
 			Group="Behavior"
 			Type="Integer"
 		#tag EndViewProperty
