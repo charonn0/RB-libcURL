@@ -136,7 +136,7 @@ Protected Class ProxyEngine
 		  End If
 		  
 		  If Not Owner.SetOption(libcURL.Opts.PROXYHEADER, mHeaders) Then Raise New cURLException(Owner)
-		  Return mHeaders <> Nil
+		  Return (mHeaders <> Nil Or HeaderName = "")
 		End Function
 	#tag EndMethod
 
