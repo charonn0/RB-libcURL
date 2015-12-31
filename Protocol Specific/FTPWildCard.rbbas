@@ -35,6 +35,8 @@ Inherits libcURL.EasyHandle
 
 	#tag Method, Flags = &h0
 		Sub Constructor(GlobalInitFlags As Integer = libcURL.CURL_GLOBAL_DEFAULT)
+		  // Calling the overridden superclass constructor.
+		  // Constructor(GlobalInitFlags As Integer) -- From EasyHandle
 		  Super.Constructor(GlobalInitFlags)
 		  If Not libcURL.Version.IsAtLeast(7, 21, 0) Then
 		    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE

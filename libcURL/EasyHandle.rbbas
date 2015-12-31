@@ -637,7 +637,7 @@ Inherits libcURL.cURLHandle
 		    Return Me.SetOptionPtr(OptionNumber, mb)
 		    
 		  Case Variant.TypeObject
-		    ' To add support for a custom object type, add a block to this Select statement that stores the object in MarshalledValue
+		    ' To add support for a custom object type, add a block to this Select statement
 		    Select Case NewValue
 		    Case IsA MemoryBlock
 		      Return Me.SetOptionPtr(OptionNumber, NewValue.PtrValue)
