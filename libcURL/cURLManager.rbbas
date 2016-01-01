@@ -41,17 +41,11 @@ Protected Class cURLManager
 		    mEasyItem.AutoReferer = True
 		    mEasyItem.HTTPCompression = True
 		  End If
-		  AddHandler mEasyItem.CreateSocket, WeakAddressOf _CreateSocketHandler
-		  'AddHandler mEasyItem.DataAvailable, WeakAddressOf _DataAvailableHandler
-		  'AddHandler mEasyItem.DataNeeded, WeakAddressOf _DataNeededHandler
-		  AddHandler mEasyItem.DebugMessage, WeakAddressOf _DebugMessageHandler
-		  AddHandler mEasyItem.Disconnected, WeakAddressOf _DisconnectedHandler
-		  AddHandler mEasyItem.HeaderReceived, WeakAddressOf _HeaderReceivedHandler
-		  AddHandler mEasyItem.Progress, WeakAddressOf _ProgressHandler
-		  'AddHandler mEasyItem.SeekStream, WeakAddressOf _SeekStreamHandler
 		  
 		  mMultiItem = New libcURL.MultiHandle
 		  AddHandler mMultiItem.TransferComplete, WeakAddressOf _TransferCompleteHandler
+		  
+		  Me.EasyItem = mEasyItem
 		End Sub
 	#tag EndMethod
 
