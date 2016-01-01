@@ -98,12 +98,6 @@ Protected Class cURLManager
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function EasyItem() As libcURL.EasyHandle
-		  Return mEasyItem
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Function GetCookie(Name As String, Domain As String) As String
 		  Dim index As Integer = mEasyItem.CookieEngine.Lookup(Name, Domain)
 		  If index > -1 Then Return mEasyItem.CookieEngine.Value(index)
@@ -328,6 +322,33 @@ Protected Class cURLManager
 		Event TransferComplete(BytesRead As Integer, BytesWritten As Integer)
 	#tag EndHook
 
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  return mEasyItem
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  Me.Close()
+			  Try
+			    AddHandler value.DebugMessage, WeakAddressOf _DebugMessageHandler
+			  Catch
+			  End Try
+			  Try
+			    AddHandler value.HeaderReceived, WeakAddressOf _HeaderReceivedHandler
+			  Catch
+			  End Try
+			  Try
+			    AddHandler value.Progress, WeakAddressOf _ProgressHandler
+			  Catch
+			  End Try
+			  mEasyItem = value
+			End Set
+		#tag EndSetter
+		EasyItem As libcURL.EasyHandle
+	#tag EndComputedProperty
 
 	#tag Property, Flags = &h21
 		Private mDownloadMB As MemoryBlock
