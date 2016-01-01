@@ -2,7 +2,24 @@
 Protected Class cURLManager
 	#tag Method, Flags = &h0
 		Sub Close()
-		  mMultiItem = Nil
+		  If mMultiItem <> Nil Then mMultiItem.Close()
+		  If mEasyItem <> Nil Then
+		    #pragma BreakOnExceptions Off
+		    Try
+		      RemoveHandler mEasyItem.DebugMessage, WeakAddressOf _DebugMessageHandler
+		    Catch
+		    End Try
+		    Try
+		      RemoveHandler mEasyItem.HeaderReceived, WeakAddressOf _HeaderReceivedHandler
+		    Catch
+		    End Try
+		    Try
+		      RemoveHandler mEasyItem.Progress, WeakAddressOf _ProgressHandler
+		    Catch
+		    End Try
+		    #pragma BreakOnExceptions On
+		  End If
+		  
 		  mEasyItem = Nil
 		End Sub
 	#tag EndMethod
