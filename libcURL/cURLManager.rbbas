@@ -92,30 +92,8 @@ Protected Class cURLManager
 
 	#tag Method, Flags = &h21
 		Private Sub Destructor()
-		  If mEasyItem <> Nil Then
-		    Try
-		      RemoveHandler mEasyItem.CreateSocket, WeakAddressOf _CreateSocketHandler
-		    Catch
-		    End Try
-		    Try
-		      RemoveHandler mEasyItem.DebugMessage, WeakAddressOf _DebugMessageHandler
-		    Catch
-		    End Try
-		    Try
-		      RemoveHandler mEasyItem.Disconnected, WeakAddressOf _DisconnectedHandler
-		    Catch
-		    End Try
-		    Try
-		      RemoveHandler mEasyItem.HeaderReceived, WeakAddressOf _HeaderReceivedHandler
-		    Catch
-		    End Try
-		    Try
-		      RemoveHandler mEasyItem.Progress, WeakAddressOf _ProgressHandler
-		    Catch
-		    End Try
-		  End If
-		  
 		  Me.Close()
+		  mMultiItem = Nil
 		End Sub
 	#tag EndMethod
 
