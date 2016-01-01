@@ -237,7 +237,14 @@ Protected Class cURLManager
 
 	#tag Method, Flags = &h0
 		Function SetRequestMethod(RequestMethod As String) As Boolean
-		  If RequestMethod.Trim <> "" Then 
+		  ' Overrides the request method used by libcurl. The behavior of this feature depends on which protocol
+		  ' is being used, and not all protocols are supported. Pass the empty string to clear custom methods.
+		  '
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/CURLOPT_CUSTOMREQUEST.html#DESCRIPTION
+		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLManager.SetRequestMethod
+		  
+		  If RequestMethod.Trim <> "" Then
 		    Return Me.EasyItem.SetOption(libcURL.Opts.CUSTOMREQUEST, RequestMethod)
 		  Else
 		    Return Me.EasyItem.SetOption(libcURL.Opts.CUSTOMREQUEST, Nil)
