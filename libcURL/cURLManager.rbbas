@@ -2,13 +2,35 @@
 Protected Class cURLManager
 	#tag Method, Flags = &h0
 		Sub Close()
-		  mMultiItem = Nil
+		  If mMultiItem <> Nil Then mMultiItem.Close()
+		  If mEasyItem <> Nil Then
+		    #pragma BreakOnExceptions Off
+		    Try
+		      RemoveHandler mEasyItem.DebugMessage, WeakAddressOf _DebugMessageHandler
+		    Catch
+		    End Try
+		    Try
+		      RemoveHandler mEasyItem.HeaderReceived, WeakAddressOf _HeaderReceivedHandler
+		    Catch
+		    End Try
+		    Try
+		      RemoveHandler mEasyItem.Progress, WeakAddressOf _ProgressHandler
+		    Catch
+		    End Try
+		    #pragma BreakOnExceptions On
+		  End If
+		  
 		  mEasyItem = Nil
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub Constructor()
+		  ' Creates a new instance of cURLManager with default options
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLManager.Constructor
+		  
 		  If mEasyItem = Nil Then
 		    mEasyItem = New libcURL.EasyHandle
 		    mEasyItem.UserAgent = libcURL.Version.Name
@@ -19,23 +41,39 @@ Protected Class cURLManager
 		    mEasyItem.AutoReferer = True
 		    mEasyItem.HTTPCompression = True
 		  End If
-		  AddHandler mEasyItem.CreateSocket, WeakAddressOf _CreateSocketHandler
-		  'AddHandler mEasyItem.DataAvailable, WeakAddressOf _DataAvailableHandler
-		  'AddHandler mEasyItem.DataNeeded, WeakAddressOf _DataNeededHandler
-		  AddHandler mEasyItem.DebugMessage, WeakAddressOf _DebugMessageHandler
-		  AddHandler mEasyItem.Disconnected, WeakAddressOf _DisconnectedHandler
-		  AddHandler mEasyItem.HeaderReceived, WeakAddressOf _HeaderReceivedHandler
-		  AddHandler mEasyItem.Progress, WeakAddressOf _ProgressHandler
-		  'AddHandler mEasyItem.SeekStream, WeakAddressOf _SeekStreamHandler
 		  
 		  mMultiItem = New libcURL.MultiHandle
 		  AddHandler mMultiItem.TransferComplete, WeakAddressOf _TransferCompleteHandler
+		  
+		  Me.EasyItem = mEasyItem
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub Constructor(CopyOpts As libcURL.cURLManager)
-		  mEasyItem = New libcURL.EasyHandle(CopyOpts.EasyItem)
+		  ' Creates a new instance of cURLManager by cloning the passed cURLManager
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLManager.Constructor
+		  
+		  Select Case CopyOpts.EasyItem
+		  Case IsA FTPWildCard
+		    mEasyItem = New FTPWildCard(CopyOpts.EasyItem)
+		  Else
+		    mEasyItem = New libcURL.EasyHandle(CopyOpts.EasyItem)
+		  End Select
+		  Me.Constructor()
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Constructor(ExistingEasy As libcURL.EasyHandle)
+		  ' Creates a new instance of cURLManager by taking ownership of the passed EasyHandle
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLManager.Constructor
+		  
+		  mEasyItem = ExistingEasy
 		  Me.Constructor()
 		End Sub
 	#tag EndMethod
@@ -49,13 +87,8 @@ Protected Class cURLManager
 	#tag Method, Flags = &h21
 		Private Sub Destructor()
 		  Me.Close()
+		  mMultiItem = Nil
 		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function EasyItem() As libcURL.EasyHandle
-		  Return mEasyItem
-		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -187,12 +220,6 @@ Protected Class cURLManager
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function SetHTTPRequestMethod(RequestMethod As String) As Boolean
-		  Return Me.EasyItem.SetOption(libcURL.Opts.CUSTOMREQUEST, RequestMethod)
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Function SetOption(OptionNumber As Integer, NewValue As Variant) As Boolean
 		  If mEasyItem <> Nil Then Return mEasyItem.SetOption(OptionNumber, NewValue)
 		End Function
@@ -208,24 +235,27 @@ Protected Class cURLManager
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h21
-		Private Sub _CreateSocketHandler(Sender As libcURL.EasyHandle, Socket As Integer)
-		  #pragma Unused Sender
-		  #pragma Unused Socket
-		End Sub
+	#tag Method, Flags = &h0
+		Function SetRequestMethod(RequestMethod As String) As Boolean
+		  ' Overrides the request method used by libcurl. The behavior of this feature depends on which protocol
+		  ' is being used, and not all protocols are supported. Pass the empty string to clear custom methods.
+		  '
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/CURLOPT_CUSTOMREQUEST.html#DESCRIPTION
+		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLManager.SetRequestMethod
+		  
+		  If RequestMethod.Trim <> "" Then
+		    Return Me.EasyItem.SetOption(libcURL.Opts.CUSTOMREQUEST, RequestMethod)
+		  Else
+		    Return Me.EasyItem.SetOption(libcURL.Opts.CUSTOMREQUEST, Nil)
+		  End If
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
 		Private Sub _DebugMessageHandler(Sender As libcURL.EasyHandle, MessageType As libcURL.curl_infotype, data As String)
 		  #pragma Unused Sender
 		  RaiseEvent DebugMessage(MessageType, data)
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Sub _DisconnectedHandler(Sender As libcURL.EasyHandle, Socket As Integer)
-		  #pragma Unused Sender
-		  #pragma Unused Socket
 		End Sub
 	#tag EndMethod
 
@@ -279,6 +309,33 @@ Protected Class cURLManager
 		Event TransferComplete(BytesRead As Integer, BytesWritten As Integer)
 	#tag EndHook
 
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  return mEasyItem
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  Me.Close()
+			  Try
+			    AddHandler value.DebugMessage, WeakAddressOf _DebugMessageHandler
+			  Catch
+			  End Try
+			  Try
+			    AddHandler value.HeaderReceived, WeakAddressOf _HeaderReceivedHandler
+			  Catch
+			  End Try
+			  Try
+			    AddHandler value.Progress, WeakAddressOf _ProgressHandler
+			  Catch
+			  End Try
+			  mEasyItem = value
+			End Set
+		#tag EndSetter
+		EasyItem As libcURL.EasyHandle
+	#tag EndComputedProperty
 
 	#tag Property, Flags = &h21
 		Private mDownloadMB As MemoryBlock

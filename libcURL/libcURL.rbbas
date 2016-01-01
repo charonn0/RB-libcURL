@@ -291,39 +291,11 @@ Protected Module libcURL
 		  ' http://curl.haxx.se/docs/manpage.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ParseCommandLine
 		  
-		  Dim output() As String
+		  Dim output() As String = SplitQuoted(cURLCommandLine)
 		  Dim url As String
-		  
-		  Dim input As New BinaryStream(cURLCommandLine)
-		  Dim tmp As String
-		  Dim quote As Boolean
 		  Dim frm As libcURL.MultipartForm
-		  Do Until input.EOF
-		    Dim char As String = input.Read(1)
-		    Select Case char
-		    Case " "
-		      If quote Then
-		        tmp = tmp + char
-		      Else
-		        output.Append(tmp)
-		        tmp = ""
-		      End If
-		      
-		    Case """"
-		      quote = Not quote
-		      
-		    Else
-		      tmp = tmp + char
-		    End Select
-		  Loop
-		  If tmp.Trim <> "" Then output.Append(tmp)
-		  input.Close
 		  If Client = Nil Then Client = New cURLClient
-		  Client.EasyItem.UserAgent = ""
-		  Client.EasyItem.FailOnServerError = False
-		  Client.EasyItem.FollowRedirects = False
-		  Client.EasyItem.AutoReferer = False
-		  Client.EasyItem.HTTPCompression = False
+		  Client.EasyItem.Reset()
 		  
 		  For i As Integer = 0 To UBound(output)
 		    Dim arg As String = output(i)
@@ -524,7 +496,7 @@ Protected Module libcURL
 		      
 		    Case arg = "--crlfile"
 		      Dim f As FolderItem = GetFolderItem(output(i + 1))
-		      If f = Nil Or Not f.Exists Or f.Directory Then 
+		      If f = Nil Or Not f.Exists Or f.Directory Then
 		        Break
 		        Return False
 		      End If
@@ -570,7 +542,7 @@ Protected Module libcURL
 		      i = i + 1
 		      
 		    Case arg = "--request", StrComp("-X", arg, 1) = 0
-		      If Not Client.SetHTTPRequestMethod(output(i + 1)) Then
+		      If Not Client.SetRequestMethod(output(i + 1)) Then
 		        Break
 		        Return False
 		      End If
@@ -599,6 +571,17 @@ Protected Module libcURL
 		    Case arg = "--url"
 		      url = output(i + 1)
 		      i = i + 1
+		      
+		    Case arg = "--data", StrComp("-d", arg, 1) = 0, arg = "--data-ascii"
+		      Dim params() As String = Split(output(i + 1), "&")
+		      Client.EasyItem.SetFormData(params)
+		      i = i + 1
+		      
+		    Case arg = "--data-binary"
+		      
+		    Case arg = "--data-raw"
+		      
+		    Case arg = "--data-urlencode"
 		      
 		    Else
 		      If url = "" Then
@@ -726,6 +709,36 @@ Protected Module libcURL
 		  outstream.Close
 		  instream.Close
 		  Return out
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Function SplitQuoted(Data As String) As String()
+		  Dim output() As String
+		  Dim input As New BinaryStream(Data)
+		  Dim tmp As String
+		  Dim quote As Boolean
+		  Do Until input.EOF
+		    Dim char As String = input.Read(1)
+		    Select Case char
+		    Case " "
+		      If quote Then
+		        tmp = tmp + char
+		      Else
+		        output.Append(tmp)
+		        tmp = ""
+		      End If
+		      
+		    Case """"
+		      quote = Not quote
+		      
+		    Else
+		      tmp = tmp + char
+		    End Select
+		  Loop
+		  If tmp.Trim <> "" Then output.Append(tmp)
+		  input.Close
+		  Return output
 		End Function
 	#tag EndMethod
 

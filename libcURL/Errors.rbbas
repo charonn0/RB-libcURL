@@ -45,6 +45,9 @@ Protected Module Errors
 	#tag Constant, Name = BAD_FUNCTION_ARGUMENT, Type = Double, Dynamic = False, Default = \"43", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = CALL_LOOP_DETECTED, Type = Double, Dynamic = False, Default = \"-6", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = CHUNK_FAILED, Type = Double, Dynamic = False, Default = \"88", Scope = Protected
 	#tag EndConstant
 

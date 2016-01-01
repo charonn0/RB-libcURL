@@ -3,6 +3,11 @@ Protected Class EasyHandle
 Inherits libcURL.cURLHandle
 	#tag Method, Flags = &h0
 		Sub ClearFormData()
+		  ' Clears all forms and resets upload options
+		  '
+		  ' See: 
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.ClearFormData
+		  
 		  If Not Me.SetOption(libcURL.Opts.POSTFIELDSIZE, -1) Then Raise New libcURL.cURLException(Me)
 		  If Not Me.SetOption(libcURL.Opts.COPYPOSTFIELDS, Nil) Then Raise New libcURL.cURLException(Me)
 		  If Not Me.SetOption(libcURL.Opts.HTTPPOST, Nil) Then Raise New libcURL.cURLException(Me)
@@ -106,7 +111,7 @@ Inherits libcURL.cURLHandle
 		    mHTTPVersion = CopyOpts.HTTPVersion
 		    mMaxRedirects = CopyOpts.MaxRedirects
 		    mPassword = CopyOpts.Password
-		    If CopyOpts.mProxyEngine <> Nil Then 
+		    If CopyOpts.mProxyEngine <> Nil Then
 		      Me.ProxyEngine.Address = CopyOpts.ProxyEngine.Address
 		      If CopyOpts.ProxyEngine.Port <> 1080 Then Me.ProxyEngine.Port = CopyOpts.ProxyEngine.Port
 		      If CopyOpts.ProxyEngine.Type <> libcURL.ProxyType.HTTP Then Me.ProxyEngine.Type = CopyOpts.ProxyEngine.Type
@@ -498,7 +503,7 @@ Inherits libcURL.cURLHandle
 		  mUploadMode = False
 		  mUserAgent = ""
 		  mUsername = ""
-		  mVerbose = False
+		  Verbose = mVerbose
 		  InitCallbacks(Me)
 		  mLastError = 0
 		  
@@ -604,7 +609,8 @@ Inherits libcURL.cURLHandle
 		    libcURL.Opts.DEBUGFUNCTION, libcURL.Opts.HEADERFUNCTION, libcURL.Opts.OPENSOCKETFUNCTION, libcURL.Opts.PROGRESSFUNCTION, _
 		    libcURL.Opts.READFUNCTION, libcURL.Opts.SSL_CTX_FUNCTION, libcURL.Opts.WRITEFUNCTION, libcURL.Opts.SHARE, _
 		    libcURL.Opts.COOKIEJAR, libcURL.Opts.COOKIEFILE, libcURL.Opts.HTTPPOST, libcURL.Opts.CAINFO, libcURL.Opts.CAPATH, _
-		    libcURL.Opts.NETINTERFACE, libcURL.Opts.ERRORBUFFER, libcURL.Opts.COPYPOSTFIELDS, libcURL.Opts.ACCEPT_ENCODING)
+		    libcURL.Opts.NETINTERFACE, libcURL.Opts.ERRORBUFFER, libcURL.Opts.COPYPOSTFIELDS, libcURL.Opts.ACCEPT_ENCODING, _
+		    libcURL.Opts.FNMATCH_FUNCTION, libcURL.Opts.CHUNK_BGN_FUNCTION, libcURL.Opts.CHUNK_END_FUNCTION, libcURL.Opts.CHUNK_DATA)
 		    ' These option numbers explicitly accept NULL. Refer to the curl documentation on the individual option numbers for details.
 		    If Nilable.IndexOf(OptionNumber) > -1 Then
 		      Return Me.SetOptionPtr(OptionNumber, Nil)
@@ -631,7 +637,7 @@ Inherits libcURL.cURLHandle
 		    Return Me.SetOptionPtr(OptionNumber, mb)
 		    
 		  Case Variant.TypeObject
-		    ' To add support for a custom object type, add a block to this Select statement that stores the object in MarshalledValue
+		    ' To add support for a custom object type, add a block to this Select statement
 		    Select Case NewValue
 		    Case IsA MemoryBlock
 		      Return Me.SetOptionPtr(OptionNumber, NewValue.PtrValue)
@@ -1054,7 +1060,8 @@ Inherits libcURL.cURLHandle
 		#tag EndGetter
 		#tag Setter
 			Set
-			  ' If true, libcURL will close sockets immediately after the transfer completes.
+			  ' If true, libcURL will automatically set the HTTP referer header when following a redirect.
+			  ' The default is False.
 			  '
 			  ' See:
 			  ' http://curl.haxx.se/libcurl/c/CURLOPT_AUTOREFERER.html
@@ -1303,8 +1310,8 @@ Inherits libcURL.cURLHandle
 		HTTPVersion As Integer
 	#tag EndComputedProperty
 
-	#tag Property, Flags = &h21
-		Private Shared Instances As Dictionary
+	#tag Property, Flags = &h1
+		Protected Shared Instances As Dictionary
 	#tag EndProperty
 
 	#tag ComputedProperty, Flags = &h0
@@ -1563,7 +1570,7 @@ Inherits libcURL.cURLHandle
 		#tag EndGetter
 		#tag Setter
 			Set
-			  ' If True, a connection will verify any SSL certificates presented by a server. This does not
+			  ' If True, libcURL will verify any SSL certificates presented by a server. This does not
 			  ' tell libcURL to use SSL, only to verify certs if SSL is used. Use EasyHandle.CA_ListFile to
 			  ' specify a list of certificate authorities to be trusted.
 			  '
@@ -1842,11 +1849,6 @@ Inherits libcURL.cURLHandle
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="ConnectionTimeout"
-			Group="Behavior"
-			Type="Integer"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="ConnectionType"
 			Group="Behavior"
 			Type="Integer"
 		#tag EndViewProperty
