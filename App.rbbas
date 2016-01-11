@@ -6,7 +6,7 @@ Inherits Application
 		  If Testing.RunTests() Then
 		    MsgBox("All Tests passed!")
 		  Else
-		    MsgBox("Test failed!")
+		    MsgBox("Test " + Str(Testing.TestResult) + " failed!")
 		  End If
 		End Sub
 	#tag EndEvent
