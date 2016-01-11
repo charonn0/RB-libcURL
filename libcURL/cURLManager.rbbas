@@ -57,8 +57,8 @@ Protected Class cURLManager
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLManager.Constructor
 		  
 		  Select Case CopyOpts.EasyItem
-		  Case IsA FTPWildCard
-		    mEasyItem = New FTPWildCard(CopyOpts.EasyItem)
+		  Case IsA libcURL.Protocols.FTPWildCard
+		    mEasyItem = New libcURL.Protocols.FTPWildCard(CopyOpts.EasyItem)
 		  Else
 		    mEasyItem = New libcURL.EasyHandle(CopyOpts.EasyItem)
 		  End Select
