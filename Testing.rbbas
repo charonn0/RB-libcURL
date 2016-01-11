@@ -8,27 +8,32 @@ Protected Module Testing
 
 	#tag Method, Flags = &h1
 		Protected Function RunTests() As Boolean
+		  TestResult = 0
 		  Try
 		    TestEasyHandle()
 		  Catch
+		    TestResult = 1
 		    Return False
 		  End Try
 		  
 		  Try
 		    TestListPtr()
 		  Catch
+		    TestResult = 2
 		    Return False
 		  End Try
 		  
 		  Try
 		    TestMultiForm()
 		  Catch
+		    TestResult = 3
 		    Return False
 		  End Try
 		  
 		  Try
 		    TestMultiHandle()
 		  Catch
+		    TestResult = 4
 		    Return False
 		  End Try
 		  
@@ -116,7 +121,10 @@ Protected Module Testing
 		  
 		  l.Free
 		  Assert(l.Count = 0)
+		  Assert(l.Handle = 0)
+		  
 		  l = Split("This is a test string", " ")
+		  Assert(l.Handle <> 0)
 		  Assert(l.Item(0) = "This")
 		  Assert(l.Item(1) = "is")
 		  Assert(l.Item(2) = "a")
@@ -168,6 +176,11 @@ Protected Module Testing
 		  Assert(data.Size = c.GetInfo(libcURL.Info.SIZE_DOWNLOAD))
 		End Sub
 	#tag EndMethod
+
+
+	#tag Property, Flags = &h1
+		Protected TestResult As Integer
+	#tag EndProperty
 
 
 	#tag ViewBehavior
