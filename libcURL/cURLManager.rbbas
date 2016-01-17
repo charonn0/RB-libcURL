@@ -180,7 +180,11 @@ Protected Class cURLManager
 		      milli = mMultiItem.QueryInterval
 		      micro = now + (milli * 1000)
 		    End If
-		    App.SleepCurrentThread(milli)
+		    #If TargetHasGUI Then
+		      App.SleepCurrentThread(milli)
+		    #Else
+		      App.YieldToNextThread
+		    #EndIf
 		  Wend
 		  
 		  Return mEasyItem.LastError = 0
