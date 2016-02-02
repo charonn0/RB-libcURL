@@ -75,7 +75,12 @@ Inherits libcURL.cURLHandle
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ListPtr.Item
 		  
-		  If List = Nil Then Raise New NilObjectException
+		  If List = Nil Then 
+		    Dim err As New NilObjectException
+		    err.Message = "The list is empty."
+		    Raise err
+		  End If
+		  
 		  Dim p As Ptr = List
 		  Dim i As Integer
 		  Do
@@ -84,7 +89,9 @@ Inherits libcURL.cURLHandle
 		      If nxt <> Nil Then
 		        p = nxt
 		      Else
-		        Raise New OutOfBoundsException
+		        Dim err As New OutOfBoundsException
+		        err.Message = "The list does not contain an entry at that index."
+		        Raise err
 		      End If
 		      
 		    ElseIf i = Index Then
@@ -93,7 +100,9 @@ Inherits libcURL.cURLHandle
 		      Return mb.CString(0)
 		      
 		    Else
-		      Raise New OutOfBoundsException
+		      Dim err As New OutOfBoundsException
+		      err.Message = "List indices must be greater than or equal to zero."
+		      Raise err
 		    End If
 		    i = i + 1
 		  Loop
@@ -102,7 +111,7 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Function Operator_Compare(OtherList As libcURL.ListPtr) As Integer
-		  ' Overloads the comparison operator(=), permitting direct comparisons between instances of ListPtr
+		  ' Overloads the comparison operator(=), permitting direct comparisons between references to ListPtrs
 		  '
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ListPtr.Operator_Compare
