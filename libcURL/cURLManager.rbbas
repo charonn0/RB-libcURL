@@ -3,7 +3,7 @@ Protected Class cURLManager
 	#tag Method, Flags = &h0
 		Sub Close()
 		  If mMultiItem <> Nil Then mMultiItem.Close()
-		  If mEasyItem <> Nil Then
+		  If mEasyItem <> Nil And mRemoveHandlers Then
 		    #pragma BreakOnExceptions Off
 		    Try
 		      RemoveHandler mEasyItem.DebugMessage, WeakAddressOf _DebugMessageHandler
@@ -18,6 +18,7 @@ Protected Class cURLManager
 		    Catch
 		    End Try
 		    #pragma BreakOnExceptions On
+		    mRemoveHandlers = False
 		  End If
 		  
 		  mEasyItem = Nil
@@ -336,6 +337,7 @@ Protected Class cURLManager
 			  Catch
 			  End Try
 			  mEasyItem = value
+			  mRemoveHandlers = True
 			End Set
 		#tag EndSetter
 		EasyItem As libcURL.EasyHandle
@@ -359,6 +361,10 @@ Protected Class cURLManager
 
 	#tag Property, Flags = &h21
 		Private mMultiItem As libcURL.MultiHandle
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mRemoveHandlers As Boolean
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
