@@ -1,6 +1,6 @@
-libcURL Copyright (c) 1996 - 2015, Daniel Stenberg, <daniel@haxx.se>.
+libcURL Copyright (c) 1996 - 2016, Daniel Stenberg, <daniel@haxx.se>.
 
-RB-libcURL Copyright (c) 2014 - 15 Andrew Lambert, <andrew@boredomsoft.org>.
+RB-libcURL Copyright (c) 2014 - 16 Andrew Lambert, <andrew@boredomsoft.org>.
  
 All rights reserved.
  
