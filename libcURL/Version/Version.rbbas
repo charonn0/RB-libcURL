@@ -116,10 +116,15 @@ Protected Module Version
 		    Dim error As Integer = curl_global_init(CURL_GLOBAL_DEFAULT) ' do not try to replace with cURLHandle, which performs version checks
 		    If error = 0 Then
 		      init = True
-		      Dim ve As MemoryBlock
-		      ve = curl_version_info(CURLVERSION_FOURTH)
-		      mStruct.StringValue(TargetLittleEndian) = ve.StringValue(0, mStruct.Size)
-		      curl_global_cleanup()
+		      Dim ve As Ptr = curl_version_info(CURLVERSION_FOURTH)
+		      Try
+		        mStruct = ve.CURLVersion(0)
+		      Catch err
+		        If err.Message = "" Then err.Message = "Unable to read libcURL version information."
+		        Raise err
+		      Finally
+		        curl_global_cleanup()
+		      End Try
 		    Else
 		      Dim err As New cURLException(Nil)
 		      err.ErrorNumber = error

@@ -185,11 +185,9 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h1
 		Protected Function ReadNextMsg(ByRef MsgsRemaining As Integer) As CURLMsg
-		  Dim mb As MemoryBlock = curl_multi_info_read(mHandle, MsgsRemaining)
-		  If mb <> Nil Then
-		    Dim msg As CURLMsg
-		    msg.StringValue(TargetLittleEndian) = mb.StringValue(0, msg.Size)
-		    Return msg
+		  Dim p As Ptr = curl_multi_info_read(mHandle, MsgsRemaining)
+		  If p <> Nil Then
+		    Return p.CURLMsg(0)
 		  ElseIf MsgsRemaining = 0 Then
 		    MsgsRemaining = -1
 		  End If

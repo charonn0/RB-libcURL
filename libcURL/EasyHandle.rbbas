@@ -752,9 +752,6 @@ Inherits libcURL.cURLHandle
 		  #pragma Unused Handle ' Handle is the handle to the instance
 		  If Instances = Nil Then Return 1
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  Dim data As SSL_CTX
-		  Dim mb As MemoryBlock = SSLCTXStruct
-		  data.StringValue(TargetLittleEndian) = mb.StringValue(0, SSL_CTX.Size)
 		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
 		    Return EasyHandle(curl.Value)._curlSSLInit(SSLCTXStruct)
 		  End If
