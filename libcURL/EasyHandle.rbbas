@@ -449,6 +449,8 @@ Inherits libcURL.cURLHandle
 		      s = mb.StringValue(0, i)
 		    End If
 		    Return s
+		  ElseIf mLastError = 1 Then ' no writeable connection
+		    Return ""
 		  Else
 		    Dim err As New IOException
 		    err.ErrorNumber = Me.LastError
@@ -783,6 +785,8 @@ Inherits libcURL.cURLHandle
 		  mLastError = curl_easy_send(mHandle, mb, mb.Size, byteswritten)
 		  If mLastError = 0 Then
 		    Return byteswritten
+		  ElseIf mLastError = 1 Then ' no writeable connection
+		    Return 0
 		  Else
 		    Dim err As New IOException
 		    err.ErrorNumber = Me.LastError
