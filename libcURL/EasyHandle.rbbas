@@ -12,6 +12,7 @@ Inherits libcURL.cURLHandle
 		  If Not Me.SetOption(libcURL.Opts.COPYPOSTFIELDS, Nil) Then Raise New libcURL.cURLException(Me)
 		  If Not Me.SetOption(libcURL.Opts.HTTPPOST, Nil) Then Raise New libcURL.cURLException(Me)
 		  mForm = Nil
+		  mUploadMode = False
 		  If Not Me.SetOption(libcURL.Opts.HTTPGET, True) Then Raise New libcURL.cURLException(Me)
 		  
 		End Sub
