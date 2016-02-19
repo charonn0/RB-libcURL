@@ -17,13 +17,28 @@ Implements ErrorSetter
 		  End If
 		  
 		  mLastError = 0 ' clears the NOT_INITIALIZED default value
-		  If InitFlags = Nil Then InitFlags = New Dictionary
-		  If Not InitFlags.HasKey(GlobalInitFlags) Then
-		    mLastError = curl_global_init(GlobalInitFlags)
-		    If mLastError <> 0 Then Raise New cURLException(Me)
-		  End If
-		  InitFlags.Value(GlobalInitFlags) = InitFlags.Lookup(GlobalInitFlags, 0) + 1
-		  mFlags = GlobalInitFlags
+		  
+		  If InitFlagsLock = Nil Then InitFlagsLock = New Semaphore
+		  Do Until InitFlagsLock.TrySignal
+		    #If TargetHasGUI Then
+		      App.YieldToNextThread
+		    #else
+		      If App.CurrentThread <> Nil Then App.YieldToNextThread Else App.DoEvents(100)
+		    #endif
+		  Loop
+		  
+		  Try
+		    If InitFlags = Nil Then InitFlags = New Dictionary
+		    If Not InitFlags.HasKey(GlobalInitFlags) Then
+		      mLastError = curl_global_init(GlobalInitFlags)
+		      If mLastError <> 0 Then Raise New cURLException(Me)
+		    End If
+		    InitFlags.Value(GlobalInitFlags) = InitFlags.Lookup(GlobalInitFlags, 0) + 1
+		    mFlags = GlobalInitFlags
+		  Finally
+		    InitFlagsLock.Release
+		  End Try
+		  
 		End Sub
 	#tag EndMethod
 
@@ -36,12 +51,23 @@ Implements ErrorSetter
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLHandle.Destructor
 		  
 		  If InitFlags = Nil Then Return
-		  InitFlags.Value(mFlags) = InitFlags.Value(mFlags) - 1
-		  If InitFlags.Value(mFlags) <= 0 Then
-		    If libcURL.IsAvailable Then curl_global_cleanup()
-		    InitFlags.Remove(mFlags)
-		  End If
-		  If InitFlags.Count = 0 Then InitFlags = Nil
+		  Do Until InitFlagsLock.TrySignal
+		    #If TargetHasGUI Then
+		      App.YieldToNextThread
+		    #else
+		      App.SleepCurrentThread(100)
+		    #endif
+		  Loop
+		  Try
+		    InitFlags.Value(mFlags) = InitFlags.Value(mFlags) - 1
+		    If InitFlags.Value(mFlags) <= 0 Then
+		      If libcURL.IsAvailable Then curl_global_cleanup()
+		      InitFlags.Remove(mFlags)
+		    End If
+		    If InitFlags.Count = 0 Then InitFlags = Nil
+		  Finally
+		    InitFlagsLock.Release
+		  End Try
 		  
 		End Sub
 	#tag EndMethod
@@ -92,6 +118,10 @@ Implements ErrorSetter
 
 	#tag Property, Flags = &h21
 		Private Shared InitFlags As Dictionary
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private Shared InitFlagsLock As Semaphore
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
