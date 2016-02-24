@@ -84,8 +84,8 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function FormAdd(Option As Integer, Value As String, Option1 As Integer = CURLFORM_END, Value1 As String = "", Option2 As Integer = CURLFORM_END, Value2 As String = "", Option3 As Integer = CURLFORM_END, Value3 As String = "", Option4 As Integer = CURLFORM_END, Value4 As String = "") As Boolean
-		  ' This helper function is a wrapper for the variadic external method curl_formadd, which expects a special 
+		Protected Function FormAdd(Option As Integer, Value As String, Option1 As Integer = CURLFORM_END, Value1 As String = "", Option2 As Integer = CURLFORM_END, Value2 As String = "", Option3 As Integer = CURLFORM_END, Value3 As String = "", Option4 As Integer = CURLFORM_END, Value4 As String = "", Option5 As Integer = CURLFORM_END, Value5 As String = "") As Boolean
+		  ' This helper function is a wrapper for the variadic external method curl_formadd, which expects a special
 		  ' sentinel value (CURLFORM_END) as a marker for the end of the parameters. The sentinel value will be passed
 		  ' automatically.
 		  '
@@ -100,7 +100,7 @@ Inherits libcURL.cURLHandle
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_formadd.html
 		  
-		  mLastError = curl_formadd(mHandle, LastItem, Option, Value, Option1, Value1, Option2, Value2, Option3, Value3, Option4, Value4, CURLFORM_END)
+		  mLastError = curl_formadd(mHandle, LastItem, Option, Value, Option1, Value1, Option2, Value2, Option3, Value3, Option4, Value4, Option5, Value5, CURLFORM_END)
 		  Return mLastError = 0
 		  
 		End Function
