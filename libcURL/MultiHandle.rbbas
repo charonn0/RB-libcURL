@@ -10,8 +10,15 @@ Inherits libcURL.cURLHandle
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_add_handle.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.AddItem
 		  
-		  mLastError = curl_multi_add_handle(mHandle, Item.Handle)
-		  If mLastError = 0 Then Instances.Value(Item.Handle) = Item
+		  If Not libcURL.Version.IsAtLeast(7, 32, 1) And Instances.HasKey(Item.Handle) Then
+		    ' This error code was not defined until 7.32.1, so we fake it
+		    Const CURLM_ADDED_ALREADY = 7
+		    mLastError = CURLM_ADDED_ALREADY
+		    
+		  Else
+		    mLastError = curl_multi_add_handle(mHandle, Item.Handle)
+		    If mLastError = 0 Then Instances.Value(Item.Handle) = Item
+		  End If
 		  Return mLastError = 0
 		End Function
 	#tag EndMethod
@@ -113,7 +120,7 @@ Inherits libcURL.cURLHandle
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_info_read.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.PerformOnce
 		  
-		  If StackLocked Then 
+		  If StackLocked Then
 		    mLastError = libcURL.Errors.CALL_LOOP_DETECTED
 		    Raise New libcURL.cURLException(Me)
 		  End If
