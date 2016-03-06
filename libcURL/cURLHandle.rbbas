@@ -52,11 +52,7 @@ Implements ErrorSetter
 		  
 		  If InitFlags = Nil Then Return
 		  Do Until InitFlagsLock.TrySignal
-		    #If TargetHasGUI Then
-		      App.YieldToNextThread
-		    #else
-		      App.SleepCurrentThread(100)
-		    #endif
+		    App.YieldToNextThread
 		  Loop
 		  Try
 		    InitFlags.Value(mFlags) = InitFlags.Value(mFlags) - 1
