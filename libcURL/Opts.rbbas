@@ -117,15 +117,6 @@ Protected Module Opts
 	#tag Constant, Name = FRESH_CONNECT, Type = Double, Dynamic = False, Default = \"74", Scope = Protected
 	#tag EndConstant
 
-	#tag Constant, Name = FTPMETHOD_MULTICWD, Type = Double, Dynamic = False, Default = \"1", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = FTPMETHOD_NOCWD, Type = Double, Dynamic = False, Default = \"2", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = FTPMETHOD_SINGLECWD, Type = Double, Dynamic = False, Default = \"3", Scope = Protected
-	#tag EndConstant
-
 	#tag Constant, Name = FTPPORT, Type = Double, Dynamic = False, Default = \"10017", Scope = Protected
 	#tag EndConstant
 

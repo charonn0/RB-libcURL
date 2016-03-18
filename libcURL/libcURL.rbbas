@@ -868,6 +868,12 @@ Protected Module libcURL
 		RB_libcURL
 	#tag EndEnum
 
+	#tag Enum, Name = CWDMethod, Type = Integer, Flags = &h1
+		Multi=1
+		  None
+		Single
+	#tag EndEnum
+
 	#tag Enum, Name = ProxyType, Type = Integer, Flags = &h1
 		HTTP=0
 		  HTTP1_0=1

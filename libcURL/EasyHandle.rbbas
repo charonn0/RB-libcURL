@@ -1195,6 +1195,32 @@ Inherits libcURL.cURLHandle
 		Attributes( deprecated = "libcURL.EasyHandle.CookieEngine.CookieJar" ) CookieJar As FolderItem
 	#tag EndComputedProperty
 
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  ' Gets the method libcURL will use to traverse the remote directory tree.
+			  ' See:
+			  ' https://curl.haxx.se/libcurl/c/CURLOPT_FTP_FILEMETHOD.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.CWDMethod
+			  
+			  return mCWDMethod
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  ' Sets the method libcURL will use to traverse the remote directory tree.
+			  '
+			  ' See:
+			  ' https://curl.haxx.se/libcurl/c/CURLOPT_FTP_FILEMETHOD.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.CWDMethod
+			  
+			  If Not Me.SetOption(libcURL.Opts.FTP_FILEMETHOD, Integer(value)) Then Raise New cURLException(Me)
+			  mCWDMethod = value
+			End Set
+		#tag EndSetter
+		CWDMethod As libcURL.CWDMethod
+	#tag EndComputedProperty
+
 	#tag Property, Flags = &h0
 		DownloadStream As Writeable
 	#tag EndProperty
@@ -1383,6 +1409,10 @@ Inherits libcURL.cURLHandle
 
 	#tag Property, Flags = &h21
 		Private mCookieEngine As libcURL.CookieEngine
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mCWDMethod As libcURL.CWDMethod = libcURL.CWDMethod.Multi
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
