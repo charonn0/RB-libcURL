@@ -835,6 +835,9 @@ Inherits libcURL.cURLHandle
 		  #endif
 		  Return CURL_SOCKOPT_OK
 		  
+		Exception Err As RuntimeException
+		  If Err IsA ThreadEndException Or Err IsA EndException Then Raise Err
+		  Return CURL_SOCKOPT_ERROR
 		End Function
 	#tag EndMethod
 
@@ -856,6 +859,10 @@ Inherits libcURL.cURLHandle
 		  #endif
 		  RaiseEvent DebugMessage(info, s)
 		  Return size
+		  
+		Exception Err As RuntimeException
+		  If Err IsA ThreadEndException Or Err IsA EndException Then Raise Err
+		  Return 0
 		End Function
 	#tag EndMethod
 
@@ -869,6 +876,10 @@ Inherits libcURL.cURLHandle
 		  Dim s As String = data.StringValue(0, sz)
 		  RaiseEvent HeaderReceived(s)
 		  Return sz
+		  
+		Exception Err As RuntimeException
+		  If Err IsA ThreadEndException Or Err IsA EndException Then Raise Err
+		  Return 0
 		End Function
 	#tag EndMethod
 
@@ -887,6 +898,10 @@ Inherits libcURL.cURLHandle
 		  End Select
 		  
 		  Return CURL_SOCKOPT_BAD
+		  
+		Exception Err As RuntimeException
+		  If Err IsA ThreadEndException Or Err IsA EndException Then Raise Err
+		  Return CURL_SOCKOPT_BAD
 		End Function
 	#tag EndMethod
 
@@ -897,6 +912,10 @@ Inherits libcURL.cURLHandle
 		  ' DO NOT CALL THIS METHOD
 		  
 		  If RaiseEvent Progress(dlTotal, dlnow, ultotal, ulnow) Then Return 1
+		  
+		Exception Err As RuntimeException
+		  If Err IsA ThreadEndException Or Err IsA EndException Then Raise Err
+		  Return 1
 		End Function
 	#tag EndMethod
 
@@ -913,6 +932,10 @@ Inherits libcURL.cURLHandle
 		    If mb.Size > 0 Then char.StringValue(0, mb.Size) = mb.StringValue(0, mb.Size)
 		    Return mb.Size
 		  End If
+		  
+		Exception Err As RuntimeException
+		  If Err IsA ThreadEndException Or Err IsA EndException Then Raise Err
+		  Return CURL_READFUNC_ABORT
 		End Function
 	#tag EndMethod
 
@@ -932,6 +955,10 @@ Inherits libcURL.cURLHandle
 		  End If
 		  
 		  Return 2 ' fail seek, but libcURL can try to work around it.
+		  
+		Exception Err As RuntimeException
+		  If Err IsA ThreadEndException Or Err IsA EndException Then Raise Err
+		  Return 1
 		End Function
 	#tag EndMethod
 
@@ -941,6 +968,10 @@ Inherits libcURL.cURLHandle
 		  ' DO NOT CALL THIS METHOD
 		  
 		  Return RaiseEvent SSLInit(SSLCTX)
+		  
+		Exception Err As RuntimeException
+		  If Err IsA ThreadEndException Or Err IsA EndException Then Raise Err
+		  Return 1
 		End Function
 	#tag EndMethod
 
@@ -956,6 +987,9 @@ Inherits libcURL.cURLHandle
 		    Return nmemb * size
 		  End If
 		  
+		Exception Err As RuntimeException
+		  If Err IsA ThreadEndException Or Err IsA EndException Then Raise Err
+		  Return 0
 		End Function
 	#tag EndMethod
 
@@ -1819,6 +1853,9 @@ Inherits libcURL.cURLHandle
 	#tag EndConstant
 
 	#tag Constant, Name = CURL_SOCKET_BAD, Type = Double, Dynamic = False, Default = \"1", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURL_SOCKOPT_ERROR, Type = Double, Dynamic = False, Default = \"1", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = CURL_SOCKOPT_OK, Type = Double, Dynamic = False, Default = \"0", Scope = Protected

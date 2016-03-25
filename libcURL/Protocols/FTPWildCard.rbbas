@@ -17,6 +17,10 @@ Inherits libcURL.EasyHandle
 		  
 		  Break ' UserData does not refer to a valid instance!
 		  Return CURL_CHUNK_BGN_FUNC_FAIL
+		  
+		Exception Err As RuntimeException
+		  If Err IsA ThreadEndException Or Err IsA EndException Then Raise Err
+		  Return CURL_CHUNK_BGN_FUNC_FAIL
 		End Function
 	#tag EndMethod
 
@@ -30,6 +34,11 @@ Inherits libcURL.EasyHandle
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
+		  Return CURL_CHUNK_END_FUNC_FAIL
+		  
+		  
+		Exception Err As RuntimeException
+		  If Err IsA ThreadEndException Or Err IsA EndException Then Raise Err
 		  Return CURL_CHUNK_END_FUNC_FAIL
 		End Function
 	#tag EndMethod
@@ -97,6 +106,11 @@ Inherits libcURL.EasyHandle
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
+		  Return CURL_FNMATCHFUNC_FAIL
+		  
+		  
+		Exception Err As RuntimeException
+		  If Err IsA ThreadEndException Or Err IsA EndException Then Raise Err
 		  Return CURL_FNMATCHFUNC_FAIL
 		End Function
 	#tag EndMethod

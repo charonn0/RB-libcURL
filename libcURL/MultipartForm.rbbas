@@ -122,6 +122,9 @@ Inherits libcURL.cURLHandle
 		  
 		  Break ' UserData does not refer to a valid stream!
 		  
+		Exception Err As RuntimeException
+		  If Err IsA ThreadEndException Or Err IsA EndException Then Raise Err
+		  Return 0
 		End Function
 	#tag EndMethod
 
