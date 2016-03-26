@@ -548,7 +548,7 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Function SetAuthMethods(NewAuthMask As libcURL.HTTPAuthMethods) As Boolean
-		  ' Sets the available/allowed proxy authentication methods.
+		  ' Sets the available/allowed HTTP authentication methods.
 		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/CURLOPT_HTTPAUTH.html
