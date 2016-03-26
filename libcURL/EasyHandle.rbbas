@@ -490,7 +490,6 @@ Inherits libcURL.cURLHandle
 		  mCA_ListFile = Nil
 		  mConnectionTimeout = 300
 		  mConnectionType = libcURL.ConnectionType.NoSSL
-		  mCookieEngine = Nil
 		  mErrorBuffer = Nil
 		  mFailOnServerError = False
 		  mFollowRedirects = False
