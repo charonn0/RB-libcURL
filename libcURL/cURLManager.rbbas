@@ -3,7 +3,7 @@ Protected Class cURLManager
 	#tag Method, Flags = &h0
 		Sub Close()
 		  If mMultiItem <> Nil Then mMultiItem.Close()
-		  If mEasyItem <> Nil Then
+		  If mEasyItem <> Nil And mRemoveHandlers Then
 		    #pragma BreakOnExceptions Off
 		    Try
 		      RemoveHandler mEasyItem.DebugMessage, WeakAddressOf _DebugMessageHandler
@@ -18,6 +18,7 @@ Protected Class cURLManager
 		    Catch
 		    End Try
 		    #pragma BreakOnExceptions On
+		    mRemoveHandlers = False
 		  End If
 		  
 		  mEasyItem = Nil
@@ -57,8 +58,8 @@ Protected Class cURLManager
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLManager.Constructor
 		  
 		  Select Case CopyOpts.EasyItem
-		  Case IsA FTPWildCard
-		    mEasyItem = New FTPWildCard(CopyOpts.EasyItem)
+		  Case IsA libcURL.Protocols.FTPWildCard
+		    mEasyItem = New libcURL.Protocols.FTPWildCard(CopyOpts.EasyItem)
 		  Else
 		    mEasyItem = New libcURL.EasyHandle(CopyOpts.EasyItem)
 		  End Select
@@ -180,7 +181,11 @@ Protected Class cURLManager
 		      milli = mMultiItem.QueryInterval
 		      micro = now + (milli * 1000)
 		    End If
-		    App.SleepCurrentThread(milli)
+		    #If TargetHasGUI Then
+		      App.SleepCurrentThread(milli)
+		    #Else
+		      App.YieldToNextThread
+		    #EndIf
 		  Wend
 		  
 		  Return mEasyItem.LastError = 0
@@ -332,6 +337,7 @@ Protected Class cURLManager
 			  Catch
 			  End Try
 			  mEasyItem = value
+			  mRemoveHandlers = True
 			End Set
 		#tag EndSetter
 		EasyItem As libcURL.EasyHandle
@@ -355,6 +361,10 @@ Protected Class cURLManager
 
 	#tag Property, Flags = &h21
 		Private mMultiItem As libcURL.MultiHandle
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mRemoveHandlers As Boolean
 	#tag EndProperty
 
 	#tag Property, Flags = &h21

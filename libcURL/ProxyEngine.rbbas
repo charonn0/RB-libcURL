@@ -32,7 +32,7 @@ Protected Class ProxyEngine
 		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/CURLINFO_PROXYAUTH_AVAIL.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.HTTPAuthMethods
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ProxyEngine.GetAuthMethods
 		  
 		  If mAuthMethods = Nil Then mAuthMethods = Owner.GetInfo(libcURL.Info.PROXYAUTH_AVAIL)
 		  return mAuthMethods
@@ -60,8 +60,8 @@ Protected Class ProxyEngine
 
 	#tag Method, Flags = &h0
 		Function IsProxied(Hostname As String) As Boolean
-		  ' Returns True if requests to Hostname will be proxied. Specify the hostname only; i.e. if 
-		  ' the URL is http://www.example.com/foo.txt then www.example.com is the hostname. If no 
+		  ' Returns True if requests to Hostname will be proxied. Specify the hostname only; i.e. if
+		  ' the URL is http://www.example.com/foo.txt then www.example.com is the hostname. If no
 		  ' proxy is configured then all hosts return False.
 		  '
 		  ' See:
@@ -93,7 +93,7 @@ Protected Class ProxyEngine
 		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/CURLOPT_PROXYAUTH.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ProxyEngine.HTTPAuthMethods
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ProxyEngine.SetAuthMethods
 		  
 		  If Not Owner.SetOption(libcURL.Opts.PROXYAUTH, NewAuthMask) Then Return False
 		  mAuthMethods = NewAuthMask.Mask
@@ -184,7 +184,7 @@ Protected Class ProxyEngine
 		#tag Setter
 			Set
 			  ' If True, then libcURL will tunnel through the proxy server instead of relay requests through it
-			  ' 
+			  '
 			  ' See:
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ProxyEngine.HTTPTunnel
 			  

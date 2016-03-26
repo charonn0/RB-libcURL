@@ -53,7 +53,7 @@ Protected Module libcURL
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Function curl_formadd Lib "libcurl" (ByRef FirstItem As Integer, ByRef LastItem As Ptr, Option1 As Integer, Value1 As CString, Option2 As Integer, Value2 As CString, Option3 As Integer, Value3 As CString, Option4 As Integer, Value4 As CString, Option5 As Integer, Value5 As CString, FinalOption As Integer) As Integer
+		Private Soft Declare Function curl_formadd Lib "libcurl" (ByRef FirstItem As Integer, ByRef LastItem As Ptr, Option As Integer, Value As CString, Option1 As Integer, Value1 As CString, Option2 As Integer, Value2 As CString, Option3 As Integer, Value3 As CString, Option4 As Integer, Value4 As CString, Option5 As Integer, Value5 As CString, FinalOption As Integer) As Integer
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
@@ -866,6 +866,12 @@ Protected Module libcURL
 		  ssl_out
 		  info_end
 		RB_libcURL
+	#tag EndEnum
+
+	#tag Enum, Name = CWDMethod, Type = Integer, Flags = &h1
+		Multi=1
+		  None
+		Single
 	#tag EndEnum
 
 	#tag Enum, Name = ProxyType, Type = Integer, Flags = &h1

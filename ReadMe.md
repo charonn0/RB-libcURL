@@ -17,6 +17,7 @@ This example performs a synchronous HTTP GET request on the calling thread. [Mor
 ##Hilights
 * [Synchronous and asynchronous](https://github.com/charonn0/RB-libcURL/wiki/Synchronous-vs.-Asynchronous-methods) transfers 
 * Use any supported protocol (DICT, FILE, FTP, FTPS, Gopher, HTTP(1.0, 1.1, and 2.0), HTTPS, IMAP, IMAPS, LDAP, LDAPS, POP3, POP3S, RTMP, RTSP, SCP, SFTP, SMTP, SMTPS, Telnet and TFTP).
+* Automatic browser-like [HTTP cookie management](https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine).
 * SSL/TLS with [certificate validation](https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Secure), using any one of several SSL libraries.
 * Full support for [RB/Xojo threads](https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.PerformOnce)
 * Automatic decompression (gzip, deflate, etc.) using zlib.

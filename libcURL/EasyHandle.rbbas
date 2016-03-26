@@ -12,6 +12,7 @@ Inherits libcURL.cURLHandle
 		  If Not Me.SetOption(libcURL.Opts.COPYPOSTFIELDS, Nil) Then Raise New libcURL.cURLException(Me)
 		  If Not Me.SetOption(libcURL.Opts.HTTPPOST, Nil) Then Raise New libcURL.cURLException(Me)
 		  mForm = Nil
+		  mUploadMode = False
 		  If Not Me.SetOption(libcURL.Opts.HTTPGET, True) Then Raise New libcURL.cURLException(Me)
 		  
 		End Sub
@@ -448,6 +449,8 @@ Inherits libcURL.cURLHandle
 		      s = mb.StringValue(0, i)
 		    End If
 		    Return s
+		  ElseIf mLastError = 1 Then ' no writeable connection
+		    Return ""
 		  Else
 		    Dim err As New IOException
 		    err.ErrorNumber = Me.LastError
@@ -487,7 +490,6 @@ Inherits libcURL.cURLHandle
 		  mCA_ListFile = Nil
 		  mConnectionTimeout = 300
 		  mConnectionType = libcURL.ConnectionType.NoSSL
-		  mCookieEngine = Nil
 		  mErrorBuffer = Nil
 		  mFailOnServerError = False
 		  mFollowRedirects = False
@@ -545,7 +547,7 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Function SetAuthMethods(NewAuthMask As libcURL.HTTPAuthMethods) As Boolean
-		  ' Sets the available/allowed proxy authentication methods.
+		  ' Sets the available/allowed HTTP authentication methods.
 		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/CURLOPT_HTTPAUTH.html
@@ -752,9 +754,6 @@ Inherits libcURL.cURLHandle
 		  #pragma Unused Handle ' Handle is the handle to the instance
 		  If Instances = Nil Then Return 1
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  Dim data As SSL_CTX
-		  Dim mb As MemoryBlock = SSLCTXStruct
-		  data.StringValue(TargetLittleEndian) = mb.StringValue(0, SSL_CTX.Size)
 		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
 		    Return EasyHandle(curl.Value)._curlSSLInit(SSLCTXStruct)
 		  End If
@@ -785,6 +784,8 @@ Inherits libcURL.cURLHandle
 		  mLastError = curl_easy_send(mHandle, mb, mb.Size, byteswritten)
 		  If mLastError = 0 Then
 		    Return byteswritten
+		  ElseIf mLastError = 1 Then ' no writeable connection
+		    Return 0
 		  Else
 		    Dim err As New IOException
 		    err.ErrorNumber = Me.LastError
@@ -833,6 +834,9 @@ Inherits libcURL.cURLHandle
 		  #endif
 		  Return CURL_SOCKOPT_OK
 		  
+		Exception Err As RuntimeException
+		  If Err IsA ThreadEndException Or Err IsA EndException Then Raise Err
+		  Return CURL_SOCKOPT_ERROR
 		End Function
 	#tag EndMethod
 
@@ -854,6 +858,10 @@ Inherits libcURL.cURLHandle
 		  #endif
 		  RaiseEvent DebugMessage(info, s)
 		  Return size
+		  
+		Exception Err As RuntimeException
+		  If Err IsA ThreadEndException Or Err IsA EndException Then Raise Err
+		  Return 0
 		End Function
 	#tag EndMethod
 
@@ -867,6 +875,10 @@ Inherits libcURL.cURLHandle
 		  Dim s As String = data.StringValue(0, sz)
 		  RaiseEvent HeaderReceived(s)
 		  Return sz
+		  
+		Exception Err As RuntimeException
+		  If Err IsA ThreadEndException Or Err IsA EndException Then Raise Err
+		  Return 0
 		End Function
 	#tag EndMethod
 
@@ -885,6 +897,10 @@ Inherits libcURL.cURLHandle
 		  End Select
 		  
 		  Return CURL_SOCKOPT_BAD
+		  
+		Exception Err As RuntimeException
+		  If Err IsA ThreadEndException Or Err IsA EndException Then Raise Err
+		  Return CURL_SOCKOPT_BAD
 		End Function
 	#tag EndMethod
 
@@ -895,6 +911,10 @@ Inherits libcURL.cURLHandle
 		  ' DO NOT CALL THIS METHOD
 		  
 		  If RaiseEvent Progress(dlTotal, dlnow, ultotal, ulnow) Then Return 1
+		  
+		Exception Err As RuntimeException
+		  If Err IsA ThreadEndException Or Err IsA EndException Then Raise Err
+		  Return 1
 		End Function
 	#tag EndMethod
 
@@ -911,6 +931,10 @@ Inherits libcURL.cURLHandle
 		    If mb.Size > 0 Then char.StringValue(0, mb.Size) = mb.StringValue(0, mb.Size)
 		    Return mb.Size
 		  End If
+		  
+		Exception Err As RuntimeException
+		  If Err IsA ThreadEndException Or Err IsA EndException Then Raise Err
+		  Return CURL_READFUNC_ABORT
 		End Function
 	#tag EndMethod
 
@@ -930,6 +954,10 @@ Inherits libcURL.cURLHandle
 		  End If
 		  
 		  Return 2 ' fail seek, but libcURL can try to work around it.
+		  
+		Exception Err As RuntimeException
+		  If Err IsA ThreadEndException Or Err IsA EndException Then Raise Err
+		  Return 1
 		End Function
 	#tag EndMethod
 
@@ -939,6 +967,10 @@ Inherits libcURL.cURLHandle
 		  ' DO NOT CALL THIS METHOD
 		  
 		  Return RaiseEvent SSLInit(SSLCTX)
+		  
+		Exception Err As RuntimeException
+		  If Err IsA ThreadEndException Or Err IsA EndException Then Raise Err
+		  Return 1
 		End Function
 	#tag EndMethod
 
@@ -954,6 +986,9 @@ Inherits libcURL.cURLHandle
 		    Return nmemb * size
 		  End If
 		  
+		Exception Err As RuntimeException
+		  If Err IsA ThreadEndException Or Err IsA EndException Then Raise Err
+		  Return 0
 		End Function
 	#tag EndMethod
 
@@ -1193,6 +1228,32 @@ Inherits libcURL.cURLHandle
 		Attributes( deprecated = "libcURL.EasyHandle.CookieEngine.CookieJar" ) CookieJar As FolderItem
 	#tag EndComputedProperty
 
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  ' Gets the method libcURL will use to traverse the remote directory tree.
+			  ' See:
+			  ' https://curl.haxx.se/libcurl/c/CURLOPT_FTP_FILEMETHOD.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.CWDMethod
+			  
+			  return mCWDMethod
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  ' Sets the method libcURL will use to traverse the remote directory tree.
+			  '
+			  ' See:
+			  ' https://curl.haxx.se/libcurl/c/CURLOPT_FTP_FILEMETHOD.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.CWDMethod
+			  
+			  If Not Me.SetOption(libcURL.Opts.FTP_FILEMETHOD, Integer(value)) Then Raise New cURLException(Me)
+			  mCWDMethod = value
+			End Set
+		#tag EndSetter
+		CWDMethod As libcURL.CWDMethod
+	#tag EndComputedProperty
+
 	#tag Property, Flags = &h0
 		DownloadStream As Writeable
 	#tag EndProperty
@@ -1381,6 +1442,10 @@ Inherits libcURL.cURLHandle
 
 	#tag Property, Flags = &h21
 		Private mCookieEngine As libcURL.CookieEngine
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mCWDMethod As libcURL.CWDMethod = libcURL.CWDMethod.Multi
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -1787,6 +1852,9 @@ Inherits libcURL.cURLHandle
 	#tag EndConstant
 
 	#tag Constant, Name = CURL_SOCKET_BAD, Type = Double, Dynamic = False, Default = \"1", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURL_SOCKOPT_ERROR, Type = Double, Dynamic = False, Default = \"1", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = CURL_SOCKOPT_OK, Type = Double, Dynamic = False, Default = \"0", Scope = Protected

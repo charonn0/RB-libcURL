@@ -8,13 +8,18 @@ Inherits libcURL.EasyHandle
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA FTPWildCard Then
-		    Dim mb As MemoryBlock = TransferInfo'.Ptr(0)
-		    Dim info As FileInfo
-		    info.StringValue(TargetLittleEndian) = mb.StringValue(0, info.Size)
-		    Return FTPWildCard(curl.Value)._curlChunkBegin(info, Remaining)
+		    If TransferInfo <> Nil Then
+		      Return FTPWildCard(curl.Value)._curlChunkBegin(TransferInfo.FileInfo(0), Remaining)
+		    Else
+		      Return CURL_CHUNK_BGN_FUNC_FAIL
+		    End If
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
+		  Return CURL_CHUNK_BGN_FUNC_FAIL
+		  
+		Exception Err As RuntimeException
+		  If Err IsA ThreadEndException Or Err IsA EndException Then Raise Err
 		  Return CURL_CHUNK_BGN_FUNC_FAIL
 		End Function
 	#tag EndMethod
@@ -29,6 +34,11 @@ Inherits libcURL.EasyHandle
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
+		  Return CURL_CHUNK_END_FUNC_FAIL
+		  
+		  
+		Exception Err As RuntimeException
+		  If Err IsA ThreadEndException Or Err IsA EndException Then Raise Err
 		  Return CURL_CHUNK_END_FUNC_FAIL
 		End Function
 	#tag EndMethod
@@ -96,6 +106,11 @@ Inherits libcURL.EasyHandle
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
+		  Return CURL_FNMATCHFUNC_FAIL
+		  
+		  
+		Exception Err As RuntimeException
+		  If Err IsA ThreadEndException Or Err IsA EndException Then Raise Err
 		  Return CURL_FNMATCHFUNC_FAIL
 		End Function
 	#tag EndMethod

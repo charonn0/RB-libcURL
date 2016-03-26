@@ -10,8 +10,15 @@ Inherits libcURL.cURLHandle
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_add_handle.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.AddItem
 		  
-		  mLastError = curl_multi_add_handle(mHandle, Item.Handle)
-		  If mLastError = 0 Then Instances.Value(Item.Handle) = Item
+		  If Not libcURL.Version.IsAtLeast(7, 32, 1) And Instances.HasKey(Item.Handle) Then
+		    ' This error code was not defined until 7.32.1, so we fake it
+		    Const CURLM_ADDED_ALREADY = 7
+		    mLastError = CURLM_ADDED_ALREADY
+		    
+		  Else
+		    mLastError = curl_multi_add_handle(mHandle, Item.Handle)
+		    If mLastError = 0 Then Instances.Value(Item.Handle) = Item
+		  End If
 		  Return mLastError = 0
 		End Function
 	#tag EndMethod
@@ -113,7 +120,7 @@ Inherits libcURL.cURLHandle
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_info_read.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.PerformOnce
 		  
-		  If StackLocked Then 
+		  If StackLocked Then
 		    mLastError = libcURL.Errors.CALL_LOOP_DETECTED
 		    Raise New libcURL.cURLException(Me)
 		  End If
@@ -185,11 +192,9 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h1
 		Protected Function ReadNextMsg(ByRef MsgsRemaining As Integer) As CURLMsg
-		  Dim mb As MemoryBlock = curl_multi_info_read(mHandle, MsgsRemaining)
-		  If mb <> Nil Then
-		    Dim msg As CURLMsg
-		    msg.StringValue(TargetLittleEndian) = mb.StringValue(0, msg.Size)
-		    Return msg
+		  Dim p As Ptr = curl_multi_info_read(mHandle, MsgsRemaining)
+		  If p <> Nil Then
+		    Return p.CURLMsg(0)
 		  ElseIf MsgsRemaining = 0 Then
 		    MsgsRemaining = -1
 		  End If

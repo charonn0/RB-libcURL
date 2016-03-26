@@ -84,23 +84,25 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function FormAdd(Option As Integer, Value As String, Option1 As Integer = CURLFORM_END, Value1 As String = "", Option2 As Integer = CURLFORM_END, Value2 As String = "", Option3 As Integer = CURLFORM_END, Value3 As String = "", Option4 As Integer = CURLFORM_END, Value4 As String = "") As Boolean
-		  ' This helper function is a wrapper for the variadic external method curl_formadd, which expects a special 
-		  ' sentinel value (CURLFORM_END) as a marker for the end of the parameters. The sentinel value will be passed
-		  ' automatically.
-		  '
-		  ' For example, this snippet adds two string fields and a file field in one call:
-		  '
-		  '  FormAdd(CURLFORM_COPYNAME, "Upload", CURLFORM_FILE, MyFolderItem.AbsolutePath, _
-		  '          CURLFORM_COPYNAME, "Username", CURLFORM_COPYCONTENTS, "Bob", _
-		  '          CURLFORM_COPYNAME, "Password", CURLFORM_COPYCONTENTS, "hunter2")
-		  '
-		  ' Note how each field is passed as a pair of parameters. At least 1 and up to 5 pairs of parameters may be passed at once.
+		Protected Function FormAdd(Option As Integer, Value As String, Option1 As Integer = CURLFORM_END, Value1 As String = "", Option2 As Integer = CURLFORM_END, Value2 As String = "", Option3 As Integer = CURLFORM_END, Value3 As String = "", Option4 As Integer = CURLFORM_END, Value4 As String = "", Option5 As Integer = CURLFORM_END, Value5 As String = "") As Boolean
+		  ' This helper function is a wrapper for the variadic external method curl_formadd. Since external methods 
+		  ' can't be variadic, this method simulates it by accepting a finite number of optional arguments.
+		  ' 
+		  ' Each form field is passed as (at least) four arguments: two Option/Value arguments each for the name and 
+		  ' contents of the form field. For example, a form with a username field and password field:
+		  ' 
+		  '    Call FormAdd( _
+		  '      CURLFORM_COPYNAME, "username", CURLFORM_COPYCONTENTS, "Bob", _
+		  '      CURLFORM_COPYNAME, "password", CURLFORM_COPYCONTENTS, "seekrit")
+		  ' 
+		  ' At least 1 and up to 6 pairs of arguments may be passed at once. Refer the to the libcURL documentation 
+		  ' for details.
 		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_formadd.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm.FormAdd
 		  
-		  mLastError = curl_formadd(mHandle, LastItem, Option, Value, Option1, Value1, Option2, Value2, Option3, Value3, Option4, Value4, CURLFORM_END)
+		  mLastError = curl_formadd(mHandle, LastItem, Option, Value, Option1, Value1, Option2, Value2, Option3, Value3, Option4, Value4, Option5, Value5, CURLFORM_END)
 		  Return mLastError = 0
 		  
 		End Function
@@ -120,6 +122,9 @@ Inherits libcURL.cURLHandle
 		  
 		  Break ' UserData does not refer to a valid stream!
 		  
+		Exception Err As RuntimeException
+		  If Err IsA ThreadEndException Or Err IsA EndException Then Raise Err
+		  Return 0
 		End Function
 	#tag EndMethod
 
