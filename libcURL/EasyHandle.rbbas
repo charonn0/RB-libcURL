@@ -305,17 +305,6 @@ Inherits libcURL.cURLHandle
 		    If Not Sender.SetOption(libcURL.Opts.SOCKOPTFUNCTION, AddressOf OpenCallback) Then Raise New cURLException(Sender)
 		  End If
 		  
-		  If libcURL.Version.SSL Then
-		    If Sender.SetOption(libcURL.Opts.SSL_CTX_DATA, Sender.Handle) Then
-		      If Not Sender.SetOption(libcURL.Opts.SSL_CTX_FUNCTION, AddressOf SSLInitCallback) Then Raise New cURLException(Sender)
-		    Else
-		      If Sender.Verbose Then
-		        Dim mb As MemoryBlock = "Callbacks are not supported by the selected SSL library."
-		        Call Sender._curlDebug(libcURL.curl_infotype.RB_libcURL, mb, mb.Size)
-		      End If
-		    End If
-		  End If
-		  
 		  If libcURL.Version.IsAtLeast(7, 21, 7) Then
 		    If Not Sender.SetOption(libcURL.Opts.CLOSESOCKETDATA, Sender.Handle) Then Raise New cURLException(Sender)
 		    If Not Sender.SetOption(libcURL.Opts.CLOSESOCKETFUNCTION, AddressOf CloseCallback) Then Raise New cURLException(Sender)
@@ -746,22 +735,6 @@ Inherits libcURL.cURLHandle
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h21
-		Private Shared Function SSLInitCallback(Handle As Integer, SSLCTXStruct As Ptr, UserData As Integer) As Integer
-		  ' This method is invoked by libcURL. DO NOT CALL THIS METHOD
-		  
-		  #pragma X86CallingConvention CDecl
-		  #pragma Unused Handle ' Handle is the handle to the instance
-		  If Instances = Nil Then Return 1
-		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
-		    Return EasyHandle(curl.Value)._curlSSLInit(SSLCTXStruct)
-		  End If
-		  Break ' UserData does not refer to a valid instance!
-		  Return 1
-		End Function
-	#tag EndMethod
-
 	#tag Method, Flags = &h0
 		Function Write(Text As String) As Integer
 		  ' Only available after calling SetOption(libcURL.Opts.CONNECT_ONLY, True)
@@ -962,19 +935,6 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Function _curlSSLInit(SSLCTX As Ptr) As Integer
-		  ' This method is the intermediary between InitSSLCallback and the SSLInit event.
-		  ' DO NOT CALL THIS METHOD
-		  
-		  Return RaiseEvent SSLInit(SSLCTX)
-		  
-		Exception Err As RuntimeException
-		  If Err IsA ThreadEndException Or Err IsA EndException Then Raise Err
-		  Return 1
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
 		Private Function _curlWrite(char As MemoryBlock, size As Integer, nmemb As Integer) As Integer
 		  ' This method is the intermediary between WriteCallback and the DataAvailable event.
 		  ' DO NOT CALL THIS METHOD
@@ -1023,10 +983,6 @@ Inherits libcURL.cURLHandle
 
 	#tag Hook, Flags = &h0
 		Event SeekStream(Offset As Integer, Origin As Integer) As Boolean
-	#tag EndHook
-
-	#tag Hook, Flags = &h0
-		Event SSLInit(SSLCTX As Ptr) As Integer
 	#tag EndHook
 
 
@@ -1874,34 +1830,6 @@ Inherits libcURL.cURLHandle
 
 	#tag Constant, Name = HTTP_VERSION_NONE, Type = Double, Dynamic = False, Default = \"0", Scope = Public
 	#tag EndConstant
-
-
-	#tag Structure, Name = curl_sockaddr, Flags = &h21
-		family As Integer
-		  socktype As Integer
-		  protocol As Integer
-		addrlen As UInt32
-	#tag EndStructure
-
-	#tag Structure, Name = SSL_CTX, Flags = &h21
-		Method As SSL_METHOD
-		  certfile As Ptr
-		  certfile_type As Integer
-		  keyfile As Ptr
-		  keyfile_type As Integer
-		  options As UInt32
-		  verifycallbackORX509_STORE_CTX As Ptr
-		verify_mode As Integer
-	#tag EndStructure
-
-	#tag Structure, Name = SSL_METHOD, Flags = &h21
-		protocol_priority As Integer
-		  cipher_priority As Integer
-		  comp_priority As Integer
-		  kx_priority As Integer
-		  mac_priority As Integer
-		connend As UInt32
-	#tag EndStructure
 
 
 	#tag ViewBehavior
