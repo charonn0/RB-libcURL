@@ -152,10 +152,6 @@ Inherits libcURL.cURLHandle
 		Private Delegate Function cURLProgressCallback(UserData As Integer, dlTotal As UInt64, dlnow As UInt64, ultotal As UInt64, ulnow As UInt64) As Integer
 	#tag EndDelegateDeclaration
 
-	#tag DelegateDeclaration, Flags = &h21
-		Private Delegate Function cURLSSLInitCallback(Handle As Integer, SSLCTXStruct As Ptr, UserData As Integer) As Integer
-	#tag EndDelegateDeclaration
-
 	#tag Method, Flags = &h21
 		Private Shared Function DebugCallback(Handle As Integer, info As curl_infotype, data As Ptr, size As Integer, UserData As Integer) As Integer
 		  ' This method is invoked by libcURL. DO NOT CALL THIS METHOD
@@ -668,10 +664,6 @@ Inherits libcURL.cURLHandle
 		      
 		    Case IsA cURLOpenCallback
 		      Dim p As cURLOpenCallback = NewValue
-		      Return Me.SetOptionPtr(OptionNumber, p)
-		      
-		    Case IsA cURLSSLInitCallback
-		      Dim p As cURLSSLInitCallback = NewValue
 		      Return Me.SetOptionPtr(OptionNumber, p)
 		      
 		    End Select
