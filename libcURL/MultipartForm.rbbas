@@ -11,9 +11,9 @@ Inherits libcURL.cURLHandle
 		  If Value.Exists And Not Value.Directory Then
 		    If ContentType = "" Then ContentType = MimeType(Value)
 		    If ContentType <> "" Then
-		      Return FormAdd(CURLFORM_COPYNAME, Name, CURLFORM_FILE, Value.AbsolutePath, CURLFORM_CONTENTTYPE, ContentType)
+		      Return FormAdd(CURLFORM_COPYNAME, Name, CURLFORM_FILE, Value.ShellPath, CURLFORM_FILENAME, Value.Name, CURLFORM_CONTENTTYPE, ContentType)
 		    Else
-		      Return FormAdd(CURLFORM_COPYNAME, Name, CURLFORM_FILE, Value.AbsolutePath)
+		      Return FormAdd(CURLFORM_COPYNAME, Name, CURLFORM_FILE, Value.ShellPath, CURLFORM_FILENAME, Value.Name)
 		    End If
 		  End If
 		End Function
@@ -85,17 +85,17 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h1
 		Protected Function FormAdd(Option As Integer, Value As String, Option1 As Integer = CURLFORM_END, Value1 As String = "", Option2 As Integer = CURLFORM_END, Value2 As String = "", Option3 As Integer = CURLFORM_END, Value3 As String = "", Option4 As Integer = CURLFORM_END, Value4 As String = "", Option5 As Integer = CURLFORM_END, Value5 As String = "") As Boolean
-		  ' This helper function is a wrapper for the variadic external method curl_formadd. Since external methods 
+		  ' This helper function is a wrapper for the variadic external method curl_formadd. Since external methods
 		  ' can't be variadic, this method simulates it by accepting a finite number of optional arguments.
-		  ' 
-		  ' Each form field is passed as (at least) four arguments: two Option/Value arguments each for the name and 
+		  '
+		  ' Each form field is passed as (at least) four arguments: two Option/Value arguments each for the name and
 		  ' contents of the form field. For example, a form with a username field and password field:
-		  ' 
+		  '
 		  '    Call FormAdd( _
 		  '      CURLFORM_COPYNAME, "username", CURLFORM_COPYCONTENTS, "Bob", _
 		  '      CURLFORM_COPYNAME, "password", CURLFORM_COPYCONTENTS, "seekrit")
-		  ' 
-		  ' At least 1 and up to 6 pairs of arguments may be passed at once. Refer the to the libcURL documentation 
+		  '
+		  ' At least 1 and up to 6 pairs of arguments may be passed at once. Refer the to the libcURL documentation
 		  ' for details.
 		  '
 		  ' See:
@@ -1835,6 +1835,9 @@ Inherits libcURL.cURLHandle
 	#tag EndConstant
 
 	#tag Constant, Name = CURLFORM_FILECONTENT, Type = Double, Dynamic = False, Default = \"7", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURLFORM_FILENAME, Type = Double, Dynamic = False, Default = \"16", Scope = Protected
 	#tag EndConstant
 
 
