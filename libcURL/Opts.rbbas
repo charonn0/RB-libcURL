@@ -15,6 +15,9 @@ Protected Module Opts
 	#tag Constant, Name = CAPATH, Type = Double, Dynamic = False, Default = \"10097", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = CERTINFO, Type = Double, Dynamic = False, Default = \"172", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = CHUNK_BGN_FUNCTION, Type = Double, Dynamic = False, Default = \"20198", Scope = Protected
 	#tag EndConstant
 
