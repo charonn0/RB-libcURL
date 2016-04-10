@@ -61,7 +61,7 @@ Inherits libcURL.cURLHandle
 		  ' http://curl.haxx.se/libcurl/c/curl_slist_free_all.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ListPtr.Free
 		  
-		  If libcURL.IsAvailable And List <> Nil Then libcURL.curl_slist_free_all(List)
+		  If libcURL.IsAvailable And List <> Nil Then curl_slist_free_all(List)
 		  List = Nil
 		End Sub
 	#tag EndMethod
