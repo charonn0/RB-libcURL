@@ -52,19 +52,21 @@ Protected Module Testing
 		Private Sub TestCookieEngine()
 		  Dim c As New cURLClient
 		  c.Cookies.Enabled = True
-		  Dim now As New Date
+		  
+		  Dim expiry As Date
+		  Assert(libcURL.ParseDate("Wed, 21 Apr 2021 02:55:26 GMT", expiry))
+		  
 		  Assert(c.SetCookie("test1", "value1", "www.example.com", Nil, "", True))
-		  Assert(c.SetCookie("test2", "value2", "api.example.com", now))
+		  Assert(c.SetCookie("test2", "value2", "api.example.com", expiry))
 		  Assert(c.SetCookie("test3", "value3", "example.com", Nil, "/bin"))
 		  Assert(c.SetCookie("test4", "value4", ".example.com"))
-		  Assert(c.SetCookie("test4", "value4", "", now))
+		  Assert(c.SetCookie("test5", "value5", "", expiry))
 		  
 		  Assert(c.Cookies.Count = 5)
 		  
 		  Dim index As Integer
 		  Do Until index = -1
 		    index = c.Cookies.Lookup("", "www.example.com", index)
-		    'Assert(index > -1)
 		    If index > -1 Then
 		      Assert(c.Cookies.HTTPOnly(index))
 		      Assert(c.Cookies.Expiry(index) = Nil)
@@ -80,10 +82,9 @@ Protected Module Testing
 		  
 		  Do Until index = -1
 		    index = c.Cookies.Lookup("", "api.example.com", index)
-		    'Assert(index > -1)
 		    If index > -1 Then
 		      Assert(Not c.Cookies.HTTPOnly(index))
-		      Assert(c.Cookies.Expiry(index).TotalSeconds = now.TotalSeconds)
+		      Assert(c.Cookies.Expiry(index) > New Date)
 		      Assert(c.Cookies.Name(index) = "test2")
 		      Assert(c.Cookies.Value(index) = "value2")
 		      Assert(c.Cookies.Domain(index) = ".api.example.com")
@@ -93,54 +94,45 @@ Protected Module Testing
 		  Loop
 		  
 		  index = 0
+		  index = c.Cookies.Lookup("", "example.com", index)
 		  
-		  Do Until index = -1
-		    index = c.Cookies.Lookup("", "example.com", index)
-		    'Assert(index > -1)
-		    If index > -1 Then
-		      Assert(Not c.Cookies.HTTPOnly(index))
-		      Assert(c.Cookies.Expiry(index) = Nil)
-		      Assert(c.Cookies.Name(index) = "test3")
-		      Assert(c.Cookies.Value(index) = "value3")
-		      Assert(c.Cookies.Domain(index) = ".example.com")
-		      Assert(c.Cookies.Path(index) = "/bin")
-		      index = index + 1
-		    End If
-		  Loop
-		  
-		  index = 0
-		  
-		  Do Until index = -1
-		    index = c.Cookies.Lookup("", ".example.com", index)
-		    'Assert(index > -1)
-		    If index > -1 Then
-		      Assert(Not c.Cookies.HTTPOnly(index))
-		      Assert(c.Cookies.Expiry(index) = Nil)
-		      Assert(c.Cookies.Name(index) = "test4")
-		      Assert(c.Cookies.Value(index) = "value4")
-		      Assert(c.Cookies.Domain(index) = ".example.com")
-		      Assert(c.Cookies.Path(index) = "/")
-		      index = index + 1
-		    End If
-		  Loop
+		  If index > -1 Then
+		    DIm h As Boolean = c.Cookies.HTTPOnly(index)
+		    Dim n, d, v As String
+		    n = c.Cookies.Name(index)
+		    d = c.Cookies.Domain(index)
+		    v = c.Cookies.Value(index)
+		    Assert(Not c.Cookies.HTTPOnly(index))
+		    Assert(c.Cookies.Expiry(index) = Nil)
+		    Assert(c.Cookies.Name(index) = "test3")
+		    Assert(c.Cookies.Value(index) = "value3")
+		    Assert(c.Cookies.Domain(index) = ".example.com")
+		    Assert(c.Cookies.Path(index) = "/bin")
+		  End If
 		  
 		  index = 0
+		  index = c.Cookies.Lookup("", ".example.com", 3)
 		  
-		  Do Until index = -1
-		    index = c.Cookies.Lookup("test4", "", index)
-		    'Assert(index > -1)
-		    If index > -1 Then
-		      Assert(Not c.Cookies.HTTPOnly(index))
-		      Assert(c.Cookies.Expiry(index) = Nil)
-		      Assert(c.Cookies.Name(index) = "test4")
-		      Assert(c.Cookies.Value(index) = "value4")
-		      Assert(c.Cookies.Domain(index) = "")
-		      Assert(c.Cookies.Path(index) = "/")
-		      index = index + 1
-		    End If
-		  Loop
+		  If index > -1 Then
+		    Assert(Not c.Cookies.HTTPOnly(index))
+		    Assert(c.Cookies.Expiry(index) = Nil)
+		    Assert(c.Cookies.Name(index) = "test4")
+		    Assert(c.Cookies.Value(index) = "value4")
+		    Assert(c.Cookies.Domain(index) = ".example.com")
+		    Assert(c.Cookies.Path(index) = "/")
+		  End If
 		  
+		  index = 0
+		  index = c.Cookies.Lookup("test5", "", index)
 		  
+		  If index > -1 Then
+		    Assert(Not c.Cookies.HTTPOnly(index))
+		    Assert(c.Cookies.Expiry(index) > New Date)
+		    Assert(c.Cookies.Name(index) = "test5")
+		    Assert(c.Cookies.Value(index) = "value5")
+		    Assert(c.Cookies.Domain(index) = "unknown")
+		    Assert(c.Cookies.Path(index) = "/")
+		  End If
 		End Sub
 	#tag EndMethod
 
@@ -212,6 +204,11 @@ Protected Module Testing
 		Private Sub TestListPtr()
 		  Dim l As New libcURL.ListPtr
 		  Assert(l <> Nil)
+		  Assert(l.Count = 0)
+		  Dim l2 As New libcURL.ListPtr
+		  Assert(l = l2)
+		  l2 = New libcURL.ListPtr(Nil, libcURL.CURL_GLOBAL_WIN32)
+		  Assert(l <> l2)
 		  If Not l.Append("Hello") Then Raise New libcURL.cURLException(l)
 		  If Not l.Append("World") Then Raise New libcURL.cURLException(l)
 		  If Not l.Append("!!") Then Raise New libcURL.cURLException(l)
