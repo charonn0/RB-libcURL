@@ -37,8 +37,111 @@ Protected Module Testing
 		    Return False
 		  End Try
 		  
+		  Try
+		    TestCookieEngine()
+		  Catch
+		    TestResult = 5
+		    Return False
+		  End Try
+		  
 		  Return True
 		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub TestCookieEngine()
+		  Dim c As New cURLClient
+		  c.Cookies.Enabled = True
+		  Dim now As New Date
+		  Assert(c.SetCookie("test1", "value1", "www.example.com", Nil, "", True))
+		  Assert(c.SetCookie("test2", "value2", "api.example.com", now))
+		  Assert(c.SetCookie("test3", "value3", "example.com", Nil, "/bin"))
+		  Assert(c.SetCookie("test4", "value4", ".example.com"))
+		  Assert(c.SetCookie("test4", "value4", "", now))
+		  
+		  Assert(c.Cookies.Count = 5)
+		  
+		  Dim index As Integer
+		  Do Until index = -1
+		    index = c.Cookies.Lookup("", "www.example.com", index)
+		    'Assert(index > -1)
+		    If index > -1 Then
+		      Assert(c.Cookies.HTTPOnly(index))
+		      Assert(c.Cookies.Expiry(index) = Nil)
+		      Assert(c.Cookies.Name(index) = "test1")
+		      Assert(c.Cookies.Value(index) = "value1")
+		      Assert(c.Cookies.Domain(index) = ".www.example.com")
+		      Assert(c.Cookies.Path(index) = "/")
+		      index = index + 1
+		    End If
+		  Loop
+		  
+		  index = 0
+		  
+		  Do Until index = -1
+		    index = c.Cookies.Lookup("", "api.example.com", index)
+		    'Assert(index > -1)
+		    If index > -1 Then
+		      Assert(Not c.Cookies.HTTPOnly(index))
+		      Assert(c.Cookies.Expiry(index).TotalSeconds = now.TotalSeconds)
+		      Assert(c.Cookies.Name(index) = "test2")
+		      Assert(c.Cookies.Value(index) = "value2")
+		      Assert(c.Cookies.Domain(index) = ".api.example.com")
+		      Assert(c.Cookies.Path(index) = "/")
+		      index = index + 1
+		    End If
+		  Loop
+		  
+		  index = 0
+		  
+		  Do Until index = -1
+		    index = c.Cookies.Lookup("", "example.com", index)
+		    'Assert(index > -1)
+		    If index > -1 Then
+		      Assert(Not c.Cookies.HTTPOnly(index))
+		      Assert(c.Cookies.Expiry(index) = Nil)
+		      Assert(c.Cookies.Name(index) = "test3")
+		      Assert(c.Cookies.Value(index) = "value3")
+		      Assert(c.Cookies.Domain(index) = ".example.com")
+		      Assert(c.Cookies.Path(index) = "/bin")
+		      index = index + 1
+		    End If
+		  Loop
+		  
+		  index = 0
+		  
+		  Do Until index = -1
+		    index = c.Cookies.Lookup("", ".example.com", index)
+		    'Assert(index > -1)
+		    If index > -1 Then
+		      Assert(Not c.Cookies.HTTPOnly(index))
+		      Assert(c.Cookies.Expiry(index) = Nil)
+		      Assert(c.Cookies.Name(index) = "test4")
+		      Assert(c.Cookies.Value(index) = "value4")
+		      Assert(c.Cookies.Domain(index) = ".example.com")
+		      Assert(c.Cookies.Path(index) = "/")
+		      index = index + 1
+		    End If
+		  Loop
+		  
+		  index = 0
+		  
+		  Do Until index = -1
+		    index = c.Cookies.Lookup("test4", "", index)
+		    'Assert(index > -1)
+		    If index > -1 Then
+		      Assert(Not c.Cookies.HTTPOnly(index))
+		      Assert(c.Cookies.Expiry(index) = Nil)
+		      Assert(c.Cookies.Name(index) = "test4")
+		      Assert(c.Cookies.Value(index) = "value4")
+		      Assert(c.Cookies.Domain(index) = "")
+		      Assert(c.Cookies.Path(index) = "/")
+		      index = index + 1
+		    End If
+		  Loop
+		  
+		  
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
