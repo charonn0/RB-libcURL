@@ -97,11 +97,6 @@ Protected Module Testing
 		  index = c.Cookies.Lookup("", "example.com", index)
 		  
 		  If index > -1 Then
-		    DIm h As Boolean = c.Cookies.HTTPOnly(index)
-		    Dim n, d, v As String
-		    n = c.Cookies.Name(index)
-		    d = c.Cookies.Domain(index)
-		    v = c.Cookies.Value(index)
 		    Assert(Not c.Cookies.HTTPOnly(index))
 		    Assert(c.Cookies.Expiry(index) = Nil)
 		    Assert(c.Cookies.Name(index) = "test3")
