@@ -51,7 +51,7 @@ Begin Window DemoWindow
       TextUnit        =   0
       Top             =   119
       Underline       =   ""
-      Value           =   0
+      Value           =   2
       Visible         =   True
       Width           =   596
       Begin Listbox Debug
@@ -1313,6 +1313,38 @@ Begin Window DemoWindow
          Visible         =   True
          Width           =   560
       End
+      Begin CheckBox NoProgress
+         AutoDeactivate  =   True
+         Bold            =   ""
+         Caption         =   "Progress Event"
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel2"
+         Italic          =   ""
+         Left            =   480
+         LockBottom      =   ""
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   ""
+         LockTop         =   True
+         Scope           =   0
+         State           =   0
+         TabIndex        =   27
+         TabPanelIndex   =   3
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   149
+         Underline       =   ""
+         Value           =   False
+         Visible         =   True
+         Width           =   111
+      End
    End
    Begin cURLClient Client
       Height          =   32
@@ -2425,6 +2457,22 @@ End
 		  Else
 		    MsgBox("All options parsed successfully.")
 		  End If
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events NoProgress
+	#tag Event
+		Sub Open()
+		  If Client.EasyItem.UseProgressEvent Then
+		    Me.State = CheckBox.CheckedStates.Checked
+		  Else
+		    Me.State = CheckBox.CheckedStates.Unchecked
+		  End If
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Sub Action()
+		  Client.EasyItem.UseProgressEvent = Me.Value
 		End Sub
 	#tag EndEvent
 #tag EndEvents

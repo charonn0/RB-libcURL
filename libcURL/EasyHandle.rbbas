@@ -311,7 +311,7 @@ Inherits libcURL.cURLHandle
 		    If Not Sender.SetOption(libcURL.Opts.SEEKFUNCTION, AddressOf SeekCallback) Then Raise New cURLException(Sender)
 		  End If
 		  
-		  If Not Sender.SetOption(libcURL.Opts.NOPROGRESS, False) Then Raise New cURLException(Sender)
+		  If Sender.UseProgressEvent Then Sender.UseProgressEvent = True
 		  If libcURL.Version.IsAtLeast(7, 32, 0) Then
 		    If Not Sender.SetOption(libcURL.Opts.XFERINFOFUNCTION, AddressOf ProgressCallback) Then Raise New cURLException(Sender)
 		    If Not Sender.SetOption(libcURL.Opts.XFERINFODATA, Sender.Handle) Then Raise New cURLException(Sender)
@@ -434,7 +434,7 @@ Inherits libcURL.cURLHandle
 		      s = mb.StringValue(0, i)
 		    End If
 		    Return s
-		  ElseIf mLastError = 1 Then ' no writeable connection
+		  ElseIf mLastError = libcURL.Errors.UNSUPPORTED_PROTOCOL Then ' no readable connection
 		    Return ""
 		  Else
 		    Dim err As New IOException
@@ -630,13 +630,12 @@ Inherits libcURL.cURLHandle
 		      Return Me.SetOptionPtr(OptionNumber, NewValue.PtrValue)
 		      
 		    Case IsA FolderItem
-		      Dim mb As MemoryBlock = FolderItem(NewValue).AbsolutePath + Chr(0)
-		      Return Me.SetOptionPtr(OptionNumber, mb)
+		      Return Me.SetOption(OptionNumber, FolderItem(NewValue).AbsolutePath)
 		      
 		    Case IsA Dictionary ' assume a multipart form
 		      Dim form As Dictionary = NewValue
 		      mForm = form
-		      Return SetOption(OptionNumber, mForm)
+		      Return Me.SetOption(OptionNumber, mForm)
 		      
 		    Case IsA libcURL.HTTPAuthMethods
 		      Dim auth As HTTPAuthMethods = NewValue
@@ -749,7 +748,7 @@ Inherits libcURL.cURLHandle
 		  mLastError = curl_easy_send(mHandle, mb, mb.Size, byteswritten)
 		  If mLastError = 0 Then
 		    Return byteswritten
-		  ElseIf mLastError = 1 Then ' no writeable connection
+		  ElseIf mLastError = libcURL.Errors.UNSUPPORTED_PROTOCOL Then ' no writeable connection
 		    Return 0
 		  Else
 		    Dim err As New IOException
@@ -1442,6 +1441,10 @@ Inherits libcURL.cURLHandle
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
+		Private mUseProgressEvent As Boolean = True
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
 		Private mUserAgent As String
 	#tag EndProperty
 
@@ -1461,7 +1464,7 @@ Inherits libcURL.cURLHandle
 			  ' See:
 			  ' http://curl.haxx.se/libcurl/c/curl_easy_getinfo.html#CURLINFOLOCALIP
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.NetworkInterface
-			  ' http://docs.realsoftware.com/index.php/NetworkInterface
+			  ' http://docs.xojo.com/index.php/NetworkInterface
 			  
 			  
 			  Dim ip As String = Me.GetInfo(libcURL.Info.LOCAL_IP)
@@ -1481,7 +1484,7 @@ Inherits libcURL.cURLHandle
 			  ' See:
 			  ' http://curl.haxx.se/libcurl/c/CURLOPT_INTERFACE.html
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.NetworkInterface
-			  ' http://docs.realsoftware.com/index.php/NetworkInterface
+			  ' http://docs.xojo.com/index.php/NetworkInterface
 			  
 			  If value <> Nil Then
 			    If Not Me.SetOption(libcURL.Opts.NETINTERFACE, value.IPAddress) Then Raise New cURLException(Me)
@@ -1517,7 +1520,7 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Note
 			SocketCore.Port workalike.
-			See: See: http://docs.realsoftware.com/index.php/SocketCore.Port
+			See: http://docs.xojo.com/index.php/SocketCore.Port
 			
 			Prior to connecting, you may set this value to the remote port to connect to. If the port is not specified
 			libcURL will select the default port for the inferred protocol (e.g. HTTP=80; HTTPS=443)
@@ -1711,6 +1714,29 @@ Inherits libcURL.cURLHandle
 			End Set
 		#tag EndSetter
 		UseErrorBuffer As Boolean
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  return mUseProgressEvent
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  ' Enables and disables the Progress event. The progress event is called very frequently, so if
+			  ' you aren't handling it then you may see a performance boost by disabling the event entirely.
+			  ' This can be toggled on and off at any time.
+			  
+			  If value Then
+			    If Not Me.SetOption(libcURL.Opts.NOPROGRESS, False) Then Raise New cURLException(Me)
+			  Else
+			    If Not Me.SetOption(libcURL.Opts.NOPROGRESS, True) Then Raise New cURLException(Me)
+			  End If
+			  mUseProgressEvent = value
+			End Set
+		#tag EndSetter
+		UseProgressEvent As Boolean
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
