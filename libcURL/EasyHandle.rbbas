@@ -546,6 +546,14 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Sub SetFormData(FormData As libcURL.MultipartForm)
+		  ' Sets the FormData MultipartForm object as the HTTP form to POST as multipart/form-data
+		  ' You may also pass a Dictionary of NAME:VALUE pairs comprising HTML form elements which
+		  ' will be automatically converted to a MultipartForm
+		  '
+		  ' See:
+		  ' https://curl.haxx.se/libcurl/c/CURLOPT_HTTPPOST.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.SetFormData
+		  
 		  Me.ClearFormData
 		  If Not Me.SetOption(libcURL.Opts.HTTPPOST, FormData) Then Raise New libcURL.cURLException(Me)
 		  mForm = FormData
@@ -554,9 +562,12 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Sub SetFormData(FormData() As String)
-		  'For i As Integer = 0 To UBound(FormData)
-		  'FormData(i) = URLEncode(FormData(i))
-		  'Next
+		  ' Sets FormData array as the HTTP form to POST as application/x-www-form-urlencoded
+		  ' Pass an array of "Name=Value" strings.
+		  '
+		  ' See:
+		  ' https://curl.haxx.se/libcurl/c/CURLOPT_COPYPOSTFIELDS.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.SetFormData
 		  
 		  Me.ClearFormData
 		  Dim data As String = Join(FormData, "&")
@@ -1968,6 +1979,11 @@ Inherits libcURL.cURLHandle
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="UseErrorBuffer"
+			Group="Behavior"
+			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="UseProgressEvent"
 			Group="Behavior"
 			Type="Boolean"
 		#tag EndViewProperty
