@@ -1727,6 +1727,10 @@ Inherits libcURL.cURLHandle
 			  ' Enables and disables the Progress event. The progress event is called very frequently, so if
 			  ' you aren't handling it then you may see a performance boost by disabling the event entirely.
 			  ' This can be toggled on and off at any time.
+			  '
+			  ' See:
+			  ' https://curl.haxx.se/libcurl/c/CURLOPT_NOPROGRESS.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.UseProgressEvent
 			  
 			  If value Then
 			    If Not Me.SetOption(libcURL.Opts.NOPROGRESS, False) Then Raise New cURLException(Me)
