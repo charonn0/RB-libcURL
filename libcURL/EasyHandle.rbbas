@@ -5,7 +5,7 @@ Inherits libcURL.cURLHandle
 		Sub ClearFormData()
 		  ' Clears all forms and resets upload options
 		  '
-		  ' See: 
+		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.ClearFormData
 		  
 		  If Not Me.SetOption(libcURL.Opts.POSTFIELDSIZE, -1) Then Raise New libcURL.cURLException(Me)
@@ -806,22 +806,11 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Function _curlDebug(info As curl_infotype, data As Ptr, Size As Integer) As Integer
+		Private Function _curlDebug(info As curl_infotype, data As MemoryBlock, Size As Integer) As Integer
 		  ' This method is the intermediary between DebugCallback and the DebugMessage event.
 		  ' DO NOT CALL THIS METHOD
-		  Dim mb As MemoryBlock = data
-		  Dim s As String = mb.StringValue(0, size)
-		  #If Debugbuild And RBVersion < 2013 Then
-		    Dim l As String = "libcURL(0x" + Hex(mHandle) + ") " + curl_infoname(info) + ": "
-		    Select Case info
-		    Case curl_infotype.data_in, curl_infotype.data_out, curl_infotype.ssl_in, curl_infotype.ssl_out
-		      l = l + Format(s.LenB, "###,###,###,###,###0") + " bytes"
-		    Else
-		      l = l + s
-		    End Select
-		    System.DebugLog(l)
-		  #endif
-		  RaiseEvent DebugMessage(info, s)
+		  
+		  RaiseEvent DebugMessage(info, data.StringValue(0, size))
 		  Return size
 		  
 		Exception Err As RuntimeException
