@@ -9,7 +9,9 @@ Inherits libcURL.cURLHandle
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.ClearFormData
 		  
 		  If Not Me.SetOption(libcURL.Opts.POSTFIELDSIZE, -1) Then Raise New libcURL.cURLException(Me)
-		  If Not Me.SetOption(libcURL.Opts.COPYPOSTFIELDS, Nil) Then Raise New libcURL.cURLException(Me)
+		  If libcURL.Version.IsAtLeast(7, 17, 1) Then
+		    If Not Me.SetOption(libcURL.Opts.COPYPOSTFIELDS, Nil) Then Raise New libcURL.cURLException(Me)
+		  End If
 		  If Not Me.SetOption(libcURL.Opts.HTTPPOST, Nil) Then Raise New libcURL.cURLException(Me)
 		  mForm = Nil
 		  mUploadMode = False
@@ -365,7 +367,11 @@ Inherits libcURL.cURLHandle
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_pause.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Pause
 		  
-		  mLastError = curl_easy_pause(mHandle, Mask)
+		  If libcURL.Version.IsAtLeast(7, 18, 0) Then
+		    mLastError = curl_easy_pause(mHandle, Mask)
+		  Else
+		    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
+		  End If
 		  Return mLastError = 0
 		End Function
 	#tag EndMethod
@@ -568,6 +574,11 @@ Inherits libcURL.cURLHandle
 		  ' See:
 		  ' https://curl.haxx.se/libcurl/c/CURLOPT_COPYPOSTFIELDS.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.SetFormData
+		  
+		  If Not libcURL.Version.IsAtLeast(7, 17, 1) Then
+		    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
+		    Raise New libcURL.cURLException(Me)
+		  End If
 		  
 		  Me.ClearFormData
 		  Dim data As String = Join(FormData, "&")
