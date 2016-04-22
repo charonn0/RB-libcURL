@@ -169,18 +169,24 @@ Protected Class cURLManager
 	#tag Method, Flags = &h0
 		Function Perform(URL As String, ReadFrom As Readable, WriteTo As Writeable) As Boolean
 		  ' Perform the transfer on the calling thread.
+		  ' If MORE_MAGIC is true, then run the loop as tightly as possible. This is less efficient
+		  ' (it pegs the CPU, for one) but can noticably improve transfer speeds.
 		  
 		  QueueTransfer(URL, ReadFrom, WriteTo)
 		  Dim now As Double = Microseconds
 		  Dim micro As Double
 		  Dim milli As Integer
-		  If micro < 1 Then micro = now
+		  #If Not MORE_MAGIC Then
+		    If micro < 1 Then micro = now
+		  #endif
 		  
 		  While mMultiItem.PerformOnce()
-		    If micro <= now + (milli * 1000) Then
-		      milli = mMultiItem.QueryInterval
-		      micro = now + (milli * 1000)
-		    End If
+		    #If Not MORE_MAGIC Then
+		      If micro <= now + (milli * 1000) Then
+		        milli = mMultiItem.QueryInterval
+		        micro = now + (milli * 1000)
+		      End If
+		    #endif
 		    #If TargetHasGUI Then
 		      App.SleepCurrentThread(milli)
 		    #Else
@@ -370,6 +376,10 @@ Protected Class cURLManager
 	#tag Property, Flags = &h21
 		Private mRequestHeaders As libcURL.ListPtr
 	#tag EndProperty
+
+
+	#tag Constant, Name = MORE_MAGIC, Type = Boolean, Dynamic = False, Default = \"False", Scope = Private
+	#tag EndConstant
 
 
 	#tag ViewBehavior
