@@ -51,7 +51,7 @@ Begin Window DemoWindow
       TextUnit        =   0
       Top             =   119
       Underline       =   ""
-      Value           =   3
+      Value           =   2
       Visible         =   True
       Width           =   596
       Begin Listbox Debug
@@ -1313,6 +1313,38 @@ Begin Window DemoWindow
          Visible         =   True
          Width           =   560
       End
+      Begin CheckBox NoProgress
+         AutoDeactivate  =   True
+         Bold            =   ""
+         Caption         =   "Progress Event"
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel2"
+         Italic          =   ""
+         Left            =   480
+         LockBottom      =   ""
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   ""
+         LockTop         =   True
+         Scope           =   0
+         State           =   0
+         TabIndex        =   27
+         TabPanelIndex   =   3
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   149
+         Underline       =   ""
+         Value           =   False
+         Visible         =   True
+         Width           =   111
+      End
    End
    Begin cURLClient Client
       Height          =   32
@@ -1898,6 +1930,38 @@ Begin Window DemoWindow
       Visible         =   True
       Width           =   80
    End
+   Begin CheckBox ShowDataMsgs
+      AutoDeactivate  =   True
+      Bold            =   ""
+      Caption         =   "Show data messages"
+      DataField       =   ""
+      DataSource      =   ""
+      Enabled         =   True
+      Height          =   20
+      HelpTag         =   ""
+      Index           =   -2147483648
+      InitialParent   =   ""
+      Italic          =   ""
+      Left            =   101
+      LockBottom      =   ""
+      LockedInPosition=   False
+      LockLeft        =   True
+      LockRight       =   ""
+      LockTop         =   True
+      Scope           =   0
+      State           =   0
+      TabIndex        =   14
+      TabPanelIndex   =   0
+      TabStop         =   True
+      TextFont        =   "System"
+      TextSize        =   0
+      TextUnit        =   0
+      Top             =   85
+      Underline       =   ""
+      Value           =   False
+      Visible         =   True
+      Width           =   145
+   End
 End
 #tag EndWindow
 
@@ -1920,10 +1984,18 @@ End
 		    Dim p As Pair = dbgmsgs.Pop
 		    Dim MessageType As libcURL.curl_infotype = p.Left
 		    Dim data As String = p.Right
-		    If MessageType = libcURL.curl_infotype.data_in Or MessageType = libcURL.curl_infotype.data_out _
-		      Or MessageType = libcURL.curl_infotype.ssl_in Or MessageType = libcURL.curl_infotype.ssl_out Then Continue
-		      Debug.AddRow(libcURL.curl_infoname(MessageType), data.Trim)
-		      Debug.ScrollPosition = Debug.ListCount
+		    Select Case MessageType
+		    Case libcURL.curl_infotype.data_in, libcURL.curl_infotype.data_out, libcURL.curl_infotype.ssl_in, libcURL.curl_infotype.ssl_out
+		      If ShowDataMsgs.Value Then
+		        data = Format(data.LenB, "###,###,###,###,###0") + " bytes"
+		      Else
+		        Continue
+		      End If
+		    End Select
+		    
+		    
+		    Debug.AddRow(libcURL.curl_infoname(MessageType), data.Trim)
+		    Debug.ScrollPosition = Debug.ListCount
 		  Loop
 		  ShowErrorBuffer()
 		  
@@ -2380,11 +2452,27 @@ End
 #tag Events PushButton10
 	#tag Event
 		Sub Action()
-		  If Not libcURL.ParseCommandLine(CmdLine.Text, Self.Client) Then 
+		  If Not libcURL.ParseCommandLine(CmdLine.Text, Self.Client) Then
 		    MsgBox("Unable to parse!")
 		  Else
 		    MsgBox("All options parsed successfully.")
 		  End If
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events NoProgress
+	#tag Event
+		Sub Open()
+		  If Client.EasyItem.UseProgressEvent Then
+		    Me.State = CheckBox.CheckedStates.Checked
+		  Else
+		    Me.State = CheckBox.CheckedStates.Unchecked
+		  End If
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Sub Action()
+		  Client.EasyItem.UseProgressEvent = Me.Value
 		End Sub
 	#tag EndEvent
 #tag EndEvents

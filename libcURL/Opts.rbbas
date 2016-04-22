@@ -9,6 +9,9 @@ Protected Module Opts
 	#tag Constant, Name = AUTOREFERER, Type = Double, Dynamic = False, Default = \"58", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = BUFFERSIZE, Type = Double, Dynamic = False, Default = \"98", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = CAINFO, Type = Double, Dynamic = False, Default = \"10065", Scope = Protected
 	#tag EndConstant
 
@@ -78,6 +81,9 @@ Protected Module Opts
 	#tag Constant, Name = DEBUGFUNCTION, Type = Double, Dynamic = False, Default = \"20094", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = DEFAULT_PROTOCOL, Type = Double, Dynamic = False, Default = \"10238", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = DIRLISTONLY, Type = Double, Dynamic = False, Default = \"48", Scope = Protected
 	#tag EndConstant
 
@@ -97,6 +103,9 @@ Protected Module Opts
 	#tag EndConstant
 
 	#tag Constant, Name = ERRORBUFFER, Type = Double, Dynamic = False, Default = \"10010", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = EXPECT_100_TIMEOUT_MS, Type = Double, Dynamic = False, Default = \"227", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = FAILONERROR, Type = Double, Dynamic = False, Default = \"45", Scope = Protected
@@ -144,6 +153,9 @@ Protected Module Opts
 	#tag Constant, Name = HEADERFUNCTION, Type = Double, Dynamic = False, Default = \"20079", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = HTTP200ALIASES, Type = Double, Dynamic = False, Default = \"10104", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = HTTPAUTH, Type = Double, Dynamic = False, Default = \"107", Scope = Protected
 	#tag EndConstant
 
@@ -162,6 +174,15 @@ Protected Module Opts
 	#tag Constant, Name = HTTPVERSION, Type = Double, Dynamic = False, Default = \"84", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = HTTP_CONTENT_DECODING, Type = Double, Dynamic = False, Default = \"158", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = HTTP_TRANSFER_DECODING, Type = Double, Dynamic = False, Default = \"157", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = IGNORE_CONTENT_LENGTH, Type = Double, Dynamic = False, Default = \"136", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = ISSUERCERT, Type = Double, Dynamic = False, Default = \"10170", Scope = Protected
 	#tag EndConstant
 
@@ -172,6 +193,12 @@ Protected Module Opts
 	#tag EndConstant
 
 	#tag Constant, Name = LOCALPORT, Type = Double, Dynamic = False, Default = \"139", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = LOW_SPEED_LIMIT, Type = Double, Dynamic = False, Default = \"19", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = LOW_SPEED_TIME, Type = Double, Dynamic = False, Default = \"20", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = MAIL_FROM, Type = Double, Dynamic = False, Default = \"10186", Scope = Protected
@@ -238,6 +265,9 @@ Protected Module Opts
 	#tag EndConstant
 
 	#tag Constant, Name = PASSWORD, Type = Double, Dynamic = False, Default = \"10174", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = PATH_AS_IS, Type = Double, Dynamic = False, Default = \"234", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = PIPELINING_SERVER_BL, Type = Double, Dynamic = False, Default = \"10012", Scope = Protected

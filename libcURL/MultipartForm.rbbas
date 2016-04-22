@@ -1728,7 +1728,7 @@ Inherits libcURL.cURLHandle
 		  Else
 		    Me.Destructor() ' free the previous form data
 		  End If
-		  If FromDict = Nil Then Raise New NilObjectException
+		  If FromDict = Nil Then Return
 		  For Each item As String In FromDict.Keys
 		    Dim value As Variant = FromDict.Value(item)
 		    If VarType(value) = Variant.TypeString Then
