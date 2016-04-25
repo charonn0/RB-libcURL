@@ -194,7 +194,7 @@ Inherits libcURL.cURLHandle
 		Protected Function ReadNextMsg(ByRef MsgsRemaining As Integer) As CURLMsg
 		  Dim p As Ptr = curl_multi_info_read(mHandle, MsgsRemaining)
 		  If p <> Nil Then
-		    Return p.CURLMsg(0)
+		    Return p.CURLMsg
 		  ElseIf MsgsRemaining = 0 Then
 		    MsgsRemaining = -1
 		  End If

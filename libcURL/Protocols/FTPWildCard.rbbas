@@ -9,7 +9,7 @@ Inherits libcURL.EasyHandle
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA FTPWildCard Then
 		    If TransferInfo <> Nil Then
-		      Return FTPWildCard(curl.Value)._curlChunkBegin(TransferInfo.FileInfo(0), Remaining)
+		      Return FTPWildCard(curl.Value)._curlChunkBegin(TransferInfo.FileInfo, Remaining)
 		    Else
 		      Return CURL_CHUNK_BGN_FUNC_FAIL
 		    End If

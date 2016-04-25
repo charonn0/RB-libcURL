@@ -118,7 +118,7 @@ Protected Module Version
 		      init = True
 		      Dim ve As Ptr = curl_version_info(CURLVERSION_FOURTH)
 		      Try
-		        mStruct = ve.CURLVersion(0)
+		        mStruct = ve.CURLVersion
 		      Catch err
 		        If err.Message = "" Then err.Message = "Unable to read libcURL version information."
 		        Raise err
