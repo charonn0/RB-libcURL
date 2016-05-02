@@ -188,7 +188,7 @@ Protected Class cURLManager
 		      End If
 		    #endif
 		    #If TargetHasGUI Then
-		      App.SleepCurrentThread(milli)
+		      App.SleepCurrentThread(Min(milli, 2000))
 		    #Else
 		      App.YieldToNextThread
 		    #EndIf
