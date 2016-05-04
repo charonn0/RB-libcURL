@@ -151,7 +151,7 @@ Inherits libcURL.cURLHandle
 	#tag EndDelegateDeclaration
 
 	#tag DelegateDeclaration, Flags = &h21
-		Private Delegate Function cURLProgressCallback(UserData As Integer, dlTotal As UInt64, dlnow As UInt64, ultotal As UInt64, ulnow As UInt64) As Integer
+		Private Delegate Function cURLProgressCallback(UserData As Integer, dlTotal As Int64, dlNow As Int64, ulTotal As Int64, ulnNow As Int64) As Integer
 	#tag EndDelegateDeclaration
 
 	#tag Method, Flags = &h21
@@ -400,7 +400,7 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Shared Function ProgressCallback(UserData As Integer, dlTotal As UInt64, dlnow As UInt64, ultotal As UInt64, ulnow As UInt64) As Integer
+		Private Shared Function ProgressCallback(UserData As Integer, dlTotal As Int64, dlNow As Int64, ulTotal As Int64, ulNow As Int64) As Integer
 		  ' This method is invoked by libcURL. DO NOT CALL THIS METHOD
 		  
 		  #pragma X86CallingConvention CDecl
@@ -880,7 +880,7 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Function _curlProgress(dlTotal As UInt64, dlnow As UInt64, ultotal As UInt64, ulnow As UInt64) As Integer
+		Private Function _curlProgress(dlTotal As Int64, dlNow As Int64, ulTotal As Int64, ulNow As Int64) As Integer
 		  ' This method is the intermediary between ProgressCallback and the Progress event.
 		  ' Return True from the Progress event to abort.
 		  ' DO NOT CALL THIS METHOD

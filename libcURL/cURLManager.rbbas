@@ -313,7 +313,7 @@ Protected Class cURLManager
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
-		Event Progress(dlTotal As UInt64, dlNow As Int64, ulTotal As Int64, ulNow As Int64) As Boolean
+		Event Progress(dlTotal As Int64, dlNow As Int64, ulTotal As Int64, ulNow As Int64) As Boolean
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
