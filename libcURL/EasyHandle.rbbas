@@ -968,7 +968,7 @@ Inherits libcURL.cURLHandle
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
-		Event DebugMessage(MessageType As libcURL.curl_infotype, data As String)
+		Event DebugMessage(MessageType As libcURL.curl_infotype, Data As String)
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
@@ -980,7 +980,7 @@ Inherits libcURL.cURLHandle
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
-		Event Progress(dlTotal As UInt64, dlnow As UInt64, ultotal As UInt64, ulnow As UInt64) As Boolean
+		Event Progress(dlTotal As Int64, dlNow As Int64, ulTotal As Int64, ulNow As Int64) As Boolean
 	#tag EndHook
 
 	#tag Hook, Flags = &h0

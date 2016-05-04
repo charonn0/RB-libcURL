@@ -280,7 +280,7 @@ Protected Class cURLManager
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Function _ProgressHandler(Sender As libcURL.EasyHandle, dlTotal As UInt64, dlnow As UInt64, ultotal As UInt64, ulnow As UInt64) As Boolean
+		Private Function _ProgressHandler(Sender As libcURL.EasyHandle, dlTotal As Int64, dlnow As Int64, ultotal As Int64, ulnow As Int64) As Boolean
 		  #pragma Unused Sender
 		  Return RaiseEvent Progress(dlTotal, dlnow, ultotal, ulnow)
 		End Function
@@ -313,7 +313,7 @@ Protected Class cURLManager
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
-		Event Progress(dlTotal As UInt64, dlnow As UInt64, ultotal As UInt64, ulnow As UInt64) As Boolean
+		Event Progress(dlTotal As UInt64, dlNow As Int64, ulTotal As Int64, ulNow As Int64) As Boolean
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
