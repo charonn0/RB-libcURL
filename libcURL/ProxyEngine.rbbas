@@ -67,15 +67,14 @@ Protected Class ProxyEngine
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ProxyEngine.IsProxied
 		  
-		  If mAddress = "" Then
-		    Return False
-		  Else
-		    For Each host As String In mExclusions
-		      Dim h As String = Right(Hostname, host.Len)
-		      If h = host And Mid(Hostname, Hostname.Len - h.Len, 1) = "." Then Return False
-		    Next
-		    Return True
-		  End If
+		  If mAddress = "" Then Return False
+		  
+		  For Each host As String In mExclusions
+		    Dim h As String = Right(Hostname, host.Len)
+		    If h = host And Mid(Hostname, Hostname.Len - h.Len, 1) = "." Then Return False
+		  Next
+		  Return True
+		  
 		End Function
 	#tag EndMethod
 

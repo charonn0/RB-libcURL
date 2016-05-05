@@ -19,7 +19,7 @@ Protected Class CookieEngine
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine.Count
 		  
-		  Return CookieList.Count
+		  If CookieList <> Nil Then Return CookieList.Count
 		End Function
 	#tag EndMethod
 

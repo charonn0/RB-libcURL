@@ -2068,11 +2068,11 @@ End
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private mdlnow As UInt64
+		Private mdlnow As Int64
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private mdltotal As UInt64
+		Private mdltotal As Int64
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -2080,11 +2080,11 @@ End
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private mulnow As UInt64
+		Private mulnow As Int64
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private multotal As UInt64
+		Private multotal As Int64
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -2478,7 +2478,7 @@ End
 #tag EndEvents
 #tag Events Client
 	#tag Event
-		Function Progress(dlTotal As UInt64, dlnow As UInt64, ultotal As UInt64, ulnow As UInt64) As Boolean
+		Function Progress(dlTotal As UInt64, dlNow As Int64, ulTotal As Int64, ulNow As Int64) As Boolean
 		  mdlnow = dlnow
 		  mdltotal = dlTotal
 		  mulnow = ulnow

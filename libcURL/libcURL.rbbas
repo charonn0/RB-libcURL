@@ -497,6 +497,20 @@ Protected Module libcURL
 		    Case arg = "--location", StrComp("-L", arg, 1) = 0
 		      Client.EasyItem.FollowRedirects = True
 		      
+		    Case arg = "--mail-from"
+		      If Not Client.SetOption(libcURL.Opts.MAIL_FROM, output(i + 1)) Then
+		        Break
+		        Return False
+		      End If
+		      i = i + 1
+		      
+		    Case arg = "--mail-rcpt"
+		      If Not Client.SetOption(libcURL.Opts.MAIL_RCPT, output(i + 1)) Then
+		        Break
+		        Return False
+		      End If
+		      i = i + 1
+		      
 		    Case arg = "--no-alpn"
 		      If Not Client.SetOption(libcURL.Opts.SSL_ENABLE_ALPN, False) Then
 		        Break
@@ -517,6 +531,22 @@ Protected Module libcURL
 		        End If
 		      Next
 		      i = i + 1
+		      
+		    Case arg = "--netrc", StrComp("-n", arg, 1) = 0
+		      If output.Ubound >= i + 1 Then
+		        Dim f As FolderItem = GetFolderItem(output(i + 1))
+		        If f <> Nil And f.Exists Then
+		          i = i + 1
+		          If Not Client.SetOption(libcURL.Opts.NETRC_FILE, f) Then
+		            Break
+		            Return False
+		          End If
+		        End If
+		      ElseIf Not Client.SetOption(libcURL.Opts.NETRC_FILE, "") Then
+		        Break
+		        Return False
+		      End If
+		      
 		      
 		    Case arg = "--proxy", StrComp("-x", arg, 1) = 0
 		      Client.Proxy.Address = output(i + 1)
@@ -568,6 +598,12 @@ Protected Module libcURL
 		        Return False
 		      End If
 		      i = i + 1
+		      
+		    Case arg = "--ssl"
+		      Client.EasyItem.ConnectionType = libcURL.ConnectionType.AttemptSSL
+		      
+		    Case arg = "--ssl-reqd"
+		      Client.EasyItem.ConnectionType = libcURL.ConnectionType.SSLForceAll
 		      
 		    Case arg = "--sslv2", arg = "-2"
 		      Client.EasyItem.SSLVersion = libcURL.SSLVersion.SSLv2

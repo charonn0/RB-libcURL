@@ -169,20 +169,26 @@ Protected Class cURLManager
 	#tag Method, Flags = &h0
 		Function Perform(URL As String, ReadFrom As Readable, WriteTo As Writeable) As Boolean
 		  ' Perform the transfer on the calling thread.
+		  ' If MORE_MAGIC is true, then run the loop as tightly as possible. This is less efficient
+		  ' (it pegs the CPU, for one) but can noticably improve transfer speeds.
 		  
 		  QueueTransfer(URL, ReadFrom, WriteTo)
 		  Dim now As Double = Microseconds
 		  Dim micro As Double
 		  Dim milli As Integer
-		  If micro < 1 Then micro = now
+		  #If Not MORE_MAGIC Then
+		    If micro < 1 Then micro = now
+		  #endif
 		  
 		  While mMultiItem.PerformOnce()
-		    If micro <= now + (milli * 1000) Then
-		      milli = mMultiItem.QueryInterval
-		      micro = now + (milli * 1000)
-		    End If
+		    #If Not MORE_MAGIC Then
+		      If micro <= now + (milli * 1000) Then
+		        milli = mMultiItem.QueryInterval
+		        micro = now + (milli * 1000)
+		      End If
+		    #endif
 		    #If TargetHasGUI Then
-		      App.SleepCurrentThread(milli)
+		      App.SleepCurrentThread(Min(milli, 2000))
 		    #Else
 		      App.YieldToNextThread
 		    #EndIf
@@ -274,7 +280,7 @@ Protected Class cURLManager
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Function _ProgressHandler(Sender As libcURL.EasyHandle, dlTotal As UInt64, dlnow As UInt64, ultotal As UInt64, ulnow As UInt64) As Boolean
+		Private Function _ProgressHandler(Sender As libcURL.EasyHandle, dlTotal As Int64, dlnow As Int64, ultotal As Int64, ulnow As Int64) As Boolean
 		  #pragma Unused Sender
 		  Return RaiseEvent Progress(dlTotal, dlnow, ultotal, ulnow)
 		End Function
@@ -307,7 +313,7 @@ Protected Class cURLManager
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
-		Event Progress(dlTotal As UInt64, dlnow As UInt64, ultotal As UInt64, ulnow As UInt64) As Boolean
+		Event Progress(dlTotal As Int64, dlNow As Int64, ulTotal As Int64, ulNow As Int64) As Boolean
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
@@ -370,6 +376,10 @@ Protected Class cURLManager
 	#tag Property, Flags = &h21
 		Private mRequestHeaders As libcURL.ListPtr
 	#tag EndProperty
+
+
+	#tag Constant, Name = MORE_MAGIC, Type = Boolean, Dynamic = False, Default = \"False", Scope = Private
+	#tag EndConstant
 
 
 	#tag ViewBehavior
