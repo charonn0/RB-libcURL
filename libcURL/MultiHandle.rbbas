@@ -122,7 +122,7 @@ Inherits libcURL.cURLHandle
 		  
 		  If StackLocked Then
 		    mLastError = libcURL.Errors.CALL_LOOP_DETECTED
-		    Raise New libcURL.cURLException(Me)
+		    Raise New libcURL.cURLException(Me) ' Called by an EasyHandle or MultiHandle event!
 		  End If
 		  StackLocked = True
 		  Try
