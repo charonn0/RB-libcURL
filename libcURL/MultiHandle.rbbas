@@ -325,6 +325,13 @@ Inherits libcURL.cURLHandle
 		#tag EndGetter
 		#tag Setter
 			Set
+			  ' Sets whether two (or more) HTTP requests which are added to the same MultiHandle can be
+			  ' multiplexed over the same connection (HTTP/2 required).
+			  '
+			  ' See:
+			  ' https://curl.haxx.se/libcurl/c/CURLMOPT_PIPELINING.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.HTTPMultiplexing
+			  
 			  If Not libcURL.Version.IsAtLeast(7, 43, 0) Then
 			    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
 			    Return
@@ -349,6 +356,13 @@ Inherits libcURL.cURLHandle
 		#tag EndGetter
 		#tag Setter
 			Set
+			  ' Sets whether two (or more) HTTP requests which are added to the same MultiHandle can be 
+			  ' pipelined over the same connection (server support required).
+			  '
+			  ' See:
+			  ' https://curl.haxx.se/libcurl/c/CURLMOPT_PIPELINING.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.HTTPPipelining
+			  
 			  If Not libcURL.Version.IsAtLeast(7, 16, 0) Then
 			    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
 			    Return
