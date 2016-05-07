@@ -126,7 +126,7 @@ Inherits libcURL.cURLHandle
 		    mUserAgent = CopyOpts.UserAgent
 		    mUsername = CopyOpts.Username
 		    Me.Verbose = CopyOpts.Verbose
-		    
+		    mForm = CopyOpts.mForm
 		  Else
 		    mLastError = libcURL.Errors.INIT_FAILED
 		    Raise New cURLException(Me)
