@@ -317,12 +317,64 @@ Inherits libcURL.cURLHandle
 	#tag EndNote
 
 
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  return mHTTPMultiplexing
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  If Not libcURL.Version.IsAtLeast(7, 43, 0) Then
+			    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
+			    Return
+			  End If
+			  
+			  If value Then
+			    If Not Me.SetOption(libcURL.Opts.Multi_PIPELINING, 2) Then Raise new libcURL.cURLException(Me)
+			  Else
+			    If Not Me.SetOption(libcURL.Opts.Multi_PIPELINING, mHTTPPipelining) Then Raise new libcURL.cURLException(Me)
+			  End If
+			  mHTTPMultiplexing = value
+			End Set
+		#tag EndSetter
+		HTTPMultiplexing As Boolean
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  return mHTTPPipelining
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  If Not libcURL.Version.IsAtLeast(7, 16, 0) Then
+			    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
+			    Return
+			  End If
+			  
+			  If Not Me.SetOption(libcURL.Opts.Multi_PIPELINING, value) Then Raise new libcURL.cURLException(Me)
+			  mHTTPPipelining = value
+			End Set
+		#tag EndSetter
+		HTTPPipelining As Boolean
+	#tag EndComputedProperty
+
 	#tag Property, Flags = &h21
 		Private Instances As Dictionary
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
 		Private LastCount As Integer = -1
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mHTTPMultiplexing As Boolean
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mHTTPPipelining As Boolean
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
