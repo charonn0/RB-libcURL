@@ -109,7 +109,10 @@ Inherits libcURL.cURLHandle
 	#tag Method, Flags = &h0
 		Function RemoveItem(Item As libcURL.EasyHandle) As Boolean
 		  ' Remove an easy handle from share handle.
-		  ' See: http://curl.haxx.se/libcurl/c/CURLOPT_SHARE.html
+		  '
+		  ' See: 
+		  ' http://curl.haxx.se/libcurl/c/CURLOPT_SHARE.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ShareHandle.RemoveItem
 		  
 		  If SharedHandles.HasKey(Item.Handle) And Item.SetOption(libcURL.Opts.SHARE, Nil) Then
 		    SharedHandles.Remove(Item.Handle)
