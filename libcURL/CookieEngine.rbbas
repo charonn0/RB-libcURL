@@ -103,21 +103,23 @@ Protected Class CookieEngine
 
 	#tag Method, Flags = &h0
 		Function Flush(CookieFile As FolderItem = Nil) As Boolean
-		  ' Flushes all cookies to a file. If no CookieFile is specified then the cookiejar is used.
+		  ' Flushes all cookies to a file. If no CookieFile is specified as a parameter then the cookiejar property is used.
 		  '
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine.Flush
 		  
 		  If libcURL.Version.IsAtLeast(7, 17, 1) Then
 		    Dim OK As Boolean
-		    If CookieFile <> Nil Then
-		      Dim tmp As FolderItem = Me.CookieJar
-		      Me.CookieJar = CookieFile
-		      OK = Owner.SetOption(libcURL.Opts.COOKIELIST, "FLUSH")
-		      Me.CookieJar = tmp
+		    If CookieFile = Nil Then CookieFile = mCookieJar
+		    If CookieFile = Nil Then
+		      ErrorSetter(Owner).LastError = libcURL.Errors.NO_COOKIEJAR
+		      Return False
 		    End If
+		    OK = Owner.SetOption(libcURL.Opts.COOKIEJAR, CookieFile)
+		    If OK Then OK = Owner.SetOption(libcURL.Opts.COOKIELIST, "FLUSH")
+		    If OK Then OK = Owner.SetOption(libcURL.Opts.COOKIEJAR, mCookieJar)
 		    Me.Invalidate
-		    Return Owner.SetOption(libcURL.Opts.COOKIELIST, "FLUSH")
+		    Return OK
 		  Else
 		    ErrorSetter(Owner).LastError = libcURL.Errors.FEATURE_UNAVAILABLE
 		    Return False
@@ -165,7 +167,23 @@ Protected Class CookieEngine
 		    n = Me.Name(i)
 		    If CookieName = "" Or n = CookieName Or (Not Strict And InStr(n, CookieName) > 0) Then
 		      d = Me.Domain(i)
-		      If CookieDomain = "" Or CookieDomain = d Or "." + CookieDomain = d Or (Not Strict And InStr(d, CookieDomain) > 0) Then
+		      If d = "" Or CookieDomain = "" Then Return i
+		      If Strict Then 
+		        Dim pattern() As String = Split(CookieDomain, ".")
+		        Dim data() As String = Split(d, ".")
+		        For x As Integer = UBound(data) DownTo 0
+		          If data(x).Trim = "" Then data.Remove(x)
+		        Next
+		        For x As Integer = UBound(pattern) DownTo 0
+		          If pattern(x).Trim = "" Then pattern.Remove(x)
+		        Next
+		        Dim count As Integer = Min(data.Ubound, pattern.Ubound)
+		        For j As Integer = 0 To count
+		          If StrComp(pattern(j), data(j), 0) <> 0 Then Continue For i
+		        Next
+		        Return i
+		      Else
+		        If CookieDomain <> "" And CookieDomain <> d And "." + CookieDomain <> d And InStr(CookieDomain, d) = 0 Then Continue For i
 		        Return i
 		      End If
 		    End If

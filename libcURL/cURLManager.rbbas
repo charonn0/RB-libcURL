@@ -206,6 +206,8 @@ Protected Class cURLManager
 
 	#tag Method, Flags = &h21
 		Private Sub QueueTransfer(URL As String, ReadFrom As Readable, WriteTo As Writeable)
+		  If Not mMultiItem.AddItem(mEasyItem) Then Raise New libcURL.cURLException(mMultiItem)
+		  
 		  mIsTransferComplete = False
 		  If URL.Trim <> "" Then mEasyItem.URL = URL
 		  mHeaders = Nil
@@ -218,8 +220,6 @@ Protected Class cURLManager
 		  mEasyItem.DownloadStream = WriteTo
 		  mEasyItem.UploadStream = ReadFrom
 		  If mEasyItem.UseErrorBuffer Then mEasyItem.UseErrorBuffer = True ' clears the previous buffer, if any
-		  
-		  If Not mMultiItem.AddItem(mEasyItem) Then Raise New libcURL.cURLException(mMultiItem)
 		  
 		End Sub
 	#tag EndMethod
@@ -256,9 +256,9 @@ Protected Class cURLManager
 		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLManager.SetRequestMethod
 		  
 		  If RequestMethod.Trim <> "" Then
-		    Return Me.EasyItem.SetOption(libcURL.Opts.CUSTOMREQUEST, RequestMethod)
+		    Return mEasyItem.SetOption(libcURL.Opts.CUSTOMREQUEST, RequestMethod)
 		  Else
-		    Return Me.EasyItem.SetOption(libcURL.Opts.CUSTOMREQUEST, Nil)
+		    Return mEasyItem.SetOption(libcURL.Opts.CUSTOMREQUEST, Nil)
 		  End If
 		End Function
 	#tag EndMethod

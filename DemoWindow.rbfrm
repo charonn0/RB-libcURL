@@ -2478,7 +2478,7 @@ End
 #tag EndEvents
 #tag Events Client
 	#tag Event
-		Function Progress(dlTotal As UInt64, dlNow As Int64, ulTotal As Int64, ulNow As Int64) As Boolean
+		Function Progress(dlTotal As Int64, dlNow As Int64, ulTotal As Int64, ulNow As Int64) As Boolean
 		  mdlnow = dlnow
 		  mdltotal = dlTotal
 		  mulnow = ulnow

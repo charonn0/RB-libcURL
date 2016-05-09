@@ -51,7 +51,7 @@ Every transfer is associated with an `EasyHandle`. After creating a new `EasyHan
 
 Once all the desired options have been set (e.g. URL, port, username and/or password, cookies, etc.) you are ready to begin the transfer. Depending on your specific requirements, you can do it in one of several ways. 
 
-You may call [`EasyHandle`](https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle).[`Perform`](https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Perform) directly. However, this is a blocking call; not merely asynchronous: the entire application _halts_ for the duration of the transfer. As such, it is useful only in single-threaded console applications.
+You may call [`EasyHandle`](https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle).[`Perform`](https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Perform) directly. However, this is a blocking call; not merely synchronous: the entire application _halts_ for the duration of the transfer. As such, it is useful only in single-threaded console applications.
 
 To perform one or more transfers in a non-halting manner use the `MultiHandle` class. The `MultiHandle` class represents a `curl_multi` handle (AKA a "stack"). [Add](https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.AddItem) the `EasyHandle` to the multi stack and then call [`MultiHandle`](https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle).[`Perform`](https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.Perform) (or [`MultiHandle`](https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle).[`PerformOnce`](https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.PerformOnce) on a RB/Xojo thread.)
 
@@ -79,7 +79,10 @@ RB-libcURL will raise a PlatformNotSupportedException when used if all required 
 * [FTP Download](https://github.com/charonn0/RB-libcURL/wiki/FTP-RETR-Example)
 * [FTP Upload](https://github.com/charonn0/RB-libcURL/wiki/FTP-STOR-Example)
 * [FTP custom commands](https://github.com/charonn0/RB-libcURL/wiki/FTP-custom-commands)
+* [FTP directory enumeration](https://github.com/charonn0/RB-libcURL/wiki/FTP-directory-enumeration)
 * [SMTP Send](https://github.com/charonn0/RB-libcURL/wiki/SMTP-Example)
 * [DNS control](https://github.com/charonn0/RB-libcURL/wiki/DNS-Example)
+* [DICT lookup example](https://github.com/charonn0/RB-libcURL/wiki/DICT-example)
+* [FILE protocol example](https://github.com/charonn0/RB-libcURL/wiki/FILE-protocol-example)
 
 ![Powered by libcURL](https://raw.githubusercontent.com/wiki/charonn0/RB-libcURL/powered_by_curl7.gif)
