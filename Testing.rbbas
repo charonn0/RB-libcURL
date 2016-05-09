@@ -66,7 +66,7 @@ Protected Module Testing
 		  
 		  Dim index As Integer
 		  Do Until index = -1
-		    index = c.Cookies.Lookup("", "www.example.com", index)
+		    index = c.Cookies.Lookup("test1", "www.example.com", index)
 		    If index > -1 Then
 		      Assert(c.Cookies.HTTPOnly(index))
 		      Assert(c.Cookies.Expiry(index) = Nil)
@@ -81,7 +81,7 @@ Protected Module Testing
 		  index = 0
 		  
 		  Do Until index = -1
-		    index = c.Cookies.Lookup("", "api.example.com", index)
+		    index = c.Cookies.Lookup("test2", "api.example.com", index)
 		    If index > -1 Then
 		      Assert(Not c.Cookies.HTTPOnly(index))
 		      Assert(c.Cookies.Expiry(index) > New Date)
@@ -94,7 +94,7 @@ Protected Module Testing
 		  Loop
 		  
 		  index = 0
-		  index = c.Cookies.Lookup("", "example.com", index)
+		  index = c.Cookies.Lookup("test3", "example.com", index)
 		  
 		  If index > -1 Then
 		    Assert(Not c.Cookies.HTTPOnly(index))
@@ -106,7 +106,7 @@ Protected Module Testing
 		  End If
 		  
 		  index = 0
-		  index = c.Cookies.Lookup("", ".example.com", 3)
+		  index = c.Cookies.Lookup("test4", ".example.com", 3)
 		  
 		  If index > -1 Then
 		    Assert(Not c.Cookies.HTTPOnly(index))
