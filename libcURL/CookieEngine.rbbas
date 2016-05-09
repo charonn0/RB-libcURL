@@ -168,14 +168,18 @@ Protected Class CookieEngine
 		    If CookieName = "" Or n = CookieName Or (Not Strict And InStr(n, CookieName) > 0) Then
 		      d = Me.Domain(i)
 		      If d = "" Or CookieDomain = "" Then Return i
-		      If Strict Then 
-		        Dim pattern() As String = Split(CookieDomain, ".")
-		        Dim data() As String = Split(d, ".")
-		        For x As Integer = UBound(data) DownTo 0
-		          If data(x).Trim = "" Then data.Remove(x)
+		      If Strict Then
+		        Dim tmp() As String = Split(CookieDomain, ".")
+		        Dim pattern() As String
+		        For j As Integer = 0 To UBound(tmp)
+		          If tmp(j).Trim = "" Then Continue
+		          pattern.Insert(0, URLDecode(tmp(j)))
 		        Next
-		        For x As Integer = UBound(pattern) DownTo 0
-		          If pattern(x).Trim = "" Then pattern.Remove(x)
+		        tmp = Split(d, ".")
+		        Dim data() As String
+		        For j As Integer = 0 To UBound(tmp)
+		          If tmp(j).Trim = "" Then Continue
+		          data.Insert(0, URLDecode(tmp(j)))
 		        Next
 		        Dim count As Integer = Min(data.Ubound, pattern.Ubound)
 		        For j As Integer = 0 To count
