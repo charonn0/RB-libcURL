@@ -40,7 +40,7 @@ Protected Class cURLManager
 		    mEasyItem.FailOnServerError = True
 		    mEasyItem.FollowRedirects = True
 		    mEasyItem.AutoReferer = True
-		    mEasyItem.HTTPCompression = True
+		    mEasyItem.HTTPCompression = libcURL.Version.LibZ.IsAvailable
 		  End If
 		  
 		  mMultiItem = New libcURL.MultiHandle
