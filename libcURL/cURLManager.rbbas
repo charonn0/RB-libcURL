@@ -349,6 +349,16 @@ Protected Class cURLManager
 		EasyItem As libcURL.EasyHandle
 	#tag EndComputedProperty
 
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  Dim v As Integer = Me.GetInfo(libcURL.Info.SSL_VERIFYRESULT)
+			  Return v = 0
+			End Get
+		#tag EndGetter
+		IsSSLCertOK As Boolean
+	#tag EndComputedProperty
+
 	#tag Property, Flags = &h21
 		Private mDownloadMB As MemoryBlock
 	#tag EndProperty
