@@ -2,6 +2,12 @@
 Protected Class cURLManager
 	#tag Method, Flags = &h0
 		Sub Close()
+		  ' Explicitly closes all libcURL handles associated with the cURLManager instance. 
+		  ' Automatically called by the Destructor.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLManager.Close
+		  
 		  If mMultiItem <> Nil Then mMultiItem.Close()
 		  If mEasyItem <> Nil And mRemoveHandlers Then
 		    #pragma BreakOnExceptions Off
@@ -81,6 +87,11 @@ Protected Class cURLManager
 
 	#tag Method, Flags = &h0
 		Function Cookies() As libcURL.CookieEngine
+		  ' Returns a reference to a CookieEngine instance
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLManager.Cookies
+		  
 		  Return mEasyItem.CookieEngine
 		End Function
 	#tag EndMethod
@@ -94,6 +105,12 @@ Protected Class cURLManager
 
 	#tag Method, Flags = &h0
 		Function GetCookie(Name As String, Domain As String) As String
+		  ' Gets the value of the cookie named Name set for host Domain, or the empty string ("") if 
+		  ' no cookie is found.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLManager.GetCookie
+		  
 		  Dim index As Integer = mEasyItem.CookieEngine.Lookup(Name, Domain)
 		  If index > -1 Then Return mEasyItem.CookieEngine.Value(index)
 		End Function
@@ -105,6 +122,9 @@ Protected Class cURLManager
 		  ' If you passed a Writeable object to any of the transfer methods (get, post, put) then this
 		  ' method will return an empty MemoryBlock (not Nil) as the data will have been downloaded into
 		  ' the Writeable object directly.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLManager.GetDownloadedData
 		  
 		  If mDownloadMB <> Nil Then Return mDownloadMB
 		  Dim data As New MemoryBlock(0)
@@ -123,6 +143,11 @@ Protected Class cURLManager
 
 	#tag Method, Flags = &h0
 		Function GetInfo(InfoType As Integer) As Variant
+		  ' Calls GetInfo on the EasyHandle. Refer to the EasyHandle.GetInfo documentation for details.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLManager.GetInfo
+		  
 		  If mEasyItem <> Nil Then Return mEasyItem.GetInfo(InfoType)
 		End Function
 	#tag EndMethod
@@ -131,6 +156,9 @@ Protected Class cURLManager
 		Function GetResponseHeaders() As InternetHeaders
 		  ' Returns an InternetHeaders object containing all protocol headers received from the server
 		  ' during the most recent transfer. If no headers were received, returns Nil.
+		  ' 
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLManager.GetResponseHeaders
 		  
 		  Return mHeaders
 		End Function
@@ -141,25 +169,43 @@ Protected Class cURLManager
 		  ' Returns a protocol-specific status code for the most recent transfer. If the transfer
 		  ' involved several status codes (FTP anything, HTTP redirects, etc.) then only the most
 		  ' recent code is returned.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLManager.GetStatusCode
+		  
 		  Return Me.GetInfo(libcURL.Info.RESPONSE_CODE).Int32Value
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function IsTransferComplete() As Boolean
+		  ' After a transfer is initiated this method will return False until the 
+		  ' transfer completes (successfully or not.)
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLManager.IsTransferComplete
+		  
 		  Return mIsTransferComplete
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function LastError() As Integer
+		  ' Gets the most recent cURL easy error code for the transfer.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLManager.LastError
+		  
 		  Return mEasyItem.LastError
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub Perform(URL As String, ReadFrom As Readable, WriteTo As Writeable)
-		  ' Perform the transfer on the main thread/event loop.
+		  ' Performs the transfer on the main thread/event loop.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLManager.Perform
 		  
 		  QueueTransfer(URL, ReadFrom, WriteTo)
 		  mMultiItem.Perform()
@@ -171,6 +217,9 @@ Protected Class cURLManager
 		  ' Perform the transfer on the calling thread.
 		  ' If MORE_MAGIC is true, then run the loop as tightly as possible. This is less efficient
 		  ' (it pegs the CPU, for one) but can noticably improve transfer speeds.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLManager.Perform
 		  
 		  QueueTransfer(URL, ReadFrom, WriteTo)
 		  Dim now As Double = Microseconds
@@ -200,6 +249,11 @@ Protected Class cURLManager
 
 	#tag Method, Flags = &h0
 		Function Proxy() As libcURL.ProxyEngine
+		  ' Returns a reference to a ProxyEngine instance
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLManager.Proxy
+		  
 		  Return mEasyItem.ProxyEngine
 		End Function
 	#tag EndMethod
@@ -226,12 +280,22 @@ Protected Class cURLManager
 
 	#tag Method, Flags = &h0
 		Function SetCookie(Name As String, Value As String, Domain As String, Expires As Date = Nil, Path As String = "", HTTPOnly As Boolean = False) As Boolean
+		  ' Sets or updates a cookie. The cookie engine must be enabled.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLManager.SetCookie
+		  
 		  Return mEasyItem.CookieEngine.SetCookie(Name, Value, Domain, Expires, Path, HTTPOnly)
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function SetOption(OptionNumber As Integer, NewValue As Variant) As Boolean
+		  ' Calls SetOption on the EasyHandle. Refer to the EasyHandle.SetOption documentation for details.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLManager.SetOption
+		  
 		  If mEasyItem <> Nil Then Return mEasyItem.SetOption(OptionNumber, NewValue)
 		End Function
 	#tag EndMethod
@@ -289,7 +353,9 @@ Protected Class cURLManager
 	#tag Method, Flags = &h21
 		Private Sub _TransferCompleteHandler(Sender As libcURL.MultiHandle, Item As libcURL.EasyHandle)
 		  #pragma Unused Sender
-		  If mEasyItem.DownloadStream <> Nil And mEasyItem.DownloadStream IsA BinaryStream And mDownloadMB <> Nil Then BinaryStream(mEasyItem.DownloadStream).Close
+		  If mDownloadMB <> Nil And mEasyItem.DownloadStream <> Nil And mEasyItem.DownloadStream IsA BinaryStream Then 
+		    BinaryStream(mEasyItem.DownloadStream).Close
+		  End If
 		  Dim status As Integer = Item.LastError
 		  If status <> 0 Then
 		    RaiseEvent Error(status)
@@ -329,6 +395,11 @@ Protected Class cURLManager
 		#tag EndGetter
 		#tag Setter
 			Set
+			  ' Gets and sets the EasyHandle instance which will be/has been used to conduct transfers.
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/cURLManager.EasyItem
+			  
 			  Me.Close()
 			  Try
 			    AddHandler value.DebugMessage, WeakAddressOf _DebugMessageHandler
@@ -352,6 +423,14 @@ Protected Class cURLManager
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' When using OpenSSL or NSS, returns True if the server's SSL/TLS certificate was valid and 
+			  ' verified by a trusted certificate authority. If the connection did not use SSL/TLS then 
+			  ' this property will always be False.
+			  ' 
+			  ' See:
+			  ' https://curl.haxx.se/libcurl/c/CURLINFO_SSL_VERIFYRESULT.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/cURLManager.IsSSLCertOK
+			  
 			  Dim v As Integer = Me.GetInfo(libcURL.Info.SSL_VERIFYRESULT)
 			  Return v = 0
 			End Get
@@ -399,6 +478,11 @@ Protected Class cURLManager
 			Group="ID"
 			InitialValue="-2147483648"
 			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="IsSSLCertOK"
+			Group="Behavior"
+			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
