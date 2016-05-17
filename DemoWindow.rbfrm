@@ -42,7 +42,7 @@ Begin Window DemoWindow
       Panels          =   ""
       Scope           =   0
       SmallTabs       =   ""
-      TabDefinition   =   "Information\rOutput\rFeatures\rCommand Line"
+      TabDefinition   =   "Information\rOutput\rFeatures\rCommand Line\rCookies"
       TabIndex        =   11
       TabPanelIndex   =   0
       TabStop         =   True
@@ -51,7 +51,7 @@ Begin Window DemoWindow
       TextUnit        =   0
       Top             =   119
       Underline       =   ""
-      Value           =   2
+      Value           =   1
       Visible         =   True
       Width           =   596
       Begin Listbox Debug
@@ -72,7 +72,7 @@ Begin Window DemoWindow
          GridLinesVertical=   0
          HasHeading      =   True
          HeadingIndex    =   -1
-         Height          =   120
+         Height          =   85
          HelpTag         =   ""
          Hierarchical    =   ""
          Index           =   -2147483648
@@ -96,7 +96,7 @@ Begin Window DemoWindow
          TextFont        =   "System"
          TextSize        =   0
          TextUnit        =   0
-         Top             =   273
+         Top             =   308
          Underline       =   ""
          UseFocusRing    =   True
          Visible         =   True
@@ -314,9 +314,9 @@ Begin Window DemoWindow
          GridLinesVertical=   0
          HasHeading      =   True
          HeadingIndex    =   -1
-         Height          =   119
+         Height          =   155
          HelpTag         =   ""
-         Hierarchical    =   ""
+         Hierarchical    =   True
          Index           =   -2147483648
          InitialParent   =   "TabPanel2"
          InitialValue    =   "Info Name	Last request Value"
@@ -604,136 +604,6 @@ Begin Window DemoWindow
          Underline       =   ""
          Visible         =   True
          Width           =   34
-      End
-      Begin PushButton CookieJarUnset
-         AutoDeactivate  =   True
-         Bold            =   ""
-         ButtonStyle     =   0
-         Cancel          =   ""
-         Caption         =   "Unset"
-         Default         =   ""
-         Enabled         =   True
-         Height          =   22
-         HelpTag         =   ""
-         Index           =   -2147483648
-         InitialParent   =   "TabPanel2"
-         Italic          =   ""
-         Left            =   558
-         LockBottom      =   True
-         LockedInPosition=   False
-         LockLeft        =   False
-         LockRight       =   True
-         LockTop         =   False
-         Scope           =   0
-         TabIndex        =   10
-         TabPanelIndex   =   3
-         TabStop         =   True
-         TextFont        =   "System"
-         TextSize        =   0
-         TextUnit        =   0
-         Top             =   329
-         Underline       =   ""
-         Visible         =   True
-         Width           =   34
-      End
-      Begin PushButton CookieJarSet
-         AutoDeactivate  =   True
-         Bold            =   ""
-         ButtonStyle     =   0
-         Cancel          =   ""
-         Caption         =   "Set"
-         Default         =   ""
-         Enabled         =   True
-         Height          =   22
-         HelpTag         =   ""
-         Index           =   -2147483648
-         InitialParent   =   "TabPanel2"
-         Italic          =   ""
-         Left            =   525
-         LockBottom      =   True
-         LockedInPosition=   False
-         LockLeft        =   False
-         LockRight       =   True
-         LockTop         =   False
-         Scope           =   0
-         TabIndex        =   11
-         TabPanelIndex   =   3
-         TabStop         =   True
-         TextFont        =   "System"
-         TextSize        =   0
-         TextUnit        =   0
-         Top             =   329
-         Underline       =   ""
-         Visible         =   True
-         Width           =   34
-      End
-      Begin Label CookieJar
-         AutoDeactivate  =   True
-         Bold            =   ""
-         DataField       =   ""
-         DataSource      =   ""
-         Enabled         =   True
-         Height          =   20
-         HelpTag         =   ""
-         Index           =   -2147483648
-         InitialParent   =   "TabPanel2"
-         Italic          =   ""
-         Left            =   110
-         LockBottom      =   True
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   True
-         LockTop         =   False
-         Multiline       =   ""
-         Scope           =   0
-         Selectable      =   True
-         TabIndex        =   12
-         TabPanelIndex   =   3
-         Text            =   "Not specified"
-         TextAlign       =   0
-         TextColor       =   &h00464646
-         TextFont        =   "System"
-         TextSize        =   0
-         TextUnit        =   0
-         Top             =   330
-         Transparent     =   True
-         Underline       =   ""
-         Visible         =   True
-         Width           =   411
-      End
-      Begin Label Label5
-         AutoDeactivate  =   True
-         Bold            =   ""
-         DataField       =   ""
-         DataSource      =   ""
-         Enabled         =   True
-         Height          =   20
-         HelpTag         =   ""
-         Index           =   -2147483648
-         InitialParent   =   "TabPanel2"
-         Italic          =   ""
-         Left            =   11
-         LockBottom      =   True
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   False
-         LockTop         =   False
-         Multiline       =   ""
-         Scope           =   0
-         Selectable      =   False
-         TabIndex        =   13
-         TabPanelIndex   =   3
-         Text            =   "Cookiejar:"
-         TextAlign       =   2
-         TextColor       =   &h000000
-         TextFont        =   "System"
-         TextSize        =   0
-         TextUnit        =   0
-         Top             =   329
-         Transparent     =   True
-         Underline       =   ""
-         Visible         =   True
-         Width           =   94
       End
       Begin Label Label6
          AutoDeactivate  =   True
@@ -1345,10 +1215,222 @@ Begin Window DemoWindow
          Visible         =   True
          Width           =   111
       End
+      Begin PushButton CookieJarUnset
+         AutoDeactivate  =   True
+         Bold            =   ""
+         ButtonStyle     =   0
+         Cancel          =   ""
+         Caption         =   "Unset"
+         Default         =   ""
+         Enabled         =   True
+         Height          =   22
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel2"
+         Italic          =   ""
+         Left            =   554
+         LockBottom      =   False
+         LockedInPosition=   False
+         LockLeft        =   False
+         LockRight       =   True
+         LockTop         =   True
+         Scope           =   0
+         TabIndex        =   0
+         TabPanelIndex   =   5
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   149
+         Underline       =   ""
+         Visible         =   True
+         Width           =   34
+      End
+      Begin PushButton CookieJarSet
+         AutoDeactivate  =   True
+         Bold            =   ""
+         ButtonStyle     =   0
+         Cancel          =   ""
+         Caption         =   "Set"
+         Default         =   ""
+         Enabled         =   True
+         Height          =   22
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel2"
+         Italic          =   ""
+         Left            =   521
+         LockBottom      =   False
+         LockedInPosition=   False
+         LockLeft        =   False
+         LockRight       =   True
+         LockTop         =   True
+         Scope           =   0
+         TabIndex        =   1
+         TabPanelIndex   =   5
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   149
+         Underline       =   ""
+         Visible         =   True
+         Width           =   34
+      End
+      Begin Label CookieJar
+         AutoDeactivate  =   True
+         Bold            =   ""
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel2"
+         Italic          =   ""
+         Left            =   106
+         LockBottom      =   False
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   True
+         LockTop         =   True
+         Multiline       =   ""
+         Scope           =   0
+         Selectable      =   True
+         TabIndex        =   2
+         TabPanelIndex   =   5
+         Text            =   "Not specified"
+         TextAlign       =   0
+         TextColor       =   &h00464646
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   150
+         Transparent     =   True
+         Underline       =   ""
+         Visible         =   True
+         Width           =   411
+      End
+      Begin Label Label5
+         AutoDeactivate  =   True
+         Bold            =   ""
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel2"
+         Italic          =   ""
+         Left            =   7
+         LockBottom      =   False
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   False
+         LockTop         =   True
+         Multiline       =   ""
+         Scope           =   0
+         Selectable      =   False
+         TabIndex        =   3
+         TabPanelIndex   =   5
+         Text            =   "Cookiejar:"
+         TextAlign       =   2
+         TextColor       =   &h000000
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   149
+         Transparent     =   True
+         Underline       =   ""
+         Visible         =   True
+         Width           =   94
+      End
+      Begin CheckBox UseCookies
+         AutoDeactivate  =   True
+         Bold            =   ""
+         Caption         =   "Enable cookies"
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel2"
+         Italic          =   ""
+         Left            =   43
+         LockBottom      =   ""
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   ""
+         LockTop         =   True
+         Scope           =   0
+         State           =   0
+         TabIndex        =   4
+         TabPanelIndex   =   5
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   169
+         Underline       =   ""
+         Value           =   False
+         Visible         =   True
+         Width           =   135
+      End
+      Begin Listbox CookieList
+         AutoDeactivate  =   True
+         AutoHideScrollbars=   True
+         Bold            =   ""
+         Border          =   True
+         ColumnCount     =   6
+         ColumnsResizable=   ""
+         ColumnWidths    =   "25%,25%,20%,10%,10%,10%"
+         DataField       =   ""
+         DataSource      =   ""
+         DefaultRowHeight=   -1
+         Enabled         =   True
+         EnableDrag      =   ""
+         EnableDragReorder=   ""
+         GridLinesHorizontal=   0
+         GridLinesVertical=   0
+         HasHeading      =   True
+         HeadingIndex    =   -1
+         Height          =   195
+         HelpTag         =   ""
+         Hierarchical    =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel2"
+         InitialValue    =   "Name	Value	Domain	Expires	Path	HTTPOnly"
+         Italic          =   ""
+         Left            =   12
+         LockBottom      =   True
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   True
+         LockTop         =   True
+         RequiresSelection=   ""
+         Scope           =   0
+         ScrollbarHorizontal=   ""
+         ScrollBarVertical=   True
+         SelectionType   =   0
+         TabIndex        =   5
+         TabPanelIndex   =   5
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   195
+         Underline       =   ""
+         UseFocusRing    =   True
+         Visible         =   True
+         Width           =   576
+         _ScrollWidth    =   -1
+      End
    End
    Begin cURLClient Client
       Height          =   32
       Index           =   -2147483648
+      IsSSLCertOK     =   ""
       Left            =   7
       LockedInPosition=   False
       Scope           =   0
@@ -1970,7 +2052,6 @@ End
 		Sub Open()
 		  Me.Title = Me.Title + " - " + libcURL.Version.Name
 		  Client.EasyItem.UseErrorBuffer = True
-		  'Client.EasyItem.AutoDisconnect = True
 		End Sub
 	#tag EndEvent
 
@@ -2003,6 +2084,59 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
+		Private Function FormatBytes(bytes As UInt64, precision As Integer = 2) As String
+		  'Converts raw byte counts into SI formatted strings. 1KB = 1024 bytes.
+		  'Optionally pass an integer representing the number of decimal places to return. The default is two decimal places. You may specify
+		  'between 0 and 16 decimal places. Specifying more than 16 will append extra zeros to make up the length. Passing 0
+		  'shows no decimal places and no decimal point.
+		  
+		  Const kilo = 1024
+		  Static mega As UInt64 = kilo * kilo
+		  Static giga As UInt64 = kilo * mega
+		  Static tera As UInt64 = kilo * giga
+		  Static peta As UInt64 = kilo * tera
+		  Static exab As UInt64 = kilo * peta
+		  
+		  Dim suffix, precisionZeros As String
+		  Dim strBytes As Double
+		  
+		  
+		  If bytes < kilo Then
+		    strbytes = bytes
+		    If bytes = 1 Then suffix = " byte" Else suffix = " bytes"
+		    precision = 0
+		  ElseIf bytes >= kilo And bytes < mega Then
+		    strbytes = bytes / kilo
+		    suffix = "KB"
+		  ElseIf bytes >= mega And bytes < giga Then
+		    strbytes = bytes / mega
+		    suffix = "MB"
+		  ElseIf bytes >= giga And bytes < tera Then
+		    strbytes = bytes / giga
+		    suffix = "GB"
+		  ElseIf bytes >= tera And bytes < peta Then
+		    strbytes = bytes / tera
+		    suffix = "TB"
+		  ElseIf bytes >= tera And bytes < exab Then
+		    strbytes = bytes / peta
+		    suffix = "PB"
+		  ElseIf bytes >= exab Then
+		    strbytes = bytes / exab
+		    suffix = "EB"
+		  End If
+		  
+		  
+		  While precisionZeros.Len < precision
+		    precisionZeros = precisionZeros + "0"
+		  Wend
+		  If precisionZeros.Trim <> "" Then precisionZeros = "." + precisionZeros
+		  
+		  Return Format(strBytes, "#,###0" + precisionZeros) + suffix
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
 		Private Sub Populate()
 		  PauseButton.Enabled = False
 		  PauseButton.Caption = "Pause"
@@ -2023,21 +2157,51 @@ End
 		  Else
 		    MsgBox("Transfer completed (" + Str(BytesWritten) + " bytes written, " + Str(BytesRead) +" bytes read) with status: " + Str(Client.GetStatusCode))
 		  End If
-		  
 		  CurlInfo.AddRow("EFFECTIVE_URL", Client.GetInfo(libcURL.Info.EFFECTIVE_URL))
-		  CurlInfo.AddRow("REDIRECT_COUNT", Str(Client.GetInfo(libcURL.Info.REDIRECT_COUNT).Int32Value))
-		  CurlInfo.AddRow("REDIRECT_URL", Client.GetInfo(libcURL.Info.REDIRECT_URL))
-		  CurlInfo.AddRow("CONTENT_TYPE", Client.GetInfo(libcURL.Info.CONTENT_TYPE))
-		  CurlInfo.AddRow("FTP_ENTRY_PATH", Client.GetInfo(libcURL.Info.FTP_ENTRY_PATH))
+		  If Client.GetInfo(libcURL.Info.REDIRECT_COUNT).Int32Value > 0 Then
+		    CurlInfo.AddRow("REDIRECT_COUNT", Str(Client.GetInfo(libcURL.Info.REDIRECT_COUNT).Int32Value))
+		  End If
+		  If Client.GetInfo(libcURL.Info.REDIRECT_URL) <> "" Then
+		    CurlInfo.AddRow("REDIRECT_URL", Client.GetInfo(libcURL.Info.REDIRECT_URL))
+		  End If
+		  If Client.GetInfo(libcURL.Info.FTP_ENTRY_PATH).StringValue.Trim <> "" Then
+		    CurlInfo.AddRow("FTP_ENTRY_PATH", Client.GetInfo(libcURL.Info.FTP_ENTRY_PATH))
+		  End If
 		  CurlInfo.AddRow("RESPONSE_CODE", Str(Client.GetInfo(libcURL.Info.RESPONSE_CODE).Int32Value))
 		  CurlInfo.AddRow("NUM_CONNECTS", Str(Client.GetInfo(libcURL.Info.NUM_CONNECTS).Int32Value))
 		  CurlInfo.AddRow("OS_ERRNO", Str(Client.GetInfo(libcURL.Info.OS_ERRNO).Int32Value))
-		  CurlInfo.AddRow("SIZE_DOWNLOAD", Str(BytesRead))
-		  CurlInfo.AddRow("SIZE_UPLOAD", Str(BytesWritten))
+		  CurlInfo.AddRow("SPEED_DOWNLOAD", FormatBytes(Client.GetInfo(libcURL.Info.SPEED_DOWNLOAD).DoubleValue) + "/sec")
+		  CurlInfo.AddRow("SPEED_UPLOAD", FormatBytes(Client.GetInfo(libcURL.Info.SPEED_UPLOAD).DoubleValue) + "/sec")
+		  CurlInfo.AddFolder("Time")
+		  CurlInfo.AddFolder("Content")
+		  CurlInfo.AddFolder("Sizes")
+		  
+		  If Client.GetInfo(libcURL.Info.FILETIME).Int32Value <> -1 Then
+		    Dim d As New Date(1970, 1, 1, 0, 0, 0, 0.0) 'UNIX epoch
+		    d.TotalSeconds = d.TotalSeconds + Client.GetInfo(libcURL.Info.FILETIME).Int32Value
+		    CurlInfo.AddRow("FILETIME", libcURL.ParseDate(d))
+		  End If
 		  Dim h As InternetHeaders = Client.GetResponseHeaders
 		  If h <> Nil Then
 		    For i As Integer = 0 To h.Count - 1
 		      Headers.AddRow(h.Name(i), h.Value(i))
+		    Next
+		  End If
+		  
+		  If Client.Cookies.Enabled Then
+		    CookieList.DeleteAllRows
+		    Dim c As Integer = Client.Cookies.Count
+		    For i As Integer = 0 To c - 1
+		      Dim expire As String
+		      If Client.Cookies.Expiry(i) <> Nil Then expire = libcURL.ParseDate(Client.Cookies.Expiry(i))
+		      CookieList.AddRow(Client.Cookies.Name(i), Client.Cookies.Value(i), Client.Cookies.Domain(i), expire, Client.Cookies.Path(i))
+		      CookieList.CellType(CookieList.LastIndex, 6) = Listbox.TypeCheckbox
+		      If Client.Cookies.HTTPOnly(i) Then
+		        CookieList.CellState(CookieList.LastIndex, 6) = CheckBox.CheckedStates.Checked
+		      Else
+		        CookieList.CellState(CookieList.LastIndex, 6) = CheckBox.CheckedStates.Unchecked
+		      End If
+		      CookieList.RowTag(CookieList.LastIndex) = i
 		    Next
 		  End If
 		End Sub
@@ -2151,6 +2315,67 @@ End
 		End Sub
 	#tag EndEvent
 #tag EndEvents
+#tag Events CurlInfo
+	#tag Event
+		Sub ExpandRow(row As Integer)
+		  Select Case Me.Cell(row, 0)
+		  Case "Time"
+		    CurlInfo.InsertRow(row + 1, "APPCONNECT_TIME", 1)
+		    CurlInfo.Cell(CurlInfo.LastIndex, 1) = Format(Client.GetInfo(libcURL.Info.APPCONNECT_TIME).DoubleValue, "###,###,##0.0##")
+		    
+		    CurlInfo.InsertRow(row + 1, "CONNECT_TIME", 1)
+		    CurlInfo.Cell(CurlInfo.LastIndex, 1) = Format(Client.GetInfo(libcURL.Info.CONNECT_TIME).DoubleValue, "###,###,##0.0##")
+		    
+		    CurlInfo.InsertRow(row + 1, "STARTTRANSFER_TIME", 1)
+		    CurlInfo.Cell(CurlInfo.LastIndex, 1) = Format(Client.GetInfo(libcURL.Info.STARTTRANSFER_TIME).DoubleValue, "###,###,##0.0##")
+		    
+		    CurlInfo.InsertRow(row + 1, "TOTAL_TIME", 1)
+		    CurlInfo.Cell(CurlInfo.LastIndex, 1) = Format(Client.GetInfo(libcURL.Info.TOTAL_TIME).DoubleValue, "###,###,##0.0##")
+		    
+		    CurlInfo.InsertRow(row + 1, "NAMELOOKUP_TIME", 1)
+		    CurlInfo.Cell(CurlInfo.LastIndex, 1) = Format(Client.GetInfo(libcURL.Info.NAMELOOKUP_TIME).DoubleValue, "###,###,##0.0##")
+		    
+		    CurlInfo.InsertRow(row + 1, "PRETRANSFER_TIME", 1)
+		    CurlInfo.Cell(CurlInfo.LastIndex, 1) = Format(Client.GetInfo(libcURL.Info.PRETRANSFER_TIME).DoubleValue, "###,###,##0.0##")
+		    
+		    CurlInfo.InsertRow(row + 1, "REDIRECT_TIME", 1)
+		    CurlInfo.Cell(CurlInfo.LastIndex, 1) = Format(Client.GetInfo(libcURL.Info.REDIRECT_TIME).DoubleValue, "###,###,##0.0##")
+		    
+		  Case "Content"
+		    CurlInfo.InsertRow(row + 1, "CONTENT_LENGTH_DOWNLOAD", 1)
+		    If Client.GetInfo(libcURL.Info.CONTENT_LENGTH_DOWNLOAD).DoubleValue > 0 Then
+		      CurlInfo.Cell(CurlInfo.LastIndex, 1) = FormatBytes(Client.GetInfo(libcURL.Info.CONTENT_LENGTH_DOWNLOAD).DoubleValue)
+		    Else
+		      CurlInfo.Cell(CurlInfo.LastIndex, 1) = ""
+		    End If
+		    
+		    CurlInfo.InsertRow(row + 1, "CONTENT_LENGTH_UPLOAD", 1)
+		    If Client.GetInfo(libcURL.Info.CONTENT_LENGTH_UPLOAD).DoubleValue > 0 Then
+		      CurlInfo.Cell(CurlInfo.LastIndex, 1) = FormatBytes(Client.GetInfo(libcURL.Info.CONTENT_LENGTH_UPLOAD).DoubleValue)
+		    Else
+		      CurlInfo.Cell(CurlInfo.LastIndex, 1) = ""
+		    End If
+		    
+		    CurlInfo.InsertRow(row + 1, "CONTENT_TYPE", 1)
+		    CurlInfo.Cell(CurlInfo.LastIndex, 1) = Client.GetInfo(libcURL.Info.CONTENT_TYPE).StringValue
+		    
+		  Case "Sizes"
+		    CurlInfo.InsertRow(row + 1, "HEADER_SIZE", 1)
+		    CurlInfo.Cell(CurlInfo.LastIndex, 1) = FormatBytes(Client.GetInfo(libcURL.Info.HEADER_SIZE).Int32Value)
+		    
+		    CurlInfo.InsertRow(row + 1, "REQUEST_SIZE", 1)
+		    CurlInfo.Cell(CurlInfo.LastIndex, 1) = FormatBytes(Client.GetInfo(libcURL.Info.REQUEST_SIZE).Int32Value)
+		    
+		    CurlInfo.InsertRow(row + 1, "SIZE_DOWNLOAD", 1)
+		    CurlInfo.Cell(CurlInfo.LastIndex, 1) = FormatBytes(Client.GetInfo(libcURL.Info.SIZE_DOWNLOAD).DoubleValue)
+		    
+		    CurlInfo.InsertRow(row + 1, "SIZE_UPLOAD", 1)
+		    CurlInfo.Cell(CurlInfo.LastIndex, 1) = FormatBytes(Client.GetInfo(libcURL.Info.SIZE_UPLOAD).DoubleValue)
+		    
+		  End Select
+		End Sub
+	#tag EndEvent
+#tag EndEvents
 #tag Events CAListFile
 	#tag Event
 		Sub Open()
@@ -2233,47 +2458,6 @@ End
 		Sub Action()
 		  Call Client.EasyItem.SetOption(libcURL.Opts.SSLCERT, Nil)
 		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events CookieJarUnset
-	#tag Event
-		Sub Action()
-		  Client.EasyItem.CookieEngine.CookieJar = Nil
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events CookieJarSet
-	#tag Event
-		Sub Action()
-		  Dim f As FolderItem
-		  If MsgBox("Would you like to open an existing cookie file?", 4 + 32, "Open existing?") = 6 Then
-		    f = GetOpenFolderItem(cURLTypes.NetscapeCookieJar)
-		  Else
-		    f = GetSaveFolderItem(cURLTypes.NetscapeCookieJar, "cookie.jar")
-		  End If
-		  If f <> Nil Then
-		    Client.EasyItem.CookieEngine.CookieJar = f
-		    CookieJar.Text = Client.EasyItem.CookieEngine.CookieJar.AbsolutePath
-		  End If
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events CookieJar
-	#tag Event
-		Sub MouseUp(X As Integer, Y As Integer)
-		  #pragma Unused X
-		  #pragma Unused Y
-		  If Client.EasyItem.CookieEngine.CookieJar <> Nil Then
-		    Client.EasyItem.CookieEngine.CookieJar.Parent.Launch
-		  End If
-		End Sub
-	#tag EndEvent
-	#tag Event
-		Function MouseDown(X As Integer, Y As Integer) As Boolean
-		  #pragma Unused X
-		  #pragma Unused Y
-		  Return True
-		End Function
 	#tag EndEvent
 #tag EndEvents
 #tag Events nic
@@ -2474,6 +2658,115 @@ End
 		Sub Action()
 		  Client.EasyItem.UseProgressEvent = Me.Value
 		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events CookieJarUnset
+	#tag Event
+		Sub Action()
+		  Client.EasyItem.CookieEngine.CookieJar = Nil
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events CookieJarSet
+	#tag Event
+		Sub Action()
+		  Dim f As FolderItem
+		  If MsgBox("Would you like to open an existing cookie file?", 4 + 32, "Open existing?") = 6 Then
+		    f = GetOpenFolderItem(cURLTypes.NetscapeCookieJar)
+		  Else
+		    f = GetSaveFolderItem(cURLTypes.NetscapeCookieJar, "cookie.jar")
+		  End If
+		  If f <> Nil Then
+		    Client.EasyItem.CookieEngine.CookieJar = f
+		    CookieJar.Text = Client.EasyItem.CookieEngine.CookieJar.AbsolutePath
+		    UseCookies.Value = True
+		  End If
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events CookieJar
+	#tag Event
+		Sub MouseUp(X As Integer, Y As Integer)
+		  #pragma Unused X
+		  #pragma Unused Y
+		  If Client.EasyItem.CookieEngine.CookieJar <> Nil Then
+		    Client.EasyItem.CookieEngine.CookieJar.Parent.Launch
+		  End If
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Function MouseDown(X As Integer, Y As Integer) As Boolean
+		  #pragma Unused X
+		  #pragma Unused Y
+		  Return True
+		End Function
+	#tag EndEvent
+#tag EndEvents
+#tag Events UseCookies
+	#tag Event
+		Sub Action()
+		  Client.Cookies.Enabled = Me.Value
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events CookieList
+	#tag Event
+		Function CellClick(row as Integer, column as Integer, x as Integer, y as Integer) As Boolean
+		  #pragma Unused x
+		  #pragma Unused y
+		  Me.CellTag(row, column) = Me.Cell(row, column)
+		  Me.EditCell(row, column)
+		End Function
+	#tag EndEvent
+	#tag Event
+		Sub CellAction(row As Integer, column As Integer)
+		  Dim n, v, d, p As String
+		  Dim h As Boolean
+		  Dim e As Date
+		  n = Me.Cell(row, 0)
+		  v = Me.Cell(row, 1)
+		  d = Me.Cell(row, 3)
+		  If Me.Cell(row, 4) <> "" Then Call libcURL.ParseDate(Me.Cell(row, 4), e)
+		  p = Me.Cell(row, 5)
+		  h = Me.CellCheck(row, 6)
+		  
+		  If Not Client.Cookies.SetCookie(n, v, d, e, p, h) Then
+		    Dim err As New libcURL.cURLException(Client.EasyItem)
+		    MsgBox(err.Message)
+		    Me.Cell(row, 0) = Me.CellTag(row, 0)
+		    Me.Cell(row, 1) = Me.CellTag(row, 1)
+		    Me.Cell(row, 2) = Me.CellTag(row, 2)
+		    Me.Cell(row, 3) = Me.CellTag(row, 3)
+		    Me.Cell(row, 4) = Me.CellTag(row, 4)
+		    Me.CellState(row, 5) = Not Me.CellState(row, 5)
+		  ElseIf Client.Cookies.CookieJar <> Nil Then
+		    Call Client.Cookies.Flush()
+		    
+		  End If
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Function ConstructContextualMenu(base as MenuItem, x as Integer, y as Integer) As Boolean
+		  Dim r, c As Integer
+		  r = Me.RowFromXY(x, y)
+		  c = Me.ColumnFromXY(x, y)
+		  If Me.RowTag(r) < 0 Then Return False
+		  base.Tag = Me.RowTag(r)
+		  base.Append(New MenuItem("Expire"))
+		End Function
+	#tag EndEvent
+	#tag Event
+		Function ContextualMenuAction(hitItem as MenuItem) As Boolean
+		  Select Case hitItem.Text
+		  Case "Expire"
+		    Dim i As Integer = hitItem.Tag
+		    If i > -1 Then
+		      Client.Cookies.Expiry(i) = New Date(1970, 2, 1, 0, 0, 0, 0.0)
+		      If Client.Cookies.CookieJar <> Nil Then Call Client.Cookies.Flush()
+		      Return True
+		    End If
+		  End Select
+		End Function
 	#tag EndEvent
 #tag EndEvents
 #tag Events Client
