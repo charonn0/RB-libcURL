@@ -2720,6 +2720,7 @@ End
 	#tag EndEvent
 	#tag Event
 		Sub CellAction(row As Integer, column As Integer)
+		  #pragma Unused column
 		  Dim n, v, d, p As String
 		  Dim h As Boolean
 		  Dim e As Date
