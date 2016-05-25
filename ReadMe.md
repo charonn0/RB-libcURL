@@ -6,7 +6,7 @@
 The minimum supported libcURL version is [7.15.2](https://github.com/charonn0/RB-libcURL/wiki/libcURL.IsAvailable). The recommended minimum version is [7.33.0](https://curl.haxx.se/changes.html#7_33_0). Versions prior to 7.33.0 will function with degraded features, but versions prior to 7.15.2 will not function properly at all.
 
 ##Example
-This example performs a synchronous HTTP GET request on the calling thread. [More examples](https://github.com/charonn0/RB-libcURL/wiki#examples).
+This example performs a synchronous HTTP GET request on the calling thread. [**More examples**](https://github.com/charonn0/RB-libcURL/wiki#examples).
 ```vbnet
   Dim curl As New cURLClient
   Dim page As String
@@ -22,7 +22,7 @@ This example performs a synchronous HTTP GET request on the calling thread. [Mor
 * Full support for [RB/Xojo threads](https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.PerformOnce)
 * Automatic decompression (gzip, deflate, etc.) using zlib.
 * Full support for HTTP, SOCKS4, SOCKS4A, SOCKS5, and SOCKS5_HOSTNAME [proxy servers](https://github.com/charonn0/RB-libcURL/wiki/libcURL.ProxyEngine)
-* [Stream-oriented](https://github.com/charonn0/RB-libcURL/wiki/cURLManager.Perform), using Xojo's built-in [Readable](http://docs.xojo.com/index.php/Readable) and [Writeable](http://docs.xojo.com/index.php/Writeable) interfaces. Download or upload directly to or from a file, MemoryBlock, or your own custom class.
+* [Stream-oriented](https://github.com/charonn0/RB-libcURL/wiki/cURLManager.Perform), using Xojo's built-in [Readable](http://docs.xojo.com/index.php/Readable) and [Writeable](http://docs.xojo.com/index.php/Writeable) interfaces. Download or upload directly to or from a file, [MemoryBlock](http://www.boredomsoft.org/string-building-in-realbasic.bs), Xojo socket, or your own custom class.
 * [Easy to use](https://github.com/charonn0/RB-libcURL/wiki/cURLClient), but still exposing [the full range of libcURL's features](https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle).
 * Interact directly with libcurl via declares and [callback methods](https://en.wikipedia.org/wiki/Callback_%28computer_programming%29); no shell or plugins required.
 
@@ -76,6 +76,8 @@ RB-libcURL will raise a PlatformNotSupportedException when used if all required 
 * [HTTP HEAD](https://github.com/charonn0/RB-libcURL/wiki/HTTP-HEAD-Example)
 * [HTTP POST](https://github.com/charonn0/RB-libcURL/wiki/HTTP-POST-Example)
 * [HTTP TRACE](https://github.com/charonn0/RB-libcURL/wiki/HTTP-TRACE-Example)
+* [HTTP Cookies](https://github.com/charonn0/RB-libcURL/wiki/HTTP-Cookies-Example)
+* [HTTP GET via a proxy server](https://github.com/charonn0/RB-libcURL/wiki/HTTP-GET-Via-Proxy-Example)
 * [FTP Download](https://github.com/charonn0/RB-libcURL/wiki/FTP-RETR-Example)
 * [FTP Upload](https://github.com/charonn0/RB-libcURL/wiki/FTP-STOR-Example)
 * [FTP custom commands](https://github.com/charonn0/RB-libcURL/wiki/FTP-custom-commands)
