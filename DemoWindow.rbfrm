@@ -51,104 +51,9 @@ Begin Window DemoWindow
       TextUnit        =   0
       Top             =   119
       Underline       =   ""
-      Value           =   1
+      Value           =   3
       Visible         =   True
       Width           =   596
-      Begin Listbox Debug
-         AutoDeactivate  =   True
-         AutoHideScrollbars=   True
-         Bold            =   ""
-         Border          =   True
-         ColumnCount     =   2
-         ColumnsResizable=   True
-         ColumnWidths    =   "20%"
-         DataField       =   ""
-         DataSource      =   ""
-         DefaultRowHeight=   -1
-         Enabled         =   True
-         EnableDrag      =   ""
-         EnableDragReorder=   ""
-         GridLinesHorizontal=   0
-         GridLinesVertical=   0
-         HasHeading      =   True
-         HeadingIndex    =   -1
-         Height          =   85
-         HelpTag         =   ""
-         Hierarchical    =   ""
-         Index           =   -2147483648
-         InitialParent   =   "TabPanel2"
-         InitialValue    =   "Type	Message"
-         Italic          =   ""
-         Left            =   13
-         LockBottom      =   True
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   True
-         LockTop         =   True
-         RequiresSelection=   ""
-         Scope           =   0
-         ScrollbarHorizontal=   ""
-         ScrollBarVertical=   True
-         SelectionType   =   0
-         TabIndex        =   0
-         TabPanelIndex   =   1
-         TabStop         =   True
-         TextFont        =   "System"
-         TextSize        =   0
-         TextUnit        =   0
-         Top             =   308
-         Underline       =   ""
-         UseFocusRing    =   True
-         Visible         =   True
-         Width           =   578
-         _ScrollWidth    =   -1
-      End
-      Begin TextArea DownloadOutput
-         AcceptTabs      =   ""
-         Alignment       =   0
-         AutoDeactivate  =   True
-         AutomaticallyCheckSpelling=   True
-         BackColor       =   &hFFFFFF
-         Bold            =   ""
-         Border          =   True
-         DataField       =   ""
-         DataSource      =   ""
-         Enabled         =   True
-         Format          =   ""
-         Height          =   107
-         HelpTag         =   ""
-         HideSelection   =   True
-         Index           =   -2147483648
-         InitialParent   =   "TabPanel2"
-         Italic          =   ""
-         Left            =   13
-         LimitText       =   0
-         LockBottom      =   True
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   True
-         LockTop         =   True
-         Mask            =   ""
-         Multiline       =   True
-         ReadOnly        =   ""
-         Scope           =   0
-         ScrollbarHorizontal=   ""
-         ScrollbarVertical=   True
-         Styled          =   True
-         TabIndex        =   0
-         TabPanelIndex   =   2
-         TabStop         =   True
-         Text            =   ""
-         TextColor       =   &h000000
-         TextFont        =   "System"
-         TextSize        =   0
-         TextUnit        =   0
-         Top             =   286
-         Underline       =   ""
-         UseFocusRing    =   True
-         Visible         =   True
-         Width           =   578
-      End
       Begin Listbox Protocols
          AutoDeactivate  =   True
          AutoHideScrollbars=   True
@@ -1120,11 +1025,11 @@ Begin Window DemoWindow
          InitialParent   =   "TabPanel2"
          Italic          =   ""
          Left            =   268
-         LockBottom      =   ""
+         LockBottom      =   True
          LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   ""
-         LockTop         =   True
+         LockLeft        =   False
+         LockRight       =   True
+         LockTop         =   False
          Scope           =   0
          TabIndex        =   2
          TabPanelIndex   =   4
@@ -1157,10 +1062,10 @@ Begin Window DemoWindow
          Italic          =   ""
          Left            =   20
          LimitText       =   0
-         LockBottom      =   ""
+         LockBottom      =   True
          LockedInPosition=   False
          LockLeft        =   True
-         LockRight       =   ""
+         LockRight       =   True
          LockTop         =   True
          Mask            =   ""
          Multiline       =   True
@@ -1426,6 +1331,155 @@ Begin Window DemoWindow
          Width           =   576
          _ScrollWidth    =   -1
       End
+      Begin Canvas Canvas1
+         AcceptFocus     =   ""
+         AcceptTabs      =   ""
+         AutoDeactivate  =   True
+         Backdrop        =   ""
+         DoubleBuffer    =   False
+         Enabled         =   True
+         EraseBackground =   True
+         Height          =   5
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel2"
+         Left            =   137
+         LockBottom      =   False
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   True
+         LockTop         =   True
+         Scope           =   0
+         TabIndex        =   3
+         TabPanelIndex   =   2
+         TabStop         =   True
+         Top             =   281
+         UseFocusRing    =   True
+         Visible         =   True
+         Width           =   330
+      End
+      Begin TextArea DownloadOutput
+         AcceptTabs      =   ""
+         Alignment       =   0
+         AutoDeactivate  =   True
+         AutomaticallyCheckSpelling=   True
+         BackColor       =   &hFFFFFF
+         Bold            =   ""
+         Border          =   True
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Format          =   ""
+         Height          =   105
+         HelpTag         =   ""
+         HideSelection   =   True
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel2"
+         Italic          =   ""
+         Left            =   13
+         LimitText       =   0
+         LockBottom      =   True
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   True
+         LockTop         =   True
+         Mask            =   ""
+         Multiline       =   True
+         ReadOnly        =   ""
+         Scope           =   0
+         ScrollbarHorizontal=   ""
+         ScrollbarVertical=   True
+         Styled          =   True
+         TabIndex        =   0
+         TabPanelIndex   =   2
+         TabStop         =   True
+         Text            =   ""
+         TextColor       =   &h000000
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   288
+         Underline       =   ""
+         UseFocusRing    =   True
+         Visible         =   True
+         Width           =   578
+      End
+      Begin Listbox Debug
+         AutoDeactivate  =   True
+         AutoHideScrollbars=   True
+         Bold            =   ""
+         Border          =   True
+         ColumnCount     =   2
+         ColumnsResizable=   True
+         ColumnWidths    =   "20%"
+         DataField       =   ""
+         DataSource      =   ""
+         DefaultRowHeight=   -1
+         Enabled         =   True
+         EnableDrag      =   ""
+         EnableDragReorder=   ""
+         GridLinesHorizontal=   0
+         GridLinesVertical=   0
+         HasHeading      =   True
+         HeadingIndex    =   -1
+         Height          =   83
+         HelpTag         =   ""
+         Hierarchical    =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel2"
+         InitialValue    =   "Type	Message"
+         Italic          =   ""
+         Left            =   13
+         LockBottom      =   True
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   True
+         LockTop         =   True
+         RequiresSelection=   ""
+         Scope           =   0
+         ScrollbarHorizontal=   ""
+         ScrollBarVertical=   True
+         SelectionType   =   0
+         TabIndex        =   0
+         TabPanelIndex   =   1
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   310
+         Underline       =   ""
+         UseFocusRing    =   True
+         Visible         =   True
+         Width           =   578
+         _ScrollWidth    =   -1
+      End
+      Begin Canvas Canvas2
+         AcceptFocus     =   ""
+         AcceptTabs      =   ""
+         AutoDeactivate  =   True
+         Backdrop        =   ""
+         DoubleBuffer    =   False
+         Enabled         =   True
+         EraseBackground =   True
+         Height          =   5
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel2"
+         Left            =   137
+         LockBottom      =   ""
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   True
+         LockTop         =   True
+         Scope           =   0
+         TabIndex        =   2
+         TabPanelIndex   =   1
+         TabStop         =   True
+         Top             =   304
+         UseFocusRing    =   True
+         Visible         =   True
+         Width           =   330
+      End
    End
    Begin cURLClient Client
       Height          =   32
@@ -1564,7 +1618,7 @@ Begin Window DemoWindow
       TextUnit        =   0
       Top             =   0
       Underline       =   ""
-      Value           =   3
+      Value           =   0
       Visible         =   True
       Width           =   246
       Begin PushButton PushButton1
@@ -2262,25 +2316,6 @@ End
 
 #tag EndWindowCode
 
-#tag Events Debug
-	#tag Event
-		Function ConstructContextualMenu(base as MenuItem, x as Integer, y as Integer) As Boolean
-		  #pragma Unused X
-		  #pragma Unused Y
-		  base.Append(New MenuItem("Clear log"))
-		  Return True
-		End Function
-	#tag EndEvent
-	#tag Event
-		Function ContextualMenuAction(hitItem as MenuItem) As Boolean
-		  Select Case hitItem.Text
-		  Case "Clear log"
-		    Me.DeleteAllRows
-		    Return True
-		  End Select
-		End Function
-	#tag EndEvent
-#tag EndEvents
 #tag Events Protocols
 	#tag Event
 		Sub Open()
@@ -2768,6 +2803,125 @@ End
 		    End If
 		  End Select
 		End Function
+	#tag EndEvent
+#tag EndEvents
+#tag Events Canvas1
+	#tag Event
+		Sub MouseEnter()
+		  Me.MouseCursor = System.Cursors.SplitterNorthSouth
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Sub MouseExit()
+		  Me.MouseCursor = System.Cursors.StandardPointer
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Function MouseDown(X As Integer, Y As Integer) As Boolean
+		  #pragma Unused X
+		  #pragma Unused Y
+		  Return True
+		End Function
+	#tag EndEvent
+	#tag Event
+		Sub MouseDrag(X As Integer, Y As Integer)
+		  #pragma Unused X
+		  #pragma Unused Y
+		  If Me.Width > Me.Height Then 'horizontal
+		    Me.Top = Me.Window.MouseY
+		  Else
+		    Me.Left = Me.Window.MouseX
+		  End If
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Sub MouseUp(X As Integer, Y As Integer)
+		  #pragma Unused X
+		  #pragma Unused Y
+		  
+		  Headers.Height = Me.Top - Headers.Top - 1
+		  DownloadOutput.Top = Me.Top + Me.Height + 1
+		  DownloadOutput.Height = Me.Window.Height - DownloadOutput.Top - 5
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Sub Paint(g As Graphics)
+		  g.ForeColor = &cC0C0C000
+		  g.DrawRect(0, 0, g.Width, g.Height)
+		  
+		  g.ForeColor = &c80808000
+		  g.DrawLine(0.25 * g.Width, 0.25 * g.Height, 0.75 * g.Width, 0.25 * g.Height)
+		  g.DrawLine(0.25 * g.Width, 0.75 * g.Height, 0.75 * g.Width, 0.75 * g.Height)
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events Debug
+	#tag Event
+		Function ConstructContextualMenu(base as MenuItem, x as Integer, y as Integer) As Boolean
+		  #pragma Unused X
+		  #pragma Unused Y
+		  base.Append(New MenuItem("Clear log"))
+		  Return True
+		End Function
+	#tag EndEvent
+	#tag Event
+		Function ContextualMenuAction(hitItem as MenuItem) As Boolean
+		  Select Case hitItem.Text
+		  Case "Clear log"
+		    Me.DeleteAllRows
+		    Return True
+		  End Select
+		End Function
+	#tag EndEvent
+#tag EndEvents
+#tag Events Canvas2
+	#tag Event
+		Sub MouseEnter()
+		  Me.MouseCursor = System.Cursors.SplitterNorthSouth
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Sub MouseExit()
+		  Me.MouseCursor = System.Cursors.StandardPointer
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Function MouseDown(X As Integer, Y As Integer) As Boolean
+		  #pragma Unused X
+		  #pragma Unused Y
+		  Return True
+		End Function
+	#tag EndEvent
+	#tag Event
+		Sub MouseDrag(X As Integer, Y As Integer)
+		  #pragma Unused X
+		  #pragma Unused Y
+		  If Me.Width > Me.Height Then 'horizontal
+		    Me.Top = Me.Window.MouseY
+		  Else
+		    Me.Left = Me.Window.MouseX
+		  End If
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Sub MouseUp(X As Integer, Y As Integer)
+		  #pragma Unused X
+		  #pragma Unused Y
+		  
+		  CurlInfo.Height = Me.Top - CurlInfo.Top - 1
+		  Debug.Top = Me.Top + Me.Height + 1
+		  Debug.Height = Me.Window.Height - Debug.Top - 5
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Sub Paint(g As Graphics)
+		  g.ForeColor = &cC0C0C000
+		  g.DrawRect(0, 0, g.Width, g.Height)
+		  
+		  g.ForeColor = &c80808000
+		  g.DrawLine(0.25 * g.Width, 0.25 * g.Height, 0.75 * g.Width, 0.25 * g.Height)
+		  g.DrawLine(0.25 * g.Width, 0.75 * g.Height, 0.75 * g.Width, 0.75 * g.Height)
+		End Sub
 	#tag EndEvent
 #tag EndEvents
 #tag Events Client
