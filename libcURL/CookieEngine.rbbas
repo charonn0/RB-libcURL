@@ -187,7 +187,7 @@ Protected Class CookieEngine
 		        Next
 		        Return i
 		      Else
-		        If CookieDomain <> "" And CookieDomain <> d And "." + CookieDomain <> d And InStr(CookieDomain, d) = 0 Then Continue For i
+		        If CookieDomain <> "" And CookieDomain <> d And "." + CookieDomain <> d And InStr(d, CookieDomain) = 0 Then Continue For i
 		        Return i
 		      End If
 		    End If
