@@ -173,13 +173,13 @@ Protected Class CookieEngine
 		        Dim pattern() As String
 		        For j As Integer = 0 To UBound(tmp)
 		          If tmp(j).Trim = "" Then Continue
-		          pattern.Insert(0, URLDecode(tmp(j)))
+		          pattern.Insert(0, URLDecode(tmp(j), Owner))
 		        Next
 		        tmp = Split(d, ".")
 		        Dim data() As String
 		        For j As Integer = 0 To UBound(tmp)
 		          If tmp(j).Trim = "" Then Continue
-		          data.Insert(0, URLDecode(tmp(j)))
+		          data.Insert(0, URLDecode(tmp(j), Owner))
 		        Next
 		        Dim count As Integer = Min(data.Ubound, pattern.Ubound)
 		        For j As Integer = 0 To count
