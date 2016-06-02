@@ -1301,7 +1301,7 @@ Begin Window DemoWindow
             Bold            =   ""
             Border          =   True
             ColumnCount     =   6
-            ColumnsResizable=   ""
+            ColumnsResizable=   True
             ColumnWidths    =   "25%,25%,20%,10%,10%,10%"
             DataField       =   ""
             DataSource      =   ""
