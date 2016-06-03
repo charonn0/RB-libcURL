@@ -306,6 +306,11 @@ Protected Module libcURL
 		        Return False
 		      End If
 		      
+		    Case arg = "--basic"
+		      Dim ha As libcURL.HTTPAuthMethods = 0
+		      ha.SetOnly(CURLAUTH.BASIC)
+		      If Not Client.EasyItem.SetAuthMethods(ha) Then Return False
+		      
 		    Case arg = "--cookie", StrComp("-b", arg, 1) = 0
 		      If Not Client.Cookies.Enabled Then Client.Cookies.Enabled = True
 		      If Not Client.Cookies.SetCookie("Set-Cookie: " + output(i + 1)) Then
@@ -413,6 +418,11 @@ Protected Module libcURL
 		      End If
 		      i = i + 1
 		      
+		    Case arg = "--digest"
+		      Dim ha As libcURL.HTTPAuthMethods = 0
+		      ha.SetOnly(CURLAUTH.DIGEST)
+		      If Not Client.EasyItem.SetAuthMethods(ha) Then Return False
+		      
 		    Case arg = "--ftp-create-dirs"
 		      If Not Client.SetOption(libcURL.Opts.FTP_CREATE_MISSING_DIRS, True) Then
 		        Break
@@ -421,6 +431,18 @@ Protected Module libcURL
 		      
 		    Case arg = "--fail", StrComp("-f", arg, 1) = 0
 		      Client.EasyItem.FailOnServerError = True
+		      
+		    Case arg = "--ftp-method"
+		      Select Case output(i + 1)
+		      Case "multicwd"
+		        Client.EasyItem.CWDMethod = CWDMethod.Multi
+		      Case "nocwd "
+		        Client.EasyItem.CWDMethod = CWDMethod.None
+		      Case "singlecwd "
+		        Client.EasyItem.CWDMethod = CWDMethod.Single
+		      Else
+		        Return False
+		      End Select
 		      
 		    Case StrComp(arg, "-h", 1) = 0 ' help
 		      Break
@@ -511,6 +533,11 @@ Protected Module libcURL
 		      End If
 		      i = i + 1
 		      
+		    Case arg = "--negotiate"
+		      Dim ha As libcURL.HTTPAuthMethods = 0
+		      ha.SetOnly(CURLAUTH.NEGOTIATE)
+		      If Not Client.EasyItem.SetAuthMethods(ha) Then Return False
+		      
 		    Case arg = "--no-alpn"
 		      If Not Client.SetOption(libcURL.Opts.SSL_ENABLE_ALPN, False) Then
 		        Break
@@ -547,6 +574,15 @@ Protected Module libcURL
 		        Return False
 		      End If
 		      
+		    Case arg = "--ntlm"
+		      Dim ha As libcURL.HTTPAuthMethods = 0
+		      ha.SetOnly(CURLAUTH.NTLM)
+		      If Not Client.EasyItem.SetAuthMethods(ha) Then Return False
+		      
+		    Case arg = "--ntlm-wb"
+		      Dim ha As libcURL.HTTPAuthMethods = 0
+		      ha.SetOnly(CURLAUTH.NTLM_WB)
+		      If Not Client.EasyItem.SetAuthMethods(ha) Then Return False
 		      
 		    Case arg = "--proxy", StrComp("-x", arg, 1) = 0
 		      Client.Proxy.Address = output(i + 1)
@@ -876,8 +912,6 @@ Protected Module libcURL
 		  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. 
 		  If a copy of the MPL was not distributed with this file, You can obtain one at 
 		  https://mozilla.org/MPL/2.0/.
-		
-		
 	#tag EndNote
 
 
