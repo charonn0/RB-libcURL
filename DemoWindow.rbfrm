@@ -1387,7 +1387,7 @@ Begin Window DemoWindow
             Visible         =   True
             Width           =   143
          End
-         Begin PushButton PushButton11
+         Begin PushButton CookieLookupButton
             AutoDeactivate  =   True
             Bold            =   ""
             ButtonStyle     =   0
@@ -1632,7 +1632,7 @@ Begin Window DemoWindow
             Visible         =   True
             Width           =   69
          End
-         Begin PushButton PushButton12
+         Begin PushButton NewCookieSessionButton
             AutoDeactivate  =   True
             Bold            =   ""
             ButtonStyle     =   0
@@ -1661,9 +1661,9 @@ Begin Window DemoWindow
             Top             =   369
             Underline       =   ""
             Visible         =   True
-            Width           =   97
+            Width           =   115
          End
-         Begin PushButton PushButton13
+         Begin PushButton DeleteCookiesButton
             AutoDeactivate  =   True
             Bold            =   ""
             ButtonStyle     =   0
@@ -1692,16 +1692,16 @@ Begin Window DemoWindow
             Top             =   347
             Underline       =   ""
             Visible         =   True
-            Width           =   97
+            Width           =   115
          End
-         Begin PushButton PushButton14
+         Begin PushButton FlushCookiesButton
             AutoDeactivate  =   True
             Bold            =   ""
             ButtonStyle     =   0
             Cancel          =   ""
             Caption         =   "Flush Changes"
             Default         =   ""
-            Enabled         =   True
+            Enabled         =   False
             Height          =   22
             HelpTag         =   ""
             Index           =   -2147483648
@@ -1723,7 +1723,7 @@ Begin Window DemoWindow
             Top             =   323
             Underline       =   ""
             Visible         =   True
-            Width           =   97
+            Width           =   115
          End
          Begin Label CookiesTotal
             AutoDeactivate  =   True
@@ -2611,11 +2611,11 @@ End
 		      Dim expire As String
 		      If Client.Cookies.Expiry(i) <> Nil Then expire = libcURL.ParseDate(Client.Cookies.Expiry(i))
 		      CookieList.AddRow(Client.Cookies.Name(i), Client.Cookies.Value(i), Client.Cookies.Domain(i), expire, Client.Cookies.Path(i))
-		      CookieList.CellType(CookieList.LastIndex, 6) = Listbox.TypeCheckbox
+		      CookieList.CellType(CookieList.LastIndex, 5) = Listbox.TypeCheckbox
 		      If Client.Cookies.HTTPOnly(i) Then
-		        CookieList.CellState(CookieList.LastIndex, 6) = CheckBox.CheckedStates.Checked
+		        CookieList.CellState(CookieList.LastIndex, 5) = CheckBox.CheckedStates.Checked
 		      Else
-		        CookieList.CellState(CookieList.LastIndex, 6) = CheckBox.CheckedStates.Unchecked
+		        CookieList.CellState(CookieList.LastIndex, 5) = CheckBox.CheckedStates.Unchecked
 		      End If
 		      CookieList.RowTag(CookieList.LastIndex) = i
 		      i = Client.Cookies.Lookup(CookieSearchName.Text, CookieSearchDomain.Text, i + 1, StrictLookup.Value)
@@ -2637,6 +2637,10 @@ End
 
 	#tag Property, Flags = &h21
 		Private FormValue As Pair
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mCookiesDirty As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -3170,14 +3174,6 @@ End
 #tag EndEvents
 #tag Events CookieList
 	#tag Event
-		Function CellClick(row as Integer, column as Integer, x as Integer, y as Integer) As Boolean
-		  #pragma Unused x
-		  #pragma Unused y
-		  Me.CellTag(row, column) = Me.Cell(row, column)
-		  Me.EditCell(row, column)
-		End Function
-	#tag EndEvent
-	#tag Event
 		Sub CellAction(row As Integer, column As Integer)
 		  #pragma Unused column
 		  Dim n, v, d, p As String
@@ -3185,10 +3181,10 @@ End
 		  Dim e As Date
 		  n = Me.Cell(row, 0)
 		  v = Me.Cell(row, 1)
-		  d = Me.Cell(row, 3)
-		  If Me.Cell(row, 4) <> "" Then Call libcURL.ParseDate(Me.Cell(row, 4), e)
-		  p = Me.Cell(row, 5)
-		  h = Me.CellCheck(row, 6)
+		  d = Me.Cell(row, 2)
+		  If Me.Cell(row, 3) <> "" Then Call libcURL.ParseDate(Me.Cell(row, 3), e)
+		  p = Me.Cell(row, 4)
+		  h = Me.CellCheck(row, 4)
 		  
 		  If Not Client.Cookies.SetCookie(n, v, d, e, p, h) Then
 		    Dim err As New libcURL.cURLException(Client.EasyItem)
@@ -3200,8 +3196,14 @@ End
 		    Me.Cell(row, 4) = Me.CellTag(row, 4)
 		    Me.CellState(row, 5) = Not Me.CellState(row, 5)
 		  ElseIf Client.Cookies.CookieJar <> Nil Then
-		    Call Client.Cookies.Flush()
-		    
+		    mCookiesDirty = mCookiesDirty + 1
+		  End If
+		  If mCookiesDirty > 0 Then
+		    FlushCookiesButton.Enabled = True
+		    FlushCookiesButton.Caption = "Flush Changes (" + Format(mCookiesDirty, "###,###,##0") + ")"
+		  Else
+		    FlushCookiesButton.Enabled = False
+		    FlushCookiesButton.Caption = "Flush Changes"
 		  End If
 		End Sub
 	#tag EndEvent
@@ -3210,8 +3212,9 @@ End
 		  Dim r, c As Integer
 		  r = Me.RowFromXY(x, y)
 		  c = Me.ColumnFromXY(x, y)
+		  If r = -1 Then Return False
 		  If Me.RowTag(r) < 0 Then Return False
-		  base.Tag = Me.RowTag(r)
+		  base.Tag = r
 		  base.Append(New MenuItem("Expire"))
 		End Function
 	#tag EndEvent
@@ -3221,15 +3224,57 @@ End
 		  Case "Expire"
 		    Dim i As Integer = hitItem.Tag
 		    If i > -1 Then
-		      Client.Cookies.Expiry(i) = New Date(1970, 2, 1, 0, 0, 0, 0.0)
-		      If Client.Cookies.CookieJar <> Nil Then Call Client.Cookies.Flush()
+		      Dim index As Integer = Me.RowTag(i)
+		      If MsgBox("Delete this cookie?", 48 + 4, "Confirm deletion") = 6 Then
+		        Client.Cookies.Expiry(index) = New Date(1970, 2, 1, 0, 0, 0, 0.0)
+		        Me.RemoveRow(i)
+		        mCookiesDirty = mCookiesDirty + 1
+		      End If
+		      If mCookiesDirty > 0 Then
+		        FlushCookiesButton.Enabled = True
+		        FlushCookiesButton.Caption = "Flush Changes (" + Format(mCookiesDirty, "###,###,##0") + ")"
+		      Else
+		        FlushCookiesButton.Enabled = False
+		        FlushCookiesButton.Caption = "Flush Changes"
+		      End If
 		      Return True
 		    End If
 		  End Select
 		End Function
 	#tag EndEvent
+	#tag Event
+		Function CellClick(row as Integer, column as Integer, x as Integer, y as Integer) As Boolean
+		  #pragma Unused x
+		  #pragma Unused y
+		  If (column = 1 Or column = 3 Or column = 4) And Not IsContextualClick And Me.Selected(row) Then
+		    Me.CellTag(row, column) = Me.Cell(row, column)
+		    Me.EditCell(row, column)
+		    Return True
+		  End If
+		  Return (column = 5)
+		  
+		End Function
+	#tag EndEvent
+	#tag Event
+		Function CompareRows(row1 as Integer, row2 as Integer, column as Integer, ByRef result as Integer) As Boolean
+		  If column = 5 Then
+		    Dim a, b As Boolean
+		    a = (Me.CellState(row1, column) = CheckBox.CheckedStates.Checked)
+		    b = (Me.CellState(row2, column) = CheckBox.CheckedStates.Checked)
+		    
+		    If a Xor b Then
+		      If a And Not b Then
+		        result = 1
+		      Else
+		        result = -1
+		      End If
+		    End If
+		    Return True
+		  End If
+		End Function
+	#tag EndEvent
 #tag EndEvents
-#tag Events PushButton11
+#tag Events CookieLookupButton
 	#tag Event
 		Sub Action()
 		  UpdateCookieList()
@@ -3281,7 +3326,7 @@ End
 		End Sub
 	#tag EndEvent
 #tag EndEvents
-#tag Events PushButton12
+#tag Events NewCookieSessionButton
 	#tag Event
 		Sub Action()
 		  If Not Client.Cookies.NewSession Then Raise New libcURL.cURLException(Client.EasyItem)
@@ -3289,7 +3334,7 @@ End
 		End Sub
 	#tag EndEvent
 #tag EndEvents
-#tag Events PushButton13
+#tag Events DeleteCookiesButton
 	#tag Event
 		Sub Action()
 		  If Not Client.Cookies.DeleteSession Then Raise New libcURL.cURLException(Client.EasyItem)
@@ -3297,7 +3342,7 @@ End
 		End Sub
 	#tag EndEvent
 #tag EndEvents
-#tag Events PushButton14
+#tag Events FlushCookiesButton
 	#tag Event
 		Sub Action()
 		  If Client.Cookies.CookieJar <> Nil Then
@@ -3305,6 +3350,9 @@ End
 		  Else
 		    Call MsgBox("No cookie jar file specified!", 48, "No file")
 		  End If
+		  mCookiesDirty = 0
+		  Me.Enabled = False
+		  Me.Caption = "Flush Changes"
 		End Sub
 	#tag EndEvent
 #tag EndEvents

@@ -109,22 +109,22 @@ Protected Class CookieEngine
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine.Flush
 		  
-		  If libcURL.Version.IsAtLeast(7, 17, 1) Then
-		    Dim OK As Boolean
-		    If CookieFile = Nil Then CookieFile = mCookieJar
-		    If CookieFile = Nil Then
-		      ErrorSetter(Owner).LastError = libcURL.Errors.NO_COOKIEJAR
-		      Return False
-		    End If
-		    OK = Owner.SetOption(libcURL.Opts.COOKIEJAR, CookieFile)
-		    If OK Then OK = Owner.SetOption(libcURL.Opts.COOKIELIST, "FLUSH")
-		    If OK Then OK = Owner.SetOption(libcURL.Opts.COOKIEJAR, mCookieJar)
-		    Me.Invalidate
-		    Return OK
-		  Else
+		  If Not libcURL.Version.IsAtLeast(7, 17, 1) Then
 		    ErrorSetter(Owner).LastError = libcURL.Errors.FEATURE_UNAVAILABLE
 		    Return False
 		  End If
+		  
+		  Dim OK As Boolean
+		  If CookieFile = Nil Then CookieFile = mCookieJar
+		  If CookieFile = Nil Then
+		    ErrorSetter(Owner).LastError = libcURL.Errors.NO_COOKIEJAR
+		    Return False
+		  End If
+		  OK = Owner.SetOption(libcURL.Opts.COOKIEJAR, CookieFile)
+		  If OK Then OK = Owner.SetOption(libcURL.Opts.COOKIELIST, "FLUSH")
+		  If OK Then OK = Owner.SetOption(libcURL.Opts.COOKIEJAR, mCookieJar)
+		  Me.Invalidate
+		  Return OK
 		End Function
 	#tag EndMethod
 
@@ -246,22 +246,22 @@ Protected Class CookieEngine
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine.Reload
 		  
-		  If libcURL.Version.IsAtLeast(7, 17, 1) Then
-		    Dim OK As Boolean
-		    If CookieFile <> Nil Then
-		      Dim tmp As FolderItem = Me.CookieJar
-		      Me.CookieJar = CookieFile
-		      OK = Owner.SetOption(libcURL.Opts.COOKIELIST, "RELOAD")
-		      Me.CookieJar = tmp
-		    ElseIf Me.CookieJar <> Nil Then
-		      OK = Owner.SetOption(libcURL.Opts.COOKIELIST, "RELOAD")
-		    End If
-		    Me.Invalidate
-		    Return OK
-		  Else
+		  If Not libcURL.Version.IsAtLeast(7, 17, 1) Then
 		    ErrorSetter(Owner).LastError = libcURL.Errors.FEATURE_UNAVAILABLE
+		    Return False
 		  End If
 		  
+		  Dim OK As Boolean
+		  If CookieFile <> Nil Then
+		    Dim tmp As FolderItem = Me.CookieJar
+		    Me.CookieJar = CookieFile
+		    OK = Owner.SetOption(libcURL.Opts.COOKIELIST, "RELOAD")
+		    Me.CookieJar = tmp
+		  ElseIf Me.CookieJar <> Nil Then
+		    OK = Owner.SetOption(libcURL.Opts.COOKIELIST, "RELOAD")
+		  End If
+		  Me.Invalidate
+		  Return OK
 		End Function
 	#tag EndMethod
 
