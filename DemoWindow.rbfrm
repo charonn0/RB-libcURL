@@ -3176,35 +3176,39 @@ End
 	#tag Event
 		Sub CellAction(row As Integer, column As Integer)
 		  #pragma Unused column
-		  Dim n, v, d, p As String
-		  Dim h As Boolean
-		  Dim e As Date
-		  n = Me.Cell(row, 0)
-		  v = Me.Cell(row, 1)
-		  d = Me.Cell(row, 2)
-		  If Me.Cell(row, 3) <> "" Then Call libcURL.ParseDate(Me.Cell(row, 3), e)
-		  p = Me.Cell(row, 4)
-		  h = Me.CellCheck(row, 4)
 		  
-		  If Not Client.Cookies.SetCookie(n, v, d, e, p, h) Then
-		    Dim err As New libcURL.cURLException(Client.EasyItem)
-		    MsgBox(err.Message)
-		    Me.Cell(row, 0) = Me.CellTag(row, 0)
-		    Me.Cell(row, 1) = Me.CellTag(row, 1)
-		    Me.Cell(row, 2) = Me.CellTag(row, 2)
-		    Me.Cell(row, 3) = Me.CellTag(row, 3)
-		    Me.Cell(row, 4) = Me.CellTag(row, 4)
-		    Me.CellState(row, 5) = Not Me.CellState(row, 5)
-		  ElseIf Client.Cookies.CookieJar <> Nil Then
-		    mCookiesDirty = mCookiesDirty + 1
-		  End If
-		  If mCookiesDirty > 0 Then
-		    FlushCookiesButton.Enabled = True
-		    FlushCookiesButton.Caption = "Flush Changes (" + Format(mCookiesDirty, "###,###,##0") + ")"
-		  Else
-		    FlushCookiesButton.Enabled = False
-		    FlushCookiesButton.Caption = "Flush Changes"
-		  End If
+		  If column <> 3 And Me.Cell(row, 0) = Me.CellTag(row, 0) And Me.Cell(row, 1) = Me.CellTag(row, 1) And Me.Cell(row, 2) = Me.CellTag(row, 2) And _
+		    Me.Cell(row, 4) = Me.CellTag(row, 4) Then Return ' no changes
+		    
+		    Dim n, v, d, p As String
+		    Dim h As Boolean
+		    Dim e As Date
+		    n = Me.Cell(row, 0)
+		    v = Me.Cell(row, 1)
+		    d = Me.Cell(row, 2)
+		    If Me.Cell(row, 3) <> "" Then Call libcURL.ParseDate(Me.Cell(row, 3), e)
+		    p = Me.Cell(row, 4)
+		    h = Me.CellCheck(row, 4)
+		    
+		    If Not Client.Cookies.SetCookie(n, v, d, e, p, h) Then
+		      Dim err As New libcURL.cURLException(Client.EasyItem)
+		      MsgBox(err.Message)
+		      Me.Cell(row, 0) = Me.CellTag(row, 0)
+		      Me.Cell(row, 1) = Me.CellTag(row, 1)
+		      Me.Cell(row, 2) = Me.CellTag(row, 2)
+		      Me.Cell(row, 3) = Me.CellTag(row, 3)
+		      Me.Cell(row, 4) = Me.CellTag(row, 4)
+		      Me.CellState(row, 5) = Not Me.CellState(row, 5)
+		    ElseIf Client.Cookies.CookieJar <> Nil Then
+		      mCookiesDirty = mCookiesDirty + 1
+		    End If
+		    If mCookiesDirty > 0 Then
+		      FlushCookiesButton.Enabled = True
+		      FlushCookiesButton.Caption = "Flush Changes (" + Format(mCookiesDirty, "###,###,##0") + ")"
+		    Else
+		      FlushCookiesButton.Enabled = False
+		      FlushCookiesButton.Caption = "Flush Changes"
+		    End If
 		End Sub
 	#tag EndEvent
 	#tag Event
@@ -3214,8 +3218,10 @@ End
 		  c = Me.ColumnFromXY(x, y)
 		  If r = -1 Then Return False
 		  If Me.RowTag(r) < 0 Then Return False
-		  base.Tag = r
-		  base.Append(New MenuItem("Expire"))
+		  Dim m As New MenuItem("Expire")
+		  m.Tag = r
+		  base.Append(m)
+		  Return True
 		End Function
 	#tag EndEvent
 	#tag Event

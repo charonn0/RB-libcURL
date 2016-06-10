@@ -10,7 +10,7 @@
 
 	#tag FileType
 		CodeName=NetscapeCookieJar
-		Extension=.jar;.cookies
+		Extension=.jar;.cookies;.txt
 		Flags=&h0
 		MacCreator=
 		MacType=
