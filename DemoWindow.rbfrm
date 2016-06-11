@@ -51,7 +51,7 @@ Begin Window DemoWindow
       TextUnit        =   0
       Top             =   119
       Underline       =   ""
-      Value           =   4
+      Value           =   2
       Visible         =   True
       Width           =   596
       Begin Listbox Protocols
@@ -1826,6 +1826,39 @@ Begin Window DemoWindow
          Visible         =   True
          Width           =   135
       End
+      Begin ComboBox SSLVer
+         AutoComplete    =   False
+         AutoDeactivate  =   True
+         Bold            =   False
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel2"
+         InitialValue    =   "Default SSL/TLS\r\nTLSv1\r\nSSLv2\r\nSSLv3\r\nTLSv1.0\r\nTLSv1.1\r\nTLSv1.2"
+         Italic          =   False
+         Left            =   480
+         ListIndex       =   0
+         LockBottom      =   True
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   False
+         LockTop         =   True
+         Scope           =   0
+         TabIndex        =   15
+         TabPanelIndex   =   3
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0.0
+         TextUnit        =   0
+         Top             =   200
+         Underline       =   False
+         UseFocusRing    =   True
+         Visible         =   True
+         Width           =   100
+      End
    End
    Begin cURLClient Client
       Height          =   32
@@ -1878,7 +1911,7 @@ Begin Window DemoWindow
       Underline       =   ""
       UseFocusRing    =   True
       Visible         =   True
-      Width           =   335
+      Width           =   313
    End
    Begin Thread GetThread
       Height          =   32
@@ -2444,6 +2477,70 @@ Begin Window DemoWindow
       Visible         =   True
       Width           =   145
    End
+   Begin ComboBox HTTPVer
+      AutoComplete    =   False
+      AutoDeactivate  =   True
+      Bold            =   False
+      DataField       =   ""
+      DataSource      =   ""
+      Enabled         =   True
+      Height          =   20
+      HelpTag         =   ""
+      Index           =   -2147483648
+      InitialParent   =   ""
+      InitialValue    =   "HTTP/1.1\r\nHTTP/1.0\r\nHTTP/2"
+      Italic          =   False
+      Left            =   480
+      ListIndex       =   0
+      LockBottom      =   True
+      LockedInPosition=   False
+      LockLeft        =   True
+      LockRight       =   False
+      LockTop         =   True
+      Scope           =   0
+      TabIndex        =   15
+      TabPanelIndex   =   0
+      TabStop         =   True
+      TextFont        =   "System"
+      TextSize        =   0.0
+      TextUnit        =   0
+      Top             =   170
+      Underline       =   False
+      UseFocusRing    =   True
+      Visible         =   True
+      Width           =   100
+   End
+   Begin PushButton AbortButton
+      AutoDeactivate  =   True
+      Bold            =   ""
+      ButtonStyle     =   0
+      Cancel          =   ""
+      Caption         =   "X"
+      Default         =   ""
+      Enabled         =   False
+      Height          =   22
+      HelpTag         =   "Abort"
+      Index           =   -2147483648
+      InitialParent   =   ""
+      Italic          =   ""
+      Left            =   571
+      LockBottom      =   ""
+      LockedInPosition=   False
+      LockLeft        =   True
+      LockRight       =   ""
+      LockTop         =   True
+      Scope           =   0
+      TabIndex        =   16
+      TabPanelIndex   =   0
+      TabStop         =   True
+      TextFont        =   "System"
+      TextSize        =   0
+      TextUnit        =   0
+      Top             =   12
+      Underline       =   ""
+      Visible         =   True
+      Width           =   24
+   End
 End
 #tag EndWindow
 
@@ -2538,8 +2635,10 @@ End
 
 	#tag Method, Flags = &h21
 		Private Sub Populate()
+		  mLockUI = True
 		  PauseButton.Enabled = False
 		  PauseButton.Caption = "Pause"
+		  AbortButton.Enabled = False
 		  Dim cURLCode As Integer = Client.LastError
 		  If Not CheckBox1.Value Then
 		    DownloadOutput.Text = Client.GetDownloadedData()
@@ -2588,6 +2687,34 @@ End
 		    Next
 		  End If
 		  UpdateCookieList()
+		  Select Case Client.EasyItem.HTTPVersion
+		  Case Client.EasyItem.HTTP_VERSION_1_1
+		    HTTPVer.ListIndex = 0
+		  Case Client.EasyItem.HTTP_VERSION_1_0
+		    HTTPVer.ListIndex = 1
+		  Case Client.EasyItem.HTTP_VERSION_2_0
+		    HTTPVer.ListIndex = 2
+		  End Select
+		  
+		  Select Case Client.EasyItem.SSLVersion
+		  Case libcURL.SSLVersion.Default
+		    SSLVer.ListIndex = 0
+		  Case libcURL.SSLVersion.TLSv1
+		    SSLVer.ListIndex = 1
+		  Case libcURL.SSLVersion.SSLv2
+		    SSLVer.ListIndex = 2
+		  Case libcURL.SSLVersion.SSLv3
+		    SSLVer.ListIndex = 3
+		  Case libcURL.SSLVersion.TLSv1_0
+		    SSLVer.ListIndex = 4
+		  Case libcURL.SSLVersion.TLSv1_1
+		    SSLVer.ListIndex = 5
+		  Case libcURL.SSLVersion.TLSv1_2
+		    SSLVer.ListIndex = 6
+		  End Select
+		  
+		Finally
+		  mLockUI = False
 		End Sub
 	#tag EndMethod
 
@@ -2649,6 +2776,10 @@ End
 
 	#tag Property, Flags = &h21
 		Private mdltotal As Int64
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mLockUI As Boolean
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -2883,6 +3014,7 @@ End
 	#tag EndEvent
 	#tag Event
 		Sub Action()
+		  If mLockUI Then Return
 		  Client.EasyItem.Verbose = Me.Value
 		End Sub
 	#tag EndEvent
@@ -2899,6 +3031,7 @@ End
 	#tag EndEvent
 	#tag Event
 		Sub Action()
+		  If mLockUI Then Return
 		  Client.EasyItem.Secure = Me.Value
 		End Sub
 	#tag EndEvent
@@ -2915,6 +3048,7 @@ End
 	#tag EndEvent
 	#tag Event
 		Sub Action()
+		  If mLockUI Then Return
 		  Client.EasyItem.HTTPPreserveMethod = Me.Value
 		End Sub
 	#tag EndEvent
@@ -2931,6 +3065,7 @@ End
 	#tag EndEvent
 	#tag Event
 		Sub Action()
+		  If mLockUI Then Return
 		  Client.EasyItem.HTTPCompression = Me.Value
 		End Sub
 	#tag EndEvent
@@ -2947,6 +3082,7 @@ End
 	#tag EndEvent
 	#tag Event
 		Sub Action()
+		  If mLockUI Then Return
 		  Client.EasyItem.FollowRedirects = Me.Value
 		End Sub
 	#tag EndEvent
@@ -2963,6 +3099,7 @@ End
 	#tag EndEvent
 	#tag Event
 		Sub Action()
+		  If mLockUI Then Return
 		  Client.EasyItem.AutoReferer = Me.Value
 		End Sub
 	#tag EndEvent
@@ -2979,6 +3116,7 @@ End
 	#tag EndEvent
 	#tag Event
 		Sub Action()
+		  If mLockUI Then Return
 		  Client.EasyItem.AutoDisconnect = Me.Value
 		End Sub
 	#tag EndEvent
@@ -2995,6 +3133,7 @@ End
 	#tag EndEvent
 	#tag Event
 		Sub Action()
+		  If mLockUI Then Return
 		  Client.EasyItem.FailOnServerError = Me.Value
 		End Sub
 	#tag EndEvent
@@ -3049,6 +3188,7 @@ End
 	#tag EndEvent
 	#tag Event
 		Sub Action()
+		  If mLockUI Then Return
 		  Client.EasyItem.UseProgressEvent = Me.Value
 		End Sub
 	#tag EndEvent
@@ -3370,6 +3510,30 @@ End
 		End Sub
 	#tag EndEvent
 #tag EndEvents
+#tag Events SSLVer
+	#tag Event
+		Sub Change()
+		  If mLockUI Then Return
+		  Select Case Me.Text
+		  Case "TLSv1"
+		    Client.EasyItem.SSLVersion = libcURL.SSLVersion.TLSv1
+		  Case "SSLv2"
+		    Client.EasyItem.SSLVersion = libcURL.SSLVersion.SSLv2
+		  Case "SSLv3"
+		    Client.EasyItem.SSLVersion = libcURL.SSLVersion.SSLv3
+		  Case "TLSv1.0"
+		    Client.EasyItem.SSLVersion = libcURL.SSLVersion.TLSv1_0
+		  Case "TLSv1.1"
+		    Client.EasyItem.SSLVersion = libcURL.SSLVersion.TLSv1_1
+		  Case "TLSv1.2"
+		    Client.EasyItem.SSLVersion = libcURL.SSLVersion.TLSv1_2
+		  Else
+		    Client.EasyItem.SSLVersion = libcURL.SSLVersion.Default
+		  End Select
+		  
+		End Sub
+	#tag EndEvent
+#tag EndEvents
 #tag Events Client
 	#tag Event
 		Function Progress(dlTotal As Int64, dlNow As Int64, ulTotal As Int64, ulNow As Int64) As Boolean
@@ -3461,6 +3625,7 @@ End
 		    bs = BinaryStream.Create(f, True)
 		  End If
 		  PauseButton.Enabled = True
+		  AbortButton.Enabled = True
 		  Client.Get(TextField1.Text, bs)
 		End Sub
 	#tag EndEvent
@@ -3474,6 +3639,7 @@ End
 		    ThreadStream = BinaryStream.Create(f, True)
 		  End If
 		  PauseButton.Enabled = True
+		  AbortButton.Enabled = True
 		  GetThread.Run
 		End Sub
 	#tag EndEvent
@@ -3482,6 +3648,7 @@ End
 	#tag Event
 		Sub Action()
 		  PauseButton.Enabled = True
+		  AbortButton.Enabled = True
 		  Dim f As FolderItem = GetOpenFolderItem("")
 		  Dim bs As BinaryStream = BinaryStream.Open(f)
 		  Client.Put(TextField1.Text, bs)
@@ -3492,6 +3659,7 @@ End
 	#tag Event
 		Sub Action()
 		  PauseButton.Enabled = True
+		  AbortButton.Enabled = True
 		  mPutTarget = GetOpenFolderItem("")
 		  mURL = TextField1.Text
 		  PutThread.Run
@@ -3503,6 +3671,7 @@ End
 		Sub Action()
 		  If FormValue <> Nil Then
 		    PauseButton.Enabled = True
+		    AbortButton.Enabled = True
 		    If FormValue.Right = 0 Then ' URLEncoded
 		      Dim frm() As String = FormValue.Left
 		      Client.Post(TextField1.Text, frm)
@@ -3520,6 +3689,7 @@ End
 	#tag Event
 		Sub Action()
 		  PauseButton.Enabled = True
+		  AbortButton.Enabled = True
 		  mURL = TextField1.Text
 		  PostThread.Run
 		End Sub
@@ -3539,6 +3709,7 @@ End
 	#tag Event
 		Sub Action()
 		  PauseButton.Enabled = True
+		  AbortButton.Enabled = True
 		  mURL = TextField1.Text
 		  HeadThread.Run
 		End Sub
@@ -3548,6 +3719,7 @@ End
 	#tag Event
 		Sub Action()
 		  PauseButton.Enabled = True
+		  AbortButton.Enabled = True
 		  Client.Head(TextField1.Text)
 		End Sub
 	#tag EndEvent
@@ -3584,6 +3756,38 @@ End
 		  Else
 		    If Client.EasyItem.Resume Then Me.Caption = "Pause"
 		  End If
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events HTTPVer
+	#tag Event
+		Sub Change()
+		  If mLockUI Then Return
+		  Select Case Me.Text
+		  Case "HTTP/1.1"
+		    Client.EasyItem.HTTPVersion = Client.EasyItem.HTTP_VERSION_1_1
+		  Case "HTTP/1.0"
+		    Client.EasyItem.HTTPVersion = Client.EasyItem.HTTP_VERSION_1_0
+		  Case "HTTP/2"
+		    Try
+		      Client.EasyItem.HTTPVersion = Client.EasyItem.HTTP_VERSION_2_0
+		    Catch Err As libcURL.cURLException
+		      If Err.ErrorNumber = libcURL.Errors.UNSUPPORTED_PROTOCOL Then
+		        MsgBox("HTTP/2 not built-in")
+		        Me.ListIndex = 0
+		      Else
+		        Raise Err
+		      End If
+		    End Try
+		  End Select
+		  
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events AbortButton
+	#tag Event
+		Sub Action()
+		  Client.Abort()
 		End Sub
 	#tag EndEvent
 #tag EndEvents
