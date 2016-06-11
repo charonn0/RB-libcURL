@@ -1,6 +1,12 @@
 #tag Class
 Protected Class cURLManager
 	#tag Method, Flags = &h0
+		Sub Abort()
+		  If Not Me.IsTransferComplete Then mAbort = True
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub Close()
 		  ' Explicitly closes all libcURL handles associated with the cURLManager instance. 
 		  ' Automatically called by the Destructor.
@@ -263,6 +269,7 @@ Protected Class cURLManager
 		  If Not mMultiItem.AddItem(mEasyItem) Then Raise New libcURL.cURLException(mMultiItem)
 		  
 		  mIsTransferComplete = False
+		  mAbort = False
 		  If URL.Trim <> "" Then mEasyItem.URL = URL
 		  mHeaders = Nil
 		  If WriteTo = Nil Then
@@ -346,6 +353,10 @@ Protected Class cURLManager
 	#tag Method, Flags = &h21
 		Private Function _ProgressHandler(Sender As libcURL.EasyHandle, dlTotal As Int64, dlnow As Int64, ultotal As Int64, ulnow As Int64) As Boolean
 		  #pragma Unused Sender
+		  If mAbort Then
+		    mAbort = False
+		    Return True
+		  End If
 		  Return RaiseEvent Progress(dlTotal, dlnow, ultotal, ulnow)
 		End Function
 	#tag EndMethod
@@ -437,6 +448,10 @@ Protected Class cURLManager
 		#tag EndGetter
 		IsSSLCertOK As Boolean
 	#tag EndComputedProperty
+
+	#tag Property, Flags = &h21
+		Private mAbort As Boolean
+	#tag EndProperty
 
 	#tag Property, Flags = &h21
 		Private mDownloadMB As MemoryBlock
