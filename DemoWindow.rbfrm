@@ -1859,6 +1859,39 @@ Begin Window DemoWindow
          Visible         =   True
          Width           =   100
       End
+      Begin ComboBox HTTPVer
+         AutoComplete    =   False
+         AutoDeactivate  =   True
+         Bold            =   False
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel2"
+         InitialValue    =   "HTTP/1.1\r\nHTTP/1.0\r\nHTTP/2"
+         Italic          =   False
+         Left            =   480
+         ListIndex       =   0
+         LockBottom      =   True
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   False
+         LockTop         =   True
+         Scope           =   0
+         TabIndex        =   28
+         TabPanelIndex   =   3
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0.0
+         TextUnit        =   0
+         Top             =   169
+         Underline       =   False
+         UseFocusRing    =   True
+         Visible         =   True
+         Width           =   100
+      End
    End
    Begin cURLClient Client
       Height          =   32
@@ -2477,42 +2510,9 @@ Begin Window DemoWindow
       Visible         =   True
       Width           =   145
    End
-   Begin ComboBox HTTPVer
-      AutoComplete    =   False
-      AutoDeactivate  =   True
-      Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
-      Enabled         =   True
-      Height          =   20
-      HelpTag         =   ""
-      Index           =   -2147483648
-      InitialParent   =   ""
-      InitialValue    =   "HTTP/1.1\r\nHTTP/1.0\r\nHTTP/2"
-      Italic          =   False
-      Left            =   480
-      ListIndex       =   0
-      LockBottom      =   True
-      LockedInPosition=   False
-      LockLeft        =   True
-      LockRight       =   False
-      LockTop         =   True
-      Scope           =   0
-      TabIndex        =   15
-      TabPanelIndex   =   0
-      TabStop         =   True
-      TextFont        =   "System"
-      TextSize        =   0.0
-      TextUnit        =   0
-      Top             =   170
-      Underline       =   False
-      UseFocusRing    =   True
-      Visible         =   True
-      Width           =   100
-   End
    Begin PushButton AbortButton
       AutoDeactivate  =   True
-      Bold            =   ""
+      Bold            =   True
       ButtonStyle     =   0
       Cancel          =   ""
       Caption         =   "X"
@@ -2526,8 +2526,8 @@ Begin Window DemoWindow
       Left            =   571
       LockBottom      =   ""
       LockedInPosition=   False
-      LockLeft        =   True
-      LockRight       =   ""
+      LockLeft        =   False
+      LockRight       =   True
       LockTop         =   True
       Scope           =   0
       TabIndex        =   16
@@ -3534,6 +3534,31 @@ End
 		End Sub
 	#tag EndEvent
 #tag EndEvents
+#tag Events HTTPVer
+	#tag Event
+		Sub Change()
+		  If mLockUI Then Return
+		  Select Case Me.Text
+		  Case "HTTP/1.1"
+		    Client.EasyItem.HTTPVersion = Client.EasyItem.HTTP_VERSION_1_1
+		  Case "HTTP/1.0"
+		    Client.EasyItem.HTTPVersion = Client.EasyItem.HTTP_VERSION_1_0
+		  Case "HTTP/2"
+		    Try
+		      Client.EasyItem.HTTPVersion = Client.EasyItem.HTTP_VERSION_2_0
+		    Catch Err As libcURL.cURLException
+		      If Err.ErrorNumber = libcURL.Errors.UNSUPPORTED_PROTOCOL Then
+		        Call MsgBox("HTTP/2 support was not built into the installed version of libcurl.", 16, libcURL.Errors.Name(Err.ErrorNumber))
+		        Me.ListIndex = 0
+		      Else
+		        Raise Err
+		      End If
+		    End Try
+		  End Select
+		  
+		End Sub
+	#tag EndEvent
+#tag EndEvents
 #tag Events Client
 	#tag Event
 		Function Progress(dlTotal As Int64, dlNow As Int64, ulTotal As Int64, ulNow As Int64) As Boolean
@@ -3756,31 +3781,6 @@ End
 		  Else
 		    If Client.EasyItem.Resume Then Me.Caption = "Pause"
 		  End If
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events HTTPVer
-	#tag Event
-		Sub Change()
-		  If mLockUI Then Return
-		  Select Case Me.Text
-		  Case "HTTP/1.1"
-		    Client.EasyItem.HTTPVersion = Client.EasyItem.HTTP_VERSION_1_1
-		  Case "HTTP/1.0"
-		    Client.EasyItem.HTTPVersion = Client.EasyItem.HTTP_VERSION_1_0
-		  Case "HTTP/2"
-		    Try
-		      Client.EasyItem.HTTPVersion = Client.EasyItem.HTTP_VERSION_2_0
-		    Catch Err As libcURL.cURLException
-		      If Err.ErrorNumber = libcURL.Errors.UNSUPPORTED_PROTOCOL Then
-		        MsgBox("HTTP/2 not built-in")
-		        Me.ListIndex = 0
-		      Else
-		        Raise Err
-		      End If
-		    End Try
-		  End Select
-		  
 		End Sub
 	#tag EndEvent
 #tag EndEvents
