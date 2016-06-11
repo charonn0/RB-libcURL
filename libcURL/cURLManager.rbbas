@@ -12,7 +12,7 @@ Protected Class cURLManager
 		  ' Automatically called by the Destructor.
 		  '
 		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLManager.Close
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.Close
 		  
 		  If mMultiItem <> Nil Then mMultiItem.Close()
 		  If mEasyItem <> Nil And mRemoveHandlers Then
@@ -42,7 +42,7 @@ Protected Class cURLManager
 		  ' Creates a new instance of cURLManager with default options
 		  '
 		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLManager.Constructor
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.Constructor
 		  
 		  If mEasyItem = Nil Then
 		    mEasyItem = New libcURL.EasyHandle
@@ -67,7 +67,7 @@ Protected Class cURLManager
 		  ' Creates a new instance of cURLManager by cloning the passed cURLManager
 		  '
 		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLManager.Constructor
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.Constructor
 		  
 		  Select Case CopyOpts.EasyItem
 		  Case IsA libcURL.Protocols.FTPWildCard
@@ -84,7 +84,7 @@ Protected Class cURLManager
 		  ' Creates a new instance of cURLManager by taking ownership of the passed EasyHandle
 		  '
 		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLManager.Constructor
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.Constructor
 		  
 		  mEasyItem = ExistingEasy
 		  Me.Constructor()
@@ -96,7 +96,7 @@ Protected Class cURLManager
 		  ' Returns a reference to a CookieEngine instance
 		  '
 		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLManager.Cookies
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.Cookies
 		  
 		  Return mEasyItem.CookieEngine
 		End Function
@@ -115,7 +115,7 @@ Protected Class cURLManager
 		  ' no cookie is found.
 		  '
 		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLManager.GetCookie
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.GetCookie
 		  
 		  Dim index As Integer = mEasyItem.CookieEngine.Lookup(Name, Domain)
 		  If index > -1 Then Return mEasyItem.CookieEngine.Value(index)
@@ -130,7 +130,7 @@ Protected Class cURLManager
 		  ' the Writeable object directly.
 		  '
 		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLManager.GetDownloadedData
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.GetDownloadedData
 		  
 		  If mDownloadMB <> Nil Then Return mDownloadMB
 		  Dim data As New MemoryBlock(0)
@@ -152,7 +152,7 @@ Protected Class cURLManager
 		  ' Calls GetInfo on the EasyHandle. Refer to the EasyHandle.GetInfo documentation for details.
 		  '
 		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLManager.GetInfo
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.GetInfo
 		  
 		  If mEasyItem <> Nil Then Return mEasyItem.GetInfo(InfoType)
 		End Function
@@ -162,9 +162,9 @@ Protected Class cURLManager
 		Function GetResponseHeaders() As InternetHeaders
 		  ' Returns an InternetHeaders object containing all protocol headers received from the server
 		  ' during the most recent transfer. If no headers were received, returns Nil.
-		  ' 
+		  '
 		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLManager.GetResponseHeaders
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.GetResponseHeaders
 		  
 		  Return mHeaders
 		End Function
@@ -177,7 +177,7 @@ Protected Class cURLManager
 		  ' recent code is returned.
 		  '
 		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLManager.GetStatusCode
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.GetStatusCode
 		  
 		  Return Me.GetInfo(libcURL.Info.RESPONSE_CODE).Int32Value
 		End Function
@@ -189,7 +189,7 @@ Protected Class cURLManager
 		  ' transfer completes (successfully or not.)
 		  '
 		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLManager.IsTransferComplete
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.IsTransferComplete
 		  
 		  Return mIsTransferComplete
 		End Function
@@ -200,7 +200,7 @@ Protected Class cURLManager
 		  ' Gets the most recent cURL easy error code for the transfer.
 		  '
 		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLManager.LastError
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.LastError
 		  
 		  Return mEasyItem.LastError
 		End Function
@@ -211,7 +211,7 @@ Protected Class cURLManager
 		  ' Performs the transfer on the main thread/event loop.
 		  '
 		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLManager.Perform
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.Perform
 		  
 		  QueueTransfer(URL, ReadFrom, WriteTo)
 		  mMultiItem.Perform()
@@ -225,7 +225,7 @@ Protected Class cURLManager
 		  ' (it pegs the CPU, for one) but can noticably improve transfer speeds.
 		  '
 		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLManager.Perform
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.Perform
 		  
 		  QueueTransfer(URL, ReadFrom, WriteTo)
 		  Dim now As Double = Microseconds
@@ -258,7 +258,7 @@ Protected Class cURLManager
 		  ' Returns a reference to a ProxyEngine instance
 		  '
 		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLManager.Proxy
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.Proxy
 		  
 		  Return mEasyItem.ProxyEngine
 		End Function
@@ -290,7 +290,7 @@ Protected Class cURLManager
 		  ' Sets or updates a cookie. The cookie engine must be enabled.
 		  '
 		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLManager.SetCookie
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.SetCookie
 		  
 		  Return mEasyItem.CookieEngine.SetCookie(Name, Value, Domain, Expires, Path, HTTPOnly)
 		End Function
@@ -301,7 +301,7 @@ Protected Class cURLManager
 		  ' Calls SetOption on the EasyHandle. Refer to the EasyHandle.SetOption documentation for details.
 		  '
 		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLManager.SetOption
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.SetOption
 		  
 		  If mEasyItem <> Nil Then Return mEasyItem.SetOption(OptionNumber, NewValue)
 		End Function
@@ -324,7 +324,7 @@ Protected Class cURLManager
 		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/CURLOPT_CUSTOMREQUEST.html#DESCRIPTION
-		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLManager.SetRequestMethod
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.SetRequestMethod
 		  
 		  If RequestMethod.Trim <> "" Then
 		    Return mEasyItem.SetOption(libcURL.Opts.CUSTOMREQUEST, RequestMethod)
@@ -409,7 +409,7 @@ Protected Class cURLManager
 			  ' Gets and sets the EasyHandle instance which will be/has been used to conduct transfers.
 			  '
 			  ' See:
-			  ' https://github.com/charonn0/RB-libcURL/wiki/cURLManager.EasyItem
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.EasyItem
 			  
 			  Me.Close()
 			  Try
@@ -440,7 +440,7 @@ Protected Class cURLManager
 			  ' 
 			  ' See:
 			  ' https://curl.haxx.se/libcurl/c/CURLINFO_SSL_VERIFYRESULT.html
-			  ' https://github.com/charonn0/RB-libcURL/wiki/cURLManager.IsSSLCertOK
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.IsSSLCertOK
 			  
 			  Dim v As Integer = Me.GetInfo(libcURL.Info.SSL_VERIFYRESULT)
 			  Return v = 0

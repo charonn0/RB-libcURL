@@ -48,7 +48,7 @@ Implements ErrorSetter
 		  ' calls curl_global_cleanup.
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_global_cleanup.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLHandle.Destructor
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLHandle.Destructor
 		  
 		  If InitFlags = Nil Then Return
 		  Do Until InitFlagsLock.TrySignal
@@ -89,7 +89,7 @@ Implements ErrorSetter
 		Function LastError() As Integer
 		  ' All calls into libcURL that return an error code will update LastError
 		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/cURLHandle.LastError
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLHandle.LastError
 		  
 		  Return mLastError
 		End Function
