@@ -57,6 +57,10 @@ Protected Class cURLManager
 		  
 		  mMultiItem = New libcURL.MultiHandle
 		  AddHandler mMultiItem.TransferComplete, WeakAddressOf _TransferCompleteHandler
+		  If libcURL.Version.HTTP2 Then
+		    mMultiItem.EnableServerPush = True
+		    AddHandler mMultiItem.ServerPush, WeakAddressOf _ServerPushHandler
+		  End If
 		  
 		  Me.EasyItem = mEasyItem
 		End Sub
@@ -362,24 +366,42 @@ Protected Class cURLManager
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
+		Private Function _ServerPushHandler(Sender As libcURL.MultiHandle, ParentConnection As libcURL.EasyHandle, NewConnection As libcURL.EasyHandle, PushHeaders() As String) As Boolean
+		  #pragma Unused Sender
+		  #pragma Unused NewConnection
+		  #pragma Unused PushHeaders
+		  If ParentConnection <> mEasyItem Then Return False
+		  NewConnection.CA_ListFile = ParentConnection.CA_ListFile
+		  Return RaiseEvent AcceptServerPush(NewConnection, PushHeaders)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
 		Private Sub _TransferCompleteHandler(Sender As libcURL.MultiHandle, Item As libcURL.EasyHandle)
 		  #pragma Unused Sender
-		  If mDownloadMB <> Nil And mEasyItem.DownloadStream <> Nil And mEasyItem.DownloadStream IsA BinaryStream Then 
-		    BinaryStream(mEasyItem.DownloadStream).Close
-		  End If
 		  Dim status As Integer = Item.LastError
+		  If Item = mEasyItem Then
+		    If mDownloadMB <> Nil And mEasyItem.DownloadStream <> Nil And mEasyItem.DownloadStream IsA BinaryStream Then
+		      BinaryStream(mEasyItem.DownloadStream).Close
+		    End If
+		    mIsTransferComplete = True
+		    Item.ClearFormData()
+		    If Cookies.Enabled Then Cookies.Invalidate
+		  End If
 		  If status <> 0 Then
 		    RaiseEvent Error(status)
 		  Else
-		    RaiseEvent TransferComplete(Me.GetInfo(libcURL.Info.SIZE_DOWNLOAD).Int32Value, Me.GetInfo(libcURL.Info.SIZE_UPLOAD).Int32Value)
+		    RaiseEvent TransferComplete(Item)
 		  End If
-		  mIsTransferComplete = True
-		  mEasyItem.ClearFormData()
-		  If Cookies.Enabled Then Cookies.Invalidate
+		  
 		  If Item.LastError <> status Then ErrorSetter(Item).LastError = status
 		End Sub
 	#tag EndMethod
 
+
+	#tag Hook, Flags = &h0
+		Event AcceptServerPush(PushConnection As libcURL.EasyHandle, PushHeaders() As String) As Boolean
+	#tag EndHook
 
 	#tag Hook, Flags = &h0
 		Event DebugMessage(MessageType As libcURL.curl_infotype, data As String)
@@ -394,7 +416,7 @@ Protected Class cURLManager
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
-		Event TransferComplete(BytesRead As Integer, BytesWritten As Integer)
+		Event TransferComplete(CompletedItem As libcURL.EasyHandle)
 	#tag EndHook
 
 

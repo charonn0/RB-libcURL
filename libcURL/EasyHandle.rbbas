@@ -54,7 +54,7 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Constructor(GlobalInitFlags As Integer = libcURL.CURL_GLOBAL_DEFAULT)
+		Sub Constructor(GlobalInitFlags As Integer = libcURL.CURL_GLOBAL_DEFAULT, ExistingHandle As Integer = 0)
 		  ' Creates a new curl_easy handle
 		  '
 		  ' See:
@@ -64,8 +64,11 @@ Inherits libcURL.cURLHandle
 		  // Calling the overridden superclass constructor.
 		  // Constructor(GlobalInitFlags As Integer) -- From libcURL.cURLHandle
 		  Super.Constructor(GlobalInitFlags)
-		  
-		  mHandle = curl_easy_init()
+		  If ExistingHandle <> 0 Then
+		    mHandle = ExistingHandle
+		  Else
+		    mHandle = curl_easy_init()
+		  End If
 		  If mHandle > 0 Then
 		    If Instances = Nil Then Instances = New Dictionary
 		    Instances.Value(mHandle) = New WeakRef(Me)
@@ -74,10 +77,12 @@ Inherits libcURL.cURLHandle
 		    mLastError = libcURL.Errors.INIT_FAILED
 		    Raise New cURLException(Me)
 		  End If
+		  
 		  ' by default, only raise the DebugMessage event if we're debugging
 		  #If DebugBuild Then
 		    Me.Verbose = True
 		  #endif
+		  
 		End Sub
 	#tag EndMethod
 

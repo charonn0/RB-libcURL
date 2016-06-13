@@ -59,6 +59,10 @@ Inherits libcURL.cURLHandle
 		End Sub
 	#tag EndMethod
 
+	#tag DelegateDeclaration, Flags = &h21
+		Private Delegate Function cURLServerPushCallback(ParentHandle As Integer, ChildHandle As Integer, NumHeaders As Integer, PushHeaders As Ptr, UserData As Ptr) As Integer
+	#tag EndDelegateDeclaration
+
 	#tag Method, Flags = &h21
 		Private Sub Destructor()
 		  ' Destroys the stack. Any remaining EasyHandles are removed first.
@@ -216,6 +220,21 @@ Inherits libcURL.cURLHandle
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h21
+		Private Shared Function ServerPushCallback(ParentHandle As Integer, ChildHandle As Integer, NumHeaders As Integer, PushHeaders As Ptr, UserData As Ptr) As Integer
+		  ' This method is invoked by libcURL. DO NOT CALL THIS METHOD
+		  
+		  #pragma X86CallingConvention CDecl
+		  If PushHandlers = Nil Then Return 0
+		  Dim curl As WeakRef = PushHandlers.Lookup(UserData, Nil)
+		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA MultiHandle Then
+		    Return MultiHandle(curl.Value)._curlPush(ParentHandle, ChildHandle, NumHeaders, PushHeaders)
+		  End If
+		  
+		  Break ' UserData does not refer to a valid instance!
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Function SetOption(OptionNumber As Integer, NewValue As Variant) As Boolean
 		  ' SetOption is the primary interface to the multistack. Call this method with a MultiHandle option number
@@ -273,6 +292,10 @@ Inherits libcURL.cURLHandle
 		    Case IsA MemoryBlock
 		      MarshalledValue = NewValue.PtrValue
 		      
+		    Case IsA cURLServerPushCallback
+		      Dim p As cURLServerPushCallback = NewValue
+		      MarshalledValue = p
+		      
 		    Else
 		      Dim err As New TypeMismatchException
 		      err.Message = "NewValue is of unsupported vartype: " + Str(ValueType)
@@ -291,6 +314,28 @@ Inherits libcURL.cURLHandle
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h21
+		Private Function _curlPush(ParentConnection As Integer, NewConnection As Integer, NumHeaders As Int64, PushHeaders As Ptr) As Integer
+		  Dim parent As EasyHandle = Instances.Lookup(ParentConnection, Nil)
+		  If parent = Nil Then Return CURL_PUSH_DENY
+		  Dim child As New EasyHandle(parent.Flags, NewConnection)
+		  Dim h() As String
+		  For i As Int64 = 0 To NumHeaders - 1
+		    Dim mb As MemoryBlock = curl_pushheader_bynum(PushHeaders, i)
+		    If mb <> Nil Then
+		      h.Append(mb.CString(0))
+		    End If
+		  Next
+		  If Not RaiseEvent ServerPush(parent, child, h) Then Return CURL_PUSH_DENY
+		  Instances.Value(child.Handle) = child
+		  Return CURL_PUSH_OK
+		End Function
+	#tag EndMethod
+
+
+	#tag Hook, Flags = &h0
+		Event ServerPush(ParentConnection As libcURL.EasyHandle, NewConnection As libcURL.EasyHandle, PushHeaders() As String) As Boolean
+	#tag EndHook
 
 	#tag Hook, Flags = &h0
 		Event TransferComplete(easyitem As libcURL.EasyHandle)
@@ -316,6 +361,35 @@ Inherits libcURL.cURLHandle
 		Calling Perform will activate a timer which calls PerformOnce on the main thread until there are no more items. Perform returns immediately.
 	#tag EndNote
 
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  Return mEnableServerPush
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  If value Then
+			    If PushHandlers = Nil Then PushHandlers = New Dictionary
+			    If Not Me.SetOption(libcURL.Opts.PUSHDATA, mHandle) Then Raise New cURLException(Me)
+			    If Not Me.SetOption(libcURL.Opts.PUSHFUNCTION, AddressOf ServerPushCallback) Then Raise New cURLException(Me)
+			    If Not PushHandlers.HasKey(mHandle) Then PushHandlers.Value(mHandle) = New WeakRef(Me)
+			    
+			  Else
+			    If Not Me.SetOption(libcURL.Opts.PUSHDATA, 0) Then Raise New cURLException(Me)
+			    If Not Me.SetOption(libcURL.Opts.PUSHFUNCTION, Nil) Then Raise New cURLException(Me)
+			    If PushHandlers <> Nil And PushHandlers.HasKey(mHandle) Then 
+			      PushHandlers.Remove(mHandle)
+			      If PushHandlers.Count = 0 Then PushHandlers = Nil
+			    End If
+			  End If
+			  
+			  
+			End Set
+		#tag EndSetter
+		EnableServerPush As Boolean
+	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
@@ -384,6 +458,10 @@ Inherits libcURL.cURLHandle
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
+		Private mEnableServerPush As Boolean
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
 		Private mHTTPMultiplexing As Boolean
 	#tag EndProperty
 
@@ -396,11 +474,21 @@ Inherits libcURL.cURLHandle
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
+		Private Shared PushHandlers As Dictionary
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
 		Private StackLocked As Boolean
 	#tag EndProperty
 
 
 	#tag Constant, Name = CURLM_CALL_MULTI_PERFORM, Type = Double, Dynamic = False, Default = \"-1", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = CURL_PUSH_DENY, Type = Double, Dynamic = False, Default = \"1", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = CURL_PUSH_OK, Type = Double, Dynamic = False, Default = \"0", Scope = Private
 	#tag EndConstant
 
 

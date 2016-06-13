@@ -327,6 +327,12 @@ Protected Module Opts
 	#tag Constant, Name = PROXY_SERVICE_NAME, Type = Double, Dynamic = False, Default = \"10235", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = PUSHDATA, Type = Double, Dynamic = False, Default = \"10015", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = PUSHFUNCTION, Type = Double, Dynamic = False, Default = \"20014", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = PUT, Type = Double, Dynamic = False, Default = \"54", Scope = Protected
 	#tag EndConstant
 

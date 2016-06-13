@@ -3580,9 +3580,8 @@ End
 		End Sub
 	#tag EndEvent
 	#tag Event
-		Sub TransferComplete(BytesRead As Integer, BytesWritten As Integer)
-		  #pragma Unused BytesRead
-		  #pragma Unused BytesWritten
+		Sub TransferComplete(CompletedItem As libcURL.EasyHandle)
+		  #pragma Unused CompletedItem
 		  GUITimer.Mode = Timer.ModeSingle
 		  If ThreadStream <> Nil Then ThreadStream.Close
 		  ThreadStream = Nil
