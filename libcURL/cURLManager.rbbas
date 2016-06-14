@@ -58,7 +58,7 @@ Protected Class cURLManager
 		  mMultiItem = New libcURL.MultiHandle
 		  AddHandler mMultiItem.TransferComplete, WeakAddressOf _TransferCompleteHandler
 		  If libcURL.Version.HTTP2 Then
-		    mMultiItem.EnableServerPush = True
+		    mMultiItem.HTTP2Push = True
 		    AddHandler mMultiItem.ServerPush, WeakAddressOf _ServerPushHandler
 		  End If
 		  

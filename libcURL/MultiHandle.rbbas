@@ -365,7 +365,7 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  Return mEnableServerPush
+			  Return mHTTP2Push
 			End Get
 		#tag EndGetter
 		#tag Setter
@@ -379,16 +379,16 @@ Inherits libcURL.cURLHandle
 			  Else
 			    If Not Me.SetOption(libcURL.Opts.PUSHDATA, 0) Then Raise New cURLException(Me)
 			    If Not Me.SetOption(libcURL.Opts.PUSHFUNCTION, Nil) Then Raise New cURLException(Me)
-			    If PushHandlers <> Nil And PushHandlers.HasKey(mHandle) Then 
+			    If PushHandlers <> Nil And PushHandlers.HasKey(mHandle) Then
 			      PushHandlers.Remove(mHandle)
 			      If PushHandlers.Count = 0 Then PushHandlers = Nil
 			    End If
 			  End If
 			  
-			  
+			  mHTTP2Push = value
 			End Set
 		#tag EndSetter
-		EnableServerPush As Boolean
+		HTTP2Push As Boolean
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
@@ -458,7 +458,7 @@ Inherits libcURL.cURLHandle
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private mEnableServerPush As Boolean
+		Private mHTTP2Push As Boolean
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -500,6 +500,21 @@ Inherits libcURL.cURLHandle
 
 
 	#tag ViewBehavior
+		#tag ViewProperty
+			Name="EnableServerPush"
+			Group="Behavior"
+			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="HTTPMultiplexing"
+			Group="Behavior"
+			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="HTTPPipelining"
+			Group="Behavior"
+			Type="Boolean"
+		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
 			Visible=true
