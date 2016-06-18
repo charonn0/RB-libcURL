@@ -315,12 +315,12 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Function _curlPush(ParentConnection As Integer, NewConnection As Integer, NumHeaders As Int64, PushHeaders As Ptr) As Integer
+		Private Function _curlPush(ParentConnection As Integer, NewConnection As Integer, NumHeaders As Integer, PushHeaders As Ptr) As Integer
 		  Dim parent As EasyHandle = Instances.Lookup(ParentConnection, Nil)
 		  If parent = Nil Then Return CURL_PUSH_DENY
 		  Dim child As New EasyHandle(parent.Flags, NewConnection)
 		  Dim h() As String
-		  For i As Int64 = 0 To NumHeaders - 1
+		  For i As Integer = 0 To NumHeaders - 1
 		    Dim mb As MemoryBlock = curl_pushheader_bynum(PushHeaders, i)
 		    If mb <> Nil Then
 		      h.Append(mb.CString(0))
@@ -501,7 +501,7 @@ Inherits libcURL.cURLHandle
 
 	#tag ViewBehavior
 		#tag ViewProperty
-			Name="EnableServerPush"
+			Name="HTTP2Push"
 			Group="Behavior"
 			Type="Boolean"
 		#tag EndViewProperty

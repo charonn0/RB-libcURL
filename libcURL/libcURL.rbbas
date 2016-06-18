@@ -147,7 +147,7 @@ Protected Module libcURL
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Function curl_pushheader_bynum Lib "libcurl" (curl_pushheaders As Ptr, Number As Int64) As Ptr
+		Private Soft Declare Function curl_pushheader_bynum Lib "libcurl" (curl_pushheaders As Ptr, Number As Integer) As Ptr
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
