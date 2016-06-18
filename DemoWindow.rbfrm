@@ -54,104 +54,6 @@ Begin Window DemoWindow
       Value           =   2
       Visible         =   True
       Width           =   596
-      Begin Listbox Protocols
-         AutoDeactivate  =   True
-         AutoHideScrollbars=   True
-         Bold            =   ""
-         Border          =   True
-         ColumnCount     =   1
-         ColumnsResizable=   ""
-         ColumnWidths    =   ""
-         DataField       =   ""
-         DataSource      =   ""
-         DefaultRowHeight=   -1
-         Enabled         =   True
-         EnableDrag      =   ""
-         EnableDragReorder=   ""
-         GridLinesHorizontal=   0
-         GridLinesVertical=   0
-         HasHeading      =   True
-         HeadingIndex    =   -1
-         Height          =   80
-         HelpTag         =   ""
-         Hierarchical    =   ""
-         Index           =   -2147483648
-         InitialParent   =   "TabPanel2"
-         InitialValue    =   "Supported Protocols"
-         Italic          =   ""
-         Left            =   11
-         LockBottom      =   False
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   False
-         LockTop         =   True
-         RequiresSelection=   ""
-         Scope           =   0
-         ScrollbarHorizontal=   True
-         ScrollBarVertical=   True
-         SelectionType   =   0
-         TabIndex        =   0
-         TabPanelIndex   =   3
-         TabStop         =   True
-         TextFont        =   "System"
-         TextSize        =   0
-         TextUnit        =   0
-         Top             =   149
-         Underline       =   ""
-         UseFocusRing    =   True
-         Visible         =   True
-         Width           =   200
-         _ScrollWidth    =   -1
-      End
-      Begin Listbox Features
-         AutoDeactivate  =   True
-         AutoHideScrollbars=   True
-         Bold            =   ""
-         Border          =   True
-         ColumnCount     =   1
-         ColumnsResizable=   ""
-         ColumnWidths    =   ""
-         DataField       =   ""
-         DataSource      =   ""
-         DefaultRowHeight=   -1
-         Enabled         =   True
-         EnableDrag      =   ""
-         EnableDragReorder=   ""
-         GridLinesHorizontal=   0
-         GridLinesVertical=   0
-         HasHeading      =   True
-         HeadingIndex    =   -1
-         Height          =   80
-         HelpTag         =   ""
-         Hierarchical    =   ""
-         Index           =   -2147483648
-         InitialParent   =   "TabPanel2"
-         InitialValue    =   "Available Features"
-         Italic          =   ""
-         Left            =   11
-         LockBottom      =   True
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   False
-         LockTop         =   True
-         RequiresSelection=   ""
-         Scope           =   0
-         ScrollbarHorizontal=   True
-         ScrollBarVertical=   True
-         SelectionType   =   0
-         TabIndex        =   1
-         TabPanelIndex   =   3
-         TabStop         =   True
-         TextFont        =   "System"
-         TextSize        =   0
-         TextUnit        =   0
-         Top             =   237
-         Underline       =   ""
-         UseFocusRing    =   True
-         Visible         =   True
-         Width           =   200
-         _ScrollWidth    =   -1
-      End
       Begin Listbox Headers
          AutoDeactivate  =   True
          AutoHideScrollbars=   True
@@ -944,7 +846,7 @@ Begin Window DemoWindow
          Visible         =   True
          Width           =   73
       End
-      Begin ComboBox nic1
+      Begin ComboBox ProxyTypes
          AutoComplete    =   False
          AutoDeactivate  =   True
          Bold            =   False
@@ -1892,6 +1794,55 @@ Begin Window DemoWindow
          Visible         =   True
          Width           =   100
       End
+      Begin Listbox Features
+         AutoDeactivate  =   True
+         AutoHideScrollbars=   True
+         Bold            =   ""
+         Border          =   True
+         ColumnCount     =   1
+         ColumnsResizable=   ""
+         ColumnWidths    =   ""
+         DataField       =   ""
+         DataSource      =   ""
+         DefaultRowHeight=   -1
+         Enabled         =   True
+         EnableDrag      =   ""
+         EnableDragReorder=   ""
+         GridLinesHorizontal=   0
+         GridLinesVertical=   0
+         HasHeading      =   True
+         HeadingIndex    =   -1
+         Height          =   161
+         HelpTag         =   ""
+         Hierarchical    =   True
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel2"
+         InitialValue    =   "Available Features"
+         Italic          =   ""
+         Left            =   11
+         LockBottom      =   True
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   False
+         LockTop         =   True
+         RequiresSelection=   ""
+         Scope           =   0
+         ScrollbarHorizontal=   True
+         ScrollBarVertical=   True
+         SelectionType   =   0
+         TabIndex        =   0
+         TabPanelIndex   =   3
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   150
+         Underline       =   ""
+         UseFocusRing    =   True
+         Visible         =   True
+         Width           =   170
+         _ScrollWidth    =   -1
+      End
    End
    Begin cURLClient Client
       Height          =   32
@@ -2805,40 +2756,6 @@ End
 
 #tag EndWindowCode
 
-#tag Events Protocols
-	#tag Event
-		Sub Open()
-		  Dim l() As String = libcURL.Version.Protocols
-		  l.Sort
-		  For i As Integer = 0 To UBound(l)
-		    Me.AddRow(l(i))
-		  Next
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events Features
-	#tag Event
-		Sub Open()
-		  If libcURL.Version.SSL Then Me.AddRow("SSL/TLS security")
-		  If libcURL.Version.HTTP2 Then Me.AddRow("HTTP 2.0")
-		  If libcURL.Version.ASYNCHDNS Then Me.AddRow("Asynchronous DNS")
-		  If libcURL.Version.IDN Then Me.AddRow("International Domain Names")
-		  If libcURL.Version.IPV6 Then Me.AddRow("IPv6")
-		  If libcURL.Version.LARGEFILE Then Me.AddRow("Files >2GB")
-		  If libcURL.Version.LibZ.IsAvailable Then Me.AddRow("HTTP decompression")
-		  If libcURL.Version.CONV Then Me.AddRow("Encoding conversion")
-		  If libcURL.Version.DEBUG Then Me.AddRow("Debug capabilities")
-		  If libcURL.Version.DEBUG Then Me.AddRow("Memory debug capabilities")
-		  If libcURL.Version.GSSNEGOTIATE Then Me.AddRow("Negotiate auth")
-		  If libcURL.Version.KERBEROS4 Then Me.AddRow("Kerberos 4")
-		  If libcURL.Version.KERBEROS5 Then Me.AddRow("Kerberos 5")
-		  If libcURL.Version.NTLM Then Me.AddRow("NTLM auth")
-		  If libcURL.Version.SPNEGO Then Me.AddRow("SPNEGO auth")
-		  If libcURL.Version.SSPI Then Me.AddRow("Microsoft SSPI")
-		  If libcURL.Version.SSPI Then Me.AddRow("TLS-SRP")
-		End Sub
-	#tag EndEvent
-#tag EndEvents
 #tag Events CurlInfo
 	#tag Event
 		Sub ExpandRow(row As Integer)
@@ -3145,7 +3062,7 @@ End
 		End Sub
 	#tag EndEvent
 #tag EndEvents
-#tag Events nic1
+#tag Events ProxyTypes
 	#tag Event
 		Sub Change()
 		  Select Case Me.Text
@@ -3172,7 +3089,80 @@ End
 		    MsgBox("Unable to parse!")
 		  Else
 		    MsgBox("All options parsed successfully.")
+		    mLockUI = True
+		    AutoDisconnect.Value = Client.EasyItem.AutoDisconnect
+		    Autoreferer.Value = Client.EasyItem.AutoReferer
+		    FailOnError.Value = Client.EasyItem.FailOnServerError
+		    FollowRedirects.Value = Client.EasyItem.FollowRedirects
+		    HTTPCompress.Value = Client.EasyItem.HTTPCompression
+		    HTTPPreserveMethod.Value = Client.EasyItem.HTTPPreserveMethod
+		    NoProgress.Value = Client.EasyItem.UseProgressEvent
+		    Secure.Value = Client.EasyItem.Secure
+		    UseCookies.Value = Client.Cookies.Enabled
+		    Verbose.Value = Client.EasyItem.Verbose
+		    
+		    If Client.Proxy.Address <> "" Then
+		      ProxyServer.Text = Client.Proxy.Address
+		      Select Case Client.Proxy.Type
+		      Case libcURL.ProxyType.HTTP
+		        ProxyTypes.ListIndex = 4
+		      Case libcURL.ProxyType.HTTP1_0
+		        ProxyTypes.ListIndex = 5
+		      Case libcURL.ProxyType.SOCKS4
+		        ProxyTypes.ListIndex = 0
+		      Case libcURL.ProxyType.SOCKS4A
+		        ProxyTypes.ListIndex = 1
+		      Case libcURL.ProxyType.SOCKS5
+		        ProxyTypes.ListIndex = 2
+		      Case libcURL.ProxyType.SOCKS5_HOSTNAME
+		        ProxyTypes.ListIndex = 3
+		      End Select
+		    Else
+		      ProxyServer.Text = ""
+		      ProxyTypes.ListIndex = -1
+		    End If
 		  End If
+		  
+		  Select Case Client.EasyItem.HTTPVersion
+		  Case 0, 2 ' default http/1.0
+		    HTTPVer.ListIndex = 0
+		  Case 1 'http/1.0
+		    HTTPVer.ListIndex = 1
+		  Case 3 ' HTTP2
+		    HTTPVer.ListIndex = 2
+		  End Select
+		  
+		  Select Case Client.EasyItem.SSLVersion
+		  Case libcURL.SSLVersion.Default
+		    SSLVer.ListIndex = 0
+		  Case libcURL.SSLVersion.SSLv2
+		    SSLVer.ListIndex = 2
+		  Case libcURL.SSLVersion.SSLv3
+		    SSLVer.ListIndex = 3
+		  Case libcURL.SSLVersion.TLSv1
+		    SSLVer.ListIndex = 1
+		  Case libcURL.SSLVersion.TLSv1_0
+		    SSLVer.ListIndex = 4
+		  Case libcURL.SSLVersion.TLSv1_1
+		    SSLVer.ListIndex = 5
+		  Case libcURL.SSLVersion.TLSv1_2
+		    SSLVer.ListIndex = 6
+		  End Select
+		  
+		  TextField1.Text = Client.EasyItem.URL
+		  
+		  nic.ListIndex = -1
+		  If Client.EasyItem.NetworkInterface <> Nil Then
+		    For i As Integer = 0 To nic.ListCount - 1
+		      If nic.RowTag(i) IsA NetworkInterface And NetworkInterface(nic.RowTag(i)).IPAddress = Client.EasyItem.NetworkInterface.IPAddress Then
+		        nic.ListIndex = i
+		        Exit For
+		      End If
+		    Next
+		  End If
+		  
+		Finally
+		  mLockUI = False
 		End Sub
 	#tag EndEvent
 #tag EndEvents
@@ -3505,7 +3495,7 @@ End
 #tag Events UseCookies
 	#tag Event
 		Sub Action()
-		  Client.Cookies.Enabled = Me.Value
+		  If Not mLockUI Then Client.Cookies.Enabled = Me.Value
 		  CookieControl.Enabled = Me.Value
 		End Sub
 	#tag EndEvent
@@ -3556,6 +3546,41 @@ End
 		    End Try
 		  End Select
 		  
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events Features
+	#tag Event
+		Sub Open()
+		  Me.AddFolder("Protocols")
+		  If libcURL.Version.ASYNCHDNS Then Me.AddRow("Asynchronous DNS")
+		  If libcURL.Version.DEBUG Then Me.AddRow("Debug capabilities")
+		  If libcURL.Version.CONV Then Me.AddRow("Encoding conversion")
+		  If libcURL.Version.LARGEFILE Then Me.AddRow("Files >2GB")
+		  If libcURL.Version.HTTP2 Then Me.AddRow("HTTP/2")
+		  If libcURL.Version.LibZ.IsAvailable Then Me.AddRow("HTTP decompression")
+		  If libcURL.Version.IDN Then Me.AddRow("International Domain Names")
+		  If libcURL.Version.IPV6 Then Me.AddRow("IPv6")
+		  If libcURL.Version.KERBEROS4 Then Me.AddRow("Kerberos 4")
+		  If libcURL.Version.KERBEROS5 Then Me.AddRow("Kerberos 5")
+		  If libcURL.Version.DEBUG Then Me.AddRow("Memory debug capabilities")
+		  If libcURL.Version.SSPI Then Me.AddRow("Microsoft SSPI")
+		  If libcURL.Version.GSSNEGOTIATE Then Me.AddRow("Negotiate auth")
+		  If libcURL.Version.NTLM Then Me.AddRow("NTLM auth")
+		  If libcURL.Version.SPNEGO Then Me.AddRow("SPNEGO auth")
+		  If libcURL.Version.SSL Then Me.AddRow("SSL/TLS security")
+		  If libcURL.Version.SSPI Then Me.AddRow("TLS-SRP")
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Sub ExpandRow(row As Integer)
+		  If Me.Cell(row, 0) = "Protocols" Then
+		    Dim l() As String = libcURL.Version.Protocols
+		    l.Sort
+		    For i As Integer = UBound(l) DownTo 0
+		      Me.InsertRow(row + 1, l(i), 1)
+		    Next
+		  End If
 		End Sub
 	#tag EndEvent
 #tag EndEvents
