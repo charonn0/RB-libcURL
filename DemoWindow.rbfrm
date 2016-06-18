@@ -3606,10 +3606,11 @@ End
 	#tag EndEvent
 	#tag Event
 		Sub TransferComplete(CompletedItem As libcURL.EasyHandle)
-		  #pragma Unused CompletedItem
-		  GUITimer.Mode = Timer.ModeSingle
-		  If ThreadStream <> Nil Then ThreadStream.Close
-		  ThreadStream = Nil
+		  If CompletedItem = Client.EasyItem Then
+		    GUITimer.Mode = Timer.ModeSingle
+		    If ThreadStream <> Nil Then ThreadStream.Close
+		    ThreadStream = Nil
+		  End If
 		End Sub
 	#tag EndEvent
 	#tag Event
