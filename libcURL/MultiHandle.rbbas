@@ -225,13 +225,14 @@ Inherits libcURL.cURLHandle
 		  ' This method is invoked by libcURL. DO NOT CALL THIS METHOD
 		  
 		  #pragma X86CallingConvention CDecl
-		  If PushHandlers = Nil Then Return 0
+		  If PushHandlers = Nil Then Return CURL_PUSH_DENY
 		  Dim curl As WeakRef = PushHandlers.Lookup(UserData, Nil)
 		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA MultiHandle Then
 		    Return MultiHandle(curl.Value)._curlPush(ParentHandle, ChildHandle, NumHeaders, PushHeaders)
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
+		  Return CURL_PUSH_DENY
 		End Function
 	#tag EndMethod
 
