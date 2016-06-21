@@ -434,8 +434,25 @@ Protected Class cURLManager
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  ' When using OpenSSL or NSS, returns True if the server's SSL/TLS certificate was valid and 
-			  ' verified by a trusted certificate authority. If the connection did not use SSL/TLS then 
+			  ' Gets the version of HTTP to be used. Returns HTTP_VERSION_1_0, HTTP_VERSION_1_1, HTTP_VERSION_2_0, or HTTP_VERSION_NONE
+			  return libcURL.HTTPVersion(EasyItem.HTTPVersion)
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  ' Sets the version of HTTP to be used. 
+			  
+			  EasyItem.HTTPVersion = Integer(value)
+			End Set
+		#tag EndSetter
+		HTTPVersion As libcURL.HTTPVersion
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  ' When using OpenSSL or NSS, returns True if the server's SSL/TLS certificate was valid and
+			  ' verified by a trusted certificate authority. If the connection did not use SSL/TLS then
 			  ' this property will always be False.
 			  ' 
 			  ' See:
