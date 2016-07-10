@@ -3085,11 +3085,16 @@ End
 #tag Events PushButton10
 	#tag Event
 		Sub Action()
-		  If Not libcURL.ParseCommandLine(CmdLine.Text, Self.Client) Then
-		    MsgBox("Unable to parse!")
-		  Else
-		    MsgBox("All options parsed successfully.")
-		    mLockUI = True
+		  Try
+		    libcURL.ParseCommandLine(CmdLine.Text, Self.Client)
+		  Catch Err
+		    Call MsgBox(Err.Message, 16, "Unable to parse!")
+		    Return
+		  End Try
+		  
+		  MsgBox("All options parsed successfully.")
+		  mLockUI = True
+		  Try
 		    AutoDisconnect.Value = Client.EasyItem.AutoDisconnect
 		    Autoreferer.Value = Client.EasyItem.AutoReferer
 		    FailOnError.Value = Client.EasyItem.FailOnServerError
