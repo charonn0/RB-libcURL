@@ -51,7 +51,7 @@ Begin Window DemoWindow
       TextUnit        =   0
       Top             =   119
       Underline       =   ""
-      Value           =   2
+      Value           =   3
       Visible         =   True
       Width           =   596
       Begin Listbox Headers
@@ -3121,48 +3121,48 @@ End
 		      ProxyServer.Text = ""
 		      ProxyTypes.ListIndex = -1
 		    End If
-		  End If
-		  
-		  Select Case Client.EasyItem.HTTPVersion
-		  Case 0, 2 ' default http/1.0
-		    HTTPVer.ListIndex = 0
-		  Case 1 'http/1.0
-		    HTTPVer.ListIndex = 1
-		  Case 3 ' HTTP2
-		    HTTPVer.ListIndex = 2
-		  End Select
-		  
-		  Select Case Client.EasyItem.SSLVersion
-		  Case libcURL.SSLVersion.Default
-		    SSLVer.ListIndex = 0
-		  Case libcURL.SSLVersion.SSLv2
-		    SSLVer.ListIndex = 2
-		  Case libcURL.SSLVersion.SSLv3
-		    SSLVer.ListIndex = 3
-		  Case libcURL.SSLVersion.TLSv1
-		    SSLVer.ListIndex = 1
-		  Case libcURL.SSLVersion.TLSv1_0
-		    SSLVer.ListIndex = 4
-		  Case libcURL.SSLVersion.TLSv1_1
-		    SSLVer.ListIndex = 5
-		  Case libcURL.SSLVersion.TLSv1_2
-		    SSLVer.ListIndex = 6
-		  End Select
-		  
-		  TextField1.Text = Client.EasyItem.URL
-		  
-		  nic.ListIndex = -1
-		  If Client.EasyItem.NetworkInterface <> Nil Then
-		    For i As Integer = 0 To nic.ListCount - 1
-		      If nic.RowTag(i) IsA NetworkInterface And NetworkInterface(nic.RowTag(i)).IPAddress = Client.EasyItem.NetworkInterface.IPAddress Then
-		        nic.ListIndex = i
-		        Exit For
-		      End If
-		    Next
-		  End If
-		  
-		Finally
-		  mLockUI = False
+		    
+		    Select Case Client.EasyItem.HTTPVersion
+		    Case 0, 2 ' default http/1.0
+		      HTTPVer.ListIndex = 0
+		    Case 1 'http/1.0
+		      HTTPVer.ListIndex = 1
+		    Case 3 ' HTTP2
+		      HTTPVer.ListIndex = 2
+		    End Select
+		    
+		    Select Case Client.EasyItem.SSLVersion
+		    Case libcURL.SSLVersion.Default
+		      SSLVer.ListIndex = 0
+		    Case libcURL.SSLVersion.SSLv2
+		      SSLVer.ListIndex = 2
+		    Case libcURL.SSLVersion.SSLv3
+		      SSLVer.ListIndex = 3
+		    Case libcURL.SSLVersion.TLSv1
+		      SSLVer.ListIndex = 1
+		    Case libcURL.SSLVersion.TLSv1_0
+		      SSLVer.ListIndex = 4
+		    Case libcURL.SSLVersion.TLSv1_1
+		      SSLVer.ListIndex = 5
+		    Case libcURL.SSLVersion.TLSv1_2
+		      SSLVer.ListIndex = 6
+		    End Select
+		    
+		    TextField1.Text = Client.EasyItem.URL
+		    
+		    nic.ListIndex = -1
+		    If Client.EasyItem.NetworkInterface <> Nil Then
+		      For i As Integer = 0 To nic.ListCount - 1
+		        If nic.RowTag(i) IsA NetworkInterface And NetworkInterface(nic.RowTag(i)).IPAddress = Client.EasyItem.NetworkInterface.IPAddress Then
+		          nic.ListIndex = i
+		          Exit For
+		        End If
+		      Next
+		    End If
+		    
+		  Finally
+		    mLockUI = False
+		  End Try
 		End Sub
 	#tag EndEvent
 #tag EndEvents
@@ -3328,7 +3328,7 @@ End
 		      Me.Cell(row, 2) = Me.CellTag(row, 2)
 		      Me.Cell(row, 3) = Me.CellTag(row, 3)
 		      Me.Cell(row, 4) = Me.CellTag(row, 4)
-		      Me.CellState(row, 5) = Not Me.CellState(row, 5)
+		      
 		    ElseIf Client.Cookies.CookieJar <> Nil Then
 		      mCookiesDirty = mCookiesDirty + 1
 		    End If
