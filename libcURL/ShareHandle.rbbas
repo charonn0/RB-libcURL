@@ -12,6 +12,9 @@ Inherits libcURL.cURLHandle
 		  If Not SharedHandles.HasKey(Item.Handle) And Item.SetOption(libcURL.Opts.SHARE, Me) Then
 		    SharedHandles.Value(Item.Handle) = Item
 		    Return True
+		  Else
+		    mLastError = Item.LastError
+		    Return False
 		  End If
 		End Function
 	#tag EndMethod
