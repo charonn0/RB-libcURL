@@ -626,7 +626,6 @@ Protected Module libcURL
 		      If url = "" Then
 		        url = output(i)
 		      Else
-		        System.DebugLog("Unknown curl command-line option '" + output(i) + "'")
 		        GoTo ParseError
 		      End If
 		    End Select
