@@ -827,12 +827,17 @@ Protected Module libcURL
 		    Raise New cURLException(EasyItem)
 		  End If
 		  
+		  Dim ret As String
+		  Dim tmp As Ptr
 		  Dim InP As MemoryBlock = Data
 		  Dim outlen As Integer
-		  Dim p As Ptr = curl_easy_unescape(EasyItem.Handle, InP, InP.Size, outlen)
-		  InP = p
-		  Dim ret As String = InP.StringValue(0, outlen)
-		  curl_free(p)
+		  tmp = curl_easy_unescape(EasyItem.Handle, InP, InP.Size, outlen)
+		  Try
+		    InP = tmp
+		    ret = InP.StringValue(0, outlen)
+		  Finally
+		    If tmp <> Nil Then curl_free(tmp)
+		  End Try
 		  Return ret
 		  
 		End Function
@@ -851,11 +856,16 @@ Protected Module libcURL
 		    Raise New cURLException(EasyItem)
 		  End If
 		  
+		  Dim ret As String
+		  Dim tmp As Ptr
 		  Dim InP As MemoryBlock = Data
-		  Dim p As Ptr = curl_easy_escape(EasyItem.Handle, InP, InP.Size)
-		  InP = p
-		  Dim ret As String = InP.CString(0)
-		  curl_free(p)
+		  tmp = curl_easy_escape(EasyItem.Handle, InP, InP.Size)
+		  Try
+		    InP = tmp
+		    ret = InP.CString(0)
+		  Finally
+		    If tmp <> Nil Then curl_free(tmp)
+		  End Try
 		  Return ret
 		  
 		End Function
