@@ -294,8 +294,7 @@ Protected Module libcURL
 		  Dim output() As String = SplitQuoted(cURLCommandLine)
 		  Dim url As String
 		  Dim frm As libcURL.MultipartForm
-		  If Client = Nil Then Client = New cURLClient
-		  Client.EasyItem.Reset()
+		  
 		  Dim arg As String
 		  For i As Integer = 0 To UBound(output)
 		    arg = output(i)
