@@ -622,8 +622,8 @@ Protected Module libcURL
 		      Continue
 		      
 		    Else
-		      If url = "" Then
-		        url = output(i)
+		      If url = "" And arg.Len >= 6 Then ' xxx://
+		        url = arg
 		      Else
 		        GoTo ParseError
 		      End If
