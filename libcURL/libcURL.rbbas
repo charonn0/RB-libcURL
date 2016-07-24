@@ -670,6 +670,8 @@ Protected Module libcURL
 
 	#tag Method, Flags = &h1
 		Protected Function ParseDate(DateItem As Date) As String
+		  ' Returns an RFC 1123-compliant timestamp for the specified Date
+		  
 		  Dim dt As String
 		  DateItem.GMTOffset = 0
 		  Select Case DateItem.DayOfWeek
@@ -689,7 +691,7 @@ Protected Module libcURL
 		    dt = dt + "Sat, "
 		  End Select
 		  
-		  dt = dt  + Format(DateItem.Day, "00") + " "
+		  dt = dt  + Str(DateItem.Day, "00") + " "
 		  
 		  Select Case DateItem.Month
 		  Case 1
@@ -718,7 +720,7 @@ Protected Module libcURL
 		    dt = dt + "Dec "
 		  End Select
 		  
-		  dt = dt  + Format(DateItem.Year, "0000") + " " + Format(DateItem.Hour, "00") + ":" + Format(DateItem.Minute, "00") + ":" + Format(DateItem.Second, "00") + " GMT"
+		  dt = dt  + Str(DateItem.Year, "0000") + " " + Str(DateItem.Hour, "00") + ":" + Str(DateItem.Minute, "00") + ":" + Str(DateItem.Second, "00") + " GMT"
 		  Return dt
 		End Function
 	#tag EndMethod
