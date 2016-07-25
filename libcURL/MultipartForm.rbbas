@@ -1476,7 +1476,7 @@ Inherits libcURL.cURLHandle
 		    Return "video/mp2t"
 		  Case "mp4", "mp4v", "mpg4", "m4v"
 		    Return "video/mp4"
-		  Case "mpeg". "mpg", "mpe", "m1v", "m2v"
+		  Case "mpeg", "mpg", "mpe", "m1v", "m2v"
 		    Return "video/mpeg"
 		  Case "ogv"
 		    Return "video/ogg"
