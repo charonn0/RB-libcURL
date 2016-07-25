@@ -50,19 +50,19 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h21
 		Private Sub Destructor()
-		  Me.Free()
+		  If libcURL.IsAvailable And List <> Nil Then curl_slist_free_all(List)
+		  List = Nil
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Free()
+		Attributes( deprecated = "libcURL.ListPtr.Destructor" )  Sub Free()
 		  ' Frees the list.
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_slist_free_all.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ListPtr.Free
 		  
-		  If libcURL.IsAvailable And List <> Nil Then curl_slist_free_all(List)
-		  List = Nil
+		  Me.Destructor
 		End Sub
 	#tag EndMethod
 
@@ -158,7 +158,7 @@ Inherits libcURL.cURLHandle
 		  If mLastError = libcURL.Errors.NOT_INITIALIZED Then
 		    Me.Constructor()
 		  Else
-		    Me.Free()
+		    Me.Destructor()
 		  End If
 		  For i As Integer = 0 To UBound(From)
 		    If Not Me.Append(From(i)) Then Raise New cURLException(Me)

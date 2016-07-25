@@ -283,9 +283,9 @@ Protected Module libcURL
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function ParseCommandLine(cURLCommandLine As String, Client As libcURL.cURLClient) As Boolean
+		Protected Sub ParseCommandLine(cURLCommandLine As String, Client As libcURL.cURLClient)
 		  ' Parses a curl command line and sets the corresponding options on the passed instance of cURLClient.
-		  ' If all arguments were processed successfully this method returns True
+		  ' Raises an UnsupportedFormatException with error info on parse error.
 		  '
 		  ' See:
 		  ' http://curl.haxx.se/docs/manpage.html
@@ -294,60 +294,49 @@ Protected Module libcURL
 		  Dim output() As String = SplitQuoted(cURLCommandLine)
 		  Dim url As String
 		  Dim frm As libcURL.MultipartForm
-		  If Client = Nil Then Client = New cURLClient
-		  Client.EasyItem.Reset()
 		  
+		  Dim arg As String
 		  For i As Integer = 0 To UBound(output)
-		    Dim arg As String = output(i)
+		    arg = output(i)
 		    Select Case True
 		    Case arg = "--append", StrComp("-a", arg, 1) = 0
-		      If Not Client.SetOption(libcURL.Opts.APPEND, True) Then
-		        Break
-		        Return False
-		      End If
+		      If Not Client.SetOption(libcURL.Opts.APPEND, True) Then GoTo ParseError
+		      
+		    Case arg = "--basic"
+		      Dim ha As libcURL.HTTPAuthMethods = 0
+		      ha.SetOnly(CURLAUTH.BASIC)
+		      If Not Client.EasyItem.SetAuthMethods(ha) Then GoTo ParseError
 		      
 		    Case arg = "--cookie", StrComp("-b", arg, 1) = 0
 		      If Not Client.Cookies.Enabled Then Client.Cookies.Enabled = True
-		      If Not Client.Cookies.SetCookie("Set-Cookie: " + output(i + 1)) Then
-		        Break
-		        Return False
-		      End If
+		      If Not Client.Cookies.SetCookie("Set-Cookie: " + output(i + 1)) Then GoTo ParseError
 		      i = i + 1
 		      
 		    Case arg = "--cookie-jar", StrComp("-c", arg, 1) = 0
 		      Client.Cookies.CookieJar = GetFolderItem(output(i + 1))
 		      i = i + 1
+		      If Client.LastError <> 0 Then GoTo ParseError
 		      
 		    Case arg = "--compressed"
 		      Client.EasyItem.HTTPCompression = True
+		      If Client.LastError <> 0 Then GoTo ParseError
 		      
 		    Case arg = "--connect-timeout"
 		      Client.EasyItem.ConnectionTimeout = Val(output(i + 1))
 		      i = i + 1
+		      If Client.LastError <> 0 Then GoTo ParseError
 		      
 		    Case arg = "--continue-at", StrComp("-C", arg, 1) = 0
-		      If Not Client.SetOption(libcURL.Opts.RESUME_FROM, Val(output(i + 1))) Then
-		        Break
-		        Return False
-		      End If
+		      If Not Client.SetOption(libcURL.Opts.RESUME_FROM, Val(output(i + 1))) Then GoTo ParseError
 		      i = i + 1
 		      
 		    Case arg = "--crlf"
-		      If Not Client.SetOption(libcURL.Opts.CRLF, True) Then
-		        Break
-		        Return False
-		      End If
+		      If Not Client.SetOption(libcURL.Opts.CRLF, True) Then GoTo ParseError
 		      
 		    Case arg = "--crlfile"
 		      Dim f As FolderItem = GetFolderItem(output(i + 1))
-		      If f = Nil Or Not f.Exists Or f.Directory Then
-		        Break
-		        Return False
-		      End If
-		      If Not Client.EasyItem.SetOption(libcURL.Opts.CRLFILE, f) Then
-		        Break
-		        Return False
-		      End If
+		      If f = Nil Or Not f.Exists Or f.Directory Then GoTo ParseError
+		      If Not Client.EasyItem.SetOption(libcURL.Opts.CRLFILE, f) Then GoTo ParseError
 		      i = i + 1
 		      
 		    Case arg = "--data", StrComp("-d", arg, 1) = 0, arg = "--data-ascii", arg = "--data-raw"
@@ -358,11 +347,12 @@ Protected Module libcURL
 		        If f <> Nil And f.Exists And Not f.Directory Then
 		          Client.EasyItem.UploadStream = BinaryStream.Open(f)
 		        Else
-		          Return False
+		          GoTo ParseError
 		        End If
 		      Else
 		        Dim params() As String = Split(output(i + 1), "&")
 		        Client.EasyItem.SetFormData(params)
+		        If Client.LastError <> 0 Then GoTo ParseError
 		      End If
 		      i = i + 1
 		      
@@ -374,15 +364,14 @@ Protected Module libcURL
 		        If f <> Nil And f.Exists And Not f.Directory Then
 		          Client.EasyItem.UploadStream = BinaryStream.Open(f)
 		        Else
-		          Return False
+		          If Client.LastError <> 0 Then GoTo ParseError
 		        End If
 		      Else ' data
 		        Client.EasyItem.UploadStream = New BinaryStream(raw)
 		      End If
 		      
 		    Case arg = "--data-urlencode"
-		      Break ' fix me
-		      Return False
+		      GoTo ParseError
 		      
 		    Case arg = "--form", StrComp(arg, "-F", 1) = 0
 		      Dim name, value As String
@@ -397,39 +386,46 @@ Protected Module libcURL
 		        Dim f As FolderItem = GetFolderItem(Right(value, value.Len - 1))
 		        If f <> Nil And f.Exists And Not f.Directory Then
 		          If frm = Nil Then frm = New libcURL.MultipartForm
-		          If Not frm.AddElement(name, f, type) Then
-		            Break
-		            Return False
-		          End If
+		          If Not frm.AddElement(name, f, type) Then GoTo ParseError
 		        Else
-		          Return False
+		          GoTo ParseError
 		        End If
 		      Else
 		        If frm = Nil Then frm = New libcURL.MultipartForm
-		        If Not frm.AddElement(name, value) Then
-		          Break
-		          Return False
-		        End If
+		        If Not frm.AddElement(name, value) Then GoTo ParseError
 		      End If
 		      i = i + 1
 		      
+		    Case arg = "--digest"
+		      Dim ha As libcURL.HTTPAuthMethods = 0
+		      ha.SetOnly(CURLAUTH.DIGEST)
+		      If Not Client.EasyItem.SetAuthMethods(ha) Then GoTo ParseError
+		      
 		    Case arg = "--ftp-create-dirs"
-		      If Not Client.SetOption(libcURL.Opts.FTP_CREATE_MISSING_DIRS, True) Then
-		        Break
-		        Return False
-		      End If
+		      If Not Client.SetOption(libcURL.Opts.FTP_CREATE_MISSING_DIRS, True) Then GoTo ParseError
 		      
 		    Case arg = "--fail", StrComp("-f", arg, 1) = 0
 		      Client.EasyItem.FailOnServerError = True
+		      If Client.LastError <> 0 Then GoTo ParseError
+		      
+		    Case arg = "--ftp-method"
+		      Select Case output(i + 1)
+		      Case "multicwd"
+		        Client.EasyItem.CWDMethod = CWDMethod.Multi
+		      Case "nocwd "
+		        Client.EasyItem.CWDMethod = CWDMethod.None
+		      Case "singlecwd "
+		        Client.EasyItem.CWDMethod = CWDMethod.Single
+		      Else
+		        GoTo ParseError
+		      End Select
+		      If Client.LastError <> 0 Then GoTo ParseError
 		      
 		    Case StrComp(arg, "-h", 1) = 0 ' help
 		      Break
 		      
 		    Case arg = "--head", StrComp("-I", arg, 1) = 0
-		      If Not Client.SetOption(libcURL.Opts.NOBODY, True) Then
-		        Break
-		        Return False
-		      End If
+		      If Not Client.SetOption(libcURL.Opts.NOBODY, True) Then GoTo ParseError
 		      
 		    Case arg = "--header", StrComp(arg, "-H", 1) = 0 ' set header
 		      Dim name, value As String
@@ -438,97 +434,77 @@ Protected Module libcURL
 		      Select Case name
 		      Case "Cookie"
 		        If Not Client.Cookies.Enabled Then Client.Cookies.Enabled = True
-		        If Not Client.Cookies.SetCookie(output(i + 1)) Then
-		          Break
-		          Return False
-		        End If
+		        If Not Client.Cookies.SetCookie(output(i + 1)) Then GoTo ParseError
 		        
 		      Case "Referer"
 		        Client.EasyItem.AutoReferer = True
-		        If Not Client.SetRequestHeader(name, value) Then
-		          Break
-		          Return False
-		        End If
+		        If Not Client.SetRequestHeader(name, value) Then GoTo ParseError
 		        
 		      Case "User-Agent", "-A"
 		        Client.EasyItem.UserAgent = value
+		        If Client.LastError <> 0 Then GoTo ParseError
 		        
 		      Case "Connection"
 		        Client.EasyItem.AutoDisconnect = (value = "close")
+		        If Client.LastError <> 0 Then GoTo ParseError
 		        
 		      Else
-		        If Not Client.SetRequestHeader(name, value) Then
-		          Break
-		          Return False
-		        End If
+		        If Not Client.SetRequestHeader(name, value) Then GoTo ParseError
+		        
 		      End Select
 		      i = i + 1
 		      
 		    Case arg = "--http1.0", arg = "-0"
 		      Client.EasyItem.HTTPVersion = Client.EasyItem.HTTP_VERSION_1_0
+		      If Client.LastError <> 0 Then GoTo ParseError
 		      
 		    Case arg = "--http1.1"
 		      Client.EasyItem.HTTPVersion = Client.EasyItem.HTTP_VERSION_1_1
+		      If Client.LastError <> 0 Then GoTo ParseError
 		      
 		    Case arg = "--http2"
 		      Client.EasyItem.HTTPVersion = Client.EasyItem.HTTP_VERSION_2_0
+		      If Client.LastError <> 0 Then GoTo ParseError
 		      
 		    Case arg = "--include", StrComp("-i", arg, 1) = 0
-		      If Not Client.SetOption(libcURL.Opts.HEADER, True) Then
-		        Break
-		        Return False
-		      End If
+		      If Not Client.SetOption(libcURL.Opts.HEADER, True) Then GoTo ParseError
 		      
 		    Case arg = "--insecure", StrComp("-k", arg, 1) = 0
 		      Client.EasyItem.Secure = False
+		      If Client.LastError <> 0 Then GoTo ParseError
 		      
 		    Case arg = "--ipv4", arg = "-4"
-		      If Not Client.SetOption(libcURL.Opts.DNS_LOCAL_IP4, True) Then
-		        Break
-		        Return False
-		      End If
+		      If Not Client.SetOption(libcURL.Opts.DNS_LOCAL_IP4, True) Then GoTo ParseError
 		      
 		    Case arg = "--ipv6", arg = "-6"
-		      If Not Client.SetOption(libcURL.Opts.DNS_LOCAL_IP6, True) Then
-		        Break
-		        Return False
-		      End If
+		      If Not Client.SetOption(libcURL.Opts.DNS_LOCAL_IP6, True) Then GoTo ParseError
 		      
 		    Case arg = "--location", StrComp("-L", arg, 1) = 0
 		      Client.EasyItem.FollowRedirects = True
+		      If Client.LastError <> 0 Then GoTo ParseError
 		      
 		    Case arg = "--mail-from"
-		      If Not Client.SetOption(libcURL.Opts.MAIL_FROM, output(i + 1)) Then
-		        Break
-		        Return False
-		      End If
+		      If Not Client.SetOption(libcURL.Opts.MAIL_FROM, output(i + 1)) Then GoTo ParseError
 		      i = i + 1
 		      
 		    Case arg = "--mail-rcpt"
-		      If Not Client.SetOption(libcURL.Opts.MAIL_RCPT, output(i + 1)) Then
-		        Break
-		        Return False
-		      End If
+		      If Not Client.SetOption(libcURL.Opts.MAIL_RCPT, output(i + 1)) Then GoTo ParseError
 		      i = i + 1
 		      
+		    Case arg = "--negotiate"
+		      Dim ha As libcURL.HTTPAuthMethods = 0
+		      ha.SetOnly(CURLAUTH.NEGOTIATE)
+		      If Not Client.EasyItem.SetAuthMethods(ha) Then GoTo ParseError
+		      
 		    Case arg = "--no-alpn"
-		      If Not Client.SetOption(libcURL.Opts.SSL_ENABLE_ALPN, False) Then
-		        Break
-		        Return False
-		      End If
+		      If Not Client.SetOption(libcURL.Opts.SSL_ENABLE_ALPN, False) Then GoTo ParseError
 		      
 		    Case arg = "--no-npn"
-		      If Not Client.SetOption(libcURL.Opts.SSL_ENABLE_NPN, False) Then
-		        Break
-		        Return False
-		      End If
+		      If Not Client.SetOption(libcURL.Opts.SSL_ENABLE_NPN, False) Then GoTo ParseError
 		      
 		    Case arg = "--noproxy"
 		      For Each host As String In Split(output(i + 1), ",")
-		        If Not Client.Proxy.ExcludeHost(host) Then
-		          Break
-		          Return False
-		        End If
+		        If Not Client.Proxy.ExcludeHost(host) Then GoTo ParseError
 		      Next
 		      i = i + 1
 		      
@@ -537,82 +513,81 @@ Protected Module libcURL
 		        Dim f As FolderItem = GetFolderItem(output(i + 1))
 		        If f <> Nil And f.Exists Then
 		          i = i + 1
-		          If Not Client.SetOption(libcURL.Opts.NETRC_FILE, f) Then
-		            Break
-		            Return False
-		          End If
+		          If Not Client.SetOption(libcURL.Opts.NETRC_FILE, f) Then GoTo ParseError
 		        End If
 		      ElseIf Not Client.SetOption(libcURL.Opts.NETRC_FILE, "") Then
-		        Break
-		        Return False
+		        GoTo ParseError
 		      End If
 		      
+		    Case arg = "--ntlm"
+		      Dim ha As libcURL.HTTPAuthMethods = 0
+		      ha.SetOnly(CURLAUTH.NTLM)
+		      If Not Client.EasyItem.SetAuthMethods(ha) Then GoTo ParseError
+		      
+		    Case arg = "--ntlm-wb"
+		      Dim ha As libcURL.HTTPAuthMethods = 0
+		      ha.SetOnly(CURLAUTH.NTLM_WB)
+		      If Not Client.EasyItem.SetAuthMethods(ha) Then GoTo ParseError
 		      
 		    Case arg = "--proxy", StrComp("-x", arg, 1) = 0
 		      Client.Proxy.Address = output(i + 1)
+		      If Client.LastError <> 0 Then GoTo ParseError
 		      i = i + 1
 		      
 		    Case arg = "--proxy-header"
 		      Dim name, value As String
 		      name = NthField(output(i + 1), ": ", 1)
 		      value = Right(output(i + 1), output(i + 1).Len - (name.Len + 2))
-		      If Not Client.Proxy.SetProxyHeader(name, value) Then
-		        Break
-		        Return False
-		      End If
+		      If Not Client.Proxy.SetProxyHeader(name, value) Then GoTo ParseError
 		      
 		    Case arg = "--proxytunnel", StrComp("-p", arg, 1) = 0
 		      Client.Proxy.HTTPTunnel = True
+		      If Client.LastError <> 0 Then GoTo ParseError
 		      
 		    Case arg = "--proxy-user", StrComp("-U", arg, 1) = 0
 		      Client.Proxy.Username = NthField(output(i + 1), ":", 1)
+		      If Client.LastError <> 0 Then GoTo ParseError
 		      Client.Proxy.Password = NthField(output(i + 1), ":", 2)
+		      If Client.LastError <> 0 Then GoTo ParseError
 		      i = i + 1
 		      
 		    Case arg = "--quote", StrComp("-Q", arg, 1) = 0
 		      Dim l As libcURL.ListPtr = Split(output(i + 1), ",")
-		      If Not Client.EasyItem.SetOption(libcURL.Opts.QUOTE, l) Then
-		        Break
-		        Return False
-		      End If
+		      If Not Client.EasyItem.SetOption(libcURL.Opts.QUOTE, l) Then GoTo ParseError
 		      i = i + 1
 		      
 		    Case arg = "--range", StrComp("-r", arg, 1) = 0
-		      If Not Client.SetOption(libcURL.Opts.RANGE, output(i + 1)) Then
-		        Break
-		        Return False
-		      End If
+		      If Not Client.SetOption(libcURL.Opts.RANGE, output(i + 1)) Then GoTo ParseError
 		      i = i + 1
 		      
 		    Case arg = "--referer", StrComp("-e", arg, 1) = 0
 		      Client.EasyItem.AutoReferer = True
-		      If Not Client.SetRequestHeader("Referer", output(i + 1)) Then
-		        Break
-		        Return False
-		      End If
+		      If Not Client.SetRequestHeader("Referer", output(i + 1)) Then GoTo ParseError
 		      i = i + 1
 		      
 		    Case arg = "--request", StrComp("-X", arg, 1) = 0
-		      If Not Client.SetRequestMethod(output(i + 1)) Then
-		        Break
-		        Return False
-		      End If
+		      If Not Client.SetRequestMethod(output(i + 1)) Then GoTo ParseError
 		      i = i + 1
 		      
 		    Case arg = "--ssl"
 		      Client.EasyItem.ConnectionType = libcURL.ConnectionType.AttemptSSL
+		      If Client.LastError <> 0 Then GoTo ParseError
 		      
 		    Case arg = "--ssl-reqd"
 		      Client.EasyItem.ConnectionType = libcURL.ConnectionType.SSLForceAll
+		      If Client.LastError <> 0 Then GoTo ParseError
 		      
 		    Case arg = "--sslv2", arg = "-2"
 		      Client.EasyItem.SSLVersion = libcURL.SSLVersion.SSLv2
+		      If Client.LastError <> 0 Then GoTo ParseError
 		      
 		    Case arg = "--sslv3", arg = "-3"
 		      Client.EasyItem.SSLVersion = libcURL.SSLVersion.SSLv3
+		      If Client.LastError <> 0 Then GoTo ParseError
 		      
 		    Case arg = "--tlsv1", arg = "-1"
 		      Client.EasyItem.SSLVersion = libcURL.SSLVersion.TLSv1
+		      If Client.LastError <> 0 Then GoTo ParseError
 		      
 		    Case arg = "--upload-file", StrComp("-T", arg, 1) = 0
 		      Dim file As String = output(i + 1)
@@ -620,17 +595,19 @@ Protected Module libcURL
 		        #If Not TargetHasGUI Then
 		          Client.EasyItem.UploadStream = stdin
 		        #Else
-		          Return False
+		          GoTo ParseError
 		        #endif
 		      ElseIf file <> "-" Then
 		        Dim f As FolderItem = GetFolderItem(file)
-		        If f <> Nil And f.Exists And Not f.Directory Then Client.EasyItem.UploadStream = BinaryStream.Open(f) Else Return False
+		        If f <> Nil And f.Exists And Not f.Directory Then Client.EasyItem.UploadStream = BinaryStream.Open(f) Else GoTo ParseError
 		      End If
 		      i = i + 1
 		      
 		    Case arg = "--user", StrComp("-u", arg, 1) = 0
 		      Client.EasyItem.Username = NthField(output(i + 1), ":", 1)
+		      If Client.LastError <> 0 Then GoTo ParseError
 		      Client.EasyItem.Password = NthField(output(i + 1), ":", 2)
+		      If Client.LastError <> 0 Then GoTo ParseError
 		      i = i + 1
 		      
 		    Case arg = "--url"
@@ -639,27 +616,62 @@ Protected Module libcURL
 		      
 		    Case arg = "--verbose", StrComp("-v", arg, 1) = 0
 		      Client.EasyItem.Verbose = True
+		      If Client.LastError <> 0 Then GoTo ParseError
 		      
 		    Case arg = "curl", arg = "curl.exe"
 		      Continue
 		      
 		    Else
-		      If url = "" Then
-		        url = output(i)
+		      If url = "" And arg.Len >= 6 Then ' xxx://
+		        url = arg
 		      Else
-		        System.DebugLog("Unknown curl command-line option '" + output(i) + "'")
-		        Return False
+		        GoTo ParseError
 		      End If
 		    End Select
 		  Next
 		  If frm <> Nil Then Client.EasyItem.SetFormData(frm)
 		  If url.Trim <> "" Then Client.EasyItem.URL = url
+		  
+		  Return
+		  
+		  ParseError:
+		  #pragma BreakOnExceptions Off
+		  If Client.LastError <> 0 Then
+		    Dim err As New cURLException(Client.EasyItem)
+		    err.Message = err.Message + " Failed on: " + arg
+		    Raise err
+		  Else
+		    Dim err As New UnsupportedFormatException
+		    err.Message = "'" + arg + "' is an invalid argument."
+		    Raise err
+		  End If
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function ParseCommandLine(cURLCommandLine As String, Client As libcURL.cURLClient) As Boolean
+		  ' Parses a curl command line and sets the corresponding options on the passed instance of cURLClient.
+		  ' If all arguments were processed successfully this method returns True
+		  '
+		  ' See:
+		  ' http://curl.haxx.se/docs/manpage.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ParseCommandLine
+		  
+		  
+		  
+		  Try
+		    ParseCommandLine(cURLCommandLine, Client)
+		  Catch
+		    Return False
+		  End Try
 		  Return True
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
 		Protected Function ParseDate(DateItem As Date) As String
+		  ' Returns an RFC 1123-compliant timestamp for the specified Date
+		  
 		  Dim dt As String
 		  DateItem.GMTOffset = 0
 		  Select Case DateItem.DayOfWeek
@@ -679,7 +691,7 @@ Protected Module libcURL
 		    dt = dt + "Sat, "
 		  End Select
 		  
-		  dt = dt  + Format(DateItem.Day, "00") + " "
+		  dt = dt  + Str(DateItem.Day, "00") + " "
 		  
 		  Select Case DateItem.Month
 		  Case 1
@@ -708,7 +720,7 @@ Protected Module libcURL
 		    dt = dt + "Dec "
 		  End Select
 		  
-		  dt = dt  + Format(DateItem.Year, "0000") + " " + Format(DateItem.Hour, "00") + ":" + Format(DateItem.Minute, "00") + ":" + Format(DateItem.Second, "00") + " GMT"
+		  dt = dt  + Str(DateItem.Year, "0000") + " " + Str(DateItem.Hour, "00") + ":" + Str(DateItem.Minute, "00") + ":" + Str(DateItem.Second, "00") + " GMT"
 		  Return dt
 		End Function
 	#tag EndMethod
@@ -815,12 +827,17 @@ Protected Module libcURL
 		    Raise New cURLException(EasyItem)
 		  End If
 		  
+		  Dim ret As String
+		  Dim tmp As Ptr
 		  Dim InP As MemoryBlock = Data
 		  Dim outlen As Integer
-		  Dim p As Ptr = curl_easy_unescape(EasyItem.Handle, InP, InP.Size, outlen)
-		  InP = p
-		  Dim ret As String = InP.StringValue(0, outlen)
-		  curl_free(p)
+		  tmp = curl_easy_unescape(EasyItem.Handle, InP, InP.Size, outlen)
+		  Try
+		    InP = tmp
+		    ret = InP.StringValue(0, outlen)
+		  Finally
+		    If tmp <> Nil Then curl_free(tmp)
+		  End Try
 		  Return ret
 		  
 		End Function
@@ -839,11 +856,16 @@ Protected Module libcURL
 		    Raise New cURLException(EasyItem)
 		  End If
 		  
+		  Dim ret As String
+		  Dim tmp As Ptr
 		  Dim InP As MemoryBlock = Data
-		  Dim p As Ptr = curl_easy_escape(EasyItem.Handle, InP, InP.Size)
-		  InP = p
-		  Dim ret As String = InP.CString(0)
-		  curl_free(p)
+		  tmp = curl_easy_escape(EasyItem.Handle, InP, InP.Size)
+		  Try
+		    InP = tmp
+		    ret = InP.CString(0)
+		  Finally
+		    If tmp <> Nil Then curl_free(tmp)
+		  End Try
 		  Return ret
 		  
 		End Function
@@ -851,26 +873,31 @@ Protected Module libcURL
 
 
 	#tag Note, Name = Copying
-		libcURL Copyright (c) 1996 - 2015, Daniel Stenberg, <daniel@haxx.se>.
-		RB-libcURL Copyright (c)2014-15 Andrew Lambert, <andrew@boredomsoft.org>.
+		RB-libcURL 
+		Copyright (c)2014-16 Andrew Lambert, all rights reserved.
+		
+		 Permission to use, copy, modify, and distribute this software for any purpose
+		 with or without fee is hereby granted, provided that the above copyright
+		 notice and this permission notice appear in all copies.
 		 
-		All rights reserved.
+		    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+		    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+		    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT OF THIRD PARTY RIGHTS. IN
+		    NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+		    DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+		    OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
+		    OR OTHER DEALINGS IN THE SOFTWARE.
 		 
-		Permission to use, copy, modify, and distribute this software for any purpose
-		with or without fee is hereby granted, provided that the above copyright
-		notice and this permission notice appear in all copies.
-		 
-		THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-		IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-		FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT OF THIRD PARTY RIGHTS. IN
-		NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-		DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-		OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
-		OR OTHER DEALINGS IN THE SOFTWARE.
-		 
-		Except as contained in this notice, the name of a copyright holder shall not
-		be used in advertising or otherwise to promote the sale, use or other dealings
-		in this Software without prior written authorization of the copyright holder.
+		 Except as contained in this notice, the name of a copyright holder shall not
+		 be used in advertising or otherwise to promote the sale, use or other dealings
+		 in this Software without prior written authorization of the copyright holder.
+		
+		----
+		License for the DEFAULT_CA_INFO_PEM file:
+		
+		  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. 
+		  If a copy of the MPL was not distributed with this file, You can obtain one at 
+		  https://mozilla.org/MPL/2.0/.
 	#tag EndNote
 
 
@@ -932,6 +959,19 @@ Protected Module libcURL
 		Multi=1
 		  None
 		Single
+	#tag EndEnum
+
+	#tag Enum, Name = HTTPVersion, Type = Integer, Flags = &h1
+		None=0
+		  HTTP1_0=1
+		  HTTP1_1=2
+		HTTP2=3
+	#tag EndEnum
+
+	#tag Enum, Name = IPVersion, Type = Integer, Flags = &h1
+		Whatever=0
+		  V4=1
+		V6=2
 	#tag EndEnum
 
 	#tag Enum, Name = ProxyType, Type = Integer, Flags = &h1

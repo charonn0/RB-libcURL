@@ -568,8 +568,8 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Sub SetFormData(FormData() As String)
-		  ' Sets FormData array as the HTTP form to POST as application/x-www-form-urlencoded
-		  ' Pass an array of "Name=Value" strings.
+		  ' Sets the FormData array as the HTTP form to POST as application/x-www-form-urlencoded
+		  ' Pass an array of URL encoded "Name=Value" strings.
 		  '
 		  ' See:
 		  ' https://curl.haxx.se/libcurl/c/CURLOPT_COPYPOSTFIELDS.html
@@ -592,15 +592,15 @@ Inherits libcURL.cURLHandle
 		Function SetOption(OptionNumber As Integer, NewValue As Variant) As Boolean
 		  ' SetOption is the primary interface to the easy_handle. Call this method with a curl option number
 		  ' and a value that is acceptable for that option. SetOption does not check that a value is valid for
-		  ' a particular option (except Nil,) however it does enforce type safety of the value and will raise
-		  ' an exception if an unsupported type is passed.
+		  ' a particular option (except Nil,) however it will raise an exception if an unsupported type is passed.
 		  
-		  ' NewValue may be a Boolean, Integer, Ptr, String, MemoryBlock, FolderItem, libcURL.MultipartForm, libcURL.ListPtr;
-		  ' or, a Delegate matching cURLIOCallback, cURLCloseCallback, cURLDebugCallback, cURLOpenCallback, or cURLProgressCallback.
-		  ' Passing a Nil object will raise an exception unless the option explicitly accepts NULL.
+		  ' NewValue may be a Boolean, Integer, Ptr, String, MemoryBlock, FolderItem, libcURL.MultipartForm, 
+		  ' libcURL.ListPtr, libcuRL.HTTPAuthMethods; or, a Delegate matching cURLIOCallback, cURLCloseCallback,
+		  ' cURLDebugCallback, cURLOpenCallback, or cURLProgressCallback. Passing Nil will raise an exception 
+		  ' unless the option explicitly accepts NULL.
 		  
-		  ' If the option was set this method returns True. If it returns False the option was not set and the
-		  ' curl error number is stored in EasyHandle.LastError.
+		  ' If the option was set then this method returns True. If it returns False then the option was not set 
+		  ' and the curl error number is stored in EasyHandle.LastError.
 		  
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_setopt.html
@@ -1589,10 +1589,7 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  If mSecure Then
-			    Dim v As Integer = Me.GetInfo(libcURL.Info.SSL_VERIFYRESULT)
-			    Return v = 0
-			  End If
+			  Return mSecure
 			End Get
 		#tag EndGetter
 		#tag Setter

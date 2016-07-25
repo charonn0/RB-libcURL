@@ -63,6 +63,7 @@ Protected Class CookieEngine
 		  
 		  Const HTTPONLY = "#HttpOnly_"
 		  Static sz As Integer = HTTPONLY.Len
+		  
 		  Dim dm As String = NthField(Me.StringValue(Index), Chr(9), 1)
 		  
 		  If Left(dm, sz) = HTTPONLY Then dm = Right(dm, dm.Len - sz)
@@ -108,22 +109,22 @@ Protected Class CookieEngine
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine.Flush
 		  
-		  If libcURL.Version.IsAtLeast(7, 17, 1) Then
-		    Dim OK As Boolean
-		    If CookieFile = Nil Then CookieFile = mCookieJar
-		    If CookieFile = Nil Then
-		      ErrorSetter(Owner).LastError = libcURL.Errors.NO_COOKIEJAR
-		      Return False
-		    End If
-		    OK = Owner.SetOption(libcURL.Opts.COOKIEJAR, CookieFile)
-		    If OK Then OK = Owner.SetOption(libcURL.Opts.COOKIELIST, "FLUSH")
-		    If OK Then OK = Owner.SetOption(libcURL.Opts.COOKIEJAR, mCookieJar)
-		    Me.Invalidate
-		    Return OK
-		  Else
+		  If Not libcURL.Version.IsAtLeast(7, 17, 1) Then
 		    ErrorSetter(Owner).LastError = libcURL.Errors.FEATURE_UNAVAILABLE
 		    Return False
 		  End If
+		  
+		  Dim OK As Boolean
+		  If CookieFile = Nil Then CookieFile = mCookieJar
+		  If CookieFile = Nil Then
+		    ErrorSetter(Owner).LastError = libcURL.Errors.NO_COOKIEJAR
+		    Return False
+		  End If
+		  OK = Owner.SetOption(libcURL.Opts.COOKIEJAR, CookieFile)
+		  If OK Then OK = Owner.SetOption(libcURL.Opts.COOKIELIST, "FLUSH")
+		  If OK Then OK = Owner.SetOption(libcURL.Opts.COOKIEJAR, mCookieJar)
+		  Me.Invalidate
+		  Return OK
 		End Function
 	#tag EndMethod
 
@@ -173,13 +174,13 @@ Protected Class CookieEngine
 		        Dim pattern() As String
 		        For j As Integer = 0 To UBound(tmp)
 		          If tmp(j).Trim = "" Then Continue
-		          pattern.Insert(0, URLDecode(tmp(j)))
+		          pattern.Insert(0, URLDecode(tmp(j), Owner))
 		        Next
 		        tmp = Split(d, ".")
 		        Dim data() As String
 		        For j As Integer = 0 To UBound(tmp)
 		          If tmp(j).Trim = "" Then Continue
-		          data.Insert(0, URLDecode(tmp(j)))
+		          data.Insert(0, URLDecode(tmp(j), Owner))
 		        Next
 		        Dim count As Integer = Min(data.Ubound, pattern.Ubound)
 		        For j As Integer = 0 To count
@@ -187,7 +188,7 @@ Protected Class CookieEngine
 		        Next
 		        Return i
 		      Else
-		        If CookieDomain <> "" And CookieDomain <> d And "." + CookieDomain <> d And InStr(CookieDomain, d) = 0 Then Continue For i
+		        If CookieDomain <> "" And CookieDomain <> d And "." + CookieDomain <> d And InStr(d, CookieDomain) = 0 Then Continue For i
 		        Return i
 		      End If
 		    End If
@@ -245,22 +246,22 @@ Protected Class CookieEngine
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine.Reload
 		  
-		  If libcURL.Version.IsAtLeast(7, 17, 1) Then
-		    Dim OK As Boolean
-		    If CookieFile <> Nil Then
-		      Dim tmp As FolderItem = Me.CookieJar
-		      Me.CookieJar = CookieFile
-		      OK = Owner.SetOption(libcURL.Opts.COOKIELIST, "RELOAD")
-		      Me.CookieJar = tmp
-		    ElseIf Me.CookieJar <> Nil Then
-		      OK = Owner.SetOption(libcURL.Opts.COOKIELIST, "RELOAD")
-		    End If
-		    Me.Invalidate
-		    Return OK
-		  Else
+		  If Not libcURL.Version.IsAtLeast(7, 17, 1) Then
 		    ErrorSetter(Owner).LastError = libcURL.Errors.FEATURE_UNAVAILABLE
+		    Return False
 		  End If
 		  
+		  Dim OK As Boolean
+		  If CookieFile <> Nil Then
+		    Dim tmp As FolderItem = Me.CookieJar
+		    Me.CookieJar = CookieFile
+		    OK = Owner.SetOption(libcURL.Opts.COOKIELIST, "RELOAD")
+		    Me.CookieJar = tmp
+		  ElseIf Me.CookieJar <> Nil Then
+		    OK = Owner.SetOption(libcURL.Opts.COOKIELIST, "RELOAD")
+		  End If
+		  Me.Invalidate
+		  Return OK
 		End Function
 	#tag EndMethod
 
@@ -304,21 +305,28 @@ Protected Class CookieEngine
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine.StringValue
 		  
+		  Dim cookie As String
 		  Select Case StringFormat
 		  Case FORMAT_NETSCAPE
-		    Return CookieList.Item(Index)
+		    If Not mDirty And mLastCookie <> Nil And mLastCookie.Right = Index Then
+		      cookie = mLastCookie.Left
+		    Else
+		      cookie = CookieList.Item(Index)
+		      mLastCookie = cookie:Index
+		    End If
 		    
 		  Case FORMAT_HTTP
-		    Dim c As String = "Set-Cookie: " + Me.Name(Index) + "=" + Me.Value(Index)
-		    If Me.Domain(Index) <> "" Then c = c + "; Domain=" + Me.Domain(Index)
-		    If Me.Path(Index) <> "" Then c = c + "; path=" + Me.Path(Index)
-		    If Me.Expiry(Index) <> Nil Then c = c + "; Expires=" + libcURL.ParseDate(Me.Expiry(Index))
-		    If Me.HTTPOnly(Index) Then c = c + "; httpOnly"
-		    Return c
+		    cookie = "Set-Cookie: " + Me.Name(Index) + "=" + Me.Value(Index)
+		    If Me.Domain(Index) <> "" Then cookie = cookie + "; Domain=" + Me.Domain(Index)
+		    If Me.Path(Index) <> "" Then cookie = cookie + "; path=" + Me.Path(Index)
+		    If Me.Expiry(Index) <> Nil Then cookie = cookie + "; Expires=" + libcURL.ParseDate(Me.Expiry(Index))
+		    If Me.HTTPOnly(Index) Then cookie = cookie + "; httpOnly"
 		    
 		  Else
 		    Raise New UnsupportedFormatException
 		  End Select
+		  
+		  Return cookie
 		End Function
 	#tag EndMethod
 
@@ -448,6 +456,10 @@ Protected Class CookieEngine
 
 	#tag Property, Flags = &h21
 		Private mEnabled As Boolean
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mLastCookie As Pair
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
