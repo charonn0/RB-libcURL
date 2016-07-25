@@ -112,15 +112,22 @@ Inherits libcURL.cURLHandle
 		Private Shared Function FormGetCallback(UserData As Integer, Buffer As Ptr, Length As Integer) As Integer
 		  #pragma X86CallingConvention CDecl
 		  
-		  Dim stream As Writeable = FormGetStreams.Lookup(UserData, Nil)
-		  
-		  If stream <> Nil Then
+		  Dim ref As Variant = FormGetStreams.Lookup(UserData, Nil)
+		  Select Case ref
+		  Case IsA Writeable
+		    Dim stream As Writeable = ref
 		    Dim mb As MemoryBlock = Buffer
 		    stream.Write(mb.StringValue(0, Length))
 		    Return Length
-		  End If
+		    
+		  Case IsA MultipartForm
+		    Return MultipartForm(ref)._curlFormGet(Buffer, Length)
+		    
+		  Else
+		    Break ' UserData does not refer to a valid stream or form!
+		    
+		  End Select
 		  
-		  Break ' UserData does not refer to a valid stream!
 		  
 		Exception Err As RuntimeException
 		  If Err IsA ThreadEndException Or Err IsA EndException Then Raise Err
@@ -1611,12 +1618,30 @@ Inherits libcURL.cURLHandle
 		  
 		  ' The form will be serialized one element at a time via several invocations of FormGetCallback
 		  If FormGetStreams = Nil Then FormGetStreams = New Dictionary
-		  FormGetStreams.Value(mHandle) = WriteTo
-		  mLastError = curl_formget(mHandle, mHandle, AddressOf FormGetCallback)
-		  FormGetStreams.Remove(mHandle)
+		  If WriteTo <> Nil Then
+		    FormGetStreams.Value(mHandle) = WriteTo
+		  Else
+		    FormGetStreams.Value(mHandle) = Me
+		  End If
+		  Try
+		    mLastError = curl_formget(mHandle, mHandle, AddressOf FormGetCallback)
+		  Finally
+		    FormGetStreams.Remove(mHandle)
+		  End Try
 		  Return mLastError = 0
 		End Function
 	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Function _curlFormGet(Data As MemoryBlock, Length As Integer) As Integer
+		  Return RaiseEvent SerializePart(Data, Length)
+		End Function
+	#tag EndMethod
+
+
+	#tag Hook, Flags = &h0
+		Event SerializePart(Data As MemoryBlock, Length As Integer) As Integer
+	#tag EndHook
 
 
 	#tag Note, Name = Using this class
