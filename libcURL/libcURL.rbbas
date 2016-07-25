@@ -968,6 +968,12 @@ Protected Module libcURL
 		HTTP2=3
 	#tag EndEnum
 
+	#tag Enum, Name = IPVersion, Type = Integer, Flags = &h1
+		Whatever=0
+		  V4=1
+		V6=2
+	#tag EndEnum
+
 	#tag Enum, Name = ProxyType, Type = Integer, Flags = &h1
 		HTTP=0
 		  HTTP1_0=1
