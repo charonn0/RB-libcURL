@@ -103,7 +103,8 @@ Inherits libcURL.cURLHandle
 		    PerformTimer = New Timer
 		    AddHandler PerformTimer.Action, WeakAddressOf PerformTimerHandler
 		  End If
-		  PerformTimer.Period = QueryInterval()
+		  Dim q As Integer = QueryInterval()
+		  PerformTimer.Period = Min(Max(q, 10), 100)
 		  PerformTimer.Mode = Timer.ModeMultiple
 		End Sub
 	#tag EndMethod
@@ -156,12 +157,14 @@ Inherits libcURL.cURLHandle
 		Private Sub PerformTimerHandler(Sender As Timer)
 		  ' This method handles the PerformTimer.Action event. It calls PerformOnce on the main thread until PerformOnce returns False.
 		  
-		  Static rand As New Random
-		  If Not Me.PerformOnce() Then
-		    Sender.Mode = Timer.ModeOff
-		  ElseIf Sender.Period > 1 Or rand.InRange(0, 5) = 2 Then
-		    Sender.Period = QueryInterval()
-		  End If
+		  For i As Integer = 0 To 4
+		    If Not Me.PerformOnce() Then
+		      Sender.Mode = Timer.ModeOff
+		      Exit For
+		    ElseIf Rnd > 0.99 Then
+		      Sender.Period = Max(QueryInterval(), 10)
+		    End If
+		  Next
 		  
 		Exception Err As RuntimeException
 		  #pragma BreakOnExceptions Off

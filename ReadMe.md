@@ -22,16 +22,16 @@ This example performs a synchronous HTTP GET request on the calling thread. [**M
 * Full support for [RB/Xojo threads](https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.PerformOnce)
 * Automatic decompression (gzip, deflate, etc.) using zlib.
 * Full support for HTTP, SOCKS4, SOCKS4A, SOCKS5, and SOCKS5_HOSTNAME [proxy servers](https://github.com/charonn0/RB-libcURL/wiki/libcURL.ProxyEngine)
-* [Stream-oriented](https://github.com/charonn0/RB-libcURL/wiki/cURLManager.Perform), using Xojo's built-in [Readable](http://docs.xojo.com/index.php/Readable) and [Writeable](http://docs.xojo.com/index.php/Writeable) interfaces. Download or upload directly to or from a file, [MemoryBlock](http://www.boredomsoft.org/string-building-in-realbasic.bs), Xojo socket, or your own custom class.
-* [Easy to use](https://github.com/charonn0/RB-libcURL/wiki/cURLClient), but still exposing [the full range of libcURL's features](https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle).
-* Interact directly with libcurl via declares and [callback methods](https://en.wikipedia.org/wiki/Callback_%28computer_programming%29); no shell or plugins required.
+* [Stream-oriented](https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.Perform), using Xojo's built-in [Readable](http://docs.xojo.com/index.php/Readable) and [Writeable](http://docs.xojo.com/index.php/Writeable) interfaces. Download or upload directly to or from a file, [MemoryBlock](http://www.boredomsoft.org/string-building-in-realbasic.bs), Xojo socket, or your own custom class.
+* [Easy to use](https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLClient), but still exposing [the full range of libcURL's features](https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle).
+* Interact directly with libcurl using idiomatic RB/Xojo objects, methods, and events; no shell or plugins required.
 
 ##Synopsis
 
 ***
 It is strongly recommended that you familiarize yourself with [libcURL](http://curl.haxx.se/libcurl/c/libcurl-tutorial.html), as this project preserves the semantics of libcURL's API in an object-oriented, Xojo-flavored wrapper. 
 
-**For a simplified client interface that is appropriate for most types of transfers you should use the [`cURLClient`](https://github.com/charonn0/RB-libcURL/wiki/cURLClient) class. Refer to the [examples](https://github.com/charonn0/RB-libcURL/wiki/Home#examples) below for demonstrations of `cURLClient`.**
+**For a simplified client interface that is appropriate for most types of transfers you should use the [`cURLClient`](https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLClient) class. Refer to the [examples](https://github.com/charonn0/RB-libcURL/wiki/Home#examples) below for demonstrations of `cURLClient`.**
 
 ***
 
@@ -77,7 +77,7 @@ RB-libcURL will raise a PlatformNotSupportedException when used if all required 
 * [HTTP POST](https://github.com/charonn0/RB-libcURL/wiki/HTTP-POST-Example)
 * [HTTP TRACE](https://github.com/charonn0/RB-libcURL/wiki/HTTP-TRACE-Example)
 * [HTTP Cookies](https://github.com/charonn0/RB-libcURL/wiki/HTTP-Cookies-Example)
-* [HTTP GET via a proxy server](https://github.com/charonn0/RB-libcURL/wiki/HTTP-GET-Via-Proxy-Example)
+* [Using a proxy](https://github.com/charonn0/RB-libcURL/wiki/Proxying-Example)
 * [FTP Download](https://github.com/charonn0/RB-libcURL/wiki/FTP-RETR-Example)
 * [FTP Upload](https://github.com/charonn0/RB-libcURL/wiki/FTP-STOR-Example)
 * [FTP custom commands](https://github.com/charonn0/RB-libcURL/wiki/FTP-custom-commands)

@@ -183,6 +183,9 @@ Protected Module Opts
 	#tag Constant, Name = IGNORE_CONTENT_LENGTH, Type = Double, Dynamic = False, Default = \"136", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = IPRESOLVE, Type = Double, Dynamic = False, Default = \"113", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = ISSUERCERT, Type = Double, Dynamic = False, Default = \"10170", Scope = Protected
 	#tag EndConstant
 
