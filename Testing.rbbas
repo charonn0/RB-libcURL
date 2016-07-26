@@ -60,7 +60,7 @@ Protected Module Testing
 		  Assert(c.SetCookie("test2", "value2", "api.example.com", expiry))
 		  Assert(c.SetCookie("test3", "value3", "example.com", Nil, "/bin"))
 		  Assert(c.SetCookie("test4", "value4", ".example.com"))
-		  Assert(c.SetCookie("test5", "value5", "", expiry))
+		  Assert(c.SetCookie("test5", "value5", "example.net", expiry))
 		  
 		  Assert(c.Cookies.Count = 5)
 		  
@@ -125,7 +125,7 @@ Protected Module Testing
 		    Assert(c.Cookies.Expiry(index) > New Date)
 		    Assert(c.Cookies.Name(index) = "test5")
 		    Assert(c.Cookies.Value(index) = "value5")
-		    Assert(c.Cookies.Domain(index) = "unknown")
+		    Assert(c.Cookies.Domain(index) = ".example.net")
 		    Assert(c.Cookies.Path(index) = "/")
 		  End If
 		End Sub
