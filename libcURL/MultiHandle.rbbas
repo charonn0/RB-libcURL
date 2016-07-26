@@ -157,8 +157,8 @@ Inherits libcURL.cURLHandle
 		    If Not Me.PerformOnce() Then
 		      Sender.Mode = Timer.ModeOff
 		      Exit For
-		    ElseIf Rnd > 0.99 Then
-		      Sender.Period = Max(QueryInterval(), 10)
+		    ElseIf i = 4 Then
+		      Sender.Period = QueryInterval()
 		    End If
 		  Next
 		  
@@ -171,7 +171,7 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function QueryInterval() As Integer
+		Function QueryInterval() As Double
 		  ' Returns libcURL's best estimate for an optimum interval, in milliseconds, between calls to PerformOnce. An interval of 1 means
 		  ' that PerformOnce may be called immediately.
 		  '
@@ -181,15 +181,17 @@ Inherits libcURL.cURLHandle
 		  
 		  Static IsAvailable As Boolean
 		  If Not IsAvailable Then IsAvailable = libcURL.Version.IsAtLeast(7, 15, 4)
-		  Dim i As Integer
+		  Dim time As timeval
 		  If IsAvailable Then
-		    mLastError = curl_multi_timeout(mHandle, i)
+		    mLastError = curl_multi_timeout(mHandle, time)
 		  Else
 		    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
 		  End If
-		  If mLastError <> 0 Or i <= 0 Then i = 1 ' immediately
-		  Return i
-		  
+		  If mLastError = 0 Then
+		    Dim d As Double = CDbl(Str(time.tv_sec) + "." + Str(time.tv_usec))
+		    If d < 0.0 Then d = 10.0
+		    Return d
+		  End If
 		End Function
 	#tag EndMethod
 
