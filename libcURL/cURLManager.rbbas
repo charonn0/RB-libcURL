@@ -441,6 +441,20 @@ Protected Class cURLManager
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  Return mMultiItem.HTTP2Push
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  mMultiItem.HTTP2Push = value
+			End Set
+		#tag EndSetter
+		HTTP2Push As Boolean
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
 			  ' Gets the version of HTTP to be used. Returns HTTP_VERSION_1_0, HTTP_VERSION_1_1, HTTP_VERSION_2_0, or HTTP_VERSION_NONE
 			  return libcURL.HTTPVersion(EasyItem.HTTPVersion)
 			End Get
