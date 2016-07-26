@@ -485,6 +485,34 @@ Protected Class cURLManager
 		Private mRequestHeaders As libcURL.ListPtr
 	#tag EndProperty
 
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  Return EasyItem.Password
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  EasyItem.Password = value
+			End Set
+		#tag EndSetter
+		Password As String
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  Return EasyItem.Username
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  EasyItem.Username = value
+			End Set
+		#tag EndSetter
+		Username As String
+	#tag EndComputedProperty
+
 
 	#tag ViewBehavior
 		#tag ViewProperty
