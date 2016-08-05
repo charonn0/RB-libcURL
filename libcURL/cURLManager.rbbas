@@ -265,6 +265,7 @@ Protected Class cURLManager
 		  Else
 		    mDownloadMB = Nil
 		  End If
+		  If ReadFrom = Nil And mUploadMB <> Nil Then ReadFrom = New BinaryStream(mUploadMB)
 		  mEasyItem.DownloadStream = WriteTo
 		  mEasyItem.UploadStream = ReadFrom
 		  If mEasyItem.UseErrorBuffer Then mEasyItem.UseErrorBuffer = True ' clears the previous buffer, if any
@@ -321,6 +322,20 @@ Protected Class cURLManager
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Sub SetUploadData(UploadData As MemoryBlock)
+		  ' Sets a MemoryBlock containing all data to be uploaded during the next transfer.
+		  ' If you pass a Readable object to any of the transfer methods (get, post, put, perform)
+		  ' then the data passed to this method will be discarded. Once the transfer completes the
+		  ' MemoryBlock is discarded; it does not persist between transfers.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.SetUploadData
+		  
+		  mUploadMB = UploadData
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h21
 		Private Sub _DebugMessageHandler(Sender As libcURL.EasyHandle, MessageType As libcURL.curl_infotype, data As String)
 		  #pragma Unused Sender
@@ -362,6 +377,7 @@ Protected Class cURLManager
 		  End If
 		  mIsTransferComplete = True
 		  mEasyItem.ClearFormData()
+		  mUploadMB = Nil
 		  If Cookies.Enabled Then Cookies.Invalidate
 		  If Item.LastError <> status Then ErrorSetter(Item).LastError = status
 		End Sub
@@ -483,6 +499,10 @@ Protected Class cURLManager
 
 	#tag Property, Flags = &h21
 		Private mRequestHeaders As libcURL.ListPtr
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mUploadMB As MemoryBlock
 	#tag EndProperty
 
 	#tag ComputedProperty, Flags = &h0
