@@ -153,6 +153,9 @@ Protected Module Opts
 	#tag Constant, Name = HEADERFUNCTION, Type = Double, Dynamic = False, Default = \"20079", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = HEADEROPT, Type = Double, Dynamic = False, Default = \"229", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = HTTP200ALIASES, Type = Double, Dynamic = False, Default = \"10104", Scope = Protected
 	#tag EndConstant
 

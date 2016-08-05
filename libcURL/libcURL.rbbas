@@ -139,7 +139,7 @@ Protected Module libcURL
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Function curl_multi_timeout Lib "libcurl" (MultiHandle As Integer, ByRef Timeout As Integer) As Integer
+		Private Soft Declare Function curl_multi_timeout Lib "libcurl" (MultiHandle As Integer, ByRef Timeout As timeval) As Integer
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
@@ -932,6 +932,12 @@ Protected Module libcURL
 
 	#tag Constant, Name = CURL_WRITEFUNC_PAUSE, Type = Double, Dynamic = False, Default = \"CURL_READFUNC_PAUSE", Scope = Protected
 	#tag EndConstant
+
+
+	#tag Structure, Name = timeval, Flags = &h21
+		tv_sec As Integer
+		tv_usec As Integer
+	#tag EndStructure
 
 
 	#tag Enum, Name = ConnectionType, Type = Integer, Flags = &h1

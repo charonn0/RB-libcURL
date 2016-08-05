@@ -8,6 +8,9 @@ Protected Class ProxyEngine
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ProxyEngine.Constructor
 		  
 		  mOwner = New WeakRef(Owner)
+		  mUnifiedHeaders = libcURL.Version.IsAtLeast(7, 42, 1)
+		  
+		  
 		End Sub
 	#tag EndMethod
 
@@ -235,6 +238,10 @@ Protected Class ProxyEngine
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
+		Private mUnifiedHeaders As Boolean
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
 		Private mUsername As String
 	#tag EndProperty
 
@@ -321,6 +328,31 @@ Protected Class ProxyEngine
 			End Set
 		#tag EndSetter
 		Type As libcURL.ProxyType
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  return mUnifiedHeaders
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  If libcURL.Version.IsAtLeast(7, 37, 0) Then
+			    Const CURLHEADER_UNIFIED = 0
+			    Const CURLHEADER_SEPARATE = 1
+			    If value Then
+			      If Not Owner.SetOption(libcURL.Opts.HEADEROPT, CURLHEADER_UNIFIED) Then Raise New cURLException(Owner)
+			    Else
+			      If Not Owner.SetOption(libcURL.Opts.HEADEROPT, CURLHEADER_SEPARATE) Then Raise New cURLException(Owner)
+			    End If
+			    mUnifiedHeaders = value
+			  Else
+			    ErrorSetter(Owner).LastError = libcURL.Errors.FEATURE_UNAVAILABLE
+			  End If
+			End Set
+		#tag EndSetter
+		UnifiedHeaders As Boolean
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
