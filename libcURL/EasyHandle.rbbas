@@ -3,7 +3,8 @@ Protected Class EasyHandle
 Inherits libcURL.cURLHandle
 	#tag Method, Flags = &h0
 		Sub ClearFormData()
-		  ' Clears all forms and resets upload options
+		  ' Clears all forms and resets upload options. Can be used to do a "soft" reset even
+		  ' if no form was defined.
 		  '
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.ClearFormData
@@ -55,7 +56,8 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Sub Constructor(GlobalInitFlags As Integer = libcURL.CURL_GLOBAL_DEFAULT)
-		  ' Creates a new curl_easy handle
+		  ' Creates a new curl_easy handle. If creating the handle fails for any reason
+		  ' an exception will be raised; otherwise, the handle may be used immediately.
 		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_init.html
@@ -172,7 +174,7 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h21
 		Private Sub Destructor()
-		  ' Closes the instance.
+		  ' Closes the handle.
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_cleanup.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Destructor
@@ -191,7 +193,7 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Function ErrorBuffer() As String
-		  ' Returns a copy of contents of the error buffer, or an empty string. The contents of this buffer will persist
+		  ' Returns a copy of the contents of the error buffer, or an empty string. The contents of this buffer will persist
 		  ' between transfers; it is NOT automatically cleared. To clear the buffer set UseErrorBuffer to True (even if
 		  ' it's already True)
 		  '
