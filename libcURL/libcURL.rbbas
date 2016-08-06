@@ -443,7 +443,7 @@ Protected Module libcURL
 		        Client.EasyItem.AutoReferer = True
 		        If Not Client.SetRequestHeader(name, value) Then GoTo ParseError
 		        
-		      Case "User-Agent", "-A"
+		      Case "User-Agent"
 		        Client.EasyItem.UserAgent = value
 		        If Client.LastError <> 0 Then GoTo ParseError
 		        
@@ -455,6 +455,11 @@ Protected Module libcURL
 		        If Not Client.SetRequestHeader(name, value) Then GoTo ParseError
 		        
 		      End Select
+		      i = i + 1
+		      
+		    Case arg = "--user-agent", StrComp("-A", arg, 1) = 0
+		      Client.EasyItem.UserAgent = output(i + 1)
+		      If Client.LastError <> 0 Then GoTo ParseError
 		      i = i + 1
 		      
 		    Case arg = "--http1.0", arg = "-0"
@@ -625,7 +630,7 @@ Protected Module libcURL
 		      Continue
 		      
 		    Else
-		      If url = "" And arg.Len >= 6 Then ' xxx://
+		      If url = "" And Left(arg, 1) <> "-" And arg.Len >= 6 Then ' xxx://
 		        url = arg
 		      Else
 		        GoTo ParseError
@@ -648,6 +653,10 @@ Protected Module libcURL
 		    err.Message = "'" + arg + "' is an invalid argument."
 		    Raise err
 		  End If
+		  
+		Exception Err As OutOfBoundsException
+		  err.Message = "'" + arg + "' requires an argument."
+		  Raise err
 		End Sub
 	#tag EndMethod
 
