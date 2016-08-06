@@ -333,6 +333,7 @@ Protected Class cURLManager
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.SetUploadData
 		  
 		  mUploadMB = UploadData
+		  mEasyItem.UploadMode = (mUploadMB <> Nil)
 		End Sub
 	#tag EndMethod
 
