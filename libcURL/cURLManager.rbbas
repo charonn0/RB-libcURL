@@ -2,6 +2,13 @@
 Protected Class cURLManager
 	#tag Method, Flags = &h0
 		Sub Abort()
+		  ' Aborts the current transfer by automatically returning `True` from the Progress event the 
+		  ' next time it is raised. If no transfer is in progress or if the Progress event has been disabled
+		  ' then this method has no effect.
+		  '
+		  ' See: 
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.Abort
+		  
 		  If Not Me.IsTransferComplete Then mAbort = True
 		End Sub
 	#tag EndMethod
@@ -93,7 +100,7 @@ Protected Class cURLManager
 
 	#tag Method, Flags = &h0
 		Function Cookies() As libcURL.CookieEngine
-		  ' Returns a reference to a CookieEngine instance
+		  ' Returns a reference to the CookieEngine instance
 		  '
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.Cookies
@@ -111,8 +118,8 @@ Protected Class cURLManager
 
 	#tag Method, Flags = &h0
 		Function GetCookie(Name As String, Domain As String) As String
-		  ' Gets the value of the cookie named Name set for host Domain, or the empty string ("") if 
-		  ' no cookie is found.
+		  ' Gets the value of the first cookie named 'Name' set for the host matching 'Domain', or the empty 
+		  ' string ("") if no cookie is found. For more advanced lookups refer to the CookieEngine class.
 		  '
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.GetCookie
@@ -125,7 +132,7 @@ Protected Class cURLManager
 	#tag Method, Flags = &h0
 		Function GetDownloadedData() As MemoryBlock
 		  ' Returns a MemoryBlock containing all data which was downloaded during the most recent transfer.
-		  ' If you passed a Writeable object to any of the transfer methods (get, post, put) then this
+		  ' If you passed a Writeable object to any of the transfer methods (get, post, put, perform) then this
 		  ' method will return an empty MemoryBlock (not Nil) as the data will have been downloaded into
 		  ' the Writeable object directly.
 		  '
@@ -458,7 +465,7 @@ Protected Class cURLManager
 			  ' When using OpenSSL or NSS, returns True if the server's SSL/TLS certificate was valid and
 			  ' verified by a trusted certificate authority. If the connection did not use SSL/TLS then
 			  ' this property will always be False.
-			  ' 
+			  '
 			  ' See:
 			  ' https://curl.haxx.se/libcurl/c/CURLINFO_SSL_VERIFYRESULT.html
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.IsSSLCertOK
