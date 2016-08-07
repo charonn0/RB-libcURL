@@ -70,7 +70,10 @@ Protected Class cURLManager
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Constructor(CopyOpts As libcURL.cURLManager)
+		Attributes( deprecated )  Sub Constructor(CopyOpts As libcURL.cURLManager)
+		  ' This method is deprecated. To duplicate an instance of cURLManager, duplicate its EasyItem
+		  ' and pass the duplicate to cURLManager.Constructor(EasyHandle) instead.
+		  '
 		  ' Creates a new instance of cURLManager by cloning the passed cURLManager
 		  '
 		  ' See:
