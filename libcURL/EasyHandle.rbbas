@@ -71,7 +71,7 @@ Inherits libcURL.cURLHandle
 		  If mHandle > 0 Then
 		    If Instances = Nil Then Instances = New Dictionary
 		    Instances.Value(mHandle) = New WeakRef(Me)
-		    InitCallbacks(Me)
+		    InitCallbacks()
 		  Else
 		    mLastError = libcURL.Errors.INIT_FAILED
 		    Raise New cURLException(Me)
@@ -100,7 +100,7 @@ Inherits libcURL.cURLHandle
 		  mHandle = curl_easy_duphandle(CopyOpts.Handle)
 		  If mHandle > 0 Then
 		    Instances.Value(mHandle) = New WeakRef(Me)
-		    InitCallbacks(Me)
+		    InitCallbacks()
 		    If CopyOpts.mAuthMethods <> Nil Then Call Me.SetAuthMethods(CopyOpts.GetAuthMethods)
 		    mAutoDisconnect = CopyOpts.AutoDisconnect
 		    mAutoReferer = CopyOpts.AutoReferer
@@ -297,44 +297,44 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Shared Sub InitCallbacks(Sender As libcURL.EasyHandle)
-		  ' This method sets up the callback functions for the passed instance of EasyHandle
+		Protected Sub InitCallbacks()
+		  ' This method sets up the callback functions for the EasyHandle
 		  
 		  If libcURL.Version.IsAtLeast(7, 16, 0) Then
-		    If Not Sender.SetOption(libcURL.Opts.SOCKOPTDATA, Sender.Handle) Then Raise New cURLException(Sender)
-		    If Not Sender.SetOption(libcURL.Opts.SOCKOPTFUNCTION, AddressOf OpenCallback) Then Raise New cURLException(Sender)
+		    If Not SetOption(libcURL.Opts.SOCKOPTDATA, mHandle) Then Raise New cURLException(Me)
+		    If Not SetOption(libcURL.Opts.SOCKOPTFUNCTION, AddressOf OpenCallback) Then Raise New cURLException(Me)
 		  End If
 		  
 		  If libcURL.Version.IsAtLeast(7, 21, 7) Then
-		    If Not Sender.SetOption(libcURL.Opts.CLOSESOCKETDATA, Sender.Handle) Then Raise New cURLException(Sender)
-		    If Not Sender.SetOption(libcURL.Opts.CLOSESOCKETFUNCTION, AddressOf CloseCallback) Then Raise New cURLException(Sender)
+		    If Not SetOption(libcURL.Opts.CLOSESOCKETDATA, mHandle) Then Raise New cURLException(Me)
+		    If Not SetOption(libcURL.Opts.CLOSESOCKETFUNCTION, AddressOf CloseCallback) Then Raise New cURLException(Me)
 		  End If
 		  
 		  If libcURL.Version.IsAtLeast(7, 18, 0) Then
-		    If Not Sender.SetOption(libcURL.Opts.SEEKDATA, Sender.Handle) Then Raise New cURLException(Sender)
-		    If Not Sender.SetOption(libcURL.Opts.SEEKFUNCTION, AddressOf SeekCallback) Then Raise New cURLException(Sender)
+		    If Not SetOption(libcURL.Opts.SEEKDATA, mHandle) Then Raise New cURLException(Me)
+		    If Not SetOption(libcURL.Opts.SEEKFUNCTION, AddressOf SeekCallback) Then Raise New cURLException(Me)
 		  End If
 		  
-		  If Sender.UseProgressEvent Then Sender.UseProgressEvent = True
+		  If mUseProgressEvent Then UseProgressEvent = True
 		  If libcURL.Version.IsAtLeast(7, 32, 0) Then
-		    If Not Sender.SetOption(libcURL.Opts.XFERINFOFUNCTION, AddressOf ProgressCallback) Then Raise New cURLException(Sender)
-		    If Not Sender.SetOption(libcURL.Opts.XFERINFODATA, Sender.Handle) Then Raise New cURLException(Sender)
+		    If Not SetOption(libcURL.Opts.XFERINFOFUNCTION, AddressOf ProgressCallback) Then Raise New cURLException(Me)
+		    If Not SetOption(libcURL.Opts.XFERINFODATA, mHandle) Then Raise New cURLException(Me)
 		  Else ' old versions
-		    If Not Sender.SetOption(libcURL.Opts.PROGRESSDATA, Sender.Handle) Then Raise New cURLException(Sender)
-		    If Not Sender.SetOption(libcURL.Opts.PROGRESSFUNCTION, AddressOf ProgressCallback) Then Raise New cURLException(Sender)
+		    If Not SetOption(libcURL.Opts.PROGRESSDATA, mHandle) Then Raise New cURLException(Me)
+		    If Not SetOption(libcURL.Opts.PROGRESSFUNCTION, AddressOf ProgressCallback) Then Raise New cURLException(Me)
 		  End If
 		  
-		  If Not Sender.SetOption(libcURL.Opts.WRITEDATA, Sender.Handle) Then Raise New cURLException(Sender)
-		  If Not Sender.SetOption(libcURL.Opts.WRITEFUNCTION, AddressOf WriteCallback) Then Raise New cURLException(Sender)
+		  If Not SetOption(libcURL.Opts.WRITEDATA, mHandle) Then Raise New cURLException(Me)
+		  If Not SetOption(libcURL.Opts.WRITEFUNCTION, AddressOf WriteCallback) Then Raise New cURLException(Me)
 		  
-		  If Not Sender.SetOption(libcURL.Opts.READDATA, Sender.Handle) Then Raise New cURLException(Sender)
-		  If Not Sender.SetOption(libcURL.Opts.READFUNCTION, AddressOf ReadCallback) Then Raise New cURLException(Sender)
+		  If Not SetOption(libcURL.Opts.READDATA, mHandle) Then Raise New cURLException(Me)
+		  If Not SetOption(libcURL.Opts.READFUNCTION, AddressOf ReadCallback) Then Raise New cURLException(Me)
 		  
-		  If Not Sender.SetOption(libcURL.Opts.HEADERDATA, Sender.Handle) Then Raise New cURLException(Sender)
-		  If Not Sender.SetOption(libcURL.Opts.HEADERFUNCTION, AddressOf HeaderCallback) Then Raise New cURLException(Sender)
+		  If Not SetOption(libcURL.Opts.HEADERDATA, mHandle) Then Raise New cURLException(Me)
+		  If Not SetOption(libcURL.Opts.HEADERFUNCTION, AddressOf HeaderCallback) Then Raise New cURLException(Me)
 		  
-		  If Not Sender.SetOption(libcURL.Opts.DEBUGDATA, Sender.Handle) Then Raise New cURLException(Sender)
-		  If Not Sender.SetOption(libcURL.Opts.DEBUGFUNCTION, AddressOf DebugCallback) Then Raise New cURLException(Sender)
+		  If Not SetOption(libcURL.Opts.DEBUGDATA, mHandle) Then Raise New cURLException(Me)
+		  If Not SetOption(libcURL.Opts.DEBUGFUNCTION, AddressOf DebugCallback) Then Raise New cURLException(Me)
 		End Sub
 	#tag EndMethod
 
@@ -499,7 +499,7 @@ Inherits libcURL.cURLHandle
 		  mUserAgent = ""
 		  mUsername = ""
 		  Verbose = mVerbose
-		  InitCallbacks(Me)
+		  InitCallbacks()
 		  mLastError = 0
 		  
 		  
