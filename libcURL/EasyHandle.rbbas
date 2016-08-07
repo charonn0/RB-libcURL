@@ -501,14 +501,6 @@ Inherits libcURL.cURLHandle
 		  Verbose = mVerbose
 		  InitCallbacks()
 		  mLastError = 0
-		  
-		  
-		  
-		  
-		  
-		  
-		  
-		  
 		End Sub
 	#tag EndMethod
 
