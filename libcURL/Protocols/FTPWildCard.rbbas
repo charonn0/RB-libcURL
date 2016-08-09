@@ -3,6 +3,12 @@ Protected Class FTPWildCard
 Inherits libcURL.EasyHandle
 	#tag Method, Flags = &h21
 		Private Shared Function ChunkBeginCallback(TransferInfo As Ptr, UserData As Integer, Remaining As Integer) As Integer
+		  ' This method handles the CURLOPT_CHUNK_BGN_FUNCTION callback by invoking _curlChunkBegin
+		  ' on the appropriate instance of FTPWildCard
+		  '
+		  ' See:
+		  ' https://curl.haxx.se/libcurl/c/CURLOPT_CHUNK_BGN_FUNCTION.html
+		  
 		  #pragma X86CallingConvention CDecl
 		  
 		  If Instances = Nil Then Return 0
@@ -26,6 +32,12 @@ Inherits libcURL.EasyHandle
 
 	#tag Method, Flags = &h21
 		Private Shared Function ChunkEndCallback(UserData As Integer) As Integer
+		  ' This method handles the CURLOPT_CHUNK_END_FUNCTION callback by invoking _curlChunkEnd
+		  ' on the appropriate instance of FTPWildCard
+		  '
+		  ' See:
+		  ' https://curl.haxx.se/libcurl/c/CURLOPT_CHUNK_END_FUNCTION.html
+		  
 		  #pragma X86CallingConvention CDecl
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
@@ -70,6 +82,12 @@ Inherits libcURL.EasyHandle
 
 	#tag Method, Flags = &h21
 		Private Shared Function FNMatchCallback(UserData As Integer, Pattern As Ptr, FileName As Ptr) As Integer
+		  ' This method handles the CURLOPT_FNMATCH_FUNCTION callback by invoking _curlChunkEnd
+		  ' on the appropriate instance of FTPWildCard
+		  '
+		  ' See:
+		  ' https://curl.haxx.se/libcurl/c/CURLOPT_FNMATCH_FUNCTION.html
+		  
 		  #pragma X86CallingConvention CDecl
 		  
 		  If Instances = Nil Then Return 0
@@ -90,10 +108,14 @@ Inherits libcURL.EasyHandle
 
 	#tag Method, Flags = &h1
 		Protected Sub InitCallbacks()
+		  ' This method initializes the callbacks for the FTPWildCard; it is called by the 
+		  ' superclass Constructor and Reset methods. 
+		  
 		  If Not libcURL.Version.IsAtLeast(7, 21, 0) Then
 		    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
 		    Raise New libcURL.cURLException(Me)
 		  End If
+		  
 		  Super.InitCallbacks()
 		  If Not Me.SetOption(libcURL.Opts.WILDCARDMATCH, True) Then Raise New libcURL.cURLException(Me)
 		  If Not Me.SetOption(libcURL.Opts.CHUNK_BGN_FUNCTION, AddressOf ChunkBeginCallback) Then Raise New libcURL.cURLException(Me)
@@ -104,12 +126,22 @@ Inherits libcURL.EasyHandle
 
 	#tag Method, Flags = &h0
 		Function Remaining() As Integer
+		  ' Returns the number of LIST entries which remain to be processed.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Protocols.FTPWildCard.Remaining
+		  
 		  Return mRemaining
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub Reset()
+		  ' Resets the curl_easy handle to a pristine state. You may reuse the handle immediately.
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/curl_easy_reset.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Reset
+		  
 		  Super.Reset
 		  CustomMatch = mCustomMatch
 		  LocalRoot = Nil
@@ -123,6 +155,13 @@ Inherits libcURL.EasyHandle
 
 	#tag Method, Flags = &h0
 		Function SetOption(OptionNumber As Integer, NewValue As Variant) As Boolean
+		  ' Call this method with a curl option number and a value that is acceptable for that option. 
+		  ' Refer to the EasyHandle.SetOption method for additional info.
+		  
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/curl_easy_setopt.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.SetOption
+		  
 		  Select Case True
 		  Case NewValue IsA cURLChunkBegin
 		    Dim p As cURLChunkBegin = NewValue
@@ -141,10 +180,12 @@ Inherits libcURL.EasyHandle
 
 	#tag Method, Flags = &h21
 		Private Function _curlChunkBegin(Info As FileInfo, Remaining As Integer) As Integer
+		  ' The LIST entry is starting
+		  
 		  mRemaining = Remaining
 		  Dim mb As MemoryBlock = Info.FileName
 		  mLastFileName = mb.CString(0)
-		  If mLastFileName = "." Or mLastFileName = ".." Then Return CURL_CHUNK_BGN_FUNC_SKIP
+		  If mLastFileName = "." Or mLastFileName = ".." Then Return CURL_CHUNK_BGN_FUNC_SKIP ' skip parent and self references
 		  If mLastFile = Nil And LocalRoot <> Nil Then mLastFile = LocalRoot.Child(mLastFileName)
 		  
 		  Dim p As New Permissions(Info.Perm)
@@ -175,6 +216,8 @@ Inherits libcURL.EasyHandle
 
 	#tag Method, Flags = &h21
 		Private Function _curlChunkEnd() As Integer
+		  ' The LIST entry is ended
+		  
 		  mLastFileName = ""
 		  mLastFile = Nil
 		  If Me.DownloadStream <> Nil And Me.DownloadStream IsA BinaryStream Then BinaryStream(Me.DownloadStream).Close
@@ -231,11 +274,21 @@ Inherits libcURL.EasyHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Gets whether the PatternMatch event will be raised in lieu of libcurl's default pattern matching function.
+			  ' 
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Protocols.FTPWildCard.CustomMatch
+			  
 			  return mCustomMatch
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
+			  ' Sets whether the PatternMatch event will be raised in lieu of libcurl's default pattern matching function.
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Protocols.FTPWildCard.CustomMatch
+			  
 			  If value Then
 			    If Not Me.SetOption(libcURL.Opts.FNMATCH_FUNCTION, AddressOf FNMatchCallback) Then Raise New libcURL.cURLException(Me)
 			    If Not Me.SetOption(libcURL.Opts.FNMATCH_DATA, mHandle) Then Raise New libcURL.cURLException(Me)
@@ -250,6 +303,13 @@ Inherits libcURL.EasyHandle
 	#tag EndComputedProperty
 
 	#tag Property, Flags = &h0
+		#tag Note
+			Specify the local directory into which files should be downloaded. The FolderItem passed to the QueueFile event
+			as 'LocalFile' will be a child of LocalRoot. If LocalRoot is Nil then the DataAvailable event will be raised instead.
+			
+			See:
+			https://github.com/charonn0/RB-libcURL/wiki/libcURL.Protocols.FTPWildCard.LocalRoot
+		#tag EndNote
 		LocalRoot As FolderItem
 	#tag EndProperty
 
@@ -270,6 +330,13 @@ Inherits libcURL.EasyHandle
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		#tag Note
+			If set to True then existing children of the 'LocalRoot' directory will be overwritten if they have the same name as a file
+			being downloaded from the server. The default is False, in which case existing children will raise an IOException in _curlChunkBegin
+			
+			See:
+			https://github.com/charonn0/RB-libcURL/wiki/libcURL.Protocols.FTPWildCard.OverwriteLocalFiles
+		#tag EndNote
 		OverwriteLocalFiles As Boolean = False
 	#tag EndProperty
 
