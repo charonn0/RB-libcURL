@@ -143,7 +143,7 @@ Inherits libcURL.cURLHandle
 		  
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA ShareHandle Then
-		    ShareHandle(curl.Value).curlLock(Data, Access)
+		    ShareHandle(curl.Value).curl_Lock(Data, Access)
 		    Return
 		  End If
 		  Break 'UserData does not refer to a valid instance!
@@ -198,7 +198,7 @@ Inherits libcURL.cURLHandle
 		  
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA ShareHandle Then
-		    ShareHandle(curl.Value).curlUnlock(Data)
+		    ShareHandle(curl.Value).curl_Unlock(Data)
 		    Return
 		  End If
 		  Break 'UserData does not refer to a valid instance!
