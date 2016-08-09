@@ -153,8 +153,11 @@ Inherits libcURL.EasyHandle
 		    Me.DownloadStream = Nil
 		    If RaiseEvent QueueFile(mLastFileName, mLastFile, False, p) Then Return CURL_CHUNK_BGN_FUNC_SKIP
 		    If mLastFile = Nil Then Return CURL_CHUNK_BGN_FUNC_OK ' the dataavailable event will be raised
-		    
-		    Me.DownloadStream = BinaryStream.Create(mLastFile, OverwriteLocalFiles)
+		    Try
+		      Me.DownloadStream = BinaryStream.Create(mLastFile, OverwriteLocalFiles)
+		    Catch Err As IOException
+		      Return CURL_CHUNK_BGN_FUNC_FAIL
+		    End Try
 		    Return CURL_CHUNK_BGN_FUNC_OK
 		    
 		  Case FILETYPE_DIR
@@ -162,10 +165,9 @@ Inherits libcURL.EasyHandle
 		    If RaiseEvent QueueFile(mLastFileName, mLastFile, True, p) Then Return CURL_CHUNK_BGN_FUNC_SKIP
 		    Return CURL_CHUNK_BGN_FUNC_OK
 		    
-		  Else
-		    Break
 		  End Select
 		  
+		  Break ' Unknown chunk type!
 		  Return CURL_CHUNK_BGN_FUNC_FAIL
 		  
 		End Function
