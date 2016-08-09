@@ -3,7 +3,7 @@ Protected Class FTPWildCard
 Inherits libcURL.EasyHandle
 	#tag Method, Flags = &h21
 		Private Shared Function ChunkBeginCallback(TransferInfo As Ptr, UserData As Integer, Remaining As Integer) As Integer
-		  ' This method handles the CURLOPT_CHUNK_BGN_FUNCTION callback by invoking _curlChunkBegin
+		  ' This method handles the CURLOPT_CHUNK_BGN_FUNCTION callback by invoking curlChunkBegin
 		  ' on the appropriate instance of FTPWildCard
 		  '
 		  ' See:
@@ -15,7 +15,7 @@ Inherits libcURL.EasyHandle
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA FTPWildCard Then
 		    If TransferInfo <> Nil Then
-		      Return FTPWildCard(curl.Value)._curlChunkBegin(TransferInfo.FileInfo, Remaining)
+		      Return FTPWildCard(curl.Value).curlChunkBegin(TransferInfo.FileInfo, Remaining)
 		    Else
 		      Return CURL_CHUNK_BGN_FUNC_FAIL
 		    End If
@@ -32,7 +32,7 @@ Inherits libcURL.EasyHandle
 
 	#tag Method, Flags = &h21
 		Private Shared Function ChunkEndCallback(UserData As Integer) As Integer
-		  ' This method handles the CURLOPT_CHUNK_END_FUNCTION callback by invoking _curlChunkEnd
+		  ' This method handles the CURLOPT_CHUNK_END_FUNCTION callback by invoking curlChunkEnd
 		  ' on the appropriate instance of FTPWildCard
 		  '
 		  ' See:
@@ -42,7 +42,7 @@ Inherits libcURL.EasyHandle
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA FTPWildCard Then
-		    Return FTPWildCard(curl.Value)._curlChunkEnd()
+		    Return FTPWildCard(curl.Value).curlChunkEnd()
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
@@ -68,9 +68,57 @@ Inherits libcURL.EasyHandle
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h21
+		Private Function curlChunkBegin(Info As FileInfo, Remaining As Integer) As Integer
+		  ' The LIST entry is starting
+		  
+		  mRemaining = Remaining
+		  Dim mb As MemoryBlock = Info.FileName
+		  mLastFileName = mb.CString(0)
+		  If mLastFileName = "." Or mLastFileName = ".." Then Return CURL_CHUNK_BGN_FUNC_SKIP ' skip parent and self references
+		  If mLastFile = Nil And LocalRoot <> Nil Then mLastFile = LocalRoot.Child(mLastFileName)
+		  
+		  Dim p As New Permissions(Info.Perm)
+		  Select Case Info.FileType
+		  Case FILETYPE_FILE
+		    Me.DownloadStream = Nil
+		    If RaiseEvent QueueFile(mLastFileName, mLastFile, False, p) Then Return CURL_CHUNK_BGN_FUNC_SKIP
+		    If mLastFile = Nil Then Return CURL_CHUNK_BGN_FUNC_OK ' the dataavailable event will be raised
+		    Try
+		      Me.DownloadStream = BinaryStream.Create(mLastFile, OverwriteLocalFiles)
+		    Catch Err As IOException
+		      Return CURL_CHUNK_BGN_FUNC_FAIL
+		    End Try
+		    Return CURL_CHUNK_BGN_FUNC_OK
+		    
+		  Case FILETYPE_DIR
+		    Me.DownloadStream = Nil
+		    If RaiseEvent QueueFile(mLastFileName, mLastFile, True, p) Then Return CURL_CHUNK_BGN_FUNC_SKIP
+		    Return CURL_CHUNK_BGN_FUNC_OK
+		    
+		  End Select
+		  
+		  Break ' Unknown chunk type!
+		  Return CURL_CHUNK_BGN_FUNC_FAIL
+		  
+		End Function
+	#tag EndMethod
+
 	#tag DelegateDeclaration, Flags = &h21
 		Private Delegate Function cURLChunkBegin(TransferInfo As Ptr, UserData As Integer, Remaining As Integer) As Integer
 	#tag EndDelegateDeclaration
+
+	#tag Method, Flags = &h21
+		Private Function curlChunkEnd() As Integer
+		  ' The LIST entry is ended
+		  
+		  mLastFileName = ""
+		  mLastFile = Nil
+		  If Me.DownloadStream <> Nil And Me.DownloadStream IsA BinaryStream Then BinaryStream(Me.DownloadStream).Close
+		  Me.DownloadStream = Nil
+		  Return CURL_CHUNK_END_FUNC_OK
+		End Function
+	#tag EndMethod
 
 	#tag DelegateDeclaration, Flags = &h21
 		Private Delegate Function cURLChunkEnd(UserData As Integer) As Integer
@@ -81,8 +129,16 @@ Inherits libcURL.EasyHandle
 	#tag EndDelegateDeclaration
 
 	#tag Method, Flags = &h21
+		Private Function curlFNMatch(Pattern As MemoryBlock, FileName As MemoryBlock) As Integer
+		  If FileName.CString(0) = "." Or FileName.CString(0) = ".." Then Return CURL_FNMATCHFUNC_NOMATCH
+		  If RaiseEvent PatternMatch(Pattern.CString(0), FileName.CString(0)) Then Return CURL_FNMATCHFUNC_MATCH
+		  Return CURL_FNMATCHFUNC_NOMATCH
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
 		Private Shared Function FNMatchCallback(UserData As Integer, Pattern As Ptr, FileName As Ptr) As Integer
-		  ' This method handles the CURLOPT_FNMATCH_FUNCTION callback by invoking _curlChunkEnd
+		  ' This method handles the CURLOPT_FNMATCH_FUNCTION callback by invoking curlChunkEnd
 		  ' on the appropriate instance of FTPWildCard
 		  '
 		  ' See:
@@ -93,7 +149,7 @@ Inherits libcURL.EasyHandle
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA FTPWildCard Then
-		    Return FTPWildCard(curl.Value)._curlFNMatch(Pattern, FileName)
+		    Return FTPWildCard(curl.Value).curlFNMatch(Pattern, FileName)
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
@@ -175,62 +231,6 @@ Inherits libcURL.EasyHandle
 		  End Select
 		  
 		  Return Super.SetOption(OptionNumber, NewValue)
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Function _curlChunkBegin(Info As FileInfo, Remaining As Integer) As Integer
-		  ' The LIST entry is starting
-		  
-		  mRemaining = Remaining
-		  Dim mb As MemoryBlock = Info.FileName
-		  mLastFileName = mb.CString(0)
-		  If mLastFileName = "." Or mLastFileName = ".." Then Return CURL_CHUNK_BGN_FUNC_SKIP ' skip parent and self references
-		  If mLastFile = Nil And LocalRoot <> Nil Then mLastFile = LocalRoot.Child(mLastFileName)
-		  
-		  Dim p As New Permissions(Info.Perm)
-		  Select Case Info.FileType
-		  Case FILETYPE_FILE
-		    Me.DownloadStream = Nil
-		    If RaiseEvent QueueFile(mLastFileName, mLastFile, False, p) Then Return CURL_CHUNK_BGN_FUNC_SKIP
-		    If mLastFile = Nil Then Return CURL_CHUNK_BGN_FUNC_OK ' the dataavailable event will be raised
-		    Try
-		      Me.DownloadStream = BinaryStream.Create(mLastFile, OverwriteLocalFiles)
-		    Catch Err As IOException
-		      Return CURL_CHUNK_BGN_FUNC_FAIL
-		    End Try
-		    Return CURL_CHUNK_BGN_FUNC_OK
-		    
-		  Case FILETYPE_DIR
-		    Me.DownloadStream = Nil
-		    If RaiseEvent QueueFile(mLastFileName, mLastFile, True, p) Then Return CURL_CHUNK_BGN_FUNC_SKIP
-		    Return CURL_CHUNK_BGN_FUNC_OK
-		    
-		  End Select
-		  
-		  Break ' Unknown chunk type!
-		  Return CURL_CHUNK_BGN_FUNC_FAIL
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Function _curlChunkEnd() As Integer
-		  ' The LIST entry is ended
-		  
-		  mLastFileName = ""
-		  mLastFile = Nil
-		  If Me.DownloadStream <> Nil And Me.DownloadStream IsA BinaryStream Then BinaryStream(Me.DownloadStream).Close
-		  Me.DownloadStream = Nil
-		  Return CURL_CHUNK_END_FUNC_OK
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Function _curlFNMatch(Pattern As MemoryBlock, FileName As MemoryBlock) As Integer
-		  If FileName.CString(0) = "." Or FileName.CString(0) = ".." Then Return CURL_FNMATCHFUNC_NOMATCH
-		  If RaiseEvent PatternMatch(Pattern.CString(0), FileName.CString(0)) Then Return CURL_FNMATCHFUNC_MATCH
-		  Return CURL_FNMATCHFUNC_NOMATCH
 		End Function
 	#tag EndMethod
 
@@ -332,7 +332,7 @@ Inherits libcURL.EasyHandle
 	#tag Property, Flags = &h0
 		#tag Note
 			If set to True then existing children of the 'LocalRoot' directory will be overwritten if they have the same name as a file
-			being downloaded from the server. The default is False, in which case existing children will raise an IOException in _curlChunkBegin
+			being downloaded from the server. The default is False, in which case existing children will raise an IOException in curlChunkBegin
 			
 			See:
 			https://github.com/charonn0/RB-libcURL/wiki/libcURL.Protocols.FTPWildCard.OverwriteLocalFiles

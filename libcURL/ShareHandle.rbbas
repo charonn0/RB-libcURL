@@ -65,9 +65,58 @@ Inherits libcURL.cURLHandle
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h21
+		Private Sub curlLock(Data As curl_lock_data, Access As curl_lock_access)
+		  #pragma Unused Access
+		  Select Case Data
+		  Case curl_lock_data.LOCK_COOKIE
+		    CookieLock.Enter
+		    
+		  Case curl_lock_data.LOCK_DNS
+		    DNSLock.Enter
+		    
+		  Case curl_lock_data.LOCK_SSL
+		    SSLLock.Enter
+		    
+		  Case curl_lock_data.LOCK_SHARE
+		    SSLLock.Enter
+		    DNSLock.Enter
+		    CookieLock.Enter
+		    
+		  Else
+		    Raise New IllegalLockingException
+		    
+		  End Select
+		End Sub
+	#tag EndMethod
+
 	#tag DelegateDeclaration, Flags = &h21
 		Private Delegate Sub cURLLock(ShareItem As Integer, Data As curl_lock_data, Access As curl_lock_access, UserData As Integer)
 	#tag EndDelegateDeclaration
+
+	#tag Method, Flags = &h21
+		Private Sub curlUnlock(Data As curl_lock_data)
+		  Select Case Data
+		  Case curl_lock_data.LOCK_COOKIE
+		    CookieLock.Leave
+		    
+		  Case curl_lock_data.LOCK_DNS
+		    DNSLock.Leave
+		    
+		  Case curl_lock_data.LOCK_SSL
+		    SSLLock.Leave
+		    
+		  Case curl_lock_data.LOCK_SHARE
+		    SSLLock.Leave
+		    DNSLock.Leave
+		    CookieLock.Leave
+		    
+		  Else
+		    Raise New IllegalLockingException
+		    
+		  End Select
+		End Sub
+	#tag EndMethod
 
 	#tag DelegateDeclaration, Flags = &h21
 		Private Delegate Sub cURLUnlock(ShareItem As Integer, Data As curl_lock_data, UserData As Integer)
@@ -94,7 +143,7 @@ Inherits libcURL.cURLHandle
 		  
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA ShareHandle Then
-		    ShareHandle(curl.Value)._Lock(Data, Access)
+		    ShareHandle(curl.Value).curlLock(Data, Access)
 		    Return
 		  End If
 		  Break 'UserData does not refer to a valid instance!
@@ -149,59 +198,10 @@ Inherits libcURL.cURLHandle
 		  
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA ShareHandle Then
-		    ShareHandle(curl.Value)._Unlock(Data)
+		    ShareHandle(curl.Value).curlUnlock(Data)
 		    Return
 		  End If
 		  Break 'UserData does not refer to a valid instance!
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Sub _Lock(Data As curl_lock_data, Access As curl_lock_access)
-		  #pragma Unused Access
-		  Select Case Data
-		  Case curl_lock_data.LOCK_COOKIE
-		    CookieLock.Enter
-		    
-		  Case curl_lock_data.LOCK_DNS
-		    DNSLock.Enter
-		    
-		  Case curl_lock_data.LOCK_SSL
-		    SSLLock.Enter
-		    
-		  Case curl_lock_data.LOCK_SHARE
-		    SSLLock.Enter
-		    DNSLock.Enter
-		    CookieLock.Enter
-		    
-		  Else
-		    Raise New IllegalLockingException
-		    
-		  End Select
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Sub _Unlock(Data As curl_lock_data)
-		  Select Case Data
-		  Case curl_lock_data.LOCK_COOKIE
-		    CookieLock.Leave
-		    
-		  Case curl_lock_data.LOCK_DNS
-		    DNSLock.Leave
-		    
-		  Case curl_lock_data.LOCK_SSL
-		    SSLLock.Leave
-		    
-		  Case curl_lock_data.LOCK_SHARE
-		    SSLLock.Leave
-		    DNSLock.Leave
-		    CookieLock.Leave
-		    
-		  Else
-		    Raise New IllegalLockingException
-		    
-		  End Select
 		End Sub
 	#tag EndMethod
 
