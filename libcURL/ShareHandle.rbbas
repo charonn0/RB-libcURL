@@ -65,8 +65,16 @@ Inherits libcURL.cURLHandle
 		End Sub
 	#tag EndMethod
 
+	#tag DelegateDeclaration, Flags = &h21
+		Private Delegate Sub cURLLock(ShareItem As Integer, Data As curl_lock_data, Access As curl_lock_access, UserData As Integer)
+	#tag EndDelegateDeclaration
+
+	#tag DelegateDeclaration, Flags = &h21
+		Private Delegate Sub cURLUnlock(ShareItem As Integer, Data As curl_lock_data, UserData As Integer)
+	#tag EndDelegateDeclaration
+
 	#tag Method, Flags = &h21
-		Private Sub curlLock(Data As curl_lock_data, Access As curl_lock_access)
+		Private Sub curl_Lock(Data As curl_lock_data, Access As curl_lock_access)
 		  #pragma Unused Access
 		  Select Case Data
 		  Case curl_lock_data.LOCK_COOKIE
@@ -90,12 +98,8 @@ Inherits libcURL.cURLHandle
 		End Sub
 	#tag EndMethod
 
-	#tag DelegateDeclaration, Flags = &h21
-		Private Delegate Sub cURLLock(ShareItem As Integer, Data As curl_lock_data, Access As curl_lock_access, UserData As Integer)
-	#tag EndDelegateDeclaration
-
 	#tag Method, Flags = &h21
-		Private Sub curlUnlock(Data As curl_lock_data)
+		Private Sub curl_Unlock(Data As curl_lock_data)
 		  Select Case Data
 		  Case curl_lock_data.LOCK_COOKIE
 		    CookieLock.Leave
@@ -117,10 +121,6 @@ Inherits libcURL.cURLHandle
 		  End Select
 		End Sub
 	#tag EndMethod
-
-	#tag DelegateDeclaration, Flags = &h21
-		Private Delegate Sub cURLUnlock(ShareItem As Integer, Data As curl_lock_data, UserData As Integer)
-	#tag EndDelegateDeclaration
 
 	#tag Method, Flags = &h21
 		Private Sub Destructor()
