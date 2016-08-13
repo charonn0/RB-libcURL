@@ -2,6 +2,13 @@
 Protected Class cURLManager
 	#tag Method, Flags = &h0
 		Sub Abort()
+		  ' Aborts the current transfer by automatically returning `True` from the Progress event the 
+		  ' next time it is raised. If no transfer is in progress or if the Progress event has been disabled
+		  ' then this method has no effect.
+		  '
+		  ' See: 
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.Abort
+		  
 		  If Not Me.IsTransferComplete Then mAbort = True
 		End Sub
 	#tag EndMethod
@@ -63,7 +70,10 @@ Protected Class cURLManager
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Constructor(CopyOpts As libcURL.cURLManager)
+		Attributes( deprecated )  Sub Constructor(CopyOpts As libcURL.cURLManager)
+		  ' This method is deprecated. To duplicate an instance of cURLManager, duplicate its EasyItem
+		  ' and pass the duplicate to cURLManager.Constructor(EasyHandle) instead.
+		  '
 		  ' Creates a new instance of cURLManager by cloning the passed cURLManager
 		  '
 		  ' See:
@@ -93,7 +103,7 @@ Protected Class cURLManager
 
 	#tag Method, Flags = &h0
 		Function Cookies() As libcURL.CookieEngine
-		  ' Returns a reference to a CookieEngine instance
+		  ' Returns a reference to the CookieEngine instance
 		  '
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.Cookies
@@ -111,8 +121,8 @@ Protected Class cURLManager
 
 	#tag Method, Flags = &h0
 		Function GetCookie(Name As String, Domain As String) As String
-		  ' Gets the value of the cookie named Name set for host Domain, or the empty string ("") if 
-		  ' no cookie is found.
+		  ' Gets the value of the first cookie named 'Name' set for the host matching 'Domain', or the empty 
+		  ' string ("") if no cookie is found. For more advanced lookups refer to the CookieEngine class.
 		  '
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.GetCookie
@@ -125,7 +135,7 @@ Protected Class cURLManager
 	#tag Method, Flags = &h0
 		Function GetDownloadedData() As MemoryBlock
 		  ' Returns a MemoryBlock containing all data which was downloaded during the most recent transfer.
-		  ' If you passed a Writeable object to any of the transfer methods (get, post, put) then this
+		  ' If you passed a Writeable object to any of the transfer methods (get, post, put, perform) then this
 		  ' method will return an empty MemoryBlock (not Nil) as the data will have been downloaded into
 		  ' the Writeable object directly.
 		  '
@@ -265,6 +275,7 @@ Protected Class cURLManager
 		  Else
 		    mDownloadMB = Nil
 		  End If
+		  If ReadFrom = Nil And mUploadMB <> Nil Then ReadFrom = New BinaryStream(mUploadMB)
 		  mEasyItem.DownloadStream = WriteTo
 		  mEasyItem.UploadStream = ReadFrom
 		  If mEasyItem.UseErrorBuffer Then mEasyItem.UseErrorBuffer = True ' clears the previous buffer, if any
@@ -321,6 +332,21 @@ Protected Class cURLManager
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Sub SetUploadData(UploadData As MemoryBlock)
+		  ' Sets a MemoryBlock containing all data to be uploaded during the next transfer.
+		  ' If you pass a Readable object to any of the transfer methods (get, post, put, perform)
+		  ' then the data passed to this method will be discarded. Once the transfer completes the
+		  ' MemoryBlock is discarded; it does not persist between transfers.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.SetUploadData
+		  
+		  mUploadMB = UploadData
+		  mEasyItem.UploadMode = (mUploadMB <> Nil)
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h21
 		Private Sub _DebugMessageHandler(Sender As libcURL.EasyHandle, MessageType As libcURL.curl_infotype, data As String)
 		  #pragma Unused Sender
@@ -362,6 +388,7 @@ Protected Class cURLManager
 		  End If
 		  mIsTransferComplete = True
 		  mEasyItem.ClearFormData()
+		  mUploadMB = Nil
 		  If Cookies.Enabled Then Cookies.Invalidate
 		  If Item.LastError <> status Then ErrorSetter(Item).LastError = status
 		End Sub
@@ -441,7 +468,7 @@ Protected Class cURLManager
 			  ' When using OpenSSL or NSS, returns True if the server's SSL/TLS certificate was valid and
 			  ' verified by a trusted certificate authority. If the connection did not use SSL/TLS then
 			  ' this property will always be False.
-			  ' 
+			  '
 			  ' See:
 			  ' https://curl.haxx.se/libcurl/c/CURLINFO_SSL_VERIFYRESULT.html
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.IsSSLCertOK
@@ -484,6 +511,38 @@ Protected Class cURLManager
 	#tag Property, Flags = &h21
 		Private mRequestHeaders As libcURL.ListPtr
 	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mUploadMB As MemoryBlock
+	#tag EndProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  Return EasyItem.Password
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  EasyItem.Password = value
+			End Set
+		#tag EndSetter
+		Password As String
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  Return EasyItem.Username
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  EasyItem.Username = value
+			End Set
+		#tag EndSetter
+		Username As String
+	#tag EndComputedProperty
 
 
 	#tag ViewBehavior

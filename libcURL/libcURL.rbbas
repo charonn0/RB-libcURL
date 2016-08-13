@@ -82,6 +82,8 @@ Protected Module libcURL
 
 	#tag Method, Flags = &h1
 		Protected Function curl_infoname(MessageType As libcURL.curl_infotype) As String
+		  ' Returns the name of the specified curl_infotype
+		  
 		  Select Case MessageType
 		  Case libcURL.curl_infotype.data_in
 		    Return "Data In"
@@ -99,7 +101,7 @@ Protected Module libcURL
 		    Return "SSL Out"
 		  Case libcURL.curl_infotype.text
 		    Return "Text"
-		  Case libcURL.curl_infotype.RB_libcURL
+		  Case libcURL.curl_infotype.RB_libcURL ' debug message from the wrapper
 		    Return "RB-libcURL"
 		  End Select
 		  
@@ -139,7 +141,7 @@ Protected Module libcURL
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Function curl_multi_timeout Lib "libcurl" (MultiHandle As Integer, ByRef Timeout As Integer) As Integer
+		Private Soft Declare Function curl_multi_timeout Lib "libcurl" (MultiHandle As Integer, ByRef Timeout As timeval) As Integer
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
@@ -177,8 +179,8 @@ Protected Module libcURL
 	#tag Method, Flags = &h1
 		Protected Function Default_CA_File() As FolderItem
 		  ' For SSL/TLS connections we must specify a file with a list of acceptable certificate authorities to verify the peer with.
-		  ' This method dumps the the default CA list for Mozilla products (included as DEFAULT_CA_INFO_PEM) into a temp file and
-		  ' returns it. The DEFAULT_CA_INFO_PEM file is subject to the terms of the Mozilla Public License 1.1
+		  ' This method dumps the default CA list for Mozilla products (included as DEFAULT_CA_INFO_PEM) into a temp file and
+		  ' returns it. The DEFAULT_CA_INFO_PEM file is subject to the terms of the Mozilla Public License 2.0
 		  '
 		  ' To generate an updated CA file use one of these two scripts:
 		  '    VBScript: https://github.com/bagder/curl/blob/master/lib/mk-ca-bundle.vbs
@@ -252,6 +254,7 @@ Protected Module libcURL
 
 	#tag Method, Flags = &h1
 		Attributes( deprecated = "libcURL.cURLClient.Get" ) Protected Function Get(URL As String, TimeOut As Integer, ByRef Headers As InternetHeaders, ByRef StatusCode As Integer, Username As String = "", Password As String = "") As MemoryBlock
+		  ' Note: This method has been deprecated in favor of cURLClient.Get
 		  ' Synchronously performs a retrieval using protocol-appropriate semantics (http GET, ftp RETR, etc.)
 		  ' The protocol is inferred from the URL; explictly specify the protocol in the URL to avoid bad guesses.
 		  ' Pass a connection TimeOut interval (in seconds), or 0 to wait forever. Pass an InternetHeaders instance and
@@ -440,7 +443,7 @@ Protected Module libcURL
 		        Client.EasyItem.AutoReferer = True
 		        If Not Client.SetRequestHeader(name, value) Then GoTo ParseError
 		        
-		      Case "User-Agent", "-A"
+		      Case "User-Agent"
 		        Client.EasyItem.UserAgent = value
 		        If Client.LastError <> 0 Then GoTo ParseError
 		        
@@ -452,6 +455,11 @@ Protected Module libcURL
 		        If Not Client.SetRequestHeader(name, value) Then GoTo ParseError
 		        
 		      End Select
+		      i = i + 1
+		      
+		    Case arg = "--user-agent", StrComp("-A", arg, 1) = 0
+		      Client.EasyItem.UserAgent = output(i + 1)
+		      If Client.LastError <> 0 Then GoTo ParseError
 		      i = i + 1
 		      
 		    Case arg = "--http1.0", arg = "-0"
@@ -622,7 +630,7 @@ Protected Module libcURL
 		      Continue
 		      
 		    Else
-		      If url = "" And arg.Len >= 6 Then ' xxx://
+		      If url = "" And Left(arg, 1) <> "-" And arg.Len >= 6 Then ' xxx://
 		        url = arg
 		      Else
 		        GoTo ParseError
@@ -645,6 +653,10 @@ Protected Module libcURL
 		    err.Message = "'" + arg + "' is an invalid argument."
 		    Raise err
 		  End If
+		  
+		Exception Err As OutOfBoundsException
+		  err.Message = "'" + arg + "' requires an argument."
+		  Raise err
 		End Sub
 	#tag EndMethod
 
@@ -746,6 +758,7 @@ Protected Module libcURL
 
 	#tag Method, Flags = &h1
 		Attributes( deprecated = "libcURL.cURLClient.Post" ) Protected Function Post(FormData As Dictionary, URL As String, TimeOut As Integer, ByRef Headers As InternetHeaders, ByRef StatusCode As Integer, Username As String = "", Password As String = "") As MemoryBlock
+		  ' Note: This method has been deprecated in favor of cURLClient.Post
 		  ' Synchronously POST the passed FormData via HTTP(S) using multipart/form-data encoding. The FormData dictionary
 		  ' contains NAME:VALUE pairs comprising HTML form elements. NAME is a string containing the form-element name; VALUE
 		  ' may be a string or a FolderItem. Pass a connection TimeOut interval (in seconds), or 0 to wait forever. Pass an
@@ -764,6 +777,7 @@ Protected Module libcURL
 
 	#tag Method, Flags = &h1
 		Attributes( deprecated = "libcURL.cURLClient.Put" ) Protected Function Put(File As FolderItem, URL As String, TimeOut As Integer, ByRef Headers As InternetHeaders, ByRef StatusCode As Integer, Username As String = "", Password As String = "") As MemoryBlock
+		  ' Note: This method has been deprecated in favor of cURLClient.Put
 		  ' Synchronously uploads the passed FolderItem using protocol-appropriate semantics (http PUT, ftp STOR, etc.)
 		  ' The protocol is inferred from the URL; explictly specify the protocol in the URL to avoid bad guesses. The
 		  ' path part of the URL specifies the remote directory and file name to store the file under. Pass a connection
@@ -924,6 +938,12 @@ Protected Module libcURL
 
 	#tag Constant, Name = CURL_WRITEFUNC_PAUSE, Type = Double, Dynamic = False, Default = \"CURL_READFUNC_PAUSE", Scope = Protected
 	#tag EndConstant
+
+
+	#tag Structure, Name = timeval, Flags = &h21
+		tv_sec As Integer
+		tv_usec As Integer
+	#tag EndStructure
 
 
 	#tag Enum, Name = ConnectionType, Type = Integer, Flags = &h1

@@ -38,6 +38,12 @@ Inherits libcURL.cURLHandle
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h21
+		Private Function curlFormGet(Data As MemoryBlock, Length As Integer) As Integer
+		  Return RaiseEvent SerializePart(Data, Length)
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		 Shared Function Deserialize(FormData As String) As libcURL.MultipartForm
 		  Dim form As New MultipartForm
@@ -121,7 +127,7 @@ Inherits libcURL.cURLHandle
 		    Return Length
 		    
 		  Case IsA MultipartForm
-		    Return MultipartForm(ref)._curlFormGet(Buffer, Length)
+		    Return MultipartForm(ref).curlFormGet(Buffer, Length)
 		    
 		  Else
 		    Break ' UserData does not refer to a valid stream or form!
@@ -1629,12 +1635,6 @@ Inherits libcURL.cURLHandle
 		    FormGetStreams.Remove(mHandle)
 		  End Try
 		  Return mLastError = 0
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Function _curlFormGet(Data As MemoryBlock, Length As Integer) As Integer
-		  Return RaiseEvent SerializePart(Data, Length)
 		End Function
 	#tag EndMethod
 
