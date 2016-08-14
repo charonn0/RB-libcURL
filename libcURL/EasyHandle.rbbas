@@ -169,7 +169,7 @@ Inherits libcURL.cURLHandle
 		  ' This method is the intermediary between DebugCallback and the DebugMessage event.
 		  ' DO NOT CALL THIS METHOD
 		  
-		  RaiseEvent DebugMessage(info, data.StringValue(0, size))
+		  RaiseEvent DebugMessage(info, DefineEncoding(data.StringValue(0, size), Encodings.UTF8))
 		  Return size
 		  
 		Exception Err As RuntimeException
@@ -1682,7 +1682,7 @@ Inherits libcURL.cURLHandle
 			  ' http://curl.haxx.se/libcurl/c/curl_easy_getinfo.html#CURLINFOEFFECTIVEURL
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.URL
 			  
-			  Return Me.GetInfo(libcURL.Info.EFFECTIVE_URL)
+			  Return DefineEncoding(Me.GetInfo(libcURL.Info.EFFECTIVE_URL), Encodings.UTF8)
 			End Get
 		#tag EndGetter
 		#tag Setter

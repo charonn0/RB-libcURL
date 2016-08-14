@@ -2607,7 +2607,7 @@ End
 		  Else
 		    MsgBox("Transfer completed (" + Str(BytesWritten) + " bytes written, " + Str(BytesRead) +" bytes read) with status: " + Str(Client.GetStatusCode))
 		  End If
-		  CurlInfo.AddRow("EFFECTIVE_URL", Client.GetInfo(libcURL.Info.EFFECTIVE_URL))
+		  CurlInfo.AddRow("EFFECTIVE_URL", Client.EasyItem.URL)
 		  If Client.GetInfo(libcURL.Info.REDIRECT_COUNT).Int32Value > 0 Then
 		    CurlInfo.AddRow("REDIRECT_COUNT", Str(Client.GetInfo(libcURL.Info.REDIRECT_COUNT).Int32Value))
 		  End If
