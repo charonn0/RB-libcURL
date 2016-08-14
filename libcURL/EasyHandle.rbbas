@@ -788,8 +788,7 @@ Inherits libcURL.cURLHandle
 		    Return Me.SetOptionPtr(OptionNumber, NewValue.PtrValue)
 		    
 		  Case Variant.TypeString
-		    ' COPY the string to a new buffer so there's no weirdness if libcURL releases the memory.
-		    Dim mb As MemoryBlock = NewValue.CStringValue + Chr(0)
+		    Dim mb As MemoryBlock = NewValue.CStringValue + Chr(0) ' make doubleplus sure it's null terminated
 		    Return Me.SetOptionPtr(OptionNumber, mb)
 		    
 		  Case Variant.TypeObject
