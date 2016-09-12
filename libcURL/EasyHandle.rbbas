@@ -3,7 +3,8 @@ Protected Class EasyHandle
 Inherits libcURL.cURLHandle
 	#tag Method, Flags = &h0
 		Sub ClearFormData()
-		  ' Clears all forms and resets upload options
+		  ' Clears all forms and resets upload options. Can be used to do a "soft" reset even
+		  ' if no form was defined.
 		  '
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.ClearFormData
@@ -34,7 +35,7 @@ Inherits libcURL.cURLHandle
 		  If Instances = Nil Then Return CURL_SOCKET_BAD
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
-		    Return EasyHandle(curl.Value)._curlClose(socket)
+		    Return EasyHandle(curl.Value).curlClose(socket)
 		  End If
 		  
 		  Return CURL_SOCKET_BAD
@@ -55,7 +56,8 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Sub Constructor(GlobalInitFlags As Integer = libcURL.CURL_GLOBAL_DEFAULT, ExistingHandle As Integer = 0)
-		  ' Creates a new curl_easy handle
+		  ' Creates a new curl_easy handle. If creating the handle fails for any reason
+		  ' an exception will be raised; otherwise, the handle may be used immediately.
 		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_init.html
@@ -72,7 +74,7 @@ Inherits libcURL.cURLHandle
 		  If mHandle > 0 Then
 		    If Instances = Nil Then Instances = New Dictionary
 		    Instances.Value(mHandle) = New WeakRef(Me)
-		    InitCallbacks(Me)
+		    InitCallbacks()
 		  Else
 		    mLastError = libcURL.Errors.INIT_FAILED
 		    Raise New cURLException(Me)
@@ -103,7 +105,7 @@ Inherits libcURL.cURLHandle
 		  mHandle = curl_easy_duphandle(CopyOpts.Handle)
 		  If mHandle > 0 Then
 		    Instances.Value(mHandle) = New WeakRef(Me)
-		    InitCallbacks(Me)
+		    InitCallbacks()
 		    If CopyOpts.mAuthMethods <> Nil Then Call Me.SetAuthMethods(CopyOpts.GetAuthMethods)
 		    mAutoDisconnect = CopyOpts.AutoDisconnect
 		    mAutoReferer = CopyOpts.AutoReferer
@@ -139,25 +141,177 @@ Inherits libcURL.cURLHandle
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h21
+		Private Function curlClose(Socket As Integer) As Integer
+		  ' This method is the intermediary between CloseCallback and the Disconnected event.
+		  ' DO NOT CALL THIS METHOD
+		  mConnectionCount = mConnectionCount - 1
+		  RaiseEvent Disconnected(Socket)
+		  
+		  #If TargetWin32 Then
+		    Declare Function closesocket Lib "Ws2_32" (SocketHandle As Integer) As Integer
+		    mLastError = closesocket(Socket)
+		  #else
+		    Dim bs As BinaryStream
+		    bs = New BinaryStream(Socket, BinaryStream.HandleTypeFileNumber)
+		    bs.Close
+		    mLastError = bs.LastErrorCode
+		  #endif
+		  Return CURL_SOCKOPT_OK
+		  
+		Exception Err As RuntimeException
+		  If Err IsA ThreadEndException Or Err IsA EndException Then Raise Err
+		  Return CURL_SOCKOPT_ERROR
+		End Function
+	#tag EndMethod
+
 	#tag DelegateDeclaration, Flags = &h21
 		Private Delegate Function cURLCloseCallback(UserData As Integer, cURLSocket As Integer) As Integer
 	#tag EndDelegateDeclaration
+
+	#tag Method, Flags = &h21
+		Private Function curlDebug(info As curl_infotype, data As MemoryBlock, Size As Integer) As Integer
+		  ' This method is the intermediary between DebugCallback and the DebugMessage event.
+		  ' DO NOT CALL THIS METHOD
+		  
+		  RaiseEvent DebugMessage(info, DefineEncoding(data.StringValue(0, size), Encodings.UTF8))
+		  Return size
+		  
+		Exception Err As RuntimeException
+		  If Err IsA ThreadEndException Or Err IsA EndException Then Raise Err
+		  Return 0
+		End Function
+	#tag EndMethod
 
 	#tag DelegateDeclaration, Flags = &h21
 		Private Delegate Function cURLDebugCallback(Handle As Integer, info As curl_infotype, data As Ptr, size As Integer, UserData As Integer) As Integer
 	#tag EndDelegateDeclaration
 
+	#tag Method, Flags = &h21
+		Private Function curlHeader(char As Ptr, size As Integer, nmemb As Integer) As Integer
+		  ' This method is the intermediary between HeaderCallback and the HeaderReceived event.
+		  ' DO NOT CALL THIS METHOD
+		  
+		  Dim sz As Integer = nmemb * size
+		  Dim data As MemoryBlock = char
+		  Dim s As String = data.StringValue(0, sz)
+		  RaiseEvent HeaderReceived(s)
+		  Return sz
+		  
+		Exception Err As RuntimeException
+		  If Err IsA ThreadEndException Or Err IsA EndException Then Raise Err
+		  Return 0
+		End Function
+	#tag EndMethod
+
 	#tag DelegateDeclaration, Flags = &h21
 		Private Delegate Function cURLIOCallback(char As Ptr, size As Integer, nmemb As Integer, UserData As Integer) As Integer
 	#tag EndDelegateDeclaration
+
+	#tag Method, Flags = &h21
+		Private Function curlOpen(SocketType As Integer, Socket As Integer) As Integer
+		  ' This method is the intermediary between OpenCallback and the CreateSocket event.
+		  ' DO NOT CALL THIS METHOD
+		  
+		  Const CURL_SOCKOPT_BAD = 1
+		  
+		  Select Case SocketType
+		  Case libcURL.Opts.CURLSOCKTYPE_IPCXN, libcURL.Opts.CURLSOCKTYPE_ACCEPT
+		    RaiseEvent CreateSocket(Socket)
+		    mConnectionCount = mConnectionCount + 1
+		    Return CURL_SOCKOPT_OK
+		  End Select
+		  
+		  Return CURL_SOCKOPT_BAD
+		  
+		Exception Err As RuntimeException
+		  If Err IsA ThreadEndException Or Err IsA EndException Then Raise Err
+		  Return CURL_SOCKOPT_BAD
+		End Function
+	#tag EndMethod
 
 	#tag DelegateDeclaration, Flags = &h21
 		Private Delegate Function cURLOpenCallback(UserData As Integer, Socket As Integer, SocketType As Integer) As Integer
 	#tag EndDelegateDeclaration
 
+	#tag Method, Flags = &h21
+		Private Function curlProgress(dlTotal As Int64, dlNow As Int64, ulTotal As Int64, ulNow As Int64) As Integer
+		  ' This method is the intermediary between ProgressCallback and the Progress event.
+		  ' Return True from the Progress event to abort.
+		  ' DO NOT CALL THIS METHOD
+		  
+		  If RaiseEvent Progress(dlTotal, dlnow, ultotal, ulnow) Then Return 1
+		  
+		Exception Err As RuntimeException
+		  If Err IsA ThreadEndException Or Err IsA EndException Then Raise Err
+		  Return 1
+		End Function
+	#tag EndMethod
+
 	#tag DelegateDeclaration, Flags = &h21
 		Private Delegate Function cURLProgressCallback(UserData As Integer, dlTotal As Int64, dlNow As Int64, ulTotal As Int64, ulnNow As Int64) As Integer
 	#tag EndDelegateDeclaration
+
+	#tag Method, Flags = &h21
+		Private Function curlRead(char As MemoryBlock, size As Integer, nmemb As Integer) As Integer
+		  ' This method is the intermediary between ReadCallback and the DataNeeded event.
+		  ' DO NOT CALL THIS METHOD
+		  
+		  Dim sz As Integer = nmemb * size
+		  If UploadStream Is Nil Then
+		    Return RaiseEvent DataNeeded(char, sz)
+		  Else
+		    Dim mb As MemoryBlock = UploadStream.Read(sz)
+		    If mb.Size > 0 Then char.StringValue(0, mb.Size) = mb.StringValue(0, mb.Size)
+		    Return mb.Size
+		  End If
+		  
+		Exception Err As RuntimeException
+		  If Err IsA ThreadEndException Or Err IsA EndException Then Raise Err
+		  Return CURL_READFUNC_ABORT
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Function curlSeek(Offset As Integer, Origin As Integer) As Integer
+		  ' This method is the intermediary between SeekCallback and the SeekStream event.
+		  ' DO NOT CALL THIS METHOD
+		  
+		  If UploadStream Is Nil Or Not UploadStream IsA BinaryStream Then
+		    If RaiseEvent SeekStream(Offset, Origin) Then Return 0
+		  Else
+		    Dim bs As BinaryStream = BinaryStream(UploadStream)
+		    If bs.Length <= Offset And Offset > -1 Then
+		      bs.Position = Offset
+		      Return 0
+		    End If
+		  End If
+		  
+		  Return 2 ' fail seek, but libcURL can try to work around it.
+		  
+		Exception Err As RuntimeException
+		  If Err IsA ThreadEndException Or Err IsA EndException Then Raise Err
+		  Return 1
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Function curlWrite(char As MemoryBlock, size As Integer, nmemb As Integer) As Integer
+		  ' This method is the intermediary between WriteCallback and the DataAvailable event.
+		  ' DO NOT CALL THIS METHOD
+		  
+		  If DownloadStream Is Nil Then
+		    Return RaiseEvent DataAvailable(char.StringValue(0, nmemb * size))
+		  Else
+		    DownloadStream.Write(char.StringValue(0, nmemb * size))
+		    Return nmemb * size
+		  End If
+		  
+		Exception Err As RuntimeException
+		  If Err IsA ThreadEndException Or Err IsA EndException Then Raise Err
+		  Return 0
+		End Function
+	#tag EndMethod
 
 	#tag Method, Flags = &h21
 		Private Shared Function DebugCallback(Handle As Integer, info As curl_infotype, data As Ptr, size As Integer, UserData As Integer) As Integer
@@ -168,7 +322,7 @@ Inherits libcURL.cURLHandle
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
-		    Return EasyHandle(curl.Value)._curlDebug(info, data, size)
+		    Return EasyHandle(curl.Value).curlDebug(info, data, size)
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
@@ -177,7 +331,7 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h21
 		Private Sub Destructor()
-		  ' Closes the instance.
+		  ' Closes the handle.
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_cleanup.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Destructor
@@ -196,7 +350,7 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Function ErrorBuffer() As String
-		  ' Returns a copy of contents of the error buffer, or an empty string. The contents of this buffer will persist
+		  ' Returns a copy of the contents of the error buffer, or an empty string. The contents of this buffer will persist
 		  ' between transfers; it is NOT automatically cleared. To clear the buffer set UseErrorBuffer to True (even if
 		  ' it's already True)
 		  '
@@ -292,7 +446,7 @@ Inherits libcURL.cURLHandle
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
-		    Return EasyHandle(curl.Value)._curlHeader(char, size, nmemb)
+		    Return EasyHandle(curl.Value).curlHeader(char, size, nmemb)
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
@@ -300,44 +454,44 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Shared Sub InitCallbacks(Sender As libcURL.EasyHandle)
-		  ' This method sets up the callback functions for the passed instance of EasyHandle
+		Protected Sub InitCallbacks()
+		  ' This method sets up the callback functions for the EasyHandle
 		  
 		  If libcURL.Version.IsAtLeast(7, 16, 0) Then
-		    If Not Sender.SetOption(libcURL.Opts.SOCKOPTDATA, Sender.Handle) Then Raise New cURLException(Sender)
-		    If Not Sender.SetOption(libcURL.Opts.SOCKOPTFUNCTION, AddressOf OpenCallback) Then Raise New cURLException(Sender)
+		    If Not SetOption(libcURL.Opts.SOCKOPTDATA, mHandle) Then Raise New cURLException(Me)
+		    If Not SetOption(libcURL.Opts.SOCKOPTFUNCTION, AddressOf OpenCallback) Then Raise New cURLException(Me)
 		  End If
 		  
 		  If libcURL.Version.IsAtLeast(7, 21, 7) Then
-		    If Not Sender.SetOption(libcURL.Opts.CLOSESOCKETDATA, Sender.Handle) Then Raise New cURLException(Sender)
-		    If Not Sender.SetOption(libcURL.Opts.CLOSESOCKETFUNCTION, AddressOf CloseCallback) Then Raise New cURLException(Sender)
+		    If Not SetOption(libcURL.Opts.CLOSESOCKETDATA, mHandle) Then Raise New cURLException(Me)
+		    If Not SetOption(libcURL.Opts.CLOSESOCKETFUNCTION, AddressOf CloseCallback) Then Raise New cURLException(Me)
 		  End If
 		  
 		  If libcURL.Version.IsAtLeast(7, 18, 0) Then
-		    If Not Sender.SetOption(libcURL.Opts.SEEKDATA, Sender.Handle) Then Raise New cURLException(Sender)
-		    If Not Sender.SetOption(libcURL.Opts.SEEKFUNCTION, AddressOf SeekCallback) Then Raise New cURLException(Sender)
+		    If Not SetOption(libcURL.Opts.SEEKDATA, mHandle) Then Raise New cURLException(Me)
+		    If Not SetOption(libcURL.Opts.SEEKFUNCTION, AddressOf SeekCallback) Then Raise New cURLException(Me)
 		  End If
 		  
-		  If Sender.UseProgressEvent Then Sender.UseProgressEvent = True
+		  If mUseProgressEvent Then UseProgressEvent = True
 		  If libcURL.Version.IsAtLeast(7, 32, 0) Then
-		    If Not Sender.SetOption(libcURL.Opts.XFERINFOFUNCTION, AddressOf ProgressCallback) Then Raise New cURLException(Sender)
-		    If Not Sender.SetOption(libcURL.Opts.XFERINFODATA, Sender.Handle) Then Raise New cURLException(Sender)
+		    If Not SetOption(libcURL.Opts.XFERINFOFUNCTION, AddressOf ProgressCallback) Then Raise New cURLException(Me)
+		    If Not SetOption(libcURL.Opts.XFERINFODATA, mHandle) Then Raise New cURLException(Me)
 		  Else ' old versions
-		    If Not Sender.SetOption(libcURL.Opts.PROGRESSDATA, Sender.Handle) Then Raise New cURLException(Sender)
-		    If Not Sender.SetOption(libcURL.Opts.PROGRESSFUNCTION, AddressOf ProgressCallback) Then Raise New cURLException(Sender)
+		    If Not SetOption(libcURL.Opts.PROGRESSDATA, mHandle) Then Raise New cURLException(Me)
+		    If Not SetOption(libcURL.Opts.PROGRESSFUNCTION, AddressOf ProgressCallback) Then Raise New cURLException(Me)
 		  End If
 		  
-		  If Not Sender.SetOption(libcURL.Opts.WRITEDATA, Sender.Handle) Then Raise New cURLException(Sender)
-		  If Not Sender.SetOption(libcURL.Opts.WRITEFUNCTION, AddressOf WriteCallback) Then Raise New cURLException(Sender)
+		  If Not SetOption(libcURL.Opts.WRITEDATA, mHandle) Then Raise New cURLException(Me)
+		  If Not SetOption(libcURL.Opts.WRITEFUNCTION, AddressOf WriteCallback) Then Raise New cURLException(Me)
 		  
-		  If Not Sender.SetOption(libcURL.Opts.READDATA, Sender.Handle) Then Raise New cURLException(Sender)
-		  If Not Sender.SetOption(libcURL.Opts.READFUNCTION, AddressOf ReadCallback) Then Raise New cURLException(Sender)
+		  If Not SetOption(libcURL.Opts.READDATA, mHandle) Then Raise New cURLException(Me)
+		  If Not SetOption(libcURL.Opts.READFUNCTION, AddressOf ReadCallback) Then Raise New cURLException(Me)
 		  
-		  If Not Sender.SetOption(libcURL.Opts.HEADERDATA, Sender.Handle) Then Raise New cURLException(Sender)
-		  If Not Sender.SetOption(libcURL.Opts.HEADERFUNCTION, AddressOf HeaderCallback) Then Raise New cURLException(Sender)
+		  If Not SetOption(libcURL.Opts.HEADERDATA, mHandle) Then Raise New cURLException(Me)
+		  If Not SetOption(libcURL.Opts.HEADERFUNCTION, AddressOf HeaderCallback) Then Raise New cURLException(Me)
 		  
-		  If Not Sender.SetOption(libcURL.Opts.DEBUGDATA, Sender.Handle) Then Raise New cURLException(Sender)
-		  If Not Sender.SetOption(libcURL.Opts.DEBUGFUNCTION, AddressOf DebugCallback) Then Raise New cURLException(Sender)
+		  If Not SetOption(libcURL.Opts.DEBUGDATA, mHandle) Then Raise New cURLException(Me)
+		  If Not SetOption(libcURL.Opts.DEBUGFUNCTION, AddressOf DebugCallback) Then Raise New cURLException(Me)
 		End Sub
 	#tag EndMethod
 
@@ -349,7 +503,7 @@ Inherits libcURL.cURLHandle
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
-		    Return EasyHandle(curl.Value)._curlOpen(SocketType, Socket)
+		    Return EasyHandle(curl.Value).curlOpen(SocketType, Socket)
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
@@ -412,7 +566,7 @@ Inherits libcURL.cURLHandle
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
-		    Return EasyHandle(curl.Value)._curlProgress(dlTotal, dlnow, ultotal, ulnow)
+		    Return EasyHandle(curl.Value).curlProgress(dlTotal, dlnow, ultotal, ulnow)
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
@@ -465,7 +619,7 @@ Inherits libcURL.cURLHandle
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
-		    Return EasyHandle(curl.Value)._curlRead(char, size, nmemb)
+		    Return EasyHandle(curl.Value).curlRead(char, size, nmemb)
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
@@ -502,16 +656,8 @@ Inherits libcURL.cURLHandle
 		  mUserAgent = ""
 		  mUsername = ""
 		  Verbose = mVerbose
-		  InitCallbacks(Me)
+		  InitCallbacks()
 		  mLastError = 0
-		  
-		  
-		  
-		  
-		  
-		  
-		  
-		  
 		End Sub
 	#tag EndMethod
 
@@ -534,7 +680,7 @@ Inherits libcURL.cURLHandle
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
-		    Return EasyHandle(curl.Value)._curlSeek(Offset, Origin)
+		    Return EasyHandle(curl.Value).curlSeek(Offset, Origin)
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
@@ -624,7 +770,8 @@ Inherits libcURL.cURLHandle
 		    libcURL.Opts.READFUNCTION, libcURL.Opts.SSL_CTX_FUNCTION, libcURL.Opts.WRITEFUNCTION, libcURL.Opts.SHARE, _
 		    libcURL.Opts.COOKIEJAR, libcURL.Opts.COOKIEFILE, libcURL.Opts.HTTPPOST, libcURL.Opts.CAINFO, libcURL.Opts.CAPATH, _
 		    libcURL.Opts.NETINTERFACE, libcURL.Opts.ERRORBUFFER, libcURL.Opts.COPYPOSTFIELDS, libcURL.Opts.ACCEPT_ENCODING, _
-		    libcURL.Opts.FNMATCH_FUNCTION, libcURL.Opts.CHUNK_BGN_FUNCTION, libcURL.Opts.CHUNK_END_FUNCTION, libcURL.Opts.CHUNK_DATA)
+		    libcURL.Opts.FNMATCH_FUNCTION, libcURL.Opts.CHUNK_BGN_FUNCTION, libcURL.Opts.CHUNK_END_FUNCTION, libcURL.Opts.CHUNK_DATA, _
+		    libcURL.Opts.SSLCERT)
 		    ' These option numbers explicitly accept NULL. Refer to the curl documentation on the individual option numbers for details.
 		    If Nilable.IndexOf(OptionNumber) > -1 Then
 		      Return Me.SetOptionPtr(OptionNumber, Nil)
@@ -646,8 +793,7 @@ Inherits libcURL.cURLHandle
 		    Return Me.SetOptionPtr(OptionNumber, NewValue.PtrValue)
 		    
 		  Case Variant.TypeString
-		    ' COPY the string to a new buffer so there's no weirdness if libcURL releases the memory.
-		    Dim mb As MemoryBlock = NewValue.CStringValue + Chr(0)
+		    Dim mb As MemoryBlock = NewValue.CStringValue + Chr(0) ' make doubleplus sure it's null terminated
 		    Return Me.SetOptionPtr(OptionNumber, mb)
 		    
 		  Case Variant.TypeObject
@@ -796,166 +942,10 @@ Inherits libcURL.cURLHandle
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
 		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
-		    Return EasyHandle(curl.Value)._curlWrite(char, size, nmemb)
+		    Return EasyHandle(curl.Value).curlWrite(char, size, nmemb)
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Function _curlClose(Socket As Integer) As Integer
-		  ' This method is the intermediary between CloseCallback and the Disconnected event.
-		  ' DO NOT CALL THIS METHOD
-		  mConnectionCount = mConnectionCount - 1
-		  RaiseEvent Disconnected(Socket)
-		  
-		  #If TargetWin32 Then
-		    Declare Function closesocket Lib "Ws2_32" (SocketHandle As Integer) As Integer
-		    mLastError = closesocket(Socket)
-		  #else
-		    #pragma Warning "Fix me"
-		    ' libcURL expects this callback to close the socket descriptor, otherwise it will be leaked.
-		    ' Coercing a C-style socket descriptor into a BinaryStream and calling Close() works, but
-		    ' probably shouldn't.
-		    Dim bs As BinaryStream
-		    bs = New BinaryStream(Socket, BinaryStream.HandleTypeFileNumber)
-		    bs.Close
-		    mLastError = bs.LastErrorCode
-		  #endif
-		  Return CURL_SOCKOPT_OK
-		  
-		Exception Err As RuntimeException
-		  If Err IsA ThreadEndException Or Err IsA EndException Then Raise Err
-		  Return CURL_SOCKOPT_ERROR
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Function _curlDebug(info As curl_infotype, data As MemoryBlock, Size As Integer) As Integer
-		  ' This method is the intermediary between DebugCallback and the DebugMessage event.
-		  ' DO NOT CALL THIS METHOD
-		  
-		  RaiseEvent DebugMessage(info, data.StringValue(0, size))
-		  Return size
-		  
-		Exception Err As RuntimeException
-		  If Err IsA ThreadEndException Or Err IsA EndException Then Raise Err
-		  Return 0
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Function _curlHeader(char As Ptr, size As Integer, nmemb As Integer) As Integer
-		  ' This method is the intermediary between HeaderCallback and the HeaderReceived event.
-		  ' DO NOT CALL THIS METHOD
-		  
-		  Dim sz As Integer = nmemb * size
-		  Dim data As MemoryBlock = char
-		  Dim s As String = data.StringValue(0, sz)
-		  RaiseEvent HeaderReceived(s)
-		  Return sz
-		  
-		Exception Err As RuntimeException
-		  If Err IsA ThreadEndException Or Err IsA EndException Then Raise Err
-		  Return 0
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Function _curlOpen(SocketType As Integer, Socket As Integer) As Integer
-		  ' This method is the intermediary between OpenCallback and the CreateSocket event.
-		  ' DO NOT CALL THIS METHOD
-		  
-		  Const CURL_SOCKOPT_BAD = 1
-		  
-		  Select Case SocketType
-		  Case libcURL.Opts.CURLSOCKTYPE_IPCXN, libcURL.Opts.CURLSOCKTYPE_ACCEPT
-		    RaiseEvent CreateSocket(Socket)
-		    mConnectionCount = mConnectionCount + 1
-		    Return CURL_SOCKOPT_OK
-		  End Select
-		  
-		  Return CURL_SOCKOPT_BAD
-		  
-		Exception Err As RuntimeException
-		  If Err IsA ThreadEndException Or Err IsA EndException Then Raise Err
-		  Return CURL_SOCKOPT_BAD
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Function _curlProgress(dlTotal As Int64, dlNow As Int64, ulTotal As Int64, ulNow As Int64) As Integer
-		  ' This method is the intermediary between ProgressCallback and the Progress event.
-		  ' Return True from the Progress event to abort.
-		  ' DO NOT CALL THIS METHOD
-		  
-		  If RaiseEvent Progress(dlTotal, dlnow, ultotal, ulnow) Then Return 1
-		  
-		Exception Err As RuntimeException
-		  If Err IsA ThreadEndException Or Err IsA EndException Then Raise Err
-		  Return 1
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Function _curlRead(char As MemoryBlock, size As Integer, nmemb As Integer) As Integer
-		  ' This method is the intermediary between ReadCallback and the DataNeeded event.
-		  ' DO NOT CALL THIS METHOD
-		  
-		  Dim sz As Integer = nmemb * size
-		  If UploadStream Is Nil Then
-		    Return RaiseEvent DataNeeded(char, sz)
-		  Else
-		    Dim mb As MemoryBlock = UploadStream.Read(sz)
-		    If mb.Size > 0 Then char.StringValue(0, mb.Size) = mb.StringValue(0, mb.Size)
-		    Return mb.Size
-		  End If
-		  
-		Exception Err As RuntimeException
-		  If Err IsA ThreadEndException Or Err IsA EndException Then Raise Err
-		  Return CURL_READFUNC_ABORT
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Function _curlSeek(Offset As Integer, Origin As Integer) As Integer
-		  ' This method is the intermediary between SeekCallback and the SeekStream event.
-		  ' DO NOT CALL THIS METHOD
-		  
-		  If UploadStream Is Nil Or Not UploadStream IsA BinaryStream Then
-		    If RaiseEvent SeekStream(Offset, Origin) Then Return 0
-		  Else
-		    Dim bs As BinaryStream = BinaryStream(UploadStream)
-		    If bs.Length <= Offset And Offset > -1 Then
-		      bs.Position = Offset
-		      Return 0
-		    End If
-		  End If
-		  
-		  Return 2 ' fail seek, but libcURL can try to work around it.
-		  
-		Exception Err As RuntimeException
-		  If Err IsA ThreadEndException Or Err IsA EndException Then Raise Err
-		  Return 1
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Function _curlWrite(char As MemoryBlock, size As Integer, nmemb As Integer) As Integer
-		  ' This method is the intermediary between WriteCallback and the DataAvailable event.
-		  ' DO NOT CALL THIS METHOD
-		  
-		  If DownloadStream Is Nil Then
-		    Return RaiseEvent DataAvailable(char.StringValue(0, nmemb * size))
-		  Else
-		    DownloadStream.Write(char.StringValue(0, nmemb * size))
-		    Return nmemb * size
-		  End If
-		  
-		Exception Err As RuntimeException
-		  If Err IsA ThreadEndException Or Err IsA EndException Then Raise Err
-		  Return 0
 		End Function
 	#tag EndMethod
 
@@ -1697,7 +1687,7 @@ Inherits libcURL.cURLHandle
 			  ' http://curl.haxx.se/libcurl/c/curl_easy_getinfo.html#CURLINFOEFFECTIVEURL
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.URL
 			  
-			  Return Me.GetInfo(libcURL.Info.EFFECTIVE_URL)
+			  Return DefineEncoding(Me.GetInfo(libcURL.Info.EFFECTIVE_URL), Encodings.UTF8)
 			End Get
 		#tag EndGetter
 		#tag Setter
