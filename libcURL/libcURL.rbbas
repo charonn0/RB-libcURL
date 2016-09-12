@@ -641,21 +641,21 @@ Protected Module libcURL
 		  
 		  Return
 		  
-		  ParseError:
-		  #pragma BreakOnExceptions Off
-		  If Client.LastError <> 0 Then
-		    Dim err As New cURLException(Client.EasyItem)
-		    err.Message = err.Message + " Failed on: " + arg
-		    Raise err
-		  Else
-		    Dim err As New UnsupportedFormatException
-		    err.Message = "'" + arg + "' is an invalid argument."
-		    Raise err
-		  End If
-		  
 		Exception Err As OutOfBoundsException
 		  err.Message = "'" + arg + "' requires an argument."
 		  Raise err
+		  
+		  ParseError:
+		  #pragma BreakOnExceptions Off
+		  If Client.LastError <> 0 Then
+		    Dim error As New cURLException(Client.EasyItem)
+		    error.Message = error.Message + " Failed on: " + arg
+		    Raise error
+		  Else
+		    Dim error As New UnsupportedFormatException
+		    error.Message = "'" + arg + "' is an invalid argument."
+		    Raise error
+		  End If
 		End Sub
 	#tag EndMethod
 
