@@ -279,8 +279,7 @@ Protected Module libcURL
 		  Const MinMinor = 15
 		  Const MinPatch = 2
 		  
-		  Static available As Boolean
-		  If Not available Then available = libcURL.Version.IsAtLeast(MinMajor, MinMinor, MinPatch)
+		  Static available As Boolean = libcURL.Version.IsAtLeast(MinMajor, MinMinor, MinPatch)
 		  Return available
 		End Function
 	#tag EndMethod
