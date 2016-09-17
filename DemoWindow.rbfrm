@@ -1846,6 +1846,7 @@ Begin Window DemoWindow
    End
    Begin cURLClient Client
       Height          =   32
+      HTTP2Push       =   ""
       Index           =   -2147483648
       IsSSLCertOK     =   ""
       Left            =   7

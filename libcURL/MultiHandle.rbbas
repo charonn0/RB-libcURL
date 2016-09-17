@@ -270,7 +270,7 @@ Inherits libcURL.cURLHandle
 		  Case Variant.TypeNil
 		    ' Sometimes Nil is an error; sometimes not
 		    Select Case OptionNumber
-		    Case libcURL.Opts.PIPELINING_SITE_BL, libcURL.Opts.PIPELINING_SERVER_BL
+		    Case libcURL.Opts.PIPELINING_SITE_BL, libcURL.Opts.PIPELINING_SERVER_BL, libcURL.Opts.PUSHFUNCTION
 		      ' These option numbers explicitly accept NULL. Refer to the curl documentation on the individual option numbers for details.
 		      MarshalledValue = Nil
 		    Else
@@ -314,8 +314,11 @@ Inherits libcURL.cURLHandle
 		    err.Message = "NewValue is of unsupported vartype: " + Str(ValueType)
 		    Raise err
 		  End Select
-		  
-		  mLastError = curl_multi_setopt(mHandle, OptionNumber, MarshalledValue)
+		  If MarshalledValue <> Nil Then
+		    mLastError = curl_multi_setopt(mHandle, OptionNumber, MarshalledValue)
+		  Else
+		    mLastError = curl_multi_setopt(mHandle, OptionNumber, Nil)
+		  End If
 		  Return mLastError = 0
 		End Function
 	#tag EndMethod
@@ -436,7 +439,7 @@ Inherits libcURL.cURLHandle
 		#tag EndGetter
 		#tag Setter
 			Set
-			  ' Sets whether two (or more) HTTP requests which are added to the same MultiHandle can be 
+			  ' Sets whether two (or more) HTTP requests which are added to the same MultiHandle can be
 			  ' pipelined over the same connection (server support required).
 			  '
 			  ' See:

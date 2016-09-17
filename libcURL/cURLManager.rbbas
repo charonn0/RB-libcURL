@@ -382,7 +382,10 @@ Protected Class cURLManager
 		Private Function _ServerPushHandler(Sender As libcURL.MultiHandle, ParentConnection As libcURL.EasyHandle, NewConnection As libcURL.EasyHandle, PushHeaders() As String) As Boolean
 		  #pragma Unused Sender
 		  If ParentConnection <> mEasyItem Then Return False
-		  NewConnection.CA_ListFile = ParentConnection.CA_ListFile
+		  AddHandler NewConnection.DebugMessage, WeakAddressOf _DebugMessageHandler
+		  AddHandler NewConnection.HeaderReceived, WeakAddressOf _HeaderReceivedHandler
+		  NewConnection.UseProgressEvent = False
+		  
 		  Return RaiseEvent AcceptServerPush(NewConnection, PushHeaders)
 		End Function
 	#tag EndMethod
