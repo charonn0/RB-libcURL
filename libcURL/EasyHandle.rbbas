@@ -331,7 +331,7 @@ Inherits libcURL.cURLHandle
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_cleanup.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Destructor
 		  
-		  If Me.Handle <> 0 Then
+		  If mHandle <> 0 Then
 		    curl_easy_cleanup(mHandle)
 		    Instances.Remove(mHandle)
 		    mErrorBuffer = Nil
@@ -423,11 +423,25 @@ Inherits libcURL.cURLHandle
 		    err.ErrorNumber = InfoType
 		    Raise err
 		  End Select
+		  
+		Exception Err As NilObjectException
+		  If mLastError <> 0 Then Raise New cURLException(Me) Else Raise Err
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function GetInfo(InfoType As Integer, Buffer As MemoryBlock) As Boolean
+		  ' Calls curl_easy_getinfo. If the operation succeeded then this function returns True 
+		  ' and the requested information is copied into the Buffer. Otherwise this function 
+		  ' returns False and the error code is stored in LastError. This method returns various 
+		  ' data about the most recently completed connection (successful or not.) As such, it 
+		  ' is not useful to call this method before the first connection attempt.
+		  '
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/curl_easy_getinfo.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.GetInfo
+		  
+		  
 		  mLastError = curl_easy_getinfo(mHandle, InfoType, Buffer)
 		  Return mLastError = 0
 		End Function
@@ -450,7 +464,7 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h1
 		Protected Sub InitCallbacks()
-		  ' This method sets up the callback functions for the EasyHandle
+		  ' This method sets up the callback functions for the EasyHandle.
 		  
 		  If libcURL.Version.IsAtLeast(7, 16, 0) Then
 		    If Not SetOption(libcURL.Opts.SOCKOPTDATA, mHandle) Then Raise New cURLException(Me)
@@ -508,6 +522,12 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Function Operator_Compare(OtherEasy As libcURL.EasyHandle) As Integer
+		  ' This method overloads the comparison operator(=), permitting direct 
+		  ' comparisons between instances of EasyHandle.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Operator_Compare
+		  
 		  Dim i As Integer = Super.Operator_Compare(OtherEasy)
 		  If i = 0 Then i = Sign(mHandle - OtherEasy.Handle)
 		  Return i
