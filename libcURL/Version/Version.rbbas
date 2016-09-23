@@ -76,16 +76,19 @@ Protected Module Version
 		  Dim prots() As String
 		  If Not System.IsFunctionAvailable("curl_version", "libcurl") Then Return prots
 		  Dim ve As CURLVersion = libcURL.Version.Struct
-		  Dim p1 As Ptr = ve.Protocols.Ptr(0)
-		  Dim mb As MemoryBlock = p1
+		  Dim mb As MemoryBlock = ve.Protocols.Ptr(0)
 		  Dim s As String
 		  Dim i As Integer
 		  Do
 		    s = mb.CString(i)
+		    If s.Trim = "" Then
+		      i = i + 1
+		      Continue
+		    End If
 		    Dim isPrintable As Boolean = (AscB(LeftB(s, 1)) > 65 And AscB(LeftB(s, 1)) < 91) Or (AscB(LeftB(s, 1)) > 96 And AscB(LeftB(s, 1)) < 123)
 		    If isPrintable Then ' not empty, first char is a letter
 		      prots.Append(s)
-		      i = i + s.LenB + 1
+		      i = i + s.LenB
 		    Else
 		      Exit Do
 		    End If
