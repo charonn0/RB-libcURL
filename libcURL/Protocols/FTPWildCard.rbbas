@@ -79,27 +79,25 @@ Inherits libcURL.EasyHandle
 		  If mLastFile = Nil And LocalRoot <> Nil Then mLastFile = LocalRoot.Child(mLastFileName)
 		  
 		  Dim p As New Permissions(Info.Perm)
+		  Me.DownloadStream = Nil
+		  If RaiseEvent QueueFile(mLastFileName, mLastFile, Info.FileType, p) Then Return CURL_CHUNK_BGN_FUNC_SKIP
+		  If mLastFile = Nil Then Return CURL_CHUNK_BGN_FUNC_OK ' the dataavailable event will be raised
+		  
 		  Select Case Info.FileType
 		  Case FILETYPE_FILE
-		    Me.DownloadStream = Nil
-		    If RaiseEvent QueueFile(mLastFileName, mLastFile, False, p) Then Return CURL_CHUNK_BGN_FUNC_SKIP
-		    If mLastFile = Nil Then Return CURL_CHUNK_BGN_FUNC_OK ' the dataavailable event will be raised
 		    Try
 		      Me.DownloadStream = BinaryStream.Create(mLastFile, OverwriteLocalFiles)
 		    Catch Err As IOException
 		      Return CURL_CHUNK_BGN_FUNC_FAIL
 		    End Try
-		    Return CURL_CHUNK_BGN_FUNC_OK
-		    
 		  Case FILETYPE_DIR
-		    Me.DownloadStream = Nil
-		    If RaiseEvent QueueFile(mLastFileName, mLastFile, True, p) Then Return CURL_CHUNK_BGN_FUNC_SKIP
-		    Return CURL_CHUNK_BGN_FUNC_OK
-		    
+		    If Not mLastFile.Exists Then mLastFile.CreateAsFolder
+		    If Not mLastFile.Directory Then Return CURL_CHUNK_BGN_FUNC_FAIL
+		  Else
+		    Break ' other type; the dataavailable event will be raised
 		  End Select
 		  
-		  Break ' Unknown chunk type!
-		  Return CURL_CHUNK_BGN_FUNC_FAIL
+		  Return CURL_CHUNK_BGN_FUNC_OK
 		  
 		End Function
 	#tag EndMethod
@@ -240,7 +238,7 @@ Inherits libcURL.EasyHandle
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
-		Event QueueFile(RemoteName As String, ByRef LocalFile As FolderItem, IsDirectory As Boolean, UnixPerms As Permissions) As Boolean
+		Event QueueFile(RemoteName As String, ByRef LocalFile As FolderItem, Type As Integer, UnixPerms As Permissions) As Boolean
 	#tag EndHook
 
 
@@ -365,25 +363,25 @@ Inherits libcURL.EasyHandle
 	#tag Constant, Name = CURL_FNMATCHFUNC_NOMATCH, Type = Double, Dynamic = False, Default = \"1", Scope = Private
 	#tag EndConstant
 
-	#tag Constant, Name = FILETYPE_BLOCK, Type = Double, Dynamic = False, Default = \"3", Scope = Private
+	#tag Constant, Name = FILETYPE_BLOCK, Type = Double, Dynamic = False, Default = \"3", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = FILETYPE_CHAR, Type = Double, Dynamic = False, Default = \"4", Scope = Private
+	#tag Constant, Name = FILETYPE_CHAR, Type = Double, Dynamic = False, Default = \"4", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = FILETYPE_DIR, Type = Double, Dynamic = False, Default = \"1", Scope = Private
+	#tag Constant, Name = FILETYPE_DIR, Type = Double, Dynamic = False, Default = \"1", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = FILETYPE_FILE, Type = Double, Dynamic = False, Default = \"0", Scope = Private
+	#tag Constant, Name = FILETYPE_FILE, Type = Double, Dynamic = False, Default = \"0", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = FILETYPE_PIPE, Type = Double, Dynamic = False, Default = \"4", Scope = Private
+	#tag Constant, Name = FILETYPE_PIPE, Type = Double, Dynamic = False, Default = \"4", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = FILETYPE_SOCKET, Type = Double, Dynamic = False, Default = \"5", Scope = Private
+	#tag Constant, Name = FILETYPE_SOCKET, Type = Double, Dynamic = False, Default = \"5", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = FILETYPE_SYM, Type = Double, Dynamic = False, Default = \"2", Scope = Private
+	#tag Constant, Name = FILETYPE_SYM, Type = Double, Dynamic = False, Default = \"2", Scope = Public
 	#tag EndConstant
 
 

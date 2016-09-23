@@ -169,7 +169,7 @@ Inherits libcURL.cURLHandle
 		  ' This method is the intermediary between DebugCallback and the DebugMessage event.
 		  ' DO NOT CALL THIS METHOD
 		  
-		  RaiseEvent DebugMessage(info, data.StringValue(0, size))
+		  RaiseEvent DebugMessage(info, DefineEncoding(data.StringValue(0, size), Encodings.UTF8))
 		  Return size
 		  
 		Exception Err As RuntimeException
@@ -331,7 +331,7 @@ Inherits libcURL.cURLHandle
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_cleanup.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Destructor
 		  
-		  If Me.Handle <> 0 Then
+		  If mHandle <> 0 Then
 		    curl_easy_cleanup(mHandle)
 		    Instances.Remove(mHandle)
 		    mErrorBuffer = Nil
@@ -423,11 +423,25 @@ Inherits libcURL.cURLHandle
 		    err.ErrorNumber = InfoType
 		    Raise err
 		  End Select
+		  
+		Exception Err As NilObjectException
+		  If mLastError <> 0 Then Raise New cURLException(Me) Else Raise Err
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function GetInfo(InfoType As Integer, Buffer As MemoryBlock) As Boolean
+		  ' Calls curl_easy_getinfo. If the operation succeeded then this function returns True 
+		  ' and the requested information is copied into the Buffer. Otherwise this function 
+		  ' returns False and the error code is stored in LastError. This method returns various 
+		  ' data about the most recently completed connection (successful or not.) As such, it 
+		  ' is not useful to call this method before the first connection attempt.
+		  '
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/curl_easy_getinfo.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.GetInfo
+		  
+		  
 		  mLastError = curl_easy_getinfo(mHandle, InfoType, Buffer)
 		  Return mLastError = 0
 		End Function
@@ -450,7 +464,7 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h1
 		Protected Sub InitCallbacks()
-		  ' This method sets up the callback functions for the EasyHandle
+		  ' This method sets up the callback functions for the EasyHandle.
 		  
 		  If libcURL.Version.IsAtLeast(7, 16, 0) Then
 		    If Not SetOption(libcURL.Opts.SOCKOPTDATA, mHandle) Then Raise New cURLException(Me)
@@ -508,6 +522,12 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Function Operator_Compare(OtherEasy As libcURL.EasyHandle) As Integer
+		  ' This method overloads the comparison operator(=), permitting direct 
+		  ' comparisons between instances of EasyHandle.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Operator_Compare
+		  
 		  Dim i As Integer = Super.Operator_Compare(OtherEasy)
 		  If i = 0 Then i = Sign(mHandle - OtherEasy.Handle)
 		  Return i
@@ -765,7 +785,8 @@ Inherits libcURL.cURLHandle
 		    libcURL.Opts.READFUNCTION, libcURL.Opts.SSL_CTX_FUNCTION, libcURL.Opts.WRITEFUNCTION, libcURL.Opts.SHARE, _
 		    libcURL.Opts.COOKIEJAR, libcURL.Opts.COOKIEFILE, libcURL.Opts.HTTPPOST, libcURL.Opts.CAINFO, libcURL.Opts.CAPATH, _
 		    libcURL.Opts.NETINTERFACE, libcURL.Opts.ERRORBUFFER, libcURL.Opts.COPYPOSTFIELDS, libcURL.Opts.ACCEPT_ENCODING, _
-		    libcURL.Opts.FNMATCH_FUNCTION, libcURL.Opts.CHUNK_BGN_FUNCTION, libcURL.Opts.CHUNK_END_FUNCTION, libcURL.Opts.CHUNK_DATA)
+		    libcURL.Opts.FNMATCH_FUNCTION, libcURL.Opts.CHUNK_BGN_FUNCTION, libcURL.Opts.CHUNK_END_FUNCTION, libcURL.Opts.CHUNK_DATA, _
+		    libcURL.Opts.SSLCERT)
 		    ' These option numbers explicitly accept NULL. Refer to the curl documentation on the individual option numbers for details.
 		    If Nilable.IndexOf(OptionNumber) > -1 Then
 		      Return Me.SetOptionPtr(OptionNumber, Nil)
@@ -787,8 +808,7 @@ Inherits libcURL.cURLHandle
 		    Return Me.SetOptionPtr(OptionNumber, NewValue.PtrValue)
 		    
 		  Case Variant.TypeString
-		    ' COPY the string to a new buffer so there's no weirdness if libcURL releases the memory.
-		    Dim mb As MemoryBlock = NewValue.CStringValue + Chr(0)
+		    Dim mb As MemoryBlock = NewValue.CStringValue + Chr(0) ' make doubleplus sure it's null terminated
 		    Return Me.SetOptionPtr(OptionNumber, mb)
 		    
 		  Case Variant.TypeObject
@@ -1682,7 +1702,7 @@ Inherits libcURL.cURLHandle
 			  ' http://curl.haxx.se/libcurl/c/curl_easy_getinfo.html#CURLINFOEFFECTIVEURL
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.URL
 			  
-			  Return Me.GetInfo(libcURL.Info.EFFECTIVE_URL)
+			  Return DefineEncoding(Me.GetInfo(libcURL.Info.EFFECTIVE_URL), Encodings.UTF8)
 			End Get
 		#tag EndGetter
 		#tag Setter

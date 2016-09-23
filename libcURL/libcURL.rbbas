@@ -279,8 +279,7 @@ Protected Module libcURL
 		  Const MinMinor = 15
 		  Const MinPatch = 2
 		  
-		  Static available As Boolean
-		  If Not available Then available = libcURL.Version.IsAtLeast(MinMajor, MinMinor, MinPatch)
+		  Static available As Boolean = libcURL.Version.IsAtLeast(MinMajor, MinMinor, MinPatch)
 		  Return available
 		End Function
 	#tag EndMethod
@@ -547,6 +546,7 @@ Protected Module libcURL
 		      name = NthField(output(i + 1), ": ", 1)
 		      value = Right(output(i + 1), output(i + 1).Len - (name.Len + 2))
 		      If Not Client.Proxy.SetProxyHeader(name, value) Then GoTo ParseError
+		      i = i + 1
 		      
 		    Case arg = "--proxytunnel", StrComp("-p", arg, 1) = 0
 		      Client.Proxy.HTTPTunnel = True
@@ -642,21 +642,21 @@ Protected Module libcURL
 		  
 		  Return
 		  
-		  ParseError:
-		  #pragma BreakOnExceptions Off
-		  If Client.LastError <> 0 Then
-		    Dim err As New cURLException(Client.EasyItem)
-		    err.Message = err.Message + " Failed on: " + arg
-		    Raise err
-		  Else
-		    Dim err As New UnsupportedFormatException
-		    err.Message = "'" + arg + "' is an invalid argument."
-		    Raise err
-		  End If
-		  
 		Exception Err As OutOfBoundsException
 		  err.Message = "'" + arg + "' requires an argument."
 		  Raise err
+		  
+		  ParseError:
+		  #pragma BreakOnExceptions Off
+		  If Client.LastError <> 0 Then
+		    Dim error As New cURLException(Client.EasyItem)
+		    error.Message = error.Message + " Failed on: " + arg
+		    Raise error
+		  Else
+		    Dim error As New UnsupportedFormatException
+		    error.Message = "'" + arg + "' is an invalid argument."
+		    Raise error
+		  End If
 		End Sub
 	#tag EndMethod
 

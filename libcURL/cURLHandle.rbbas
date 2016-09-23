@@ -10,7 +10,8 @@ Implements ErrorSetter
 		  ' http://curl.haxx.se/libcurl/c/curl_global_init.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLHandle.Constructor
 		  
-		  If Not libcURL.IsAvailable Then
+		  Static available As Boolean = libcURL.IsAvailable
+		  If Not available Then
 		    Dim err As New PlatformNotSupportedException
 		    err.Message = "libcURL is not available or is an unsupported version."
 		    Raise err
