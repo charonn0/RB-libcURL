@@ -252,7 +252,7 @@ Inherits libcURL.cURLHandle
 		    Select Case OptionNumber
 		    Case libcURL.Opts.PIPELINING_SITE_BL, libcURL.Opts.PIPELINING_SERVER_BL
 		      ' These option numbers explicitly accept NULL. Refer to the curl documentation on the individual option numbers for details.
-		      MarshalledValue = Nil
+		      Return Me.SetOptionPtr(OptionNumber, Nil)
 		    Else
 		      ' for all other option numbers reject NULL values.
 		      Dim err As New NilObjectException
@@ -291,7 +291,18 @@ Inherits libcURL.cURLHandle
 		    Raise err
 		  End Select
 		  
-		  mLastError = curl_multi_setopt(mHandle, OptionNumber, MarshalledValue)
+		  Return Me.SetOptionPtr(OptionNumber, MarshalledValue)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function SetOptionPtr(OptionNumber As Integer, NewValue As Ptr) As Boolean
+		  If Not libcURL.Version.IsAtLeast(7, 15, 4) Then
+		    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
+		    Raise New cURLException(Me)
+		  End If
+		  
+		  mLastError = curl_multi_setopt(mHandle, OptionNumber, NewValue)
 		  Return mLastError = 0
 		End Function
 	#tag EndMethod

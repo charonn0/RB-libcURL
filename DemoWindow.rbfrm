@@ -3153,7 +3153,7 @@ End
 		      SSLVer.ListIndex = 6
 		    End Select
 		    
-		    TextField1.Text = Client.EasyItem.URL
+		    If Client.EasyItem.URL <> "" Then TextField1.Text = Client.EasyItem.URL
 		    
 		    nic.ListIndex = -1
 		    If Client.EasyItem.NetworkInterface <> Nil Then
