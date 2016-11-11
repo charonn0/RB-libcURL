@@ -207,8 +207,12 @@ Inherits libcURL.cURLHandle
 
 
 	#tag Note, Name = About this class
+		This class wraps the curl_share interface. It allows you to share cookies, DNS results, and SSL session data among
+		two or more EasyHandles. By default, nothing is shared. You must enabled each type of sharing by modifying the
+		appropriate property of this class (ShareCookies, ShareDNSCache, and ShareSSL.)
 		
-		s
+		You must enable the sharing types you want before the first EasyHandle is added. 
+		
 	#tag EndNote
 
 
