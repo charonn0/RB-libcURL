@@ -51,17 +51,17 @@ Inherits libcURL.cURLHandle
 		    Raise New cURLException(Me)
 		  End If
 		  SharedHandles = New Dictionary
-		  #If ENABLE_MUTEX Then
-		    If Instances = Nil Then Instances = New Dictionary
-		    Instances.Value(mHandle) = New WeakRef(Me)
-		    CookieLock = New Mutex(Hex(mHandle) + "_Cookie")
-		    SSLLock = New Mutex(Hex(mHandle) + "_SSL")
-		    DNSLock = New Mutex(Hex(mHandle) + "_DNS")
-		    
-		    If Not Me.SetOption(libcURL.Opts.SHOPT_USERDATA, mHandle) Then Raise New cURLException(Me)
-		    If Not Me.SetOption(libcURL.Opts.SHOPT_LOCKFUNC, AddressOf LockCallback) Then Raise New cURLException(Me)
-		    If Not Me.SetOption(libcURL.Opts.SHOPT_UNLOCKFUNC, AddressOf UnlockCallback) Then Raise New cURLException(Me)
-		  #endif
+		  
+		  If Instances = Nil Then Instances = New Dictionary
+		  Instances.Value(mHandle) = New WeakRef(Me)
+		  CookieLock = New Mutex(Hex(mHandle) + "_Cookie")
+		  SSLLock = New Mutex(Hex(mHandle) + "_SSL")
+		  DNSLock = New Mutex(Hex(mHandle) + "_DNS")
+		  
+		  If Not Me.SetOption(libcURL.Opts.SHOPT_USERDATA, mHandle) Then Raise New cURLException(Me)
+		  If Not Me.SetOption(libcURL.Opts.SHOPT_LOCKFUNC, AddressOf LockCallback) Then Raise New cURLException(Me)
+		  If Not Me.SetOption(libcURL.Opts.SHOPT_UNLOCKFUNC, AddressOf UnlockCallback) Then Raise New cURLException(Me)
+		  
 		End Sub
 	#tag EndMethod
 
@@ -300,9 +300,6 @@ Inherits libcURL.cURLHandle
 	#tag EndConstant
 
 	#tag Constant, Name = CURLSHOPT_UNSHARE, Type = Double, Dynamic = False, Default = \"2", Scope = Private
-	#tag EndConstant
-
-	#tag Constant, Name = ENABLE_MUTEX, Type = Boolean, Dynamic = False, Default = \"False", Scope = Private
 	#tag EndConstant
 
 
