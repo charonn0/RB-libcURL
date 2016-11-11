@@ -138,7 +138,7 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h21
 		Private Shared Sub LockCallback(ShareItem As Integer, Data As curl_lock_data, Access As curl_lock_access, UserData As Integer)
-		  #pragma X86CallingConvention StdCall
+		  #pragma X86CallingConvention CDecl
 		  #pragma Unused ShareItem
 		  
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
@@ -193,7 +193,7 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h21
 		Private Shared Sub UnlockCallback(ShareItem As Integer, Data As curl_lock_data, UserData As Integer)
-		  #pragma X86CallingConvention StdCall
+		  #pragma X86CallingConvention CDecl
 		  #pragma Unused ShareItem
 		  
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
