@@ -554,6 +554,7 @@ Protected Module libcURL
 		      name = NthField(output(i + 1), ": ", 1)
 		      value = Right(output(i + 1), output(i + 1).Len - (name.Len + 2))
 		      If Not Client.Proxy.SetProxyHeader(name, value) Then GoTo ParseError
+		      i = i + 1
 		      
 		    Case arg = "--proxytunnel", StrComp("-p", arg, 1) = 0
 		      Client.Proxy.HTTPTunnel = True

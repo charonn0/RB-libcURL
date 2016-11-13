@@ -85,10 +85,8 @@ Inherits libcURL.cURLHandle
 		  Dim i As Integer
 		  Do
 		    If i < Index Then
-		      Dim nxt As Ptr = p.Ptr(4)
-		      If nxt <> Nil Then
-		        p = nxt
-		      Else
+		      p = p.Ptr(4)
+		      If p = Nil Then
 		        Dim err As New OutOfBoundsException
 		        err.Message = "The list does not contain an entry at that index."
 		        Raise err
