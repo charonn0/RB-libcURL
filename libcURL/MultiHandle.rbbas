@@ -218,7 +218,7 @@ Inherits libcURL.cURLHandle
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_remove_handle.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.RemoveItem
 		  
-		  mLastError = curl_multi_remove_handle(mHandle, Item.Handle)
+		  If Item.mReleaseable Then mLastError = curl_multi_remove_handle(mHandle, Item.Handle)
 		  If EasyHandles.HasKey(Item.Handle) Then EasyHandles.Remove(Item.Handle)
 		  If EasyHandles.Count = 0 And PerformTimer <> Nil Then PerformTimer.Mode = Timer.ModeOff
 		  Return mLastError = 0
