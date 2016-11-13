@@ -10,14 +10,14 @@ Inherits libcURL.cURLHandle
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_add_handle.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.AddItem
 		  
-		  If Not libcURL.Version.IsAtLeast(7, 32, 1) And Instances.HasKey(Item.Handle) Then
+		  If Not libcURL.Version.IsAtLeast(7, 32, 1) And EasyHandles.HasKey(Item.Handle) Then
 		    ' This error code was not defined until 7.32.1, so we fake it
 		    Const CURLM_ADDED_ALREADY = 7
 		    mLastError = CURLM_ADDED_ALREADY
 		    
 		  Else
 		    mLastError = curl_multi_add_handle(mHandle, Item.Handle)
-		    If mLastError = 0 Then Instances.Value(Item.Handle) = Item
+		    If mLastError = 0 Then EasyHandles.Value(Item.Handle) = Item
 		  End If
 		  Return mLastError = 0
 		End Function
@@ -30,9 +30,9 @@ Inherits libcURL.cURLHandle
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.Close
 		  
-		  If Instances <> Nil And libcURL.IsAvailable Then
-		    For Each h As Integer In Instances.Keys
-		      Call Me.RemoveItem(Instances.Value(h))
+		  If EasyHandles <> Nil And libcURL.IsAvailable Then
+		    For Each h As Integer In EasyHandles.Keys
+		      Call Me.RemoveItem(EasyHandles.Value(h))
 		    Next
 		  End If
 		End Sub
@@ -55,7 +55,7 @@ Inherits libcURL.cURLHandle
 		    mLastError = libcURL.Errors.INIT_FAILED
 		    Raise New cURLException(Me)
 		  End If
-		  Instances = New Dictionary
+		  EasyHandles = New Dictionary
 		End Sub
 	#tag EndMethod
 
@@ -78,7 +78,7 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Function HasItem(EasyItem As libcURL.EasyHandle) As Boolean
-		  Return Instances.HasKey(EasyItem.Handle)
+		  Return EasyHandles.HasKey(EasyItem.Handle)
 		End Function
 	#tag EndMethod
 
@@ -133,12 +133,12 @@ Inherits libcURL.cURLHandle
 		  Try
 		    Dim c As Integer
 		    mLastError = curl_multi_perform(mHandle, c) ' on exit, 'c' will contain the number of easy handles with unfinished business.
-		    If (mLastError = 0 Or mLastError = CURLM_CALL_MULTI_PERFORM) And (LastCount <> c Or c <> Instances.Count) Then
+		    If (mLastError = 0 Or mLastError = CURLM_CALL_MULTI_PERFORM) And (LastCount <> c Or c <> EasyHandles.Count) Then
 		      LastCount = c
 		      Do
 		        Dim msg As CURLMsg = ReadNextMsg(c) ' on exit, 'c' will contain the number of messages remaining
 		        If c > -1 Then
-		          Dim curl As EasyHandle = Instances.Value(msg.easy_handle)
+		          Dim curl As EasyHandle = EasyHandles.Value(msg.easy_handle)
 		          Call Me.RemoveItem(curl)
 		          ErrorSetter(curl).LastError = Integer(msg.Data) ' msg.Data is the last error code for the easy handle
 		          RaiseEvent TransferComplete(curl)
@@ -149,7 +149,7 @@ Inherits libcURL.cURLHandle
 		  Finally
 		    StackLocked = False
 		  End Try
-		  Return ((mLastError = 0 Or mLastError = CURLM_CALL_MULTI_PERFORM) And Instances.Count > 0)
+		  Return ((mLastError = 0 Or mLastError = CURLM_CALL_MULTI_PERFORM) And EasyHandles.Count > 0)
 		End Function
 	#tag EndMethod
 
@@ -219,8 +219,8 @@ Inherits libcURL.cURLHandle
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.RemoveItem
 		  
 		  mLastError = curl_multi_remove_handle(mHandle, Item.Handle)
-		  If Instances.HasKey(Item.Handle) Then Instances.Remove(Item.Handle)
-		  If Instances.Count = 0 And PerformTimer <> Nil Then PerformTimer.Mode = Timer.ModeOff
+		  If EasyHandles.HasKey(Item.Handle) Then EasyHandles.Remove(Item.Handle)
+		  If EasyHandles.Count = 0 And PerformTimer <> Nil Then PerformTimer.Mode = Timer.ModeOff
 		  Return mLastError = 0
 		End Function
 	#tag EndMethod
@@ -333,7 +333,7 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h21
 		Private Function _curlPush(ParentConnection As Integer, NewConnection As Integer, NumHeaders As Integer, PushHeaders As Ptr) As Integer
-		  Dim parent As EasyHandle = Instances.Lookup(ParentConnection, Nil)
+		  Dim parent As EasyHandle = EasyHandles.Lookup(ParentConnection, Nil)
 		  If parent = Nil Then Return CURL_PUSH_DENY
 		  Dim child As New EasyHandle(parent.Flags, NewConnection)
 		  Dim h() As String
@@ -344,8 +344,10 @@ Inherits libcURL.cURLHandle
 		    End If
 		  Next
 		  If Not RaiseEvent ServerPush(parent, child, h) Then Return CURL_PUSH_DENY
-		  Instances.Value(child.Handle) = child
+		  
+		  EasyHandles.Value(child.Handle) = child
 		  Return CURL_PUSH_OK
+		  
 		End Function
 	#tag EndMethod
 
@@ -378,6 +380,10 @@ Inherits libcURL.cURLHandle
 		Calling Perform will activate a timer which calls PerformOnce on the main thread until there are no more items. Perform returns immediately.
 	#tag EndNote
 
+
+	#tag Property, Flags = &h21
+		Private EasyHandles As Dictionary
+	#tag EndProperty
 
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
@@ -465,10 +471,6 @@ Inherits libcURL.cURLHandle
 		#tag EndSetter
 		HTTPPipelining As Boolean
 	#tag EndComputedProperty
-
-	#tag Property, Flags = &h21
-		Private Instances As Dictionary
-	#tag EndProperty
 
 	#tag Property, Flags = &h21
 		Private LastCount As Integer = -1
