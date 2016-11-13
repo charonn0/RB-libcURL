@@ -11,14 +11,10 @@ Inherits libcURL.EasyHandle
 		  
 		  #pragma X86CallingConvention CDecl
 		  
-		  If Instances = Nil Then Return 0
+		  If Instances = Nil Then Return CURL_CHUNK_BGN_FUNC_FAIL
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA FTPWildCard Then
-		    If TransferInfo <> Nil Then
-		      Return FTPWildCard(curl.Value).curlChunkBegin(TransferInfo.FileInfo, Remaining)
-		    Else
-		      Return CURL_CHUNK_BGN_FUNC_FAIL
-		    End If
+		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA FTPWildCard And TransferInfo <> Nil Then
+		    Return FTPWildCard(curl.Value).curlChunkBegin(TransferInfo.FileInfo, Remaining)
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
