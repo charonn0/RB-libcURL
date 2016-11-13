@@ -379,7 +379,7 @@ Protected Class cURLManager
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Function _ServerPushHandler(Sender As libcURL.MultiHandle, ParentConnection As libcURL.EasyHandle, NewConnection As libcURL.EasyHandle, PushHeaders() As String) As Boolean
+		Private Function _ServerPushHandler(Sender As libcURL.MultiHandle, ParentConnection As libcURL.EasyHandle, NewConnection As libcURL.EasyHandle, PushHeaders As InternetHeaders) As Boolean
 		  #pragma Unused Sender
 		  If ParentConnection <> mEasyItem Then Return False
 		  AddHandler NewConnection.DebugMessage, WeakAddressOf _DebugMessageHandler
@@ -417,7 +417,7 @@ Protected Class cURLManager
 
 
 	#tag Hook, Flags = &h0
-		Event AcceptServerPush(PushConnection As libcURL.EasyHandle, PushHeaders() As String) As Boolean
+		Event AcceptServerPush(PushConnection As libcURL.EasyHandle, PushHeaders As InternetHeaders) As Boolean
 	#tag EndHook
 
 	#tag Hook, Flags = &h0

@@ -336,14 +336,24 @@ Inherits libcURL.cURLHandle
 		  Dim parent As EasyHandle = EasyHandles.Lookup(ParentConnection, Nil)
 		  If parent = Nil Then Return CURL_PUSH_DENY
 		  Dim child As New EasyHandle(parent.Flags, NewConnection)
-		  Dim h() As String
+		  Dim pheaders As New InternetHeaders
 		  For i As Integer = 0 To NumHeaders - 1
-		    Dim mb As MemoryBlock = curl_pushheader_bynum(PushHeaders, i)
-		    If mb <> Nil Then
-		      h.Append(mb.CString(0))
+		    Dim header As MemoryBlock = curl_pushheader_bynum(PushHeaders, i)
+		    If header <> Nil Then
+		      Dim n, v, s As String
+		      s = header.CString(0)
+		      If Left(s, 1) = ":" Then
+		        v = NthField(s, ":", CountFields(s, ":"))
+		        n = Replace(s, ":" + v, "")
+		      Else
+		        n = NthField(s, ":", 1)
+		        v = Replace(s, n + ":", "")
+		      End If
+		      pheaders.AppendHeader(n, v)
 		    End If
 		  Next
-		  If Not RaiseEvent ServerPush(parent, child, h) Then Return CURL_PUSH_DENY
+		  
+		  If Not RaiseEvent ServerPush(parent, child, pheaders) Then Return CURL_PUSH_DENY
 		  
 		  EasyHandles.Value(child.Handle) = child
 		  Return CURL_PUSH_OK
@@ -353,7 +363,7 @@ Inherits libcURL.cURLHandle
 
 
 	#tag Hook, Flags = &h0
-		Event ServerPush(ParentConnection As libcURL.EasyHandle, NewConnection As libcURL.EasyHandle, PushHeaders() As String) As Boolean
+		Event ServerPush(ParentConnection As libcURL.EasyHandle, NewConnection As libcURL.EasyHandle, PushHeaders As InternetHeaders) As Boolean
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
