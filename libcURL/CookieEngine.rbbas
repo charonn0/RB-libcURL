@@ -386,7 +386,7 @@ Protected Class CookieEngine
 			  ' See:
 			  ' http://curl.haxx.se/libcurl/c/CURLOPT_COOKIEJAR.html
 			  ' http://curl.haxx.se/libcurl/c/CURLOPT_COOKIEFILE.html
-			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.CookieJar
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine.CookieJar
 			  
 			  If value = Nil Or value.Directory Then
 			    If Not Owner.SetOption(libcURL.Opts.COOKIEFILE, Nil) Then Raise New cURLException(Owner)
