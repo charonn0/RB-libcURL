@@ -79,9 +79,9 @@ Protected Class CookieEngine
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine.Expiry
 		  
-		  Dim d As New Date(1970, 1, 1, 0, 0, 0, 0.0) 'UNIX epoch
 		  Dim count As Integer = Val(NthField(Me.StringValue(Index), Chr(9), 5))
 		  If count > 0 Then
+		    Dim d As New Date(1970, 1, 1, 0, 0, 0, 0.0) 'UNIX epoch
 		    d.TotalSeconds = d.TotalSeconds + count
 		    Return d
 		  End If
@@ -114,13 +114,12 @@ Protected Class CookieEngine
 		    Return False
 		  End If
 		  
-		  Dim OK As Boolean
 		  If CookieFile = Nil Then CookieFile = mCookieJar
 		  If CookieFile = Nil Then
 		    ErrorSetter(Owner).LastError = libcURL.Errors.NO_COOKIEJAR
 		    Return False
 		  End If
-		  OK = Owner.SetOption(libcURL.Opts.COOKIEJAR, CookieFile)
+		  Dim OK As Boolean = Owner.SetOption(libcURL.Opts.COOKIEJAR, CookieFile)
 		  If OK Then OK = Owner.SetOption(libcURL.Opts.COOKIELIST, "FLUSH")
 		  If OK Then OK = Owner.SetOption(libcURL.Opts.COOKIEJAR, mCookieJar)
 		  Me.Invalidate
