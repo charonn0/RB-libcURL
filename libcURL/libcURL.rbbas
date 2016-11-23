@@ -835,6 +835,7 @@ Protected Module libcURL
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_unescape.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLDecode
 		  
+		  If Data = "" Then Return ""
 		  If EasyItem = Nil Then EasyItem = New libcURL.EasyHandle
 		  If Not libcURL.Version.IsAtLeast(7, 15, 4) Then
 		    Errorsetter(EasyItem).LastError = libcURL.Errors.FEATURE_UNAVAILABLE
@@ -864,6 +865,7 @@ Protected Module libcURL
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_escape.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLEncode
 		  
+		  If Data = "" Then Return ""
 		  If EasyItem = Nil Then EasyItem = New libcURL.EasyHandle
 		  If Not libcURL.Version.IsAtLeast(7, 15, 4) Then
 		    Errorsetter(EasyItem).LastError = libcURL.Errors.FEATURE_UNAVAILABLE
