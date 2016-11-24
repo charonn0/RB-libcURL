@@ -25,9 +25,10 @@ Protected Class CookieEngine
 
 	#tag Method, Flags = &h0
 		Function DeleteAll() As Boolean
-		  ' Clears all cookies, expired or not.
+		  ' Clears all cookies held in memory, expired or not.
 		  '
 		  ' See:
+		  ' https://curl.haxx.se/libcurl/c/CURLOPT_COOKIELIST.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine.DeleteAll
 		  
 		  Me.Invalidate
@@ -107,6 +108,8 @@ Protected Class CookieEngine
 		  ' Flushes all cookies to a file. If no CookieFile is specified as a parameter then the cookiejar property is used.
 		  '
 		  ' See:
+		  ' https://curl.haxx.se/libcurl/c/CURLOPT_COOKIELIST.html
+		  ' https://curl.haxx.se/libcurl/c/CURLOPT_COOKIEJAR.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine.Flush
 		  
 		  If Not libcURL.Version.IsAtLeast(7, 17, 1) Then
@@ -209,9 +212,12 @@ Protected Class CookieEngine
 
 	#tag Method, Flags = &h0
 		Function NewSession() As Boolean
-		  ' Expires all cookies which do not have an explicit expiration date.
+		  ' Begins a new cookie session. All session cookies held in memory are deleted. This also prevents
+		  ' libcurl from loading session cookies from a cookie file.
 		  '
 		  ' See:
+		  ' https://curl.haxx.se/libcurl/c/CURLOPT_COOKIESESSION.html
+		  ' https://curl.haxx.se/libcurl/c/CURLOPT_COOKIELIST.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine.NewSession
 		  
 		  Me.Invalidate
