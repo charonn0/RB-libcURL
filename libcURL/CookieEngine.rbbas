@@ -37,7 +37,8 @@ Protected Class CookieEngine
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function DeleteSession() As Boolean
+		Attributes( deprecated = "libcURL.CookieEngine.NewSession" )  Function DeleteSession() As Boolean
+		  ' Note: This method has been deprecated in favor of CookieEngine.NewSession
 		  ' Deletes all session cookies. Session cookies are those without an explicit expiration date.
 		  '
 		  ' See:
@@ -221,7 +222,11 @@ Protected Class CookieEngine
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine.NewSession
 		  
 		  Me.Invalidate
-		  Return Owner.SetOption(libcURL.Opts.COOKIESESSION, True)
+		  Dim OK As Boolean = Owner.SetOption(libcURL.Opts.COOKIESESSION, True)
+		  If OK And libcURL.Version.IsAtLeast(7, 17, 1) Then
+		    OK = Owner.SetOption(libcURL.Opts.COOKIELIST, "SESS")
+		  End If
+		  Return OK
 		End Function
 	#tag EndMethod
 
