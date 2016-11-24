@@ -1029,7 +1029,7 @@ Inherits libcURL.cURLHandle
 		   End If
 		
 		NOTE: 
-		In order to received downloaded data you must handle the DataAvailable event.
+		In order to receive downloaded data you must handle the DataAvailable event.
 		In order to provide upload data you must handle the DataNeeded event.
 	#tag EndNote
 

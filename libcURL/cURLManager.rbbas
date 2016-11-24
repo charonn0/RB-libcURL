@@ -309,6 +309,9 @@ Protected Class cURLManager
 		Function SetRequestHeader(Name As String, Value As String) As Boolean
 		  ' Subsequent calls to this method will append the headers to the previously set headers. Headers will persist from transfer
 		  ' to transfer. Pass an empty value to clear the named header. Pass an empty name to clear all headers.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.SetRequestHeader
 		  
 		  mRequestHeaders = mEasyItem.SetRequestHeader(mRequestHeaders, Name, Value)
 		  Return (mRequestHeaders <> Nil Or Name = "")
