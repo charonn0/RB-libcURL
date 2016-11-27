@@ -326,7 +326,8 @@ Inherits libcURL.EasyHandle
 	#tag Property, Flags = &h0
 		#tag Note
 			If set to True then existing children of the 'LocalRoot' directory will be overwritten if they have the same name as a file
-			being downloaded from the server. The default is False, in which case existing children will raise an IOException in curlChunkBegin
+			being downloaded from the server. The default is False, in which case existing children will cause the transfer to fail with
+			curl error code CURLE_CHUNK_FAILED(88)
 			
 			See:
 			https://github.com/charonn0/RB-libcURL/wiki/libcURL.Protocols.FTPWildCard.OverwriteLocalFiles
