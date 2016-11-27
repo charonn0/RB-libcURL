@@ -173,22 +173,7 @@ Protected Class CookieEngine
 		      d = Me.Domain(i)
 		      If d = "" Or CookieDomain = "" Then Return i
 		      If Strict Then
-		        Dim tmp() As String = Split(CookieDomain, ".")
-		        Dim pattern() As String
-		        For j As Integer = 0 To UBound(tmp)
-		          If tmp(j).Trim = "" Then Continue
-		          pattern.Insert(0, URLDecode(tmp(j), Owner))
-		        Next
-		        tmp = Split(d, ".")
-		        Dim data() As String
-		        For j As Integer = 0 To UBound(tmp)
-		          If tmp(j).Trim = "" Then Continue
-		          data.Insert(0, URLDecode(tmp(j), Owner))
-		        Next
-		        Dim count As Integer = Min(data.Ubound, pattern.Ubound)
-		        For j As Integer = 0 To count
-		          If StrComp(pattern(j), data(j), 0) <> 0 Then Continue For i
-		        Next
+		        If Not CompareDomains(CookieDomain, d, Owner) Then Continue For i
 		        Return i
 		      Else
 		        If CookieDomain <> "" And CookieDomain <> d And "." + CookieDomain <> d And InStr(d, CookieDomain) = 0 Then Continue For i

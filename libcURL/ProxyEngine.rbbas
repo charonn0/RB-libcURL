@@ -73,8 +73,7 @@ Protected Class ProxyEngine
 		  If mAddress = "" Then Return False
 		  
 		  For Each host As String In mExclusions
-		    Dim h As String = Right(Hostname, host.Len)
-		    If h = host And Mid(Hostname, Hostname.Len - h.Len, 1) = "." Then Return False
+		    If CompareDomains(Hostname, host, Owner) Then Return False
 		  Next
 		  Return True
 		  
