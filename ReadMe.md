@@ -16,13 +16,14 @@ This example performs a synchronous HTTP GET request on the calling thread. [**M
 ```
 ##Hilights
 * [Synchronous and asynchronous](https://github.com/charonn0/RB-libcURL/wiki/Synchronous-vs.-Asynchronous-methods) transfers 
-* Use any supported protocol (DICT, FILE, FTP, FTPS, Gopher, HTTP(1.0, 1.1, and 2.0), HTTPS, IMAP, IMAPS, LDAP, LDAPS, POP3, POP3S, RTMP, RTSP, SCP, SFTP, SMTP, SMTPS, Telnet and TFTP).
+* Use any protocol supported by libcURL: DICT, FILE, FTP, FTPS, Gopher, HTTP(1.0, 1.1, and 2), HTTPS, IMAP, IMAPS, LDAP, LDAPS, POP3, POP3S, RTMP, RTSP, SCP, SFTP, SMTP, SMTPS, Telnet and TFTP.
+* Support for modern HTTP features like [persistent connections](https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.AutoDisconnect), [pipelining](https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.HTTPPipelining), and [multiplexing](https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.HTTPMultiplexing).
 * Automatic browser-like [HTTP cookie management](https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine).
-* SSL/TLS with [certificate validation](https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Secure), using any one of several SSL libraries.
-* Full support for [RB/Xojo threads](https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.PerformOnce)
-* Automatic decompression (gzip, deflate) using zlib.
+* Automatic decompression of compressed HTTP downloads (i.e. `gzip` or `deflate`).
 * Automatic decoding of HTTP chunked Transfer-Encoding.
-* Full support for HTTP, SOCKS4, SOCKS4A, SOCKS5, and SOCKS5_HOSTNAME [proxy servers](https://github.com/charonn0/RB-libcURL/wiki/libcURL.ProxyEngine)
+* SSL/TLS with [certificate validation](https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Secure), using any one of several SSL libraries.
+* Transparent support for [RB/Xojo threads](https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.PerformOnce).
+* Full support for HTTP, SOCKS4, SOCKS4A, SOCKS5, and SOCKS5_HOSTNAME [proxy servers](https://github.com/charonn0/RB-libcURL/wiki/libcURL.ProxyEngine).
 * [Stream-oriented](https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.Perform), using Xojo's built-in [Readable](http://docs.xojo.com/index.php/Readable) and [Writeable](http://docs.xojo.com/index.php/Writeable) interfaces. Download or upload directly to or from a file, [MemoryBlock](http://www.boredomsoft.org/string-building-in-realbasic.bs), Xojo socket, or your own custom class.
 * [Easy to use](https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLClient), but still exposing [the full range of libcURL's features](https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle).
 * Interact directly with libcurl using idiomatic RB/Xojo objects, methods, and events; no shell or plugins required.
@@ -87,5 +88,6 @@ RB-libcURL will raise a PlatformNotSupportedException when used if all required 
 * [DNS control](https://github.com/charonn0/RB-libcURL/wiki/DNS-Example)
 * [DICT lookup example](https://github.com/charonn0/RB-libcURL/wiki/DICT-example)
 * [FILE protocol example](https://github.com/charonn0/RB-libcURL/wiki/FILE-protocol-example)
+* [Multiple Simultaneous Transfers](https://github.com/charonn0/RB-libcURL/wiki/Multiple-Simultaneous-Transfers)
 
 ![Powered by libcURL](https://raw.githubusercontent.com/wiki/charonn0/RB-libcURL/powered_by_curl7.gif)

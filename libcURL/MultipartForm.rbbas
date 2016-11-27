@@ -45,6 +45,18 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		 Shared Function Deserialize(FormData As Readable) As libcURL.MultipartForm
+		  Dim data As New MemoryBlock(0)
+		  Dim bs As New BinaryStream(data)
+		  Do Until FormData.EOF
+		    bs.Write(FormData.Read(64 * 1024))
+		  Loop
+		  bs.Close
+		  Return Deserialize(data)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		 Shared Function Deserialize(FormData As String) As libcURL.MultipartForm
 		  Dim form As New MultipartForm
 		  Dim Boundary As String = NthField(FormData, EndOfLine.Windows, 1)

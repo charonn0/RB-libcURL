@@ -25,9 +25,10 @@ Protected Class CookieEngine
 
 	#tag Method, Flags = &h0
 		Function DeleteAll() As Boolean
-		  ' Clears all cookies, expired or not.
+		  ' Clears all cookies held in memory, expired or not.
 		  '
 		  ' See:
+		  ' https://curl.haxx.se/libcurl/c/CURLOPT_COOKIELIST.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine.DeleteAll
 		  
 		  Me.Invalidate
@@ -36,7 +37,8 @@ Protected Class CookieEngine
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function DeleteSession() As Boolean
+		Attributes( deprecated = "libcURL.CookieEngine.NewSession" )  Function DeleteSession() As Boolean
+		  ' Note: This method has been deprecated in favor of CookieEngine.NewSession
 		  ' Deletes all session cookies. Session cookies are those without an explicit expiration date.
 		  '
 		  ' See:
@@ -107,6 +109,8 @@ Protected Class CookieEngine
 		  ' Flushes all cookies to a file. If no CookieFile is specified as a parameter then the cookiejar property is used.
 		  '
 		  ' See:
+		  ' https://curl.haxx.se/libcurl/c/CURLOPT_COOKIELIST.html
+		  ' https://curl.haxx.se/libcurl/c/CURLOPT_COOKIEJAR.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine.Flush
 		  
 		  If Not libcURL.Version.IsAtLeast(7, 17, 1) Then
@@ -169,22 +173,7 @@ Protected Class CookieEngine
 		      d = Me.Domain(i)
 		      If d = "" Or CookieDomain = "" Then Return i
 		      If Strict Then
-		        Dim tmp() As String = Split(CookieDomain, ".")
-		        Dim pattern() As String
-		        For j As Integer = 0 To UBound(tmp)
-		          If tmp(j).Trim = "" Then Continue
-		          pattern.Insert(0, URLDecode(tmp(j), Owner))
-		        Next
-		        tmp = Split(d, ".")
-		        Dim data() As String
-		        For j As Integer = 0 To UBound(tmp)
-		          If tmp(j).Trim = "" Then Continue
-		          data.Insert(0, URLDecode(tmp(j), Owner))
-		        Next
-		        Dim count As Integer = Min(data.Ubound, pattern.Ubound)
-		        For j As Integer = 0 To count
-		          If StrComp(pattern(j), data(j), 0) <> 0 Then Continue For i
-		        Next
+		        If Not CompareDomains(CookieDomain, d, Owner) Then Continue For i
 		        Return i
 		      Else
 		        If CookieDomain <> "" And CookieDomain <> d And "." + CookieDomain <> d And InStr(d, CookieDomain) = 0 Then Continue For i
@@ -209,13 +198,20 @@ Protected Class CookieEngine
 
 	#tag Method, Flags = &h0
 		Function NewSession() As Boolean
-		  ' Expires all cookies which do not have an explicit expiration date.
+		  ' Begins a new cookie session. All session cookies held in memory are deleted. This also prevents
+		  ' libcurl from loading session cookies from a cookie file.
 		  '
 		  ' See:
+		  ' https://curl.haxx.se/libcurl/c/CURLOPT_COOKIESESSION.html
+		  ' https://curl.haxx.se/libcurl/c/CURLOPT_COOKIELIST.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine.NewSession
 		  
 		  Me.Invalidate
-		  Return Owner.SetOption(libcURL.Opts.COOKIESESSION, True)
+		  Dim OK As Boolean = Owner.SetOption(libcURL.Opts.COOKIESESSION, True)
+		  If OK And libcURL.Version.IsAtLeast(7, 17, 1) Then
+		    OK = Owner.SetOption(libcURL.Opts.COOKIELIST, "SESS")
+		  End If
+		  Return OK
 		End Function
 	#tag EndMethod
 
@@ -390,7 +386,6 @@ Protected Class CookieEngine
 			  If value = Nil Or value.Directory Then
 			    If Not Owner.SetOption(libcURL.Opts.COOKIEFILE, Nil) Then Raise New cURLException(Owner)
 			    If Not Owner.SetOption(libcURL.Opts.COOKIEJAR, Nil) Then Raise New cURLException(Owner)
-			    mEnabled = False
 			  Else
 			    If Not Owner.SetOption(libcURL.Opts.COOKIEFILE, value) Then Raise New cURLException(Owner)
 			    If Not Owner.SetOption(libcURL.Opts.COOKIEJAR, value) Then Raise New cURLException(Owner)
