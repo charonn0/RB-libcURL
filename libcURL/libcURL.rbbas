@@ -831,6 +831,9 @@ Protected Module libcURL
 	#tag Method, Flags = &h1
 		Protected Function URLDecode(Data As String, Optional EasyItem As libcURL.EasyHandle) As String
 		  ' Returns the decoded Data using percent encoding as defined in rfc2396
+		  ' curl_easy_unescape needs a curl_easy handle to decode data. If EasyItem 
+		  ' is not Nil, then the EasyItem is used; otherwise a new EasyHandle is constructed.
+		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_unescape.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLDecode
@@ -861,6 +864,8 @@ Protected Module libcURL
 	#tag Method, Flags = &h1
 		Protected Function URLEncode(Data As String, Optional EasyItem As libcURL.EasyHandle) As String
 		  ' Returns the Data encoded using percent encoding as defined in rfc2396
+		  ' curl_easy_escape needs a curl_easy handle to encode data. If EasyItem
+		  ' is not Nil, then the EasyItem is used; otherwise a new EasyHandle is constructed.
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_escape.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLEncode
