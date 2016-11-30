@@ -1,5 +1,39 @@
 #tag Module
 Protected Module libcURL
+	#tag Method, Flags = &h1
+		Protected Function CompareDomains(Hostname1 As String, Hostname2 As String, Optional EasyItem As libcURL.EasyHandle) As Boolean
+		  ' Compares Hostname1 and Hostname2 to determine whether they belong to the same subdomain.
+		  ' For example 'api.example.com' matches 'example.com' and 'api.example.com' but not 'www.example.com'
+		  ' libcurl needs a curl_easy handle to URLdecode data. If EasyItem is not Nil, then the EasyItem is 
+		  ' used; otherwise a new EasyHandle is constructed.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CompareDomains
+		  ' https://github.com/charonn0/RB-libcURL/wiki/HTTP-Cookies-Example#domain-name-matching
+		  
+		  Dim tmp() As String = Split(Hostname1, ".")
+		  Dim h1() As String
+		  For i As Integer = 0 To UBound(tmp)
+		    If tmp(i).Trim = "" Then Continue
+		    h1.Insert(0, URLDecode(tmp(i), EasyItem))
+		  Next
+		  
+		  tmp = Split(Hostname2, ".")
+		  Dim h2() As String
+		  For i As Integer = 0 To UBound(tmp)
+		    If tmp(i).Trim = "" Then Continue
+		    h2.Insert(0, URLDecode(tmp(i), EasyItem))
+		  Next
+		  
+		  Dim count As Integer = Min(h1.Ubound, h2.Ubound)
+		  For i As Integer = 0 To count
+		    If StrComp(h1(i), h2(i), 0) <> 0 Then Return False
+		  Next
+		  
+		  Return True
+		End Function
+	#tag EndMethod
+
 	#tag ExternalMethod, Flags = &h21
 		Private Soft Declare Sub curl_easy_cleanup Lib "libcurl" (EasyHandle As Integer)
 	#tag EndExternalMethod
@@ -839,10 +873,14 @@ Protected Module libcURL
 	#tag Method, Flags = &h1
 		Protected Function URLDecode(Data As String, Optional EasyItem As libcURL.EasyHandle) As String
 		  ' Returns the decoded Data using percent encoding as defined in rfc2396
+		  ' curl_easy_unescape needs a curl_easy handle to decode data. If EasyItem 
+		  ' is not Nil, then the EasyItem is used; otherwise a new EasyHandle is constructed.
+		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_unescape.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLDecode
 		  
+		  If Data = "" Then Return ""
 		  If EasyItem = Nil Then EasyItem = New libcURL.EasyHandle
 		  If Not libcURL.Version.IsAtLeast(7, 15, 4) Then
 		    Errorsetter(EasyItem).LastError = libcURL.Errors.FEATURE_UNAVAILABLE
@@ -868,10 +906,13 @@ Protected Module libcURL
 	#tag Method, Flags = &h1
 		Protected Function URLEncode(Data As String, Optional EasyItem As libcURL.EasyHandle) As String
 		  ' Returns the Data encoded using percent encoding as defined in rfc2396
+		  ' curl_easy_escape needs a curl_easy handle to encode data. If EasyItem
+		  ' is not Nil, then the EasyItem is used; otherwise a new EasyHandle is constructed.
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_escape.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLEncode
 		  
+		  If Data = "" Then Return ""
 		  If EasyItem = Nil Then EasyItem = New libcURL.EasyHandle
 		  If Not libcURL.Version.IsAtLeast(7, 15, 4) Then
 		    Errorsetter(EasyItem).LastError = libcURL.Errors.FEATURE_UNAVAILABLE

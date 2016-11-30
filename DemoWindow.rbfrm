@@ -3479,7 +3479,7 @@ End
 #tag Events DeleteCookiesButton
 	#tag Event
 		Sub Action()
-		  If Not Client.Cookies.DeleteSession Then Raise New libcURL.cURLException(Client.EasyItem)
+		  If Not Client.Cookies.NewSession Then Raise New libcURL.cURLException(Client.EasyItem)
 		  UpdateCookieList()
 		End Sub
 	#tag EndEvent
