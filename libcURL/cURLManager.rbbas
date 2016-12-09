@@ -383,16 +383,19 @@ Protected Class cURLManager
 		  If mDownloadMB <> Nil And mEasyItem.DownloadStream <> Nil And mEasyItem.DownloadStream IsA BinaryStream Then 
 		    BinaryStream(mEasyItem.DownloadStream).Close
 		  End If
+		  
 		  Dim status As Integer = Item.LastError
+		  mIsTransferComplete = True
+		  If Cookies.Enabled Then Cookies.Invalidate
+		  
 		  If status <> 0 Then
 		    RaiseEvent Error(status)
 		  Else
 		    RaiseEvent TransferComplete(Me.GetInfo(libcURL.Info.SIZE_DOWNLOAD).Int32Value, Me.GetInfo(libcURL.Info.SIZE_UPLOAD).Int32Value)
 		  End If
-		  mIsTransferComplete = True
+		  
 		  mEasyItem.ClearFormData()
 		  mUploadMB = Nil
-		  If Cookies.Enabled Then Cookies.Invalidate
 		  If Item.LastError <> status Then ErrorSetter(Item).LastError = status
 		End Sub
 	#tag EndMethod
