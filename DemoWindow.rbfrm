@@ -51,7 +51,7 @@ Begin Window DemoWindow
       TextUnit        =   0
       Top             =   119
       Underline       =   ""
-      Value           =   3
+      Value           =   4
       Visible         =   True
       Width           =   596
       Begin Listbox Headers
@@ -1981,7 +1981,7 @@ Begin Window DemoWindow
       TextUnit        =   0
       Top             =   0
       Underline       =   ""
-      Value           =   0
+      Value           =   3
       Visible         =   True
       Width           =   246
       Begin PushButton PushButton1
@@ -2339,7 +2339,7 @@ Begin Window DemoWindow
       LockBottom      =   ""
       LockedInPosition=   False
       LockLeft        =   True
-      LockRight       =   ""
+      LockRight       =   True
       LockTop         =   True
       Mask            =   ""
       Multiline       =   True
