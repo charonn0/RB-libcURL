@@ -270,7 +270,17 @@ Protected Class CookieEngine
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine.SetCookie
 		  
 		  Me.Invalidate
-		  Return Owner.SetOption(libcURL.Opts.COOKIELIST, RawCookie)
+		  If Left(RawCookie, 7) <> "Cookie:" Then Return Owner.SetOption(libcURL.Opts.COOKIELIST, RawCookie)
+		  
+		  ' convert the Cookie header into one or more Set-Cookie headers
+		  Dim s() As String = Split(RawCookie, ";")
+		  Dim count As Integer = UBound(s)
+		  For i As Integer = 0 To count
+		    Dim ck As String = s(i).Trim
+		    If ck = "" Then Continue
+		    If Not Me.SetCookie("Set-" + ck) Then Return False
+		  Next
+		  Return True
 		End Function
 	#tag EndMethod
 
