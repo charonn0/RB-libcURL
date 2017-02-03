@@ -273,12 +273,13 @@ Protected Class CookieEngine
 		  If Left(RawCookie, 7) <> "Cookie:" Then Return Owner.SetOption(libcURL.Opts.COOKIELIST, RawCookie)
 		  
 		  ' convert the Cookie header into one or more Set-Cookie headers
-		  Dim s() As String = Split(RawCookie, ";")
+		  ' Since no domain name is specified these will be 'global' cookies.
+		  Dim s() As String = Split(Replace(RawCookie, "Cookie: ", ""), ";")
 		  Dim count As Integer = UBound(s)
 		  For i As Integer = 0 To count
 		    Dim ck As String = s(i).Trim
 		    If ck = "" Then Continue
-		    If Not Me.SetCookie("Set-" + ck) Then Return False
+		    If Not Me.SetCookie("Set-Cookie: " + ck) Then Return False
 		  Next
 		  Return True
 		End Function
