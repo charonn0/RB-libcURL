@@ -28,11 +28,13 @@ Inherits libcURL.cURLHandle
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm.AddElement
 		  
 		  Dim lenflag As Integer
-		  If libcURL.Version.IsAtLeast(7, 46, 0) Then
-		    lenflag = CURLFORM_CONTENTLEN
-		  Else
-		    lenflag = CURLFORM_CONTENTSLENGTH
-		  End If
+		  ' CURLFORM_CONTENTLEN is supposed to supercede CURLFORM_CONTENTSLENGTH as of 7.46.0,
+		  ' but it doesn't seem to work for me...
+		  //If libcURL.Version.IsAtLeast(7, 46, 0) Then
+		  //lenflag = CURLFORM_CONTENTLEN
+		  //Else
+		  lenflag = CURLFORM_CONTENTSLENGTH
+		  //End If
 		  Dim n As MemoryBlock = Name + Chr(0)
 		  If ValueSize = 0 Then
 		    Return FormAddPtr(CURLFORM_COPYNAME, n, CURLFORM_STREAM, Ptr(ValueCallbackHandler.Handle))
