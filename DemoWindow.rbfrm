@@ -51,7 +51,7 @@ Begin Window DemoWindow
       TextUnit        =   0
       Top             =   119
       Underline       =   ""
-      Value           =   4
+      Value           =   2
       Visible         =   True
       Width           =   596
       Begin Listbox Headers
@@ -1739,7 +1739,7 @@ Begin Window DemoWindow
          HelpTag         =   ""
          Index           =   -2147483648
          InitialParent   =   "TabPanel2"
-         InitialValue    =   "Default SSL/TLS\r\nTLSv1\r\nSSLv2\r\nSSLv3\r\nTLSv1.0\r\nTLSv1.1\r\nTLSv1.2"
+         InitialValue    =   "Default SSL/TLS\r\nSSLv2\r\nSSLv3\r\nTLSv1.X\r\nTLSv1.0\r\nTLSv1.1\r\nTLSv1.2"
          Italic          =   False
          Left            =   480
          ListIndex       =   0
@@ -3140,11 +3140,11 @@ End
 		    Case libcURL.SSLVersion.Default
 		      SSLVer.ListIndex = 0
 		    Case libcURL.SSLVersion.SSLv2
-		      SSLVer.ListIndex = 2
-		    Case libcURL.SSLVersion.SSLv3
-		      SSLVer.ListIndex = 3
-		    Case libcURL.SSLVersion.TLSv1
 		      SSLVer.ListIndex = 1
+		    Case libcURL.SSLVersion.SSLv3
+		      SSLVer.ListIndex = 2
+		    Case libcURL.SSLVersion.TLSv1
+		      SSLVer.ListIndex = 3
 		    Case libcURL.SSLVersion.TLSv1_0
 		      SSLVer.ListIndex = 4
 		    Case libcURL.SSLVersion.TLSv1_1
@@ -3510,7 +3510,7 @@ End
 		Sub Change()
 		  If mLockUI Then Return
 		  Select Case Me.Text
-		  Case "TLSv1"
+		  Case "TLSv1.X"
 		    Client.EasyItem.SSLVersion = libcURL.SSLVersion.TLSv1
 		  Case "SSLv2"
 		    Client.EasyItem.SSLVersion = libcURL.SSLVersion.SSLv2

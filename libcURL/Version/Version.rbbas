@@ -143,6 +143,8 @@ Protected Module Version
 	#tag ComputedProperty, Flags = &h1
 		#tag Getter
 			Get
+			  ' See: https://curl.haxx.se/libcurl/c/curl_version_info.html#CURLVERSIONASYNCHDNS
+			  
 			  Return BitAnd(Features, FEATURE_ASYNCHDNS) = FEATURE_ASYNCHDNS  // asynchronous dns resolves
 			End Get
 		#tag EndGetter

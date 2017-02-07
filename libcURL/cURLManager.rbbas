@@ -22,22 +22,27 @@ Protected Class cURLManager
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.Close
 		  
 		  If mMultiItem <> Nil Then mMultiItem.Close()
-		  If mEasyItem <> Nil And mRemoveHandlers Then
+		  If mEasyItem <> Nil Then
 		    #pragma BreakOnExceptions Off
 		    Try
-		      RemoveHandler mEasyItem.DebugMessage, WeakAddressOf _DebugMessageHandler
+		      If mRemoveDebugHandler Then RemoveHandler mEasyItem.DebugMessage, WeakAddressOf _DebugMessageHandler
 		    Catch
+		    Finally
+		      mRemoveDebugHandler = False
 		    End Try
 		    Try
-		      RemoveHandler mEasyItem.HeaderReceived, WeakAddressOf _HeaderReceivedHandler
+		      If mRemoveHeaderHandler Then RemoveHandler mEasyItem.HeaderReceived, WeakAddressOf _HeaderReceivedHandler
 		    Catch
+		    Finally
+		      mRemoveHeaderHandler = False
 		    End Try
 		    Try
-		      RemoveHandler mEasyItem.Progress, WeakAddressOf _ProgressHandler
+		      If mRemoveProgressHandler Then RemoveHandler mEasyItem.Progress, WeakAddressOf _ProgressHandler
 		    Catch
+		    Finally
+		      mRemoveProgressHandler = False
 		    End Try
 		    #pragma BreakOnExceptions On
-		    mRemoveHandlers = False
 		  End If
 		  
 		  mEasyItem = Nil
@@ -434,18 +439,23 @@ Protected Class cURLManager
 			  Me.Close()
 			  Try
 			    AddHandler value.DebugMessage, WeakAddressOf _DebugMessageHandler
+			    mRemoveDebugHandler = True
 			  Catch
+			    mRemoveDebugHandler = False
 			  End Try
 			  Try
 			    AddHandler value.HeaderReceived, WeakAddressOf _HeaderReceivedHandler
+			    mRemoveHeaderHandler = True
 			  Catch
+			    mRemoveHeaderHandler = False
 			  End Try
 			  Try
 			    AddHandler value.Progress, WeakAddressOf _ProgressHandler
+			    mRemoveProgressHandler = True
 			  Catch
+			    mRemoveProgressHandler = False
 			  End Try
 			  mEasyItem = value
-			  mRemoveHandlers = True
 			End Set
 		#tag EndSetter
 		EasyItem As libcURL.EasyHandle
@@ -511,7 +521,15 @@ Protected Class cURLManager
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private mRemoveHandlers As Boolean
+		Private mRemoveDebugHandler As Boolean
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mRemoveHeaderHandler As Boolean
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mRemoveProgressHandler As Boolean
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
