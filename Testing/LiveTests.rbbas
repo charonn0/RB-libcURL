@@ -58,10 +58,32 @@ Protected Module LiveTests
 		Private Sub TestCookieGet()
 		  mSession.Cookies.Enabled = True
 		  If Not mSession.Get("https://nghttp2.org/httpbin/cookies/set?k2=v2&k1=v1") Then Return
+		  Assert(mSession.IsSSLCertOK)
+		  Assert(mSession.Cookies.Count = 2)
+		  Assert(mSession.GetCookie("k2", "nghttp2.org") = "v2")
+		  Assert(mSession.GetCookie("k1", "nghttp2.org") = "v1")
+		  Assert(mSession.GetCookie("k2", "") = "v2")
+		  Assert(mSession.GetCookie("k1", "") = "v1")
+		  Assert(mSession.GetCookie("invalid", "nghttp2.org") = "")
+		  Assert(mSession.GetCookie("invalid", "") = "")
+		  
 		  Dim d As New Dictionary
 		  Dim i As Integer = -1
 		  Do
 		    i = mSession.Cookies.Lookup("", "nghttp2.org", i + 1)
+		    If i > -1 Then
+		      d.Value(mSession.Cookies.Name(i)) = mSession.Cookies.Value(i)
+		    End If
+		  Loop Until i < 0
+		  
+		  Assert(d.Count = 2)
+		  Assert(d.Value("k2") = "v2")
+		  Assert(d.Value("k1") = "v1")
+		  
+		  d = New Dictionary
+		  i = -1
+		  Do
+		    i = mSession.Cookies.Lookup("", "", i + 1)
 		    If i > -1 Then
 		      d.Value(mSession.Cookies.Name(i)) = mSession.Cookies.Value(i)
 		    End If
@@ -133,6 +155,7 @@ Protected Module LiveTests
 		  If Not mSession.Get("https://nghttp2.org/httpbin/redirect/6") Then Return
 		  Assert(mSession.EasyItem.URL = "https://nghttp2.org/httpbin/get")
 		  Assert(Not mSession.Get("https://nghttp2.org/httpbin/redirect/7"))
+		  Assert(mSession.LastError = libcURL.Errors.TOO_MANY_REDIRECTS)
 		End Sub
 	#tag EndMethod
 
