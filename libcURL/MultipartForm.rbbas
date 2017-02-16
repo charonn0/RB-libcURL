@@ -1639,19 +1639,19 @@ Inherits libcURL.cURLHandle
 		  If FromDict = Nil Then Return
 		  For Each item As String In FromDict.Keys
 		    Dim value As Variant = FromDict.Value(item)
-		    If VarType(value) = Variant.TypeString Then
+		    Select Case True
+		    Case VarType(value) = Variant.TypeString
 		      If Not Me.AddElement(item, value.StringValue) Then Raise New cURLException(Me)
 		      
-		    ElseIf VarType(value) = Variant.TypeObject Then
-		      Select Case value
-		      Case IsA FolderItem
-		        If Not Me.AddElement(item, FolderItem(value)) Then Raise New cURLException(Me)
-		      Case IsA libcURL.EasyHandle
-		        If Not Me.AddElement(item, EasyHandle(value), 0) Then Raise New cURLException(Me)
-		      Else
-		        Raise New UnsupportedFormatException
-		      End Select
-		    End If
+		    Case value IsA FolderItem
+		      If Not Me.AddElement(item, FolderItem(value)) Then Raise New cURLException(Me)
+		      
+		    Case value IsA libcURL.EasyHandle
+		      If Not Me.AddElement(item, EasyHandle(value), 0) Then Raise New cURLException(Me)
+		      
+		    Else
+		      Raise New UnsupportedFormatException
+		    End Select
 		  Next
 		End Sub
 	#tag EndMethod
