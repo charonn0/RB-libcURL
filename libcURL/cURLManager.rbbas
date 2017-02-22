@@ -389,19 +389,19 @@ Protected Class cURLManager
 		    BinaryStream(mEasyItem.DownloadStream).Close
 		  End If
 		  
-		  Dim status As Integer = Item.LastError
+		  mLastTransferError = Item.LastError
 		  mIsTransferComplete = True
 		  If Cookies.Enabled Then Cookies.Invalidate
 		  
-		  If status <> 0 Then
-		    RaiseEvent Error(status)
+		  If mLastTransferError <> 0 Then
+		    RaiseEvent Error(mLastTransferError)
 		  Else
 		    RaiseEvent TransferComplete(Me.GetInfo(libcURL.Info.SIZE_DOWNLOAD).Int32Value, Me.GetInfo(libcURL.Info.SIZE_UPLOAD).Int32Value)
 		  End If
 		  
 		  mEasyItem.ClearFormData()
 		  mUploadMB = Nil
-		  If Item.LastError <> status Then ErrorSetter(Item).LastError = status
+		  ErrorSetter(Item).LastError = mLastTransferError
 		End Sub
 	#tag EndMethod
 
@@ -514,6 +514,10 @@ Protected Class cURLManager
 
 	#tag Property, Flags = &h21
 		Private mIsTransferComplete As Boolean
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mLastTransferError As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
