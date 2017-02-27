@@ -43,6 +43,14 @@ Protected Module Testing
 		    TestResult = 5
 		    Return False
 		  End Try
+		  
+		  Try
+		    TestDateParse()
+		  Catch
+		    TestResult = 6
+		    Return False
+		  End Try
+		  
 		  #If RunLiveTests Then
 		    Return Testing.LiveTests.RunTests()
 		  #else
@@ -131,6 +139,29 @@ Protected Module Testing
 		    Assert(c.Cookies.Domain(index) = ".example.net")
 		    Assert(c.Cookies.Path(index) = "/")
 		  End If
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub TestDateParse()
+		  Dim expiry As Date
+		  Assert(libcURL.ParseDate("Wed, 21 Apr 2021 02:55:26 GMT", expiry))
+		  Assert(expiry.DayOfWeek = 4) ' wed
+		  Assert(expiry.GMTOffset = 0)
+		  Assert(expiry.Hour = 2)
+		  Assert(expiry.Minute = 55)
+		  Assert(expiry.Second = 26)
+		  Assert(expiry.Month = 4) ' april
+		  Assert(expiry.Day = 21)
+		  
+		  Assert(libcURL.ParseDate("Sun, 06 Nov 1994 08:49:37 CET", expiry))
+		  Assert(expiry.DayOfWeek = 1) ' sun
+		  Assert(expiry.GMTOffset = 0)
+		  Assert(expiry.Hour = 7)
+		  Assert(expiry.Minute = 49)
+		  Assert(expiry.Second = 37)
+		  Assert(expiry.Month = 11) ' nov
+		  Assert(expiry.Day = 6)
 		End Sub
 	#tag EndMethod
 
