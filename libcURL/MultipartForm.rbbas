@@ -1626,7 +1626,8 @@ Inherits libcURL.cURLHandle
 		Sub Operator_Convert(FromDict As Dictionary)
 		  ' Overloads the conversion operator(=), permitting implicit and explicit conversion from a Dictionary
 		  ' into a MultipartForm. The dictionary contains NAME:VALUE pairs comprising HTML form elements: NAME
-		  ' is a string containing the form-element name; VALUE may be a string or a FolderItem.
+		  ' is a string containing the form-element name; VALUE may be a string, FolderItem, or an instance of
+		  ' EasyHandle whose DataNeeded event will be raised when the form is actually used.
 		  '
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm.Operator_Convert
@@ -1637,6 +1638,8 @@ Inherits libcURL.cURLHandle
 		    Me.Destructor() ' free the previous form data
 		  End If
 		  If FromDict = Nil Then Return
+		  
+		  ' loop over the dictionary
 		  For Each item As String In FromDict.Keys
 		    Dim value As Variant = FromDict.Value(item)
 		    Select Case True
@@ -1646,7 +1649,7 @@ Inherits libcURL.cURLHandle
 		    Case value IsA FolderItem
 		      If Not Me.AddElement(item, FolderItem(value)) Then Raise New cURLException(Me)
 		      
-		    Case value IsA libcURL.EasyHandle
+		    Case value IsA libcURL.EasyHandle ' rtfm about CURLFORM_STREAM before using this
 		      If Not Me.AddElement(item, EasyHandle(value), 0) Then Raise New cURLException(Me)
 		      
 		    Else
@@ -1678,8 +1681,9 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Function Serialize(WriteTo As Writeable) As Boolean
-		  ' Serialize the form structure into the passed object. The serialized form may be used with
-		  ' other HTTP libraries, including the built-in HTTPSocket.
+		  ' Serialize the form and write the output to WriteTo. The serialized form may be used with
+		  ' other HTTP libraries, including the built-in HTTPSocket. If WriteTo is Nil then the 
+		  ' SerializePart event will be raised in lieu of writing the data to a stream.
 		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_formget.html
