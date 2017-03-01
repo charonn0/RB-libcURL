@@ -174,6 +174,7 @@ Begin Window DemoWindow
          Selectable      =   False
          TabIndex        =   2
          TabPanelIndex   =   3
+         TabStop         =   True
          Text            =   "CA List:"
          TextAlign       =   2
          TextColor       =   &h000000
@@ -208,6 +209,7 @@ Begin Window DemoWindow
          Selectable      =   False
          TabIndex        =   3
          TabPanelIndex   =   3
+         TabStop         =   True
          Text            =   "Client certificate:"
          TextAlign       =   2
          TextColor       =   &h000000
@@ -242,6 +244,7 @@ Begin Window DemoWindow
          Selectable      =   True
          TabIndex        =   4
          TabPanelIndex   =   3
+         TabStop         =   True
          Text            =   "Not specified"
          TextAlign       =   0
          TextColor       =   &h00464646
@@ -338,6 +341,7 @@ Begin Window DemoWindow
          Selectable      =   True
          TabIndex        =   7
          TabPanelIndex   =   3
+         TabStop         =   True
          Text            =   "Not specified"
          TextAlign       =   0
          TextColor       =   &h00464646
@@ -434,6 +438,7 @@ Begin Window DemoWindow
          Selectable      =   False
          TabIndex        =   22
          TabPanelIndex   =   3
+         TabStop         =   True
          Text            =   "Interface:"
          TextAlign       =   0
          TextColor       =   &h000000
@@ -757,6 +762,7 @@ Begin Window DemoWindow
          Selectable      =   False
          TabIndex        =   23
          TabPanelIndex   =   3
+         TabStop         =   True
          Text            =   "Proxy server:"
          TextAlign       =   0
          TextColor       =   &h000000
@@ -834,6 +840,7 @@ Begin Window DemoWindow
          Selectable      =   False
          TabIndex        =   25
          TabPanelIndex   =   3
+         TabStop         =   True
          Text            =   "Proxy type:"
          TextAlign       =   0
          TextColor       =   &h000000
@@ -901,6 +908,7 @@ Begin Window DemoWindow
          Selectable      =   False
          TabIndex        =   1
          TabPanelIndex   =   4
+         TabStop         =   True
          Text            =   "Enter a curl command line:"
          TextAlign       =   0
          TextColor       =   &h000000
@@ -1190,6 +1198,7 @@ Begin Window DemoWindow
          Scope           =   0
          TabIndex        =   1
          TabPanelIndex   =   5
+         TabStop         =   True
          TextFont        =   "System"
          TextSize        =   0
          TextUnit        =   0
@@ -1522,6 +1531,7 @@ Begin Window DemoWindow
             Selectable      =   False
             TabIndex        =   5
             TabPanelIndex   =   5
+            TabStop         =   True
             Text            =   "Cookiejar:"
             TextAlign       =   2
             TextColor       =   &h000000
@@ -1649,6 +1659,7 @@ Begin Window DemoWindow
             Selectable      =   False
             TabIndex        =   9
             TabPanelIndex   =   5
+            TabStop         =   True
             Text            =   "Cookies known: 0"
             TextAlign       =   0
             TextColor       =   &h000000
@@ -1683,6 +1694,7 @@ Begin Window DemoWindow
             Selectable      =   False
             TabIndex        =   10
             TabPanelIndex   =   5
+            TabStop         =   True
             Text            =   "Cookies shown: 0"
             TextAlign       =   0
             TextColor       =   &h000000
@@ -1845,14 +1857,18 @@ Begin Window DemoWindow
       End
    End
    Begin cURLClient Client
+      Enabled         =   True
       Height          =   32
       Index           =   -2147483648
       IsSSLCertOK     =   ""
       Left            =   7
       LockedInPosition=   False
       Scope           =   0
+      TabIndex        =   1
       TabPanelIndex   =   0
+      TabStop         =   True
       Top             =   437
+      Visible         =   True
       Width           =   32
    End
    Begin TextField TextField1
@@ -1898,6 +1914,7 @@ Begin Window DemoWindow
       Width           =   313
    End
    Begin Thread GetThread
+      Enabled         =   True
       Height          =   32
       Index           =   -2147483648
       Left            =   43
@@ -1905,11 +1922,15 @@ Begin Window DemoWindow
       Priority        =   5
       Scope           =   0
       StackSize       =   0
+      TabIndex        =   3
       TabPanelIndex   =   0
+      TabStop         =   True
       Top             =   437
+      Visible         =   True
       Width           =   32
    End
    Begin Thread PutThread
+      Enabled         =   True
       Height          =   32
       Index           =   -2147483648
       Left            =   80
@@ -1917,11 +1938,15 @@ Begin Window DemoWindow
       Priority        =   5
       Scope           =   0
       StackSize       =   0
+      TabIndex        =   4
       TabPanelIndex   =   0
+      TabStop         =   True
       Top             =   437
+      Visible         =   True
       Width           =   32
    End
    Begin Thread PostThread
+      Enabled         =   True
       Height          =   32
       Index           =   -2147483648
       Left            =   117
@@ -1929,8 +1954,11 @@ Begin Window DemoWindow
       Priority        =   5
       Scope           =   0
       StackSize       =   0
+      TabIndex        =   5
       TabPanelIndex   =   0
+      TabStop         =   True
       Top             =   437
+      Visible         =   True
       Width           =   32
    End
    Begin ProgressBar ProgressUpload
@@ -1948,7 +1976,9 @@ Begin Window DemoWindow
       LockTop         =   True
       Maximum         =   100
       Scope           =   0
+      TabIndex        =   6
       TabPanelIndex   =   0
+      TabStop         =   True
       Top             =   35
       Value           =   0
       Visible         =   True
@@ -2311,7 +2341,9 @@ Begin Window DemoWindow
       LockTop         =   True
       Maximum         =   100
       Scope           =   0
+      TabIndex        =   8
       TabPanelIndex   =   0
+      TabStop         =   True
       Top             =   47
       Value           =   0
       Visible         =   True
@@ -2363,6 +2395,7 @@ Begin Window DemoWindow
       Width           =   332
    End
    Begin Timer GUITimer
+      Enabled         =   True
       Height          =   32
       Index           =   -2147483648
       Left            =   190
@@ -2370,11 +2403,15 @@ Begin Window DemoWindow
       Mode            =   0
       Period          =   1
       Scope           =   0
+      TabIndex        =   10
       TabPanelIndex   =   0
+      TabStop         =   True
       Top             =   437
+      Visible         =   True
       Width           =   32
    End
    Begin Timer ProgressTimer
+      Enabled         =   True
       Height          =   32
       Index           =   -2147483648
       Left            =   224
@@ -2382,11 +2419,15 @@ Begin Window DemoWindow
       Mode            =   1
       Period          =   10
       Scope           =   0
+      TabIndex        =   11
       TabPanelIndex   =   0
+      TabStop         =   True
       Top             =   437
+      Visible         =   True
       Width           =   32
    End
    Begin Thread HeadThread
+      Enabled         =   True
       Height          =   32
       Index           =   -2147483648
       Left            =   155
@@ -2394,8 +2435,11 @@ Begin Window DemoWindow
       Priority        =   5
       Scope           =   0
       StackSize       =   0
+      TabIndex        =   12
       TabPanelIndex   =   0
+      TabStop         =   True
       Top             =   437
+      Visible         =   True
       Width           =   32
    End
    Begin PushButton PauseButton
@@ -2498,7 +2542,7 @@ End
 #tag WindowCode
 	#tag Event
 		Sub Open()
-		  Me.Title = Me.Title + " - " + libcURL.Version.Name
+		  Me.Title = Me.Title + " - " + libcURL.Version.UserAgent
 		  Client.EasyItem.UseErrorBuffer = True
 		End Sub
 	#tag EndEvent
