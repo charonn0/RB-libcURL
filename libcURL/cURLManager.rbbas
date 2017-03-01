@@ -58,7 +58,7 @@ Protected Class cURLManager
 		  
 		  If mEasyItem = Nil Then
 		    mEasyItem = New libcURL.EasyHandle
-		    mEasyItem.UserAgent = libcURL.Version.Name
+		    mEasyItem.UserAgent = libcURL.Version.UserAgent
 		    mEasyItem.Secure = True
 		    mEasyItem.CA_ListFile = libcURL.Default_CA_File
 		    mEasyItem.FailOnServerError = True
