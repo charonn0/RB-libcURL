@@ -36,8 +36,7 @@ Protected Module Version
 		  Static prots() As String
 		  If UBound(prots) > -1 Or Not System.IsFunctionAvailable("curl_version", "libcurl") Then Return prots
 		  
-		  Dim ve As CURLVersion = libcURL.Version.Struct
-		  Dim mb As MemoryBlock = ve.Protocols.Ptr(0)
+		  Dim mb As MemoryBlock = Struct.Protocols.Ptr(0)
 		  Dim s As String
 		  Dim i As Integer
 		  Do
