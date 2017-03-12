@@ -174,7 +174,6 @@ Begin Window DemoWindow
          Selectable      =   False
          TabIndex        =   2
          TabPanelIndex   =   3
-         TabStop         =   True
          Text            =   "CA List:"
          TextAlign       =   2
          TextColor       =   &h000000
@@ -209,7 +208,6 @@ Begin Window DemoWindow
          Selectable      =   False
          TabIndex        =   3
          TabPanelIndex   =   3
-         TabStop         =   True
          Text            =   "Client certificate:"
          TextAlign       =   2
          TextColor       =   &h000000
@@ -244,7 +242,6 @@ Begin Window DemoWindow
          Selectable      =   True
          TabIndex        =   4
          TabPanelIndex   =   3
-         TabStop         =   True
          Text            =   "Not specified"
          TextAlign       =   0
          TextColor       =   &h00464646
@@ -341,7 +338,6 @@ Begin Window DemoWindow
          Selectable      =   True
          TabIndex        =   7
          TabPanelIndex   =   3
-         TabStop         =   True
          Text            =   "Not specified"
          TextAlign       =   0
          TextColor       =   &h00464646
@@ -438,7 +434,6 @@ Begin Window DemoWindow
          Selectable      =   False
          TabIndex        =   22
          TabPanelIndex   =   3
-         TabStop         =   True
          Text            =   "Interface:"
          TextAlign       =   0
          TextColor       =   &h000000
@@ -762,7 +757,6 @@ Begin Window DemoWindow
          Selectable      =   False
          TabIndex        =   23
          TabPanelIndex   =   3
-         TabStop         =   True
          Text            =   "Proxy server:"
          TextAlign       =   0
          TextColor       =   &h000000
@@ -840,7 +834,6 @@ Begin Window DemoWindow
          Selectable      =   False
          TabIndex        =   25
          TabPanelIndex   =   3
-         TabStop         =   True
          Text            =   "Proxy type:"
          TextAlign       =   0
          TextColor       =   &h000000
@@ -908,7 +901,6 @@ Begin Window DemoWindow
          Selectable      =   False
          TabIndex        =   1
          TabPanelIndex   =   4
-         TabStop         =   True
          Text            =   "Enter a curl command line:"
          TextAlign       =   0
          TextColor       =   &h000000
@@ -1121,7 +1113,7 @@ Begin Window DemoWindow
          GridLinesVertical=   0
          HasHeading      =   True
          HeadingIndex    =   -1
-         Height          =   83
+         Height          =   61
          HelpTag         =   ""
          Hierarchical    =   ""
          Index           =   -2147483648
@@ -1198,7 +1190,6 @@ Begin Window DemoWindow
          Scope           =   0
          TabIndex        =   1
          TabPanelIndex   =   5
-         TabStop         =   True
          TextFont        =   "System"
          TextSize        =   0
          TextUnit        =   0
@@ -1531,7 +1522,6 @@ Begin Window DemoWindow
             Selectable      =   False
             TabIndex        =   5
             TabPanelIndex   =   5
-            TabStop         =   True
             Text            =   "Cookiejar:"
             TextAlign       =   2
             TextColor       =   &h000000
@@ -1659,7 +1649,6 @@ Begin Window DemoWindow
             Selectable      =   False
             TabIndex        =   9
             TabPanelIndex   =   5
-            TabStop         =   True
             Text            =   "Cookies known: 0"
             TextAlign       =   0
             TextColor       =   &h000000
@@ -1694,7 +1683,6 @@ Begin Window DemoWindow
             Selectable      =   False
             TabIndex        =   10
             TabPanelIndex   =   5
-            TabStop         =   True
             Text            =   "Cookies shown: 0"
             TextAlign       =   0
             TextColor       =   &h000000
@@ -1855,20 +1843,48 @@ Begin Window DemoWindow
          Width           =   170
          _ScrollWidth    =   -1
       End
+      Begin CheckBox ShowDataMsgs
+         AutoDeactivate  =   True
+         Bold            =   ""
+         Caption         =   "Show data messages"
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel2"
+         Italic          =   ""
+         Left            =   13
+         LockBottom      =   True
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   ""
+         LockTop         =   False
+         Scope           =   0
+         State           =   0
+         TabIndex        =   3
+         TabPanelIndex   =   1
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   372
+         Underline       =   ""
+         Value           =   False
+         Visible         =   True
+         Width           =   145
+      End
    End
    Begin cURLClient Client
-      Enabled         =   True
       Height          =   32
       Index           =   -2147483648
       IsSSLCertOK     =   ""
       Left            =   7
       LockedInPosition=   False
       Scope           =   0
-      TabIndex        =   1
       TabPanelIndex   =   0
-      TabStop         =   True
       Top             =   437
-      Visible         =   True
       Width           =   32
    End
    Begin TextField TextField1
@@ -1914,7 +1930,6 @@ Begin Window DemoWindow
       Width           =   313
    End
    Begin Thread GetThread
-      Enabled         =   True
       Height          =   32
       Index           =   -2147483648
       Left            =   43
@@ -1922,15 +1937,11 @@ Begin Window DemoWindow
       Priority        =   5
       Scope           =   0
       StackSize       =   0
-      TabIndex        =   3
       TabPanelIndex   =   0
-      TabStop         =   True
       Top             =   437
-      Visible         =   True
       Width           =   32
    End
    Begin Thread PutThread
-      Enabled         =   True
       Height          =   32
       Index           =   -2147483648
       Left            =   80
@@ -1938,15 +1949,11 @@ Begin Window DemoWindow
       Priority        =   5
       Scope           =   0
       StackSize       =   0
-      TabIndex        =   4
       TabPanelIndex   =   0
-      TabStop         =   True
       Top             =   437
-      Visible         =   True
       Width           =   32
    End
    Begin Thread PostThread
-      Enabled         =   True
       Height          =   32
       Index           =   -2147483648
       Left            =   117
@@ -1954,11 +1961,8 @@ Begin Window DemoWindow
       Priority        =   5
       Scope           =   0
       StackSize       =   0
-      TabIndex        =   5
       TabPanelIndex   =   0
-      TabStop         =   True
       Top             =   437
-      Visible         =   True
       Width           =   32
    End
    Begin ProgressBar ProgressUpload
@@ -1976,9 +1980,7 @@ Begin Window DemoWindow
       LockTop         =   True
       Maximum         =   100
       Scope           =   0
-      TabIndex        =   6
       TabPanelIndex   =   0
-      TabStop         =   True
       Top             =   35
       Value           =   0
       Visible         =   True
@@ -2341,9 +2343,7 @@ Begin Window DemoWindow
       LockTop         =   True
       Maximum         =   100
       Scope           =   0
-      TabIndex        =   8
       TabPanelIndex   =   0
-      TabStop         =   True
       Top             =   47
       Value           =   0
       Visible         =   True
@@ -2395,7 +2395,6 @@ Begin Window DemoWindow
       Width           =   332
    End
    Begin Timer GUITimer
-      Enabled         =   True
       Height          =   32
       Index           =   -2147483648
       Left            =   190
@@ -2403,15 +2402,11 @@ Begin Window DemoWindow
       Mode            =   0
       Period          =   1
       Scope           =   0
-      TabIndex        =   10
       TabPanelIndex   =   0
-      TabStop         =   True
       Top             =   437
-      Visible         =   True
       Width           =   32
    End
    Begin Timer ProgressTimer
-      Enabled         =   True
       Height          =   32
       Index           =   -2147483648
       Left            =   224
@@ -2419,15 +2414,11 @@ Begin Window DemoWindow
       Mode            =   1
       Period          =   10
       Scope           =   0
-      TabIndex        =   11
       TabPanelIndex   =   0
-      TabStop         =   True
       Top             =   437
-      Visible         =   True
       Width           =   32
    End
    Begin Thread HeadThread
-      Enabled         =   True
       Height          =   32
       Index           =   -2147483648
       Left            =   155
@@ -2435,11 +2426,8 @@ Begin Window DemoWindow
       Priority        =   5
       Scope           =   0
       StackSize       =   0
-      TabIndex        =   12
       TabPanelIndex   =   0
-      TabStop         =   True
       Top             =   437
-      Visible         =   True
       Width           =   32
    End
    Begin PushButton PauseButton
@@ -2473,38 +2461,6 @@ Begin Window DemoWindow
       Visible         =   True
       Width           =   80
    End
-   Begin CheckBox ShowDataMsgs
-      AutoDeactivate  =   True
-      Bold            =   ""
-      Caption         =   "Show data messages"
-      DataField       =   ""
-      DataSource      =   ""
-      Enabled         =   True
-      Height          =   20
-      HelpTag         =   ""
-      Index           =   -2147483648
-      InitialParent   =   ""
-      Italic          =   ""
-      Left            =   101
-      LockBottom      =   ""
-      LockedInPosition=   False
-      LockLeft        =   True
-      LockRight       =   ""
-      LockTop         =   True
-      Scope           =   0
-      State           =   0
-      TabIndex        =   14
-      TabPanelIndex   =   0
-      TabStop         =   True
-      TextFont        =   "System"
-      TextSize        =   0
-      TextUnit        =   0
-      Top             =   85
-      Underline       =   ""
-      Value           =   False
-      Visible         =   True
-      Width           =   145
-   End
    Begin PushButton AbortButton
       AutoDeactivate  =   True
       Bold            =   True
@@ -2535,6 +2491,37 @@ Begin Window DemoWindow
       Underline       =   ""
       Visible         =   True
       Width           =   24
+   End
+   Begin PushButton ResetButton
+      AutoDeactivate  =   True
+      Bold            =   ""
+      ButtonStyle     =   0
+      Cancel          =   ""
+      Caption         =   "Reset"
+      Default         =   ""
+      Enabled         =   True
+      Height          =   22
+      HelpTag         =   ""
+      Index           =   -2147483648
+      InitialParent   =   ""
+      Italic          =   ""
+      Left            =   90
+      LockBottom      =   ""
+      LockedInPosition=   False
+      LockLeft        =   True
+      LockRight       =   ""
+      LockTop         =   True
+      Scope           =   0
+      TabIndex        =   17
+      TabPanelIndex   =   0
+      TabStop         =   True
+      TextFont        =   "System"
+      TextSize        =   0
+      TextUnit        =   0
+      Top             =   85
+      Underline       =   ""
+      Visible         =   True
+      Width           =   80
    End
 End
 #tag EndWindow
@@ -2632,6 +2619,7 @@ End
 		Private Sub Populate()
 		  mLockUI = True
 		  PauseButton.Enabled = False
+		  ResetButton.Enabled = True
 		  PauseButton.Caption = "Pause"
 		  AbortButton.Enabled = False
 		  Dim cURLCode As Integer = Client.LastError
@@ -2710,6 +2698,93 @@ End
 		  
 		Finally
 		  mLockUI = False
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub ResetUI()
+		  mLockUI = True
+		  Try
+		    AutoDisconnect.Value = Client.EasyItem.AutoDisconnect
+		    Autoreferer.Value = Client.EasyItem.AutoReferer
+		    FailOnError.Value = Client.EasyItem.FailOnServerError
+		    FollowRedirects.Value = Client.EasyItem.FollowRedirects
+		    HTTPCompress.Value = Client.EasyItem.HTTPCompression
+		    HTTPPreserveMethod.Value = Client.EasyItem.HTTPPreserveMethod
+		    NoProgress.Value = Client.EasyItem.UseProgressEvent
+		    Secure.Value = Client.EasyItem.Secure
+		    UseCookies.Value = Client.Cookies.Enabled
+		    Verbose.Value = Client.EasyItem.Verbose
+		    
+		    If Client.Proxy.Address <> "" Then
+		      ProxyServer.Text = Client.Proxy.Address
+		      Select Case Client.Proxy.Type
+		      Case libcURL.ProxyType.HTTP
+		        ProxyTypes.ListIndex = 4
+		      Case libcURL.ProxyType.HTTP1_0
+		        ProxyTypes.ListIndex = 5
+		      Case libcURL.ProxyType.SOCKS4
+		        ProxyTypes.ListIndex = 0
+		      Case libcURL.ProxyType.SOCKS4A
+		        ProxyTypes.ListIndex = 1
+		      Case libcURL.ProxyType.SOCKS5
+		        ProxyTypes.ListIndex = 2
+		      Case libcURL.ProxyType.SOCKS5_HOSTNAME
+		        ProxyTypes.ListIndex = 3
+		      End Select
+		    Else
+		      ProxyServer.Text = ""
+		      ProxyTypes.ListIndex = -1
+		    End If
+		    
+		    Select Case Client.EasyItem.HTTPVersion
+		    Case 0, 2 ' default http/1.0
+		      HTTPVer.ListIndex = 0
+		    Case 1 'http/1.0
+		      HTTPVer.ListIndex = 1
+		    Case 3 ' HTTP2
+		      HTTPVer.ListIndex = 2
+		    End Select
+		    
+		    Select Case Client.EasyItem.SSLVersion
+		    Case libcURL.SSLVersion.Default
+		      SSLVer.ListIndex = 0
+		    Case libcURL.SSLVersion.SSLv2
+		      SSLVer.ListIndex = 1
+		    Case libcURL.SSLVersion.SSLv3
+		      SSLVer.ListIndex = 2
+		    Case libcURL.SSLVersion.TLSv1
+		      SSLVer.ListIndex = 3
+		    Case libcURL.SSLVersion.TLSv1_0
+		      SSLVer.ListIndex = 4
+		    Case libcURL.SSLVersion.TLSv1_1
+		      SSLVer.ListIndex = 5
+		    Case libcURL.SSLVersion.TLSv1_2
+		      SSLVer.ListIndex = 6
+		    End Select
+		    
+		    If Client.EasyItem.URL <> "" Then TextField1.Text = Client.EasyItem.URL
+		    
+		    nic.ListIndex = -1
+		    If Client.EasyItem.NetworkInterface <> Nil Then
+		      For i As Integer = 0 To nic.ListCount - 1
+		        If nic.RowTag(i) IsA NetworkInterface And NetworkInterface(nic.RowTag(i)).IPAddress = Client.EasyItem.NetworkInterface.IPAddress Then
+		          nic.ListIndex = i
+		          Exit For
+		        End If
+		      Next
+		    End If
+		    
+		    
+		    If Client.EasyItem.CA_ListFile <> Nil Then
+		      CAListFile.Text = Client.EasyItem.CA_ListFile.AbsolutePath
+		    Else
+		      CAListFile.Text = "Not specified"
+		    End If
+		    
+		  Finally
+		    mLockUI = False
+		  End Try
 		End Sub
 	#tag EndMethod
 
@@ -3137,81 +3212,7 @@ End
 		  End Try
 		  
 		  MsgBox("All options parsed successfully.")
-		  mLockUI = True
-		  Try
-		    AutoDisconnect.Value = Client.EasyItem.AutoDisconnect
-		    Autoreferer.Value = Client.EasyItem.AutoReferer
-		    FailOnError.Value = Client.EasyItem.FailOnServerError
-		    FollowRedirects.Value = Client.EasyItem.FollowRedirects
-		    HTTPCompress.Value = Client.EasyItem.HTTPCompression
-		    HTTPPreserveMethod.Value = Client.EasyItem.HTTPPreserveMethod
-		    NoProgress.Value = Client.EasyItem.UseProgressEvent
-		    Secure.Value = Client.EasyItem.Secure
-		    UseCookies.Value = Client.Cookies.Enabled
-		    Verbose.Value = Client.EasyItem.Verbose
-		    
-		    If Client.Proxy.Address <> "" Then
-		      ProxyServer.Text = Client.Proxy.Address
-		      Select Case Client.Proxy.Type
-		      Case libcURL.ProxyType.HTTP
-		        ProxyTypes.ListIndex = 4
-		      Case libcURL.ProxyType.HTTP1_0
-		        ProxyTypes.ListIndex = 5
-		      Case libcURL.ProxyType.SOCKS4
-		        ProxyTypes.ListIndex = 0
-		      Case libcURL.ProxyType.SOCKS4A
-		        ProxyTypes.ListIndex = 1
-		      Case libcURL.ProxyType.SOCKS5
-		        ProxyTypes.ListIndex = 2
-		      Case libcURL.ProxyType.SOCKS5_HOSTNAME
-		        ProxyTypes.ListIndex = 3
-		      End Select
-		    Else
-		      ProxyServer.Text = ""
-		      ProxyTypes.ListIndex = -1
-		    End If
-		    
-		    Select Case Client.EasyItem.HTTPVersion
-		    Case 0, 2 ' default http/1.0
-		      HTTPVer.ListIndex = 0
-		    Case 1 'http/1.0
-		      HTTPVer.ListIndex = 1
-		    Case 3 ' HTTP2
-		      HTTPVer.ListIndex = 2
-		    End Select
-		    
-		    Select Case Client.EasyItem.SSLVersion
-		    Case libcURL.SSLVersion.Default
-		      SSLVer.ListIndex = 0
-		    Case libcURL.SSLVersion.SSLv2
-		      SSLVer.ListIndex = 1
-		    Case libcURL.SSLVersion.SSLv3
-		      SSLVer.ListIndex = 2
-		    Case libcURL.SSLVersion.TLSv1
-		      SSLVer.ListIndex = 3
-		    Case libcURL.SSLVersion.TLSv1_0
-		      SSLVer.ListIndex = 4
-		    Case libcURL.SSLVersion.TLSv1_1
-		      SSLVer.ListIndex = 5
-		    Case libcURL.SSLVersion.TLSv1_2
-		      SSLVer.ListIndex = 6
-		    End Select
-		    
-		    If Client.EasyItem.URL <> "" Then TextField1.Text = Client.EasyItem.URL
-		    
-		    nic.ListIndex = -1
-		    If Client.EasyItem.NetworkInterface <> Nil Then
-		      For i As Integer = 0 To nic.ListCount - 1
-		        If nic.RowTag(i) IsA NetworkInterface And NetworkInterface(nic.RowTag(i)).IPAddress = Client.EasyItem.NetworkInterface.IPAddress Then
-		          nic.ListIndex = i
-		          Exit For
-		        End If
-		      Next
-		    End If
-		    
-		  Finally
-		    mLockUI = False
-		  End Try
+		  ResetUI()
 		End Sub
 	#tag EndEvent
 #tag EndEvents
@@ -3724,6 +3725,7 @@ End
 		    bs = BinaryStream.Create(f, True)
 		  End If
 		  PauseButton.Enabled = True
+		  ResetButton.Enabled = False
 		  AbortButton.Enabled = True
 		  Client.Get(TextField1.Text, bs)
 		End Sub
@@ -3738,6 +3740,7 @@ End
 		    ThreadStream = BinaryStream.Create(f, True)
 		  End If
 		  PauseButton.Enabled = True
+		  ResetButton.Enabled = False
 		  AbortButton.Enabled = True
 		  GetThread.Run
 		End Sub
@@ -3747,6 +3750,7 @@ End
 	#tag Event
 		Sub Action()
 		  PauseButton.Enabled = True
+		  ResetButton.Enabled = False
 		  AbortButton.Enabled = True
 		  Dim f As FolderItem = GetOpenFolderItem("")
 		  Dim bs As BinaryStream = BinaryStream.Open(f)
@@ -3758,6 +3762,7 @@ End
 	#tag Event
 		Sub Action()
 		  PauseButton.Enabled = True
+		  ResetButton.Enabled = False
 		  AbortButton.Enabled = True
 		  mPutTarget = GetOpenFolderItem("")
 		  mURL = TextField1.Text
@@ -3770,6 +3775,7 @@ End
 		Sub Action()
 		  If FormValue <> Nil Then
 		    PauseButton.Enabled = True
+		    ResetButton.Enabled = False
 		    AbortButton.Enabled = True
 		    If FormValue.Right = 0 Then ' URLEncoded
 		      Dim frm() As String = FormValue.Left
@@ -3788,6 +3794,7 @@ End
 	#tag Event
 		Sub Action()
 		  PauseButton.Enabled = True
+		  ResetButton.Enabled = False
 		  AbortButton.Enabled = True
 		  mURL = TextField1.Text
 		  PostThread.Run
@@ -3808,6 +3815,7 @@ End
 	#tag Event
 		Sub Action()
 		  PauseButton.Enabled = True
+		  ResetButton.Enabled = False
 		  AbortButton.Enabled = True
 		  mURL = TextField1.Text
 		  HeadThread.Run
@@ -3818,6 +3826,7 @@ End
 	#tag Event
 		Sub Action()
 		  PauseButton.Enabled = True
+		  ResetButton.Enabled = False
 		  AbortButton.Enabled = True
 		  Client.Head(TextField1.Text)
 		End Sub
@@ -3862,6 +3871,16 @@ End
 	#tag Event
 		Sub Action()
 		  Client.Abort()
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events ResetButton
+	#tag Event
+		Sub Action()
+		  If MsgBox("Reset all options to their default values?", 4 + 48, "Confirm reset") = 6 Then
+		    Client.Reset()
+		    ResetUI()
+		  End If
 		End Sub
 	#tag EndEvent
 #tag EndEvents
