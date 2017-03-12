@@ -105,7 +105,7 @@ Protected Class CookieEngine
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Flush(CookieFile As FolderItem = Nil) As Boolean
+		Attributes( deprecated = "libcURL.CookieEngine.WriteCookies" )  Function Flush(CookieFile As FolderItem = Nil) As Boolean
 		  ' Flushes all cookies to a file. If no CookieFile is specified as a parameter then the cookiejar property is used.
 		  '
 		  ' See:
@@ -235,7 +235,41 @@ Protected Class CookieEngine
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Reload(CookieFile As FolderItem = Nil) As Boolean
+		Sub ReadCookies(CookieFile As FolderItem, ReloadAll As Boolean = False)
+		  ' Reads cookies from a file and adds them to the cookie list. Calling this multiple times
+		  ' simply adds more cookies. To write the cookie list to a file, use the WriteCookies method.
+		  '
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/CURLOPT_COOKIEFILE.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine.ReadCookies
+		  
+		  If Not Owner.SetOption(libcURL.Opts.COOKIEFILE, CookieFile) Then Raise New cURLException(Owner)
+		  If ReloadAll Then Call Me.Reload()
+		  mEnabled = True
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Reload() As Boolean
+		  ' Reloads the cookie list from the previously-set CookieFile(s).
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine.Reload
+		  
+		  If Not libcURL.Version.IsAtLeast(7, 39, 0) Then
+		    ErrorSetter(Owner).LastError = libcURL.Errors.FEATURE_UNAVAILABLE
+		    Return False
+		    
+		  ElseIf Owner.SetOption(libcURL.Opts.COOKIELIST, "RELOAD") Then
+		    Me.Invalidate
+		    Return True
+		    
+		  End If
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Attributes( deprecated = "libcURL.CookieEngine.Reload" )  Function Reload(CookieFile As FolderItem) As Boolean
 		  ' Reloads the cookie list from the CookieFile. If no CookieFile is specified then the CookieJar is used.
 		  '
 		  ' See:
@@ -360,6 +394,25 @@ Protected Class CookieEngine
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function WriteCookies(CookieFile As FolderItem) As Boolean
+		  ' Writes the cookie list to the CookieFile. If CookieFile is Nil then cookies will be written
+		  ' to the most recently set cookie file; if no file was previously set then an exception will
+		  ' be raised.
+		  '
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/CURLOPT_COOKIEJAR.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine.WriteCookies
+		  
+		  If CookieFile <> Nil Then
+		    If Not Owner.SetOption(libcURL.Opts.COOKIEJAR, CookieFile) Then Return False
+		  End If
+		  
+		  Return (libcURL.Version.IsAtLeast(7, 17, 1) And Owner.SetOption(libcURL.Opts.COOKIELIST, "FLUSH")) Or Owner.LastError = 0
+		  
+		End Function
+	#tag EndMethod
+
 
 	#tag Note, Name = About this class
 		This class provides accessor methods to control libcurl's internal cookie engine.
@@ -407,7 +460,7 @@ Protected Class CookieEngine
 			  
 			End Set
 		#tag EndSetter
-		CookieJar As FolderItem
+		Attributes( deprecated = "libcURL.CookieEngine.ReadCookies" ) CookieJar As FolderItem
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h1
