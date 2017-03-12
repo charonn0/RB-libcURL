@@ -70,6 +70,7 @@ Inherits libcURL.cURLHandle
 		  mHandle = curl_easy_init()
 		  If mHandle > 0 Then
 		    If Instances = Nil Then Instances = New Dictionary
+		    mOptions = New Dictionary
 		    Instances.Value(mHandle) = New WeakRef(Me)
 		    InitCallbacks()
 		  Else
@@ -99,36 +100,40 @@ Inherits libcURL.cURLHandle
 		  Super.Constructor(CopyOpts.Flags)
 		  mHandle = curl_easy_duphandle(CopyOpts.Handle)
 		  If mHandle > 0 Then
+		    mOptions = New Dictionary
+		    For Each key As Integer In CopyOpts.mOptions.Keys
+		      If Not Me.SetOption(key, CopyOpts.mOptions.Value(key)) Then Raise New cURLException(Me)
+		    Next
 		    Instances.Value(mHandle) = New WeakRef(Me)
 		    InitCallbacks()
-		    If CopyOpts.mAuthMethods <> Nil Then Call Me.SetAuthMethods(CopyOpts.GetAuthMethods)
-		    mAutoDisconnect = CopyOpts.AutoDisconnect
-		    mAutoReferer = CopyOpts.AutoReferer
-		    If CopyOpts.mCA_ListFile <> Nil Then Me.CA_ListFile = CopyOpts.CA_ListFile
-		    mConnectionTimeout = CopyOpts.ConnectionTimeout
-		    mConnectionType = CopyOpts.ConnectionType
-		    Me.CookieEngine.Enabled = CopyOpts.CookieEngine.Enabled
-		    Me.UseErrorBuffer = CopyOpts.UseErrorBuffer
-		    mFailOnServerError = CopyOpts.FailOnServerError
-		    mFollowRedirects = CopyOpts.FollowRedirects
-		    mHTTPCompression = CopyOpts.HTTPCompression
-		    mHTTPPreserveMethod = CopyOpts.HTTPPreserveMethod
-		    mHTTPVersion = CopyOpts.HTTPVersion
-		    mMaxRedirects = CopyOpts.MaxRedirects
-		    mPassword = CopyOpts.Password
-		    If CopyOpts.mProxyEngine <> Nil Then
-		      Me.ProxyEngine.Address = CopyOpts.ProxyEngine.Address
-		      If CopyOpts.ProxyEngine.Port <> 1080 Then Me.ProxyEngine.Port = CopyOpts.ProxyEngine.Port
-		      If CopyOpts.ProxyEngine.Type <> libcURL.ProxyType.HTTP Then Me.ProxyEngine.Type = CopyOpts.ProxyEngine.Type
-		    End If
-		    mSecure = CopyOpts.Secure
-		    If CopyOpts.SSLVersion <> libcURL.SSLVersion.Default Then mSSLVersion = CopyOpts.SSLVersion
-		    mTimeOut = CopyOpts.TimeOut
-		    mUploadMode = CopyOpts.UploadMode
-		    mUserAgent = CopyOpts.UserAgent
-		    mUsername = CopyOpts.Username
-		    Me.Verbose = CopyOpts.Verbose
-		    mForm = CopyOpts.mForm
+		    'If CopyOpts.mAuthMethods <> Nil Then Call Me.SetAuthMethods(CopyOpts.GetAuthMethods)
+		    'mAutoDisconnect = CopyOpts.AutoDisconnect
+		    'mAutoReferer = CopyOpts.AutoReferer
+		    'If CopyOpts.mCA_ListFile <> Nil Then Me.CA_ListFile = CopyOpts.CA_ListFile
+		    'mConnectionTimeout = CopyOpts.ConnectionTimeout
+		    'mConnectionType = CopyOpts.ConnectionType
+		    'Me.CookieEngine.Enabled = CopyOpts.CookieEngine.Enabled
+		    'Me.UseErrorBuffer = CopyOpts.UseErrorBuffer
+		    'mFailOnServerError = CopyOpts.FailOnServerError
+		    'mFollowRedirects = CopyOpts.FollowRedirects
+		    'mHTTPCompression = CopyOpts.HTTPCompression
+		    'mHTTPPreserveMethod = CopyOpts.HTTPPreserveMethod
+		    'mHTTPVersion = CopyOpts.HTTPVersion
+		    'mMaxRedirects = CopyOpts.MaxRedirects
+		    'mPassword = CopyOpts.Password
+		    'If CopyOpts.mProxyEngine <> Nil Then
+		    'Me.ProxyEngine.Address = CopyOpts.ProxyEngine.Address
+		    'If CopyOpts.ProxyEngine.Port <> 1080 Then Me.ProxyEngine.Port = CopyOpts.ProxyEngine.Port
+		    'If CopyOpts.ProxyEngine.Type <> libcURL.ProxyType.HTTP Then Me.ProxyEngine.Type = CopyOpts.ProxyEngine.Type
+		    'End If
+		    'mSecure = CopyOpts.Secure
+		    'If CopyOpts.SSLVersion <> libcURL.SSLVersion.Default Then mSSLVersion = CopyOpts.SSLVersion
+		    'mTimeOut = CopyOpts.TimeOut
+		    'mUploadMode = CopyOpts.UploadMode
+		    'mUserAgent = CopyOpts.UserAgent
+		    'mUsername = CopyOpts.Username
+		    'Me.Verbose = CopyOpts.Verbose
+		    'mForm = CopyOpts.mForm
 		  Else
 		    mLastError = libcURL.Errors.INIT_FAILED
 		    Raise New cURLException(Me)
@@ -449,6 +454,12 @@ Inherits libcURL.cURLHandle
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function GetOption(OptionNumber As Integer, DefaultValue As Variant = Nil) As Variant
+		  Return mOptions.Lookup(OptionNumber, DefaultValue)
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h21
 		Private Shared Function HeaderCallback(char As Ptr, size As Integer, nmemb As Integer, UserData As Integer) As Integer
 		  ' This method is invoked by libcURL. DO NOT CALL THIS METHOD
@@ -651,6 +662,7 @@ Inherits libcURL.cURLHandle
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Reset
 		  
 		  curl_easy_reset(mHandle)
+		  mOptions = New Dictionary
 		  mAuthMethods = Nil
 		  mAutoDisconnect = False
 		  mAutoReferer = False
@@ -791,6 +803,7 @@ Inherits libcURL.cURLHandle
 		    libcURL.Opts.SSLCERT)
 		    ' These option numbers explicitly accept NULL. Refer to the curl documentation on the individual option numbers for details.
 		    If Nilable.IndexOf(OptionNumber) > -1 Then
+		      mOptions.Value(OptionNumber) = Nil
 		      Return Me.SetOptionPtr(OptionNumber, Nil)
 		    Else
 		      ' for all other option numbers reject NULL values.
@@ -807,9 +820,11 @@ Inherits libcURL.cURLHandle
 		    End If
 		    
 		  Case Variant.TypePtr, Variant.TypeInteger
+		    mOptions.Value(OptionNumber) = NewValue
 		    Return Me.SetOptionPtr(OptionNumber, NewValue.PtrValue)
 		    
 		  Case Variant.TypeString
+		    mOptions.Value(OptionNumber) = NewValue
 		    Dim mb As MemoryBlock = NewValue.CStringValue + Chr(0) ' make doubleplus sure it's null terminated
 		    Return Me.SetOptionPtr(OptionNumber, mb)
 		    
@@ -817,9 +832,11 @@ Inherits libcURL.cURLHandle
 		    ' To add support for a custom object type, add a block to this Select statement
 		    Select Case NewValue
 		    Case IsA MemoryBlock
+		      mOptions.Value(OptionNumber) = NewValue
 		      Return Me.SetOptionPtr(OptionNumber, NewValue.PtrValue)
 		      
 		    Case IsA FolderItem
+		      mOptions.Value(OptionNumber) = NewValue
 		      Return Me.SetOption(OptionNumber, FolderItem(NewValue).AbsolutePath)
 		      
 		    Case IsA Dictionary ' assume a multipart form
@@ -836,22 +853,27 @@ Inherits libcURL.cURLHandle
 		      Return Me.SetOption(OptionNumber, cURL.Handle)
 		      
 		    Case IsA cURLProgressCallback
+		      mOptions.Value(OptionNumber) = NewValue
 		      Dim p As cURLProgressCallback = NewValue
 		      Return Me.SetOptionPtr(OptionNumber, p)
 		      
 		    Case IsA cURLIOCallback
+		      mOptions.Value(OptionNumber) = NewValue
 		      Dim p As cURLIOCallback = NewValue
 		      Return Me.SetOptionPtr(OptionNumber, p)
 		      
 		    Case IsA cURLDebugCallback
+		      mOptions.Value(OptionNumber) = NewValue
 		      Dim p As cURLDebugCallback = NewValue
 		      Return Me.SetOptionPtr(OptionNumber, p)
 		      
 		    Case IsA cURLCloseCallback
+		      mOptions.Value(OptionNumber) = NewValue
 		      Dim p As cURLCloseCallback = NewValue
 		      Return Me.SetOptionPtr(OptionNumber, p)
 		      
 		    Case IsA cURLOpenCallback
+		      mOptions.Value(OptionNumber) = NewValue
 		      Dim p As cURLOpenCallback = NewValue
 		      Return Me.SetOptionPtr(OptionNumber, p)
 		      
@@ -1448,6 +1470,10 @@ Inherits libcURL.cURLHandle
 
 	#tag Property, Flags = &h21
 		Private mMaxRedirects As Integer = -1
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mOptions As Dictionary
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
