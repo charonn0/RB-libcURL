@@ -8,7 +8,7 @@ Protected Class ProxyEngine
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ProxyEngine.Constructor
 		  
 		  mOwner = New WeakRef(Owner)
-		  mUnifiedHeaders = libcURL.Version.IsAtLeast(7, 42, 1)
+		  mUnifiedHeaders = libcURL.Version.IsAtLeast(7, 42, 1) ' as of libcurl 7.42.1 this defaults to True
 		  
 		  
 		End Sub

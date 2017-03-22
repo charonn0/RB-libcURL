@@ -51,7 +51,7 @@ Begin Window DemoWindow
       TextUnit        =   0
       Top             =   119
       Underline       =   ""
-      Value           =   2
+      Value           =   0
       Visible         =   True
       Width           =   596
       Begin Listbox Headers
@@ -1843,6 +1843,38 @@ Begin Window DemoWindow
          Width           =   170
          _ScrollWidth    =   -1
       End
+      Begin CheckBox ShowDataMsgs
+         AutoDeactivate  =   True
+         Bold            =   ""
+         Caption         =   "Show data messages"
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel2"
+         Italic          =   ""
+         Left            =   20
+         LockBottom      =   True
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   ""
+         LockTop         =   False
+         Scope           =   0
+         State           =   0
+         TabIndex        =   29
+         TabPanelIndex   =   3
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   319
+         Underline       =   ""
+         Value           =   False
+         Visible         =   True
+         Width           =   145
+      End
    End
    Begin cURLClient Client
       Height          =   32
@@ -1981,7 +2013,7 @@ Begin Window DemoWindow
       TextUnit        =   0
       Top             =   0
       Underline       =   ""
-      Value           =   3
+      Value           =   0
       Visible         =   True
       Width           =   246
       Begin PushButton PushButton1
@@ -2045,38 +2077,6 @@ Begin Window DemoWindow
          Underline       =   ""
          Visible         =   True
          Width           =   80
-      End
-      Begin CheckBox CheckBox1
-         AutoDeactivate  =   True
-         Bold            =   ""
-         Caption         =   "GET uses stream"
-         DataField       =   ""
-         DataSource      =   ""
-         Enabled         =   True
-         Height          =   20
-         HelpTag         =   ""
-         Index           =   -2147483648
-         InitialParent   =   "TabPanel1"
-         Italic          =   ""
-         Left            =   11
-         LockBottom      =   ""
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   ""
-         LockTop         =   True
-         Scope           =   0
-         State           =   0
-         TabIndex        =   2
-         TabPanelIndex   =   1
-         TabStop         =   True
-         TextFont        =   "System"
-         TextSize        =   0
-         TextUnit        =   0
-         Top             =   58
-         Underline       =   ""
-         Value           =   False
-         Visible         =   True
-         Width           =   172
       End
       Begin PushButton PushButton3
          AutoDeactivate  =   True
@@ -2295,6 +2295,38 @@ Begin Window DemoWindow
          Visible         =   True
          Width           =   80
       End
+      Begin CheckBox CheckBox1
+         AutoDeactivate  =   True
+         Bold            =   ""
+         Caption         =   "Download to file"
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel1"
+         Italic          =   ""
+         Left            =   11
+         LockBottom      =   ""
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   ""
+         LockTop         =   True
+         Scope           =   0
+         State           =   0
+         TabIndex        =   2
+         TabPanelIndex   =   1
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   58
+         Underline       =   ""
+         Value           =   False
+         Visible         =   True
+         Width           =   172
+      End
    End
    Begin ProgressBar ProgressDownload
       AutoDeactivate  =   True
@@ -2429,38 +2461,6 @@ Begin Window DemoWindow
       Visible         =   True
       Width           =   80
    End
-   Begin CheckBox ShowDataMsgs
-      AutoDeactivate  =   True
-      Bold            =   ""
-      Caption         =   "Show data messages"
-      DataField       =   ""
-      DataSource      =   ""
-      Enabled         =   True
-      Height          =   20
-      HelpTag         =   ""
-      Index           =   -2147483648
-      InitialParent   =   ""
-      Italic          =   ""
-      Left            =   101
-      LockBottom      =   ""
-      LockedInPosition=   False
-      LockLeft        =   True
-      LockRight       =   ""
-      LockTop         =   True
-      Scope           =   0
-      State           =   0
-      TabIndex        =   14
-      TabPanelIndex   =   0
-      TabStop         =   True
-      TextFont        =   "System"
-      TextSize        =   0
-      TextUnit        =   0
-      Top             =   85
-      Underline       =   ""
-      Value           =   False
-      Visible         =   True
-      Width           =   145
-   End
    Begin PushButton AbortButton
       AutoDeactivate  =   True
       Bold            =   True
@@ -2492,13 +2492,44 @@ Begin Window DemoWindow
       Visible         =   True
       Width           =   24
    End
+   Begin PushButton ResetButton
+      AutoDeactivate  =   True
+      Bold            =   ""
+      ButtonStyle     =   0
+      Cancel          =   ""
+      Caption         =   "Reset"
+      Default         =   ""
+      Enabled         =   True
+      Height          =   22
+      HelpTag         =   ""
+      Index           =   -2147483648
+      InitialParent   =   ""
+      Italic          =   ""
+      Left            =   90
+      LockBottom      =   ""
+      LockedInPosition=   False
+      LockLeft        =   True
+      LockRight       =   ""
+      LockTop         =   True
+      Scope           =   0
+      TabIndex        =   17
+      TabPanelIndex   =   0
+      TabStop         =   True
+      TextFont        =   "System"
+      TextSize        =   0
+      TextUnit        =   0
+      Top             =   85
+      Underline       =   ""
+      Visible         =   True
+      Width           =   80
+   End
 End
 #tag EndWindow
 
 #tag WindowCode
 	#tag Event
 		Sub Open()
-		  Me.Title = Me.Title + " - " + libcURL.Version.Name
+		  Me.Title = Me.Title + " - " + libcURL.Version.UserAgent
 		  Client.EasyItem.UseErrorBuffer = True
 		End Sub
 	#tag EndEvent
@@ -2588,6 +2619,7 @@ End
 		Private Sub Populate()
 		  mLockUI = True
 		  PauseButton.Enabled = False
+		  ResetButton.Enabled = True
 		  PauseButton.Caption = "Pause"
 		  AbortButton.Enabled = False
 		  Dim cURLCode As Integer = Client.LastError
@@ -2666,6 +2698,93 @@ End
 		  
 		Finally
 		  mLockUI = False
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub ResetUI()
+		  mLockUI = True
+		  Try
+		    AutoDisconnect.Value = Client.EasyItem.AutoDisconnect
+		    Autoreferer.Value = Client.EasyItem.AutoReferer
+		    FailOnError.Value = Client.EasyItem.FailOnServerError
+		    FollowRedirects.Value = Client.EasyItem.FollowRedirects
+		    HTTPCompress.Value = Client.EasyItem.HTTPCompression
+		    HTTPPreserveMethod.Value = Client.EasyItem.HTTPPreserveMethod
+		    NoProgress.Value = Client.EasyItem.UseProgressEvent
+		    Secure.Value = Client.EasyItem.Secure
+		    UseCookies.Value = Client.Cookies.Enabled
+		    Verbose.Value = Client.EasyItem.Verbose
+		    
+		    If Client.Proxy.Address <> "" Then
+		      ProxyServer.Text = Client.Proxy.Address
+		      Select Case Client.Proxy.Type
+		      Case libcURL.ProxyType.HTTP
+		        ProxyTypes.ListIndex = 4
+		      Case libcURL.ProxyType.HTTP1_0
+		        ProxyTypes.ListIndex = 5
+		      Case libcURL.ProxyType.SOCKS4
+		        ProxyTypes.ListIndex = 0
+		      Case libcURL.ProxyType.SOCKS4A
+		        ProxyTypes.ListIndex = 1
+		      Case libcURL.ProxyType.SOCKS5
+		        ProxyTypes.ListIndex = 2
+		      Case libcURL.ProxyType.SOCKS5_HOSTNAME
+		        ProxyTypes.ListIndex = 3
+		      End Select
+		    Else
+		      ProxyServer.Text = ""
+		      ProxyTypes.ListIndex = -1
+		    End If
+		    
+		    Select Case Client.EasyItem.HTTPVersion
+		    Case 0, 2 ' default http/1.0
+		      HTTPVer.ListIndex = 0
+		    Case 1 'http/1.0
+		      HTTPVer.ListIndex = 1
+		    Case 3 ' HTTP2
+		      HTTPVer.ListIndex = 2
+		    End Select
+		    
+		    Select Case Client.EasyItem.SSLVersion
+		    Case libcURL.SSLVersion.Default
+		      SSLVer.ListIndex = 0
+		    Case libcURL.SSLVersion.SSLv2
+		      SSLVer.ListIndex = 1
+		    Case libcURL.SSLVersion.SSLv3
+		      SSLVer.ListIndex = 2
+		    Case libcURL.SSLVersion.TLSv1
+		      SSLVer.ListIndex = 3
+		    Case libcURL.SSLVersion.TLSv1_0
+		      SSLVer.ListIndex = 4
+		    Case libcURL.SSLVersion.TLSv1_1
+		      SSLVer.ListIndex = 5
+		    Case libcURL.SSLVersion.TLSv1_2
+		      SSLVer.ListIndex = 6
+		    End Select
+		    
+		    If Client.EasyItem.URL <> "" Then TextField1.Text = Client.EasyItem.URL
+		    
+		    nic.ListIndex = -1
+		    If Client.EasyItem.NetworkInterface <> Nil Then
+		      For i As Integer = 0 To nic.ListCount - 1
+		        If nic.RowTag(i) IsA NetworkInterface And NetworkInterface(nic.RowTag(i)).IPAddress = Client.EasyItem.NetworkInterface.IPAddress Then
+		          nic.ListIndex = i
+		          Exit For
+		        End If
+		      Next
+		    End If
+		    
+		    
+		    If Client.EasyItem.CA_ListFile <> Nil Then
+		      CAListFile.Text = Client.EasyItem.CA_ListFile.AbsolutePath
+		    Else
+		      CAListFile.Text = "Not specified"
+		    End If
+		    
+		  Finally
+		    mLockUI = False
+		  End Try
 		End Sub
 	#tag EndMethod
 
@@ -3093,81 +3212,7 @@ End
 		  End Try
 		  
 		  MsgBox("All options parsed successfully.")
-		  mLockUI = True
-		  Try
-		    AutoDisconnect.Value = Client.EasyItem.AutoDisconnect
-		    Autoreferer.Value = Client.EasyItem.AutoReferer
-		    FailOnError.Value = Client.EasyItem.FailOnServerError
-		    FollowRedirects.Value = Client.EasyItem.FollowRedirects
-		    HTTPCompress.Value = Client.EasyItem.HTTPCompression
-		    HTTPPreserveMethod.Value = Client.EasyItem.HTTPPreserveMethod
-		    NoProgress.Value = Client.EasyItem.UseProgressEvent
-		    Secure.Value = Client.EasyItem.Secure
-		    UseCookies.Value = Client.Cookies.Enabled
-		    Verbose.Value = Client.EasyItem.Verbose
-		    
-		    If Client.Proxy.Address <> "" Then
-		      ProxyServer.Text = Client.Proxy.Address
-		      Select Case Client.Proxy.Type
-		      Case libcURL.ProxyType.HTTP
-		        ProxyTypes.ListIndex = 4
-		      Case libcURL.ProxyType.HTTP1_0
-		        ProxyTypes.ListIndex = 5
-		      Case libcURL.ProxyType.SOCKS4
-		        ProxyTypes.ListIndex = 0
-		      Case libcURL.ProxyType.SOCKS4A
-		        ProxyTypes.ListIndex = 1
-		      Case libcURL.ProxyType.SOCKS5
-		        ProxyTypes.ListIndex = 2
-		      Case libcURL.ProxyType.SOCKS5_HOSTNAME
-		        ProxyTypes.ListIndex = 3
-		      End Select
-		    Else
-		      ProxyServer.Text = ""
-		      ProxyTypes.ListIndex = -1
-		    End If
-		    
-		    Select Case Client.EasyItem.HTTPVersion
-		    Case 0, 2 ' default http/1.0
-		      HTTPVer.ListIndex = 0
-		    Case 1 'http/1.0
-		      HTTPVer.ListIndex = 1
-		    Case 3 ' HTTP2
-		      HTTPVer.ListIndex = 2
-		    End Select
-		    
-		    Select Case Client.EasyItem.SSLVersion
-		    Case libcURL.SSLVersion.Default
-		      SSLVer.ListIndex = 0
-		    Case libcURL.SSLVersion.SSLv2
-		      SSLVer.ListIndex = 1
-		    Case libcURL.SSLVersion.SSLv3
-		      SSLVer.ListIndex = 2
-		    Case libcURL.SSLVersion.TLSv1
-		      SSLVer.ListIndex = 3
-		    Case libcURL.SSLVersion.TLSv1_0
-		      SSLVer.ListIndex = 4
-		    Case libcURL.SSLVersion.TLSv1_1
-		      SSLVer.ListIndex = 5
-		    Case libcURL.SSLVersion.TLSv1_2
-		      SSLVer.ListIndex = 6
-		    End Select
-		    
-		    If Client.EasyItem.URL <> "" Then TextField1.Text = Client.EasyItem.URL
-		    
-		    nic.ListIndex = -1
-		    If Client.EasyItem.NetworkInterface <> Nil Then
-		      For i As Integer = 0 To nic.ListCount - 1
-		        If nic.RowTag(i) IsA NetworkInterface And NetworkInterface(nic.RowTag(i)).IPAddress = Client.EasyItem.NetworkInterface.IPAddress Then
-		          nic.ListIndex = i
-		          Exit For
-		        End If
-		      Next
-		    End If
-		    
-		  Finally
-		    mLockUI = False
-		  End Try
+		  ResetUI()
 		End Sub
 	#tag EndEvent
 #tag EndEvents
@@ -3680,6 +3725,7 @@ End
 		    bs = BinaryStream.Create(f, True)
 		  End If
 		  PauseButton.Enabled = True
+		  ResetButton.Enabled = False
 		  AbortButton.Enabled = True
 		  Client.Get(TextField1.Text, bs)
 		End Sub
@@ -3694,6 +3740,7 @@ End
 		    ThreadStream = BinaryStream.Create(f, True)
 		  End If
 		  PauseButton.Enabled = True
+		  ResetButton.Enabled = False
 		  AbortButton.Enabled = True
 		  GetThread.Run
 		End Sub
@@ -3703,6 +3750,7 @@ End
 	#tag Event
 		Sub Action()
 		  PauseButton.Enabled = True
+		  ResetButton.Enabled = False
 		  AbortButton.Enabled = True
 		  Dim f As FolderItem = GetOpenFolderItem("")
 		  Dim bs As BinaryStream = BinaryStream.Open(f)
@@ -3714,6 +3762,7 @@ End
 	#tag Event
 		Sub Action()
 		  PauseButton.Enabled = True
+		  ResetButton.Enabled = False
 		  AbortButton.Enabled = True
 		  mPutTarget = GetOpenFolderItem("")
 		  mURL = TextField1.Text
@@ -3726,6 +3775,7 @@ End
 		Sub Action()
 		  If FormValue <> Nil Then
 		    PauseButton.Enabled = True
+		    ResetButton.Enabled = False
 		    AbortButton.Enabled = True
 		    If FormValue.Right = 0 Then ' URLEncoded
 		      Dim frm() As String = FormValue.Left
@@ -3744,6 +3794,7 @@ End
 	#tag Event
 		Sub Action()
 		  PauseButton.Enabled = True
+		  ResetButton.Enabled = False
 		  AbortButton.Enabled = True
 		  mURL = TextField1.Text
 		  PostThread.Run
@@ -3764,6 +3815,7 @@ End
 	#tag Event
 		Sub Action()
 		  PauseButton.Enabled = True
+		  ResetButton.Enabled = False
 		  AbortButton.Enabled = True
 		  mURL = TextField1.Text
 		  HeadThread.Run
@@ -3774,6 +3826,7 @@ End
 	#tag Event
 		Sub Action()
 		  PauseButton.Enabled = True
+		  ResetButton.Enabled = False
 		  AbortButton.Enabled = True
 		  Client.Head(TextField1.Text)
 		End Sub
@@ -3818,6 +3871,16 @@ End
 	#tag Event
 		Sub Action()
 		  Client.Abort()
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events ResetButton
+	#tag Event
+		Sub Action()
+		  If MsgBox("Reset all options to their default values?", 4 + 48, "Confirm reset") = 6 Then
+		    Client.Reset()
+		    ResetUI()
+		  End If
 		End Sub
 	#tag EndEvent
 #tag EndEvents

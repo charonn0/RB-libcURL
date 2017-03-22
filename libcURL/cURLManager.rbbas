@@ -56,21 +56,9 @@ Protected Class cURLManager
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.Constructor
 		  
-		  If mEasyItem = Nil Then
-		    mEasyItem = New libcURL.EasyHandle
-		    mEasyItem.UserAgent = libcURL.Version.Name
-		    mEasyItem.Secure = True
-		    mEasyItem.CA_ListFile = libcURL.Default_CA_File
-		    mEasyItem.FailOnServerError = True
-		    mEasyItem.FollowRedirects = True
-		    mEasyItem.AutoReferer = True
-		    mEasyItem.HTTPCompression = libcURL.Version.LibZ.IsAvailable
-		  End If
-		  
 		  mMultiItem = New libcURL.MultiHandle
 		  AddHandler mMultiItem.TransferComplete, WeakAddressOf _TransferCompleteHandler
-		  
-		  Me.EasyItem = mEasyItem
+		  Me.Reset()
 		End Sub
 	#tag EndMethod
 
@@ -285,6 +273,20 @@ Protected Class cURLManager
 		  mEasyItem.UploadStream = ReadFrom
 		  If mEasyItem.UseErrorBuffer Then mEasyItem.UseErrorBuffer = True ' clears the previous buffer, if any
 		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Reset()
+		  If mEasyItem = Nil Then mEasyItem = New libcURL.EasyHandle Else mEasyItem.Reset
+		  Me.EasyItem = mEasyItem
+		  mEasyItem.UserAgent = libcURL.Version.UserAgent
+		  mEasyItem.Secure = True
+		  mEasyItem.CA_ListFile = libcURL.Default_CA_File
+		  mEasyItem.FailOnServerError = True
+		  mEasyItem.FollowRedirects = True
+		  mEasyItem.AutoReferer = True
+		  mEasyItem.HTTPCompression = libcURL.Version.LibZ.IsAvailable
 		End Sub
 	#tag EndMethod
 
