@@ -122,7 +122,7 @@ Protected Module LiveTests
 		  Dim js As New JSONItem(mSession.GetDownloadedData)
 		  Dim files As JSONItem = js.Value("files")
 		  Assert(files.Count = 1)
-		  'Assert(files.HasName(tmp.Name))
+		  Assert(files.Value("upload") = "Hello, world!")
 		  'Assert(files.Value(tmp.Name) = tmp.Length)
 		  
 		  files = js.Value("form")
@@ -141,8 +141,8 @@ Protected Module LiveTests
 
 	#tag Method, Flags = &h21
 		Private Sub TestHeaderSet()
-		  If Not mSession.SetRequestHeader("X-Test-Header", "TestValue") Then Raise New libcURL.cURLException(mSession.EasyItem)
-		  If Not mSession.Get("https://nghttp2.org/httpbin/headers") Then Return
+		  Assert(mSession.SetRequestHeader("X-Test-Header", "TestValue"))
+		  Assert(mSession.Get("https://nghttp2.org/httpbin/headers"))
 		  Dim js As New JSONItem(mSession.GetDownloadedData)
 		  js = js.Value("headers")
 		  Assert(js.HasName("X-Test-Header"))
