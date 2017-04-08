@@ -26,7 +26,7 @@ Inherits libcURL.cURLHandle
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ShareHandle.Close
 		  
-		  If SharedHandles <> Nil And libcURL.IsAvailable Then
+		  If SharedHandles <> Nil Then
 		    For Each h As Integer In SharedHandles.Keys
 		      Call Me.RemoveItem(SharedHandles.Value(h))
 		    Next

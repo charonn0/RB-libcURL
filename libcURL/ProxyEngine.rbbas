@@ -8,7 +8,7 @@ Protected Class ProxyEngine
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ProxyEngine.Constructor
 		  
 		  mOwner = New WeakRef(Owner)
-		  mUnifiedHeaders = libcURL.Version.IsAtLeast(7, 42, 1)
+		  mUnifiedHeaders = libcURL.Version.IsAtLeast(7, 42, 1) ' as of libcurl 7.42.1 this defaults to True
 		  
 		  
 		End Sub
@@ -24,7 +24,10 @@ Protected Class ProxyEngine
 		  ' http://curl.haxx.se/libcurl/c/CURLOPT_NOPROXY.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ProxyEngine.ExcludeHost
 		  
-		  If mExclusions.IndexOf(Hostname) = -1 Then mExclusions.Append(Hostname)
+		  For i As Integer = 0 To UBound(mExclusions)
+		    If CompareDomains(mExclusions(i), Hostname) Then Return True
+		  Next
+		  mExclusions.Append(Hostname)
 		  Return Owner.SetOption(libcURL.Opts.NOPROXY, Join(mExclusions, ","))
 		End Function
 	#tag EndMethod
@@ -52,11 +55,9 @@ Protected Class ProxyEngine
 		  ' http://curl.haxx.se/libcurl/c/CURLOPT_NOPROXY.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ProxyEngine.IncludeHost
 		  
-		  Dim i As Integer
-		  Do
-		    i = mExclusions.IndexOf(Hostname)
-		    If i <> -1 Then mExclusions.Remove(i)
-		  Loop Until i < 0
+		  For i As Integer = UBound(mExclusions) DownTo 0
+		    If CompareDomains(mExclusions(i), Hostname) Then mExclusions.Remove(i)
+		  Next
 		  Return Owner.SetOption(libcURL.Opts.NOPROXY, Join(mExclusions, ","))
 		End Function
 	#tag EndMethod
