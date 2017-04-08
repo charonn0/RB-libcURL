@@ -410,12 +410,19 @@ Protected Class cURLManager
 		    If mDownloadMB <> Nil And mEasyItem.DownloadStream <> Nil And mEasyItem.DownloadStream IsA BinaryStream Then
 		      BinaryStream(mEasyItem.DownloadStream).Close
 		    End If
-		  mLastTransferError = Item.LastError
-		  mIsTransferComplete = True
-		  If Cookies.Enabled Then Cookies.Invalidate
-		  
-		  If mLastTransferError <> 0 Then
-		    RaiseEvent Error(mLastTransferError)
+		    mLastTransferError = Item.LastError
+		    mIsTransferComplete = True
+		    If Cookies.Enabled Then Cookies.Invalidate
+		    
+		    If mLastTransferError <> 0 Then
+		      RaiseEvent Error(mLastTransferError)
+		    Else
+		      RaiseEvent TransferComplete(Item)
+		    End If
+		    
+		    mEasyItem.ClearFormData()
+		    mUploadMB = Nil
+		    ErrorSetter(Item).LastError = mLastTransferError
 		  Else
 		    RaiseEvent TransferComplete(Item)
 		  End If
