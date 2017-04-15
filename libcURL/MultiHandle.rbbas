@@ -403,6 +403,17 @@ Inherits libcURL.cURLHandle
 		#tag EndGetter
 		#tag Setter
 			Set
+			  ' Sets whether HTTP/2 requests can raise the ServerPush event.
+			  '
+			  ' See:
+			  ' https://curl.haxx.se/libcurl/c/CURLMOPT_PUSHFUNCTION.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.HTTP2Push
+			  
+			  If Not libcURL.Version.IsAtLeast(7, 44, 0) Or Not libcURL.Version.HTTP2 Then
+			    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
+			    Return
+			  End If
+			  
 			  If value Then
 			    If PushHandlers = Nil Then PushHandlers = New Dictionary
 			    If Not Me.SetOption(libcURL.Opts.PUSHDATA, mHandle) Then Raise New cURLException(Me)
