@@ -64,7 +64,6 @@ Protected Class cURLManager
 		    AddHandler mMultiItem.ServerPush, WeakAddressOf _ServerPushHandler
 		  End If
 		  
-		  Me.EasyItem = mEasyItem
 		  Me.Reset()
 		End Sub
 	#tag EndMethod
@@ -427,9 +426,6 @@ Protected Class cURLManager
 		    RaiseEvent TransferComplete(Item)
 		  End If
 		  
-		  mEasyItem.ClearFormData()
-		  mUploadMB = Nil
-		  ErrorSetter(Item).LastError = mLastTransferError
 		End Sub
 	#tag EndMethod
 
