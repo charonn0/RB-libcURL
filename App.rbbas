@@ -15,7 +15,14 @@ Inherits Application
 
 	#tag Method, Flags = &h21
 		Private Function PushHandler(Sender As libcURL.cURLClient, PushConnection As libcURL.EasyHandle, PushHeaders As InternetHeaders) As Boolean
-		  
+		  Dim scheme, host, path As String
+		  scheme = PushHeaders.CommaSeparatedValues(":scheme")
+		  host = PushHeaders.CommaSeparatedValues(":authority")
+		  path = PushHeaders.CommaSeparatedValues(":path")
+		  PushConnection.URL = scheme + "://" + host + path
+		  Dim bs As BinaryStream = BinaryStream.Create(SpecialFolder.Desktop.Child(EncodeURLComponent(path)), False)
+		  PushConnection.DownloadStream = bs
+		  Return True
 		End Function
 	#tag EndMethod
 
