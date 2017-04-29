@@ -230,7 +230,7 @@ Protected Class cURLManager
 		  
 		  QueueTransfer(URL, ReadFrom, WriteTo)
 		  Do Until Not mMultiItem.PerformOnce()
-		    If Rnd > 0.99 Then
+		    If Yield And Rnd > 0.99 Then
 		      #If TargetHasGUI Then
 		        App.SleepCurrentThread(50)
 		      #Else
@@ -573,6 +573,10 @@ Protected Class cURLManager
 		#tag EndSetter
 		Username As String
 	#tag EndComputedProperty
+
+	#tag Property, Flags = &h0
+		Yield As Boolean = True
+	#tag EndProperty
 
 
 	#tag ViewBehavior
