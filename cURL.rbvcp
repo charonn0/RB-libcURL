@@ -12,7 +12,6 @@ Module=Protocols;libcURL/Protocols/Protocols.rbbas;&h31F97FFF;&h1B9FF7FF;false
 Class=FTPWildCard;libcURL/Protocols/FTPWildCard.rbbas;&h54790FFF;&h31F97FFF;false
 Class=cURLHandle;libcURL/cURLHandle.rbbas;&h40F2C7FF;&h1B9FF7FF;false
 Class=ShareHandle;libcURL/ShareHandle.rbbas;&h539AFFF;&h1B9FF7FF;false
-Module=SynchronousHelpers;libcURL/SynchronousHelpers.rbbas;&h5C3117FF;&h1B9FF7FF;false
 Class=cURLException;libcURL/cURLException.rbbas;&h517477FF;&h1B9FF7FF;false
 Class=EasyHandle;libcURL/EasyHandle.rbbas;&h4A33EFFF;&h1B9FF7FF;false
 Class=MultiHandle;libcURL/MultiHandle.rbbas;&h249DC7FF;&h1B9FF7FF;false
