@@ -20,32 +20,33 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function AddElement(Name As String, ValueCallbackHandler As libcURL.EasyHandle, ValueSize As Integer, Filename As String = "") As Boolean
+		Function AddElement(Name As String, ValueCallbackHandler As libcURL.EasyHandle, ValueSize As Integer, Filename As String = "", ContentType As String = "") As Boolean
 		  ' Adds an element using the specified name, with contents which will be read from the passed EasyHandle's
 		  ' DataNeeded event (or UploadStream object).
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_formadd.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm.AddElement
 		  
-		  Dim lenflag As Integer
-		  ' CURLFORM_CONTENTLEN is supposed to supercede CURLFORM_CONTENTSLENGTH as of 7.46.0,
-		  ' but it doesn't seem to work for me...
-		  //If libcURL.Version.IsAtLeast(7, 46, 0) Then
-		  //lenflag = CURLFORM_CONTENTLEN
-		  //Else
-		  lenflag = CURLFORM_CONTENTSLENGTH
-		  //End If
 		  Dim n As MemoryBlock = Name + Chr(0)
-		  Dim finalopt As Integer = CURLFORM_END
-		  Dim fn As MemoryBlock
+		  Dim nameopt As Integer = CURLFORM_END
+		  Dim typeopt As Integer = CURLFORM_END
+		  
+		  Dim fn As MemoryBlock = ""
 		  If Filename.Trim <> "" Then
-		    finalopt = CURLFORM_FILENAME
+		    nameopt = CURLFORM_FILENAME
 		    fn = Filename + Chr(0)
 		  End If
+		  
+		  Dim tn As MemoryBlock = ""
+		  If ContentType.Trim <> "" Then
+		    typeopt = CURLFORM_CONTENTTYPE
+		    tn = ContentType + Chr(0)
+		  End If
+		  
 		  If ValueSize = 0 Then
-		    Return FormAddPtr(CURLFORM_COPYNAME, n, CURLFORM_STREAM, Ptr(ValueCallbackHandler.Handle), finalopt, fn)
+		    Return FormAddPtr(CURLFORM_COPYNAME, n, CURLFORM_STREAM, Ptr(ValueCallbackHandler.Handle), nameopt, fn, typeopt, tn)
 		  Else
-		    Return FormAddPtr(CURLFORM_COPYNAME, n, CURLFORM_STREAM, Ptr(ValueCallbackHandler.Handle), lenflag, Ptr(ValueSize), finalopt, fn)
+		    Return FormAddPtr(CURLFORM_COPYNAME, n, CURLFORM_STREAM, Ptr(ValueCallbackHandler.Handle), CURLFORM_CONTENTSLENGTH, Ptr(ValueSize), nameopt, fn, typeopt, tn)
 		  End If
 		End Function
 	#tag EndMethod
