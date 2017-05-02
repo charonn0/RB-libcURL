@@ -52,6 +52,29 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function AddElement(Name As String, ByRef Value As MemoryBlock, Filename As String, ContentType As String = "") As Boolean
+		  ' Adds the passed buffer to the form as a file part using the specified name. The buffer pointed to by Value
+		  ' is used directly (i.e. not copied) so it must continue to exist until after the POST request has completed.
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/curl_formadd.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm.AddElement
+		  
+		  If Value = Nil Then Raise New NilObjectException
+		  
+		  If ContentType = "" Then ContentType = MimeType(SpecialFolder.Temporary.Child(Filename))
+		  Dim n As MemoryBlock = Name + Chr(0)
+		  Dim fn As MemoryBlock = Filename + Chr(0)
+		  If ContentType <> "" Then
+		    Dim tn As MemoryBlock = ContentType + Chr(0)
+		    Return FormAddPtr(CURLFORM_COPYNAME, n, CURLFORM_BUFFER, fn, CURLFORM_BUFFERLENGTH, Ptr(Value.Size), CURLFORM_BUFFERPTR, Value, CURLFORM_CONTENTTYPE, tn)
+		  Else
+		    Return FormAddPtr(CURLFORM_COPYNAME, n, CURLFORM_BUFFER, fn, CURLFORM_BUFFERLENGTH, Ptr(Value.Size), CURLFORM_BUFFERPTR, Value)
+		  End If
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function AddElement(Name As String, Value As String) As Boolean
 		  ' Adds the passed Value to the form using the specified name.
 		  ' See:
@@ -1753,6 +1776,15 @@ Inherits libcURL.cURLHandle
 		Protected LastItem As Ptr
 	#tag EndProperty
 
+
+	#tag Constant, Name = CURLFORM_BUFFER, Type = Double, Dynamic = False, Default = \"11", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURLFORM_BUFFERLENGTH, Type = Double, Dynamic = False, Default = \"13", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURLFORM_BUFFERPTR, Type = Double, Dynamic = False, Default = \"12", Scope = Protected
+	#tag EndConstant
 
 	#tag Constant, Name = CURLFORM_CONTENTLEN, Type = Double, Dynamic = False, Default = \"20", Scope = Protected
 	#tag EndConstant
