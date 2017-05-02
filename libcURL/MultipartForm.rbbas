@@ -20,7 +20,7 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function AddElement(Name As String, ValueCallbackHandler As libcURL.EasyHandle, ValueSize As Integer) As Boolean
+		Function AddElement(Name As String, ValueCallbackHandler As libcURL.EasyHandle, ValueSize As Integer, Filename As String = "") As Boolean
 		  ' Adds an element using the specified name, with contents which will be read from the passed EasyHandle's
 		  ' DataNeeded event (or UploadStream object).
 		  ' See:
@@ -36,10 +36,16 @@ Inherits libcURL.cURLHandle
 		  lenflag = CURLFORM_CONTENTSLENGTH
 		  //End If
 		  Dim n As MemoryBlock = Name + Chr(0)
+		  Dim finalopt As Integer = CURLFORM_END
+		  Dim fn As MemoryBlock
+		  If Filename.Trim <> "" Then
+		    finalopt = CURLFORM_FILENAME
+		    fn = Filename + Chr(0)
+		  End If
 		  If ValueSize = 0 Then
-		    Return FormAddPtr(CURLFORM_COPYNAME, n, CURLFORM_STREAM, Ptr(ValueCallbackHandler.Handle))
+		    Return FormAddPtr(CURLFORM_COPYNAME, n, CURLFORM_STREAM, Ptr(ValueCallbackHandler.Handle), finalopt, fn)
 		  Else
-		    Return FormAddPtr(CURLFORM_COPYNAME, n, CURLFORM_STREAM, Ptr(ValueCallbackHandler.Handle), lenflag, Ptr(ValueSize))
+		    Return FormAddPtr(CURLFORM_COPYNAME, n, CURLFORM_STREAM, Ptr(ValueCallbackHandler.Handle), lenflag, Ptr(ValueSize), finalopt, fn)
 		  End If
 		End Function
 	#tag EndMethod
