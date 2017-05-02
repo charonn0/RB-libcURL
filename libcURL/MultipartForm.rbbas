@@ -55,11 +55,11 @@ Inherits libcURL.cURLHandle
 		Function AddElement(Name As String, ByRef Value As MemoryBlock, Filename As String, ContentType As String = "") As Boolean
 		  ' Adds the passed buffer to the form as a file part using the specified name. The buffer pointed to by Value
 		  ' is used directly (i.e. not copied) so it must continue to exist until after the POST request has completed.
+		  ' This method allows file parts to be added without using an actual file.
+		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_formadd.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm.AddElement
-		  
-		  If Value = Nil Then Raise New NilObjectException
 		  
 		  If ContentType = "" Then ContentType = MimeType(SpecialFolder.Temporary.Child(Filename))
 		  Dim n As MemoryBlock = Name + Chr(0)
