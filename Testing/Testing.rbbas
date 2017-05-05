@@ -177,7 +177,7 @@ Protected Module Testing
 		  c.CookieJar = GetTemporaryFolderItem
 		  c.FailOnServerError = True
 		  c.FollowRedirects = True
-		  c.HTTPVersion = c.HTTP_VERSION_1_0
+		  c.HTTPVersion = libcURL.HTTPVersion.HTTP1_0
 		  c.LocalPort = 99
 		  'Assert(c.LocalPort = 99)
 		  c.NetworkInterface = System.GetNetworkInterface(0)
