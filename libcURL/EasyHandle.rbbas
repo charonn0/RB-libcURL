@@ -1334,7 +1334,7 @@ Inherits libcURL.cURLHandle
 			  ' http://curl.haxx.se/libcurl/c/CURLOPT_HTTP_VERSION.html
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.HTTPVersion
 			  
-			  If Not Me.SetOption(libcURL.Opts.HTTPVERSION, Integer(value)) Then Raise New cURLException(Me)
+			  If Not Me.SetOption(libcURL.Opts.HTTPVERSION, value) Then Raise New cURLException(Me)
 			  mHTTPVersion = value
 			End Set
 		#tag EndSetter
