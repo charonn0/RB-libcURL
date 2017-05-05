@@ -477,15 +477,15 @@ Protected Module libcURL
 		      i = i + 1
 		      
 		    Case arg = "--http1.0", arg = "-0"
-		      Client.EasyItem.HTTPVersion = Client.EasyItem.HTTP_VERSION_1_0
+		      Client.HTTPVersion = HTTPVersion.HTTP1_0
 		      If Client.EasyItem.LastError <> 0 Then GoTo ParseError
 		      
 		    Case arg = "--http1.1"
-		      Client.EasyItem.HTTPVersion = Client.EasyItem.HTTP_VERSION_1_1
+		      Client.HTTPVersion = HTTPVersion.HTTP1_1
 		      If Client.EasyItem.LastError <> 0 Then GoTo ParseError
 		      
 		    Case arg = "--http2"
-		      Client.EasyItem.HTTPVersion = Client.EasyItem.HTTP_VERSION_2_0
+		      Client.HTTPVersion = HTTPVersion.HTTP2
 		      If Client.EasyItem.LastError <> 0 Then GoTo ParseError
 		      
 		    Case arg = "--include", StrComp("-i", arg, 1) = 0

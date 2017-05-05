@@ -662,7 +662,7 @@ Inherits libcURL.cURLHandle
 		  mFollowRedirects = False
 		  mForm = Nil
 		  mHTTPCompression = False
-		  mHTTPVersion = 0
+		  mHTTPVersion = libcURL.HTTPVersion.None
 		  mMaxRedirects = -1
 		  mPassword = ""
 		  mProxyEngine = Nil
@@ -1334,11 +1334,11 @@ Inherits libcURL.cURLHandle
 			  ' http://curl.haxx.se/libcurl/c/CURLOPT_HTTP_VERSION.html
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.HTTPVersion
 			  
-			  If Not Me.SetOption(libcURL.Opts.HTTPVERSION, value) Then Raise New cURLException(Me)
+			  If Not Me.SetOption(libcURL.Opts.HTTPVERSION, Integer(value)) Then Raise New cURLException(Me)
 			  mHTTPVersion = value
 			End Set
 		#tag EndSetter
-		HTTPVersion As Integer
+		HTTPVersion As libcURL.HTTPVersion
 	#tag EndComputedProperty
 
 	#tag Property, Flags = &h1
@@ -1443,7 +1443,7 @@ Inherits libcURL.cURLHandle
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private mHTTPVersion As Integer
+		Private mHTTPVersion As libcURL.HTTPVersion
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
