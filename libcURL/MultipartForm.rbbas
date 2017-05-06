@@ -15,6 +15,8 @@ Inherits libcURL.cURLHandle
 		    Else
 		      Return FormAdd(CURLFORM_COPYNAME, Name, CURLFORM_FILE, Value.ShellPath, CURLFORM_FILENAME, Value.Name)
 		    End If
+		  Else
+		    mLastError = libcURL.Errors.INVALID_LOCAL_FILE
 		  End If
 		End Function
 	#tag EndMethod
