@@ -467,14 +467,14 @@ Protected Class cURLManager
 		#tag Getter
 			Get
 			  ' Gets the version of HTTP to be used. Returns HTTP_VERSION_1_0, HTTP_VERSION_1_1, HTTP_VERSION_2_0, or HTTP_VERSION_NONE
-			  return libcURL.HTTPVersion(EasyItem.HTTPVersion)
+			  return EasyItem.HTTPVersion
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
 			  ' Sets the version of HTTP to be used. 
 			  
-			  EasyItem.HTTPVersion = Integer(value)
+			  EasyItem.HTTPVersion = value
 			End Set
 		#tag EndSetter
 		HTTPVersion As libcURL.HTTPVersion
