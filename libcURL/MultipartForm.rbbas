@@ -15,6 +15,8 @@ Inherits libcURL.cURLHandle
 		    Else
 		      Return FormAdd(CURLFORM_COPYNAME, Name, CURLFORM_FILE, Value.ShellPath, CURLFORM_FILENAME, Value.Name)
 		    End If
+		  Else
+		    mLastError = libcURL.Errors.INVALID_LOCAL_FILE
 		  End If
 		End Function
 	#tag EndMethod
@@ -55,13 +57,16 @@ Inherits libcURL.cURLHandle
 		Function AddElement(Name As String, ByRef Value As MemoryBlock, Filename As String, ContentType As String = "") As Boolean
 		  ' Adds the passed buffer to the form as a file part using the specified name. The buffer pointed to by Value
 		  ' is used directly (i.e. not copied) so it must continue to exist until after the POST request has completed.
-		  ' This method allows file parts to be added without using an actual file.
+		  ' This method allows file parts to be added without using an actual file. Specify an empty Filename parameter
+		  ' to add the Value as a non-file form part.
 		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_formadd.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm.AddElement
 		  
-		  If ContentType = "" Then ContentType = MimeType(SpecialFolder.Temporary.Child(Filename))
+		  If Value Is Nil Then Raise New NilObjectException
+		  If Value.Size < 0 Then Raise New OutOfBoundsException
+		  If Filename <> ""  And ContentType = "" Then ContentType = MimeType(SpecialFolder.Temporary.Child(Filename))
 		  Dim n As MemoryBlock = Name + Chr(0)
 		  Dim fn As MemoryBlock = Filename + Chr(0)
 		  If ContentType <> "" Then
