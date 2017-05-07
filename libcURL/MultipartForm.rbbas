@@ -1689,26 +1689,6 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Operator_Convert() As libcURL.MultipartFormElement
-		  ' Reads the string located at Index. The first item is at Index=0
-		  ' If the list does not contain a string at Index, an OutOfBoundsException will be raised.
-		  ' If the list is empty then a NilObjectException will be raised.
-		  '
-		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ListPtr.Item
-		  
-		  Dim List As Ptr = Ptr(Me.Handle)
-		  If List = Nil Then
-		    Dim err As New NilObjectException
-		    err.Message = "The form is empty."
-		    Raise err
-		  End If
-		  
-		  Return New MultipartFormElement(List.curl_httppost(0), Me)
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Sub Operator_Convert(FromDict As Dictionary)
 		  ' Overloads the conversion operator(=), permitting implicit and explicit conversion from a Dictionary
 		  ' into a MultipartForm. The dictionary contains NAME:VALUE pairs comprising HTML form elements: NAME
@@ -1743,21 +1723,6 @@ Inherits libcURL.cURLHandle
 		    End Select
 		  Next
 		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function Operator_Subscript(Index As Integer) As libcURL.MultipartFormElement
-		  Dim frmlst As MultipartFormElement = Me.Operator_Convert()
-		  Dim i As Integer
-		  Do Until frmlst = Nil
-		    If i >= Index Then Exit Do
-		    frmlst = frmlst.NextElement()
-		    i = i + 1
-		  Loop
-		  If frmlst = Nil Then Raise New OutOfBoundsException
-		  Return frmlst
-		  
-		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -1838,6 +1803,19 @@ Inherits libcURL.cURLHandle
 		  Call sock.Perform("http://www.example.com/submit.php", 5)
 	#tag EndNote
 
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  Dim List As Ptr = Ptr(Me.Handle)
+			  If List = Nil Then Return Nil
+			  Return New MultipartFormElement(List.curl_httppost(0), Me)
+			  
+			  
+			End Get
+		#tag EndGetter
+		FirstElement As libcURL.MultipartFormElement
+	#tag EndComputedProperty
 
 	#tag Property, Flags = &h21
 		Private Shared FormGetStreams As Dictionary
