@@ -66,15 +66,29 @@ Inherits libcURL.cURLHandle
 		  
 		  If Value Is Nil Then Raise New NilObjectException
 		  If Value.Size < 0 Then Raise New OutOfBoundsException
-		  If Filename <> ""  And ContentType = "" Then ContentType = MimeType(SpecialFolder.Temporary.Child(Filename))
 		  Dim n As MemoryBlock = Name + Chr(0)
-		  Dim fn As MemoryBlock = Filename + Chr(0)
-		  If ContentType <> "" Then
+		  Select Case True
+		  Case ContentType <> "" And Filename <> "" ' file part with ContentType
 		    Dim tn As MemoryBlock = ContentType + Chr(0)
+		    Dim fn As MemoryBlock = Filename + Chr(0)
 		    Return FormAddPtr(CURLFORM_COPYNAME, n, CURLFORM_BUFFER, fn, CURLFORM_BUFFERLENGTH, Ptr(Value.Size), CURLFORM_BUFFERPTR, Value, CURLFORM_CONTENTTYPE, tn)
-		  Else
-		    Return FormAddPtr(CURLFORM_COPYNAME, n, CURLFORM_BUFFER, fn, CURLFORM_BUFFERLENGTH, Ptr(Value.Size), CURLFORM_BUFFERPTR, Value)
-		  End If
+		    
+		  Case ContentType = "" And Filename = "" ' string part
+		    Return FormAddPtr(CURLFORM_COPYNAME, n, CURLFORM_BUFFERLENGTH, Ptr(Value.Size), CURLFORM_BUFFERPTR, Value)
+		    
+		  Case ContentType = "" And Filename <> "" ' file part without ContentType
+		    ContentType = MimeType(SpecialFolder.Temporary.Child(Filename))
+		    If ContentType <> "" Then
+		      Return Me.AddElement(Name, Value, Filename, ContentType)
+		    Else
+		      Dim fn As MemoryBlock = Filename + Chr(0)
+		      Return FormAddPtr(CURLFORM_COPYNAME, n, CURLFORM_BUFFER, fn, CURLFORM_BUFFERLENGTH, Ptr(Value.Size), CURLFORM_BUFFERPTR, Value)
+		    End If
+		    
+		  Case ContentType <> "" And Filename = "" ' probably erroneous
+		    Return Me.AddElement(Name, Value, Filename)
+		    
+		  End Select
 		  
 		End Function
 	#tag EndMethod
@@ -96,6 +110,23 @@ Inherits libcURL.cURLHandle
 		  // Constructor(GlobalInitFlags As Integer) -- From libcURL.cURLHandle
 		  Super.Constructor(GlobalInitFlags)
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Count() As Integer
+		  ' Returns the number of elements in the form.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm.Count
+		  
+		  Dim p As Ptr = Ptr(Me.Handle)
+		  Dim i As Integer
+		  Do Until p = Nil
+		    i = i + 1
+		    p = p.Ptr(4)
+		  Loop
+		  Return i
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
@@ -1658,6 +1689,26 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function Operator_Convert() As libcURL.MultipartFormElement
+		  ' Reads the string located at Index. The first item is at Index=0
+		  ' If the list does not contain a string at Index, an OutOfBoundsException will be raised.
+		  ' If the list is empty then a NilObjectException will be raised.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ListPtr.Item
+		  
+		  Dim List As Ptr = Ptr(Me.Handle)
+		  If List = Nil Then
+		    Dim err As New NilObjectException
+		    err.Message = "The form is empty."
+		    Raise err
+		  End If
+		  
+		  Return New MultipartFormElement(List.curl_httppost(0), Me)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub Operator_Convert(FromDict As Dictionary)
 		  ' Overloads the conversion operator(=), permitting implicit and explicit conversion from a Dictionary
 		  ' into a MultipartForm. The dictionary contains NAME:VALUE pairs comprising HTML form elements: NAME
@@ -1692,6 +1743,21 @@ Inherits libcURL.cURLHandle
 		    End Select
 		  Next
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Operator_Subscript(Index As Integer) As libcURL.MultipartFormElement
+		  Dim frmlst As MultipartFormElement = Me.Operator_Convert()
+		  Dim i As Integer
+		  Do Until frmlst = Nil
+		    If i >= Index Then Exit Do
+		    frmlst = frmlst.NextElement()
+		    i = i + 1
+		  Loop
+		  If frmlst = Nil Then Raise New OutOfBoundsException
+		  Return frmlst
+		  
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
