@@ -2764,11 +2764,11 @@ End
 		  End If
 		  UpdateCookieList()
 		  Select Case Client.EasyItem.HTTPVersion
-		  Case Client.EasyItem.HTTP_VERSION_1_1
+		  Case libcURL.HTTPVersion.HTTP1_1
 		    HTTPVer.ListIndex = 0
-		  Case Client.EasyItem.HTTP_VERSION_1_0
+		  Case libcURL.HTTPVersion.HTTP1_0
 		    HTTPVer.ListIndex = 1
-		  Case Client.EasyItem.HTTP_VERSION_2_0
+		  Case libcURL.HTTPVersion.HTTP2
 		    HTTPVer.ListIndex = 2
 		  End Select
 		  
@@ -2830,12 +2830,12 @@ End
 		      ProxyTypes.ListIndex = -1
 		    End If
 		    
-		    Select Case Client.EasyItem.HTTPVersion
-		    Case 0, 2 ' default http/1.0
+		    Select Case Client.HTTPVersion
+		    Case libcURL.HTTPVersion.None, libcURL.HTTPVersion.HTTP1_1
 		      HTTPVer.ListIndex = 0
-		    Case 1 'http/1.0
+		    Case libcURL.HTTPVersion.HTTP1_0
 		      HTTPVer.ListIndex = 1
-		    Case 3 ' HTTP2
+		    Case libcURL.HTTPVersion.HTTP2
 		      HTTPVer.ListIndex = 2
 		    End Select
 		    
@@ -3648,12 +3648,12 @@ End
 		  If mLockUI Then Return
 		  Select Case Me.Text
 		  Case "HTTP/1.1"
-		    Client.EasyItem.HTTPVersion = Client.EasyItem.HTTP_VERSION_1_1
+		    Client.HTTPVersion = libcURL.HTTPVersion.HTTP1_1
 		  Case "HTTP/1.0"
-		    Client.EasyItem.HTTPVersion = Client.EasyItem.HTTP_VERSION_1_0
+		    Client.HTTPVersion = libcURL.HTTPVersion.HTTP1_0
 		  Case "HTTP/2"
 		    Try
-		      Client.EasyItem.HTTPVersion = Client.EasyItem.HTTP_VERSION_2_0
+		      Client.HTTPVersion = libcURL.HTTPVersion.HTTP2
 		    Catch Err As libcURL.cURLException
 		      If Err.ErrorNumber = libcURL.Errors.UNSUPPORTED_PROTOCOL Then
 		        Call MsgBox("HTTP/2 support was not built into the installed version of libcurl.", 16, libcURL.Errors.Name(Err.ErrorNumber))

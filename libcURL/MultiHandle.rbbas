@@ -59,6 +59,14 @@ Inherits libcURL.cURLHandle
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function Count() As Integer
+		  ' Returns the number of EasyHandles currently being managed by the MultiHandle.
+		  
+		  Return Instances.Count
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h21
 		Private Sub Destructor()
 		  ' Destroys the stack. Any remaining EasyHandles are removed first.
