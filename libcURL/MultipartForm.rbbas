@@ -270,6 +270,40 @@ Inherits libcURL.cURLHandle
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function GetElement(Index As Integer) As Variant
+		  Dim element As libcURL.MultipartFormElement = Me.FirstElement
+		  Dim i As Integer
+		  Do Until element = Nil Or i >= Index
+		    element = element.NextElement
+		    i = i + 1
+		  Loop
+		  If element = Nil Then Return Nil
+		  
+		  Select Case True
+		  Case element.FileName <> "" And element.Buffer <> Nil ' file buffer part
+		    Dim mb As New MemoryBlock(element.BufferSize)
+		    mb.StringValue(0, mb.Size) = MemoryBlock(element.Buffer).StringValue(0, mb.Size)
+		    Return mb
+		    
+		  Case element.FileName = "" And element.Buffer <> Nil ' buffer part
+		    Dim mb As New MemoryBlock(element.BufferSize)
+		    mb.StringValue(0, mb.Size) = MemoryBlock(element.Buffer).StringValue(0, mb.Size)
+		    Return mb
+		    
+		  Case element.FileName <> "" And element.Contents <> "" ' file path part
+		    Dim f As FolderItem = GetFolderItem(element.Contents)
+		    If f <> Nil Then Return f Else Raise New RuntimeException
+		    
+		  Case element.FileName = "" And element.Contents <> "" ' string part
+		    Return element.Contents
+		    
+		  Else
+		    Break
+		  End Select
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h1
 		Protected Shared Function MimeType(File As FolderItem) As String
 		  Select Case NthField(File.Name, ".", CountFields(File.Name, "."))
@@ -1802,7 +1836,7 @@ Inherits libcURL.cURLHandle
 	#tag EndNote
 
 
-	#tag ComputedProperty, Flags = &h0
+	#tag ComputedProperty, Flags = &h1
 		#tag Getter
 			Get
 			  Dim List As Ptr = Ptr(Me.Handle)
@@ -1812,7 +1846,7 @@ Inherits libcURL.cURLHandle
 			  
 			End Get
 		#tag EndGetter
-		FirstElement As libcURL.MultipartFormElement
+		Protected FirstElement As libcURL.MultipartFormElement
 	#tag EndComputedProperty
 
 	#tag Property, Flags = &h21
