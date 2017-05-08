@@ -211,8 +211,6 @@ Inherits libcURL.cURLHandle
 		  ' http://curl.haxx.se/libcurl/c/curl_formadd.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm.FormAdd
 		  
-		  'mLastError = curl_formadd(mHandle, LastItem, Option, Value, Option1, Value1, Option2, Value2, Option3, Value3, Option4, Value4, Option5, Value5, CURLFORM_END)
-		  'Return mLastError = 0
 		  If Value <> Nil Then Value = Value + Chr(0)
 		  If Value1 <> Nil Then Value1 = Value1 + Chr(0)
 		  If Value2 <> Nil Then Value2 = Value2 + Chr(0)
