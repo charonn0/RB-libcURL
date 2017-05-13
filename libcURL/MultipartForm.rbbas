@@ -218,6 +218,7 @@ Inherits libcURL.cURLHandle
 		Private Shared Function FormGetCallback(UserData As Integer, Buffer As Ptr, Length As Integer) As Integer
 		  #pragma X86CallingConvention CDecl
 		  
+		  If FormGetStreams = Nil Then Return 0
 		  Dim ref As Variant = FormGetStreams.Lookup(UserData, Nil)
 		  Select Case ref
 		  Case IsA Writeable
