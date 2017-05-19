@@ -155,7 +155,7 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h21
 		Private Sub Destructor()
-		  If libcURL.IsAvailable And mHandle <> 0 Then curl_formfree(mHandle)
+		  If mHandle <> 0 Then curl_formfree(mHandle)
 		  mHandle = 0
 		  LastItem = Nil
 		End Sub
