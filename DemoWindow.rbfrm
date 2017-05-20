@@ -51,7 +51,7 @@ Begin Window DemoWindow
       TextUnit        =   0
       Top             =   119
       Underline       =   ""
-      Value           =   2
+      Value           =   0
       Visible         =   True
       Width           =   596
       Begin Listbox Headers
@@ -1113,7 +1113,7 @@ Begin Window DemoWindow
          GridLinesVertical=   0
          HasHeading      =   True
          HeadingIndex    =   -1
-         Height          =   61
+         Height          =   83
          HelpTag         =   ""
          Hierarchical    =   ""
          Index           =   -2147483648
@@ -1855,7 +1855,7 @@ Begin Window DemoWindow
          Index           =   -2147483648
          InitialParent   =   "TabPanel2"
          Italic          =   ""
-         Left            =   13
+         Left            =   20
          LockBottom      =   True
          LockedInPosition=   False
          LockLeft        =   True
@@ -1863,13 +1863,13 @@ Begin Window DemoWindow
          LockTop         =   False
          Scope           =   0
          State           =   0
-         TabIndex        =   3
-         TabPanelIndex   =   1
+         TabIndex        =   29
+         TabPanelIndex   =   3
          TabStop         =   True
          TextFont        =   "System"
          TextSize        =   0
          TextUnit        =   0
-         Top             =   372
+         Top             =   319
          Underline       =   ""
          Value           =   False
          Visible         =   True
@@ -2013,7 +2013,7 @@ Begin Window DemoWindow
       TextUnit        =   0
       Top             =   0
       Underline       =   ""
-      Value           =   3
+      Value           =   0
       Visible         =   True
       Width           =   246
       Begin PushButton PushButton1
@@ -2077,38 +2077,6 @@ Begin Window DemoWindow
          Underline       =   ""
          Visible         =   True
          Width           =   80
-      End
-      Begin CheckBox CheckBox1
-         AutoDeactivate  =   True
-         Bold            =   ""
-         Caption         =   "GET uses stream"
-         DataField       =   ""
-         DataSource      =   ""
-         Enabled         =   True
-         Height          =   20
-         HelpTag         =   ""
-         Index           =   -2147483648
-         InitialParent   =   "TabPanel1"
-         Italic          =   ""
-         Left            =   11
-         LockBottom      =   ""
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   ""
-         LockTop         =   True
-         Scope           =   0
-         State           =   0
-         TabIndex        =   2
-         TabPanelIndex   =   1
-         TabStop         =   True
-         TextFont        =   "System"
-         TextSize        =   0
-         TextUnit        =   0
-         Top             =   58
-         Underline       =   ""
-         Value           =   False
-         Visible         =   True
-         Width           =   172
       End
       Begin PushButton PushButton3
          AutoDeactivate  =   True
@@ -2326,6 +2294,38 @@ Begin Window DemoWindow
          Underline       =   ""
          Visible         =   True
          Width           =   80
+      End
+      Begin CheckBox CheckBox1
+         AutoDeactivate  =   True
+         Bold            =   ""
+         Caption         =   "Download to file"
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel1"
+         Italic          =   ""
+         Left            =   11
+         LockBottom      =   ""
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   ""
+         LockTop         =   True
+         Scope           =   0
+         State           =   0
+         TabIndex        =   2
+         TabPanelIndex   =   1
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   58
+         Underline       =   ""
+         Value           =   False
+         Visible         =   True
+         Width           =   172
       End
    End
    Begin ProgressBar ProgressDownload
@@ -2671,11 +2671,11 @@ End
 		  End If
 		  UpdateCookieList()
 		  Select Case Client.EasyItem.HTTPVersion
-		  Case Client.EasyItem.HTTP_VERSION_1_1
+		  Case libcURL.HTTPVersion.HTTP1_1
 		    HTTPVer.ListIndex = 0
-		  Case Client.EasyItem.HTTP_VERSION_1_0
+		  Case libcURL.HTTPVersion.HTTP1_0
 		    HTTPVer.ListIndex = 1
-		  Case Client.EasyItem.HTTP_VERSION_2_0
+		  Case libcURL.HTTPVersion.HTTP2
 		    HTTPVer.ListIndex = 2
 		  End Select
 		  
@@ -2737,12 +2737,12 @@ End
 		      ProxyTypes.ListIndex = -1
 		    End If
 		    
-		    Select Case Client.EasyItem.HTTPVersion
-		    Case 0, 2 ' default http/1.0
+		    Select Case Client.HTTPVersion
+		    Case libcURL.HTTPVersion.None, libcURL.HTTPVersion.HTTP1_1
 		      HTTPVer.ListIndex = 0
-		    Case 1 'http/1.0
+		    Case libcURL.HTTPVersion.HTTP1_0
 		      HTTPVer.ListIndex = 1
-		    Case 3 ' HTTP2
+		    Case libcURL.HTTPVersion.HTTP2
 		      HTTPVer.ListIndex = 2
 		    End Select
 		    
@@ -3580,12 +3580,12 @@ End
 		  If mLockUI Then Return
 		  Select Case Me.Text
 		  Case "HTTP/1.1"
-		    Client.EasyItem.HTTPVersion = Client.EasyItem.HTTP_VERSION_1_1
+		    Client.HTTPVersion = libcURL.HTTPVersion.HTTP1_1
 		  Case "HTTP/1.0"
-		    Client.EasyItem.HTTPVersion = Client.EasyItem.HTTP_VERSION_1_0
+		    Client.HTTPVersion = libcURL.HTTPVersion.HTTP1_0
 		  Case "HTTP/2"
 		    Try
-		      Client.EasyItem.HTTPVersion = Client.EasyItem.HTTP_VERSION_2_0
+		      Client.HTTPVersion = libcURL.HTTPVersion.HTTP2
 		    Catch Err As libcURL.cURLException
 		      If Err.ErrorNumber = libcURL.Errors.UNSUPPORTED_PROTOCOL Then
 		        Call MsgBox("HTTP/2 support was not built into the installed version of libcurl.", 16, libcURL.Errors.Name(Err.ErrorNumber))

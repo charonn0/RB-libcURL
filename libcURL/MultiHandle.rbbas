@@ -59,6 +59,14 @@ Inherits libcURL.cURLHandle
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function Count() As Integer
+		  ' Returns the number of EasyHandles currently being managed by the MultiHandle.
+		  
+		  Return Instances.Count
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h21
 		Private Sub Destructor()
 		  ' Destroys the stack. Any remaining EasyHandles are removed first.
@@ -354,9 +362,9 @@ Inherits libcURL.cURLHandle
 			  End If
 			  
 			  If value Then
-			    If Not Me.SetOption(libcURL.Opts.Multi_PIPELINING, 2) Then Raise new libcURL.cURLException(Me)
+			    If Not Me.SetOption(libcURL.Opts.Multi.PIPELINING, 2) Then Raise new libcURL.cURLException(Me)
 			  Else
-			    If Not Me.SetOption(libcURL.Opts.Multi_PIPELINING, mHTTPPipelining) Then Raise new libcURL.cURLException(Me)
+			    If Not Me.SetOption(libcURL.Opts.Multi.PIPELINING, mHTTPPipelining) Then Raise new libcURL.cURLException(Me)
 			  End If
 			  mHTTPMultiplexing = value
 			End Set
@@ -372,7 +380,7 @@ Inherits libcURL.cURLHandle
 		#tag EndGetter
 		#tag Setter
 			Set
-			  ' Sets whether two (or more) HTTP requests which are added to the same MultiHandle can be 
+			  ' Sets whether two (or more) HTTP requests which are added to the same MultiHandle can be
 			  ' pipelined over the same connection (server support required).
 			  '
 			  ' See:
@@ -384,7 +392,7 @@ Inherits libcURL.cURLHandle
 			    Return
 			  End If
 			  
-			  If Not Me.SetOption(libcURL.Opts.Multi_PIPELINING, value) Then Raise new libcURL.cURLException(Me)
+			  If Not Me.SetOption(libcURL.Opts.Multi.PIPELINING, value) Then Raise new libcURL.cURLException(Me)
 			  mHTTPPipelining = value
 			End Set
 		#tag EndSetter
