@@ -63,6 +63,14 @@ Inherits libcURL.cURLHandle
 		Private Delegate Function cURLServerPushCallback(ParentHandle As Integer, ChildHandle As Integer, NumHeaders As Integer, PushHeaders As Ptr, UserData As Ptr) As Integer
 	#tag EndDelegateDeclaration
 
+	#tag Method, Flags = &h0
+		Function Count() As Integer
+		  ' Returns the number of EasyHandles currently being managed by the MultiHandle.
+		  
+		  Return Instances.Count
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h21
 		Private Sub Destructor()
 		  ' Destroys the stack. Any remaining EasyHandles are removed first.

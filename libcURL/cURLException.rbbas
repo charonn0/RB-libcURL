@@ -22,6 +22,9 @@ Inherits RuntimeException
 		  Case Me.ErrorNumber = libcURL.Errors.NO_COOKIEJAR
 		    Me.Message = "No cookie file was specified."
 		    
+		  Case Me.ErrorNumber = libcURL.Errors.INVALID_LOCAL_FILE
+		    Me.Message = "The specified local file is invalid or does not exist."
+		    
 		  Case Not libcURL.IsAvailable
 		    Me.Message = "libcURL is not available or is an unsupported version."
 		    

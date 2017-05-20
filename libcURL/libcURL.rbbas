@@ -295,25 +295,6 @@ Protected Module libcURL
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Attributes( deprecated = "libcURL.cURLClient.Get" ) Protected Function Get(URL As String, TimeOut As Integer, ByRef Headers As InternetHeaders, ByRef StatusCode As Integer, Username As String = "", Password As String = "") As MemoryBlock
-		  ' Note: This method has been deprecated in favor of cURLClient.Get
-		  ' Synchronously performs a retrieval using protocol-appropriate semantics (http GET, ftp RETR, etc.)
-		  ' The protocol is inferred from the URL; explictly specify the protocol in the URL to avoid bad guesses.
-		  ' Pass a connection TimeOut interval (in seconds), or 0 to wait forever. Pass an InternetHeaders instance and
-		  ' an Integer by reference to contain the response headers (if any) and final result code (if any). Headers and
-		  ' StatusCode are mandatory and MUST NOT be Nil. Pass a username or password if a username and/or password will
-		  ' be required to complete the transfer. Returns a MemoryBlock containing any downloaded data.
-		  
-		  Dim out As New MemoryBlock(0)
-		  Dim outstream As New BinaryStream(out)
-		  Dim c As libcURL.EasyHandle = libcURL.SynchronousHelpers.Get(URL, TimeOut, outstream, Headers, Username, Password)
-		  StatusCode = c.LastError
-		  outstream.Close
-		  Return out
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
 		Protected Function IsAvailable() As Boolean
 		  ' Returns True if libcURL is available and at least version 7.15.2. Prior versions require that curl_global_init and
 		  ' curl_global_cleanup be called only once each, which we aren't doing.
@@ -504,15 +485,15 @@ Protected Module libcURL
 		      i = i + 1
 		      
 		    Case arg = "--http1.0", arg = "-0"
-		      Client.EasyItem.HTTPVersion = Client.EasyItem.HTTP_VERSION_1_0
+		      Client.HTTPVersion = HTTPVersion.HTTP1_0
 		      If Client.EasyItem.LastError <> 0 Then GoTo ParseError
 		      
 		    Case arg = "--http1.1"
-		      Client.EasyItem.HTTPVersion = Client.EasyItem.HTTP_VERSION_1_1
+		      Client.HTTPVersion = HTTPVersion.HTTP1_1
 		      If Client.EasyItem.LastError <> 0 Then GoTo ParseError
 		      
 		    Case arg = "--http2"
-		      Client.EasyItem.HTTPVersion = Client.EasyItem.HTTP_VERSION_2_0
+		      Client.HTTPVersion = HTTPVersion.HTTP2
 		      If Client.EasyItem.LastError <> 0 Then GoTo ParseError
 		      
 		    Case arg = "--include", StrComp("-i", arg, 1) = 0
@@ -795,48 +776,6 @@ Protected Module libcURL
 		    Parsed.TotalSeconds = Parsed.TotalSeconds + count
 		    Return True
 		  End If
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Attributes( deprecated = "libcURL.cURLClient.Post" ) Protected Function Post(FormData As Dictionary, URL As String, TimeOut As Integer, ByRef Headers As InternetHeaders, ByRef StatusCode As Integer, Username As String = "", Password As String = "") As MemoryBlock
-		  ' Note: This method has been deprecated in favor of cURLClient.Post
-		  ' Synchronously POST the passed FormData via HTTP(S) using multipart/form-data encoding. The FormData dictionary
-		  ' contains NAME:VALUE pairs comprising HTML form elements. NAME is a string containing the form-element name; VALUE
-		  ' may be a string or a FolderItem. Pass a connection TimeOut interval (in seconds), or 0 to wait forever. Pass an
-		  ' InternetHeaders instance and an Integer by reference to contain the response headers (if any) and final result
-		  ' code (if any). Headers and StatusCode are mandatory and MUST NOT be Nil. Pass a username or password if a username
-		  ' and/or password will be required to complete the transfer. Returns a MemoryBlock containing any downloaded data.
-		  
-		  Dim out As New MemoryBlock(0)
-		  Dim outstream As New BinaryStream(out)
-		  Dim c As libcURL.EasyHandle = libcURL.SynchronousHelpers.Post(FormData, URL, TimeOut, outstream, Headers, Username, Password)
-		  StatusCode = c.LastError
-		  outstream.Close
-		  Return out
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Attributes( deprecated = "libcURL.cURLClient.Put" ) Protected Function Put(File As FolderItem, URL As String, TimeOut As Integer, ByRef Headers As InternetHeaders, ByRef StatusCode As Integer, Username As String = "", Password As String = "") As MemoryBlock
-		  ' Note: This method has been deprecated in favor of cURLClient.Put
-		  ' Synchronously uploads the passed FolderItem using protocol-appropriate semantics (http PUT, ftp STOR, etc.)
-		  ' The protocol is inferred from the URL; explictly specify the protocol in the URL to avoid bad guesses. The
-		  ' path part of the URL specifies the remote directory and file name to store the file under. Pass a connection
-		  ' TimeOut interval (in seconds), or 0 to wait forever. Pass an InternetHeaders instance and an Integer by reference
-		  ' to contain the response headers (if any) and final result code (if any). Headers and StatusCode are mandatory
-		  ' and MUST NOT be Nil. Pass a username or password if a username and/or password will be required to complete
-		  ' the transfer. Returns a MemoryBlock containing any downloaded data.
-		  
-		  Dim out As New MemoryBlock(0)
-		  Dim outstream As New BinaryStream(out)
-		  Dim instream As BinaryStream = BinaryStream.Open(File)
-		  
-		  Dim c As libcURL.EasyHandle = libcURL.SynchronousHelpers.Put(URL, TimeOut, instream, outstream, Headers, Username, Password)
-		  StatusCode = c.LastError
-		  outstream.Close
-		  instream.Close
-		  Return out
 		End Function
 	#tag EndMethod
 

@@ -423,7 +423,7 @@ Inherits libcURL.cURLHandle
 		    
 		  Case libcURL.Info.SSL_ENGINES, libcURL.Info.COOKIELIST
 		    mb = New MemoryBlock(8)
-		    If Me.GetInfo(InfoType, mb) And mb.Ptr(0) <> Nil Then Return New libcURL.ListPtr(mb.Ptr(0))
+		    If Me.GetInfo(InfoType, mb) And mb.Ptr(0) <> Nil Then Return New ListPtr(mb.Ptr(0), Me.Flags)
 		    
 		  Else
 		    Dim err As New TypeMismatchException
@@ -668,7 +668,7 @@ Inherits libcURL.cURLHandle
 		  mFollowRedirects = False
 		  mForm = Nil
 		  mHTTPCompression = False
-		  mHTTPVersion = 0
+		  mHTTPVersion = libcURL.HTTPVersion.None
 		  mMaxRedirects = -1
 		  mPassword = ""
 		  mProxyEngine = Nil
@@ -1111,6 +1111,10 @@ Inherits libcURL.cURLHandle
 			    If Not Me.SetOption(libcURL.Opts.CAINFO, Nil) Then Raise New cURLException(Me)
 			    If Not Me.SetOption(libcURL.Opts.CAPATH, Nil) Then Raise New cURLException(Me)
 			    
+			  Case Not value.Exists
+			    mLastError = libcURL.Errors.INVALID_LOCAL_FILE
+			    Return
+			    
 			  Case value.Directory
 			    If Not Me.SetOption(libcURL.Opts.CAPATH, value) Then Raise New cURLException(Me)
 			    
@@ -1344,7 +1348,7 @@ Inherits libcURL.cURLHandle
 			  mHTTPVersion = value
 			End Set
 		#tag EndSetter
-		HTTPVersion As Integer
+		HTTPVersion As libcURL.HTTPVersion
 	#tag EndComputedProperty
 
 	#tag Property, Flags = &h1
@@ -1449,7 +1453,7 @@ Inherits libcURL.cURLHandle
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private mHTTPVersion As Integer
+		Private mHTTPVersion As libcURL.HTTPVersion
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
