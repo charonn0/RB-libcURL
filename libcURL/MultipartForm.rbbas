@@ -22,7 +22,7 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function AddElement(Name As String, ValueCallbackHandler As libcURL.EasyHandle, ValueSize As Integer, Filename As String = "", AdditionalHeaders As libcURL.ListPtr = Nil) As Boolean
+		Function AddElement(Name As String, ValueCallbackHandler As libcURL.EasyHandle, ValueSize As Integer, Filename As String = "", ContentType As String = "", AdditionalHeaders As libcURL.ListPtr = Nil) As Boolean
 		  ' Adds an element using the specified name, with contents which will be read from the passed EasyHandle's
 		  ' DataNeeded event (or UploadStream object).
 		  ' See:
@@ -46,15 +46,15 @@ Inherits libcURL.cURLHandle
 		  End If
 		  
 		  If ValueSize = 0 Then
-		    Return FormAddPtr(AdditionalHeaders, CURLFORM_COPYNAME, n, CURLFORM_STREAM, Ptr(ValueCallbackHandler.Handle), finalopt, fn)
+		    Return FormAddPtr(AdditionalHeaders, CURLFORM_COPYNAME, n, CURLFORM_STREAM, Ptr(ValueCallbackHandler.Handle), nameopt, fn)
 		  Else
-		    Return FormAddPtr(AdditionalHeaders, CURLFORM_COPYNAME, n, CURLFORM_STREAM, Ptr(ValueCallbackHandler.Handle), lenflag, Ptr(ValueSize), finalopt, fn)
+		    Return FormAddPtr(AdditionalHeaders, CURLFORM_COPYNAME, n, CURLFORM_STREAM, Ptr(ValueCallbackHandler.Handle), CURLFORM_CONTENTSLENGTH, Ptr(ValueSize), nameopt, fn)
 		  End If
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function AddElement(Name As String, ByRef Value As MemoryBlock, Filename As String, ContentType As String = "") As Boolean
+		Function AddElement(Name As String, ByRef Value As MemoryBlock, Filename As String, ContentType As String = "", AdditionalHeaders As libcURL.ListPtr = Nil) As Boolean
 		  ' Adds the passed buffer to the form as a file part using the specified name. The buffer pointed to by Value
 		  ' is used directly (i.e. not copied) so it must continue to exist until after the POST request has completed.
 		  ' This method allows file parts to be added without using an actual file. Specify an empty Filename parameter
@@ -67,13 +67,16 @@ Inherits libcURL.cURLHandle
 		  If Value Is Nil Then Raise New NilObjectException
 		  If Value.Size < 0 Then Raise New OutOfBoundsException
 		  If Filename <> ""  And ContentType = "" Then ContentType = MimeType(SpecialFolder.Temporary.Child(Filename))
+		  Dim nameopt As Integer = CURLFORM_COPYNAME
 		  Dim n As MemoryBlock = Name + Chr(0)
 		  Dim fn As MemoryBlock = Filename + Chr(0)
 		  If ContentType <> "" Then
 		    Dim tn As MemoryBlock = ContentType + Chr(0)
-		    Return FormAddPtr(CURLFORM_COPYNAME, n, CURLFORM_BUFFER, fn, CURLFORM_BUFFERLENGTH, Ptr(Value.Size), CURLFORM_BUFFERPTR, Value, CURLFORM_CONTENTTYPE, tn)
+		    Return FormAddPtr(AdditionalHeaders, CURLFORM_COPYNAME, n, CURLFORM_BUFFER, fn, _
+		    CURLFORM_BUFFERLENGTH, Ptr(Value.Size), CURLFORM_BUFFERPTR, Value, CURLFORM_CONTENTTYPE, tn)
 		  Else
-		    Return FormAddPtr(CURLFORM_COPYNAME, n, CURLFORM_BUFFER, fn, CURLFORM_BUFFERLENGTH, Ptr(Value.Size), CURLFORM_BUFFERPTR, Value)
+		    Return FormAddPtr(AdditionalHeaders, CURLFORM_COPYNAME, n, CURLFORM_BUFFER, fn, _
+		    CURLFORM_BUFFERLENGTH, Ptr(Value.Size), CURLFORM_BUFFERPTR, Value)
 		  End If
 		  
 		End Function
@@ -209,16 +212,40 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h1
 		Protected Function FormAddPtr(AdditionalHeaders As libcURL.ListPtr, Option As Integer, Value As Ptr, Option1 As Integer = CURLFORM_END, Value1 As Ptr = Nil, Option2 As Integer = CURLFORM_END, Value2 As Ptr = Nil, Option3 As Integer = CURLFORM_END, Value3 As Ptr = Nil, Option4 As Integer = CURLFORM_END, Value4 As Ptr = Nil, Option5 As Integer = CURLFORM_END, Value5 As Ptr = Nil) As Boolean
-		  If AdditionalHeaders = Nil Then
+		  Dim option6 As Integer = CURLFORM_END
+		  Dim value6 As Ptr
+		  
+		  If AdditionalHeaders <> Nil Then
+		    Select Case True
+		    Case Option1 = CURLFORM_END
+		      Option1 = CURLFORM_CONTENTHEADER
+		      Value1 = Ptr(AdditionalHeaders.Handle)
+		    Case Option2 = CURLFORM_END
+		      Option2 = CURLFORM_CONTENTHEADER
+		      Value2 = Ptr(AdditionalHeaders.Handle)
+		    Case Option3 = CURLFORM_END
+		      Option3 = CURLFORM_CONTENTHEADER
+		      Value3 = Ptr(AdditionalHeaders.Handle)
+		    Case Option4 = CURLFORM_END
+		      Option4 = CURLFORM_CONTENTHEADER
+		      Value4 = Ptr(AdditionalHeaders.Handle)
+		    Case Option5 = CURLFORM_END
+		      Option5 = CURLFORM_CONTENTHEADER
+		      Value5 = Ptr(AdditionalHeaders.Handle)
+		    Else
+		      Option6 = CURLFORM_CONTENTHEADER
+		      Value6 = Ptr(AdditionalHeaders.Handle)
+		    End Select
+		    
+		    mLastError = curl_formadd(mHandle, LastItem, Option, Value, Option1, Value1, _
+		    Option2, Value2, Option3, Value3, Option4, Value4, Option5, Value5, Option6, Value6, CURLFORM_END)
+		    If mLastError <> 0 Then mAdditionalHeaders.Append(AdditionalHeaders)
+		    
+		  Else
 		    mLastError = curl_formadd(mHandle, LastItem, Option, Value, Option1, Value1, _
 		    Option2, Value2, Option3, Value3, Option4, Value4, Option5, Value5, CURLFORM_END, Nil, CURLFORM_END)
-		  Else
-		    mAdditionalHeaders.Append(AdditionalHeaders)
-		    mLastError = curl_formadd(mHandle, LastItem, Option, Value, Option1, Value1, _
-		    Option2, Value2, Option3, Value3, Option4, Value4, Option5, Value5, CURLFORM_CONTENTHEADER, Ptr(AdditionalHeaders.Handle), CURLFORM_END)
 		  End If
 		  Return mLastError = 0
-		  
 		End Function
 	#tag EndMethod
 
@@ -1726,7 +1753,7 @@ Inherits libcURL.cURLHandle
 	#tag Method, Flags = &h0
 		Function Serialize(WriteTo As Writeable) As Boolean
 		  ' Serialize the form and write the output to WriteTo. The serialized form may be used with
-		  ' other HTTP libraries, including the built-in HTTPSocket. If WriteTo is Nil then the 
+		  ' other HTTP libraries, including the built-in HTTPSocket. If WriteTo is Nil then the
 		  ' SerializePart event will be raised in lieu of writing the data to a stream.
 		  '
 		  ' See:
@@ -1798,9 +1825,6 @@ Inherits libcURL.cURLHandle
 	#tag EndProperty
 
 
-	#tag Constant, Name = CURLFORM_CONTENTHEADER, Type = Double, Dynamic = False, Default = \"15", Scope = Protected
-	#tag EndConstant
-
 	#tag Constant, Name = CURLFORM_BUFFER, Type = Double, Dynamic = False, Default = \"11", Scope = Protected
 	#tag EndConstant
 
@@ -1808,6 +1832,9 @@ Inherits libcURL.cURLHandle
 	#tag EndConstant
 
 	#tag Constant, Name = CURLFORM_BUFFERPTR, Type = Double, Dynamic = False, Default = \"12", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURLFORM_CONTENTHEADER, Type = Double, Dynamic = False, Default = \"15", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = CURLFORM_CONTENTLEN, Type = Double, Dynamic = False, Default = \"20", Scope = Protected
