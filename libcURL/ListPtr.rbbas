@@ -50,7 +50,7 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h21
 		Private Sub Destructor()
-		  If libcURL.IsAvailable And List <> Nil Then curl_slist_free_all(List)
+		  If List <> Nil Then curl_slist_free_all(List)
 		  List = Nil
 		End Sub
 	#tag EndMethod
