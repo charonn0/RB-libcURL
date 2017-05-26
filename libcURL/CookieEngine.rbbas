@@ -106,6 +106,7 @@ Protected Class CookieEngine
 
 	#tag Method, Flags = &h0
 		Attributes( deprecated = "libcURL.CookieEngine.WriteCookies" )  Function Flush(CookieFile As FolderItem = Nil) As Boolean
+		  ' Note: This method has been deprecated in favor of CookieEngine.WriteCookies
 		  ' Flushes all cookies to a file. If no CookieFile is specified as a parameter then the cookiejar property is used.
 		  '
 		  ' See:
@@ -270,6 +271,7 @@ Protected Class CookieEngine
 
 	#tag Method, Flags = &h0
 		Attributes( deprecated = "libcURL.CookieEngine.Reload" )  Function Reload(CookieFile As FolderItem) As Boolean
+		  ' Note: This method has been deprecated in favor of CookieEngine.Reload()
 		  ' Reloads the cookie list from the CookieFile. If no CookieFile is specified then the CookieJar is used.
 		  '
 		  ' See:
@@ -396,7 +398,7 @@ Protected Class CookieEngine
 
 	#tag Method, Flags = &h0
 		Function WriteCookies(CookieFile As FolderItem) As Boolean
-		  ' Writes the cookie list to the CookieFile. If CookieFile is Nil then cookies will be written
+		  ' Writes the cookie list to the CookieFile. If CookieFile is Nil then cookies will be flushed
 		  ' to the most recently set cookie file; if no file was previously set then an exception will
 		  ' be raised.
 		  '

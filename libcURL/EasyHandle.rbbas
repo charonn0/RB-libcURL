@@ -1199,7 +1199,7 @@ Inherits libcURL.cURLHandle
 			  Me.CookieEngine.CookieJar = value
 			End Set
 		#tag EndSetter
-		Attributes( deprecated = "libcURL.EasyHandle.CookieEngine.CookieJar" ) CookieJar As FolderItem
+		Attributes( deprecated ) CookieJar As FolderItem
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
