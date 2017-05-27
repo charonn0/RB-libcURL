@@ -1205,6 +1205,21 @@ Inherits libcURL.cURLHandle
 		CWDMethod As libcURL.CWDMethod
 	#tag EndComputedProperty
 
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  If mDNSEngine = Nil Then mDNSEngine = New DNSEngine(Me)
+			  return mDNSEngine
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  mDNSEngine = value
+			End Set
+		#tag EndSetter
+		DNSEngine As libcURL.DNSEngine
+	#tag EndComputedProperty
+
 	#tag Property, Flags = &h0
 		DownloadStream As Writeable
 	#tag EndProperty
@@ -1397,6 +1412,10 @@ Inherits libcURL.cURLHandle
 
 	#tag Property, Flags = &h21
 		Private mCWDMethod As libcURL.CWDMethod = libcURL.CWDMethod.Multi
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mDNSEngine As libcURL.DNSEngine
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
