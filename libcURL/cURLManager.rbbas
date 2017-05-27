@@ -291,6 +291,17 @@ Protected Class cURLManager
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function Resolver() As libcURL.DNSEngine
+		  ' Returns a reference to the DNSEngine instance
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.Resolver
+		  
+		  Return mEasyItem.DNSEngine
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function SetCookie(Name As String, Value As String, Domain As String, Expires As Date = Nil, Path As String = "", HTTPOnly As Boolean = False) As Boolean
 		  ' Sets or updates a cookie. The cookie engine must be enabled.
 		  '
