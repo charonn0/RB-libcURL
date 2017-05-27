@@ -7,6 +7,7 @@ Inherits Application
 		  c.HTTP2Push = True
 		  c.HTTPVersion = libcURL.HTTPVersion.HTTP2
 		  AddHandler c.AcceptServerPush, WeakAddressOf PushHandler
+		  AddHandler c.TransferComplete, WeakAddressOf TransferCompleteHandler
 		  If Not c.Get("https://http2.akamai.com/demo/h2_demo_frame.html") Then Raise New libcURL.cURLException(c.EasyItem)
 		  Break
 		End Sub
@@ -20,11 +21,23 @@ Inherits Application
 		  host = PushHeaders.CommaSeparatedValues(":authority")
 		  path = PushHeaders.CommaSeparatedValues(":path")
 		  PushConnection.URL = scheme + "://" + host + path
-		  Dim bs As BinaryStream = BinaryStream.Create(SpecialFolder.Desktop.Child(EncodeURLComponent(path)), False)
+		  Dim bs As BinaryStream = BinaryStream.Create(SpecialFolder.Desktop.Child(EncodeURLComponent(path)), True)
 		  PushConnection.DownloadStream = bs
+		  mChild = PushConnection
 		  Return True
 		End Function
 	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub TransferCompleteHandler(Sender As libcURL.cURLClient, Connection As libcURL.EasyHandle)
+		  If Connection = mChild Then BinaryStream(mChild.DownloadStream).Close
+		End Sub
+	#tag EndMethod
+
+
+	#tag Property, Flags = &h21
+		Private mChild As libcURL.EasyHandle
+	#tag EndProperty
 
 
 	#tag Constant, Name = kEditClear, Type = String, Dynamic = False, Default = \"&Delete", Scope = Public
