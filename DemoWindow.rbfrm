@@ -461,7 +461,7 @@ Begin Window DemoWindow
          Italic          =   False
          Left            =   302
          ListIndex       =   0
-         LockBottom      =   True
+         LockBottom      =   False
          LockedInPosition=   False
          LockLeft        =   True
          LockRight       =   False
@@ -861,7 +861,7 @@ Begin Window DemoWindow
          Italic          =   False
          Left            =   302
          ListIndex       =   0
-         LockBottom      =   True
+         LockBottom      =   False
          LockedInPosition=   False
          LockLeft        =   True
          LockRight       =   False
@@ -1604,7 +1604,7 @@ Begin Window DemoWindow
          Italic          =   False
          Left            =   480
          ListIndex       =   0
-         LockBottom      =   True
+         LockBottom      =   False
          LockedInPosition=   False
          LockLeft        =   True
          LockRight       =   False
@@ -1637,7 +1637,7 @@ Begin Window DemoWindow
          Italic          =   False
          Left            =   480
          ListIndex       =   0
-         LockBottom      =   True
+         LockBottom      =   False
          LockedInPosition=   False
          LockLeft        =   True
          LockRight       =   False
