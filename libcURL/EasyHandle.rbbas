@@ -1182,29 +1182,6 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  ' Gets the local file to be used as cookie storage. If no file/folder is specified (default) then returns Nil.
-			  
-			  return Me.CookieEngine.CookieJar
-			End Get
-		#tag EndGetter
-		#tag Setter
-			Set
-			  ' Sets the local file to be used as cookie storage.
-			  '
-			  ' See:
-			  ' http://curl.haxx.se/libcurl/c/CURLOPT_COOKIEJAR.html
-			  ' http://curl.haxx.se/libcurl/c/CURLOPT_COOKIEFILE.html
-			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.CookieJar
-			  
-			  Me.CookieEngine.CookieJar = value
-			End Set
-		#tag EndSetter
-		Attributes( deprecated ) CookieJar As FolderItem
-	#tag EndComputedProperty
-
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
 			  ' Gets the method libcURL will use to traverse the remote directory tree.
 			  ' See:
 			  ' https://curl.haxx.se/libcurl/c/CURLOPT_FTP_FILEMETHOD.html
