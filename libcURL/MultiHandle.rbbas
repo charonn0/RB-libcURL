@@ -30,7 +30,7 @@ Inherits libcURL.cURLHandle
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.Close
 		  
-		  If Instances <> Nil And libcURL.IsAvailable Then
+		  If Instances <> Nil Then
 		    For Each h As Integer In Instances.Keys
 		      Call Me.RemoveItem(Instances.Value(h))
 		    Next

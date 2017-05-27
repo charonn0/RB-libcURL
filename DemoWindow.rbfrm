@@ -51,7 +51,7 @@ Begin Window DemoWindow
       TextUnit        =   0
       Top             =   119
       Underline       =   ""
-      Value           =   0
+      Value           =   4
       Visible         =   True
       Width           =   596
       Begin Listbox Headers
@@ -461,7 +461,7 @@ Begin Window DemoWindow
          Italic          =   False
          Left            =   302
          ListIndex       =   0
-         LockBottom      =   True
+         LockBottom      =   False
          LockedInPosition=   False
          LockLeft        =   True
          LockRight       =   False
@@ -861,7 +861,7 @@ Begin Window DemoWindow
          Italic          =   False
          Left            =   302
          ListIndex       =   0
-         LockBottom      =   True
+         LockBottom      =   False
          LockedInPosition=   False
          LockLeft        =   True
          LockRight       =   False
@@ -1264,7 +1264,7 @@ Begin Window DemoWindow
             Index           =   -2147483648
             InitialParent   =   "CookieControl"
             Italic          =   ""
-            Left            =   25
+            Left            =   20
             LimitText       =   0
             LockBottom      =   True
             LockedInPosition=   False
@@ -1287,7 +1287,7 @@ Begin Window DemoWindow
             Underline       =   ""
             UseFocusRing    =   True
             Visible         =   True
-            Width           =   143
+            Width           =   205
          End
          Begin PushButton CookieLookupButton
             AutoDeactivate  =   True
@@ -1302,7 +1302,7 @@ Begin Window DemoWindow
             Index           =   -2147483648
             InitialParent   =   "CookieControl"
             Italic          =   ""
-            Left            =   311
+            Left            =   437
             LockBottom      =   True
             LockedInPosition=   False
             LockLeft        =   False
@@ -1338,7 +1338,7 @@ Begin Window DemoWindow
             Index           =   -2147483648
             InitialParent   =   "CookieControl"
             Italic          =   ""
-            Left            =   171
+            Left            =   229
             LimitText       =   0
             LockBottom      =   True
             LockedInPosition=   False
@@ -1361,7 +1361,7 @@ Begin Window DemoWindow
             Underline       =   ""
             UseFocusRing    =   True
             Visible         =   True
-            Width           =   136
+            Width           =   205
          End
          Begin CheckBox StrictLookup
             AutoDeactivate  =   True
@@ -1375,7 +1375,7 @@ Begin Window DemoWindow
             Index           =   -2147483648
             InitialParent   =   "CookieControl"
             Italic          =   ""
-            Left            =   385
+            Left            =   512
             LockBottom      =   True
             LockedInPosition=   False
             LockLeft        =   False
@@ -1389,243 +1389,11 @@ Begin Window DemoWindow
             TextFont        =   "System"
             TextSize        =   0
             TextUnit        =   0
-            Top             =   323
+            Top             =   324
             Underline       =   ""
             Value           =   True
             Visible         =   True
             Width           =   68
-         End
-         Begin PushButton CookieJarUnset
-            AutoDeactivate  =   True
-            Bold            =   ""
-            ButtonStyle     =   0
-            Cancel          =   ""
-            Caption         =   "Unset"
-            Default         =   ""
-            Enabled         =   True
-            Height          =   22
-            HelpTag         =   ""
-            Index           =   -2147483648
-            InitialParent   =   "CookieControl"
-            Italic          =   ""
-            Left            =   393
-            LockBottom      =   True
-            LockedInPosition=   False
-            LockLeft        =   False
-            LockRight       =   True
-            LockTop         =   False
-            Scope           =   0
-            TabIndex        =   8
-            TabPanelIndex   =   5
-            TabStop         =   True
-            TextFont        =   "System"
-            TextSize        =   0
-            TextUnit        =   0
-            Top             =   348
-            Underline       =   ""
-            Visible         =   True
-            Width           =   34
-         End
-         Begin TextField CookieJar
-            AcceptTabs      =   ""
-            Alignment       =   0
-            AutoDeactivate  =   True
-            AutomaticallyCheckSpelling=   False
-            BackColor       =   &hFFFFFF
-            Bold            =   ""
-            Border          =   True
-            CueText         =   "Not specified"
-            DataField       =   ""
-            DataSource      =   ""
-            Enabled         =   True
-            Format          =   ""
-            Height          =   20
-            HelpTag         =   ""
-            Index           =   -2147483648
-            InitialParent   =   "CookieControl"
-            Italic          =   ""
-            Left            =   99
-            LimitText       =   0
-            LockBottom      =   True
-            LockedInPosition=   False
-            LockLeft        =   True
-            LockRight       =   True
-            LockTop         =   False
-            Mask            =   ""
-            Password        =   ""
-            ReadOnly        =   True
-            Scope           =   0
-            TabIndex        =   6
-            TabPanelIndex   =   5
-            TabStop         =   True
-            Text            =   ""
-            TextColor       =   &h00464646
-            TextFont        =   "System"
-            TextSize        =   0
-            TextUnit        =   0
-            Top             =   349
-            Underline       =   ""
-            UseFocusRing    =   True
-            Visible         =   True
-            Width           =   259
-         End
-         Begin PushButton CookieJarSet
-            AutoDeactivate  =   True
-            Bold            =   ""
-            ButtonStyle     =   0
-            Cancel          =   ""
-            Caption         =   "Set"
-            Default         =   ""
-            Enabled         =   True
-            Height          =   22
-            HelpTag         =   ""
-            Index           =   -2147483648
-            InitialParent   =   "CookieControl"
-            Italic          =   ""
-            Left            =   360
-            LockBottom      =   True
-            LockedInPosition=   False
-            LockLeft        =   False
-            LockRight       =   True
-            LockTop         =   False
-            Scope           =   0
-            TabIndex        =   7
-            TabPanelIndex   =   5
-            TabStop         =   True
-            TextFont        =   "System"
-            TextSize        =   0
-            TextUnit        =   0
-            Top             =   348
-            Underline       =   ""
-            Visible         =   True
-            Width           =   34
-         End
-         Begin Label Label5
-            AutoDeactivate  =   True
-            Bold            =   ""
-            DataField       =   ""
-            DataSource      =   ""
-            Enabled         =   True
-            Height          =   20
-            HelpTag         =   ""
-            Index           =   -2147483648
-            InitialParent   =   "CookieControl"
-            Italic          =   ""
-            Left            =   25
-            LockBottom      =   True
-            LockedInPosition=   False
-            LockLeft        =   True
-            LockRight       =   False
-            LockTop         =   False
-            Multiline       =   ""
-            Scope           =   0
-            Selectable      =   False
-            TabIndex        =   5
-            TabPanelIndex   =   5
-            Text            =   "Cookiejar:"
-            TextAlign       =   2
-            TextColor       =   &h000000
-            TextFont        =   "System"
-            TextSize        =   0
-            TextUnit        =   0
-            Top             =   348
-            Transparent     =   True
-            Underline       =   ""
-            Visible         =   True
-            Width           =   69
-         End
-         Begin PushButton NewCookieSessionButton
-            AutoDeactivate  =   True
-            Bold            =   ""
-            ButtonStyle     =   0
-            Cancel          =   ""
-            Caption         =   "New Session"
-            Default         =   ""
-            Enabled         =   True
-            Height          =   22
-            HelpTag         =   ""
-            Index           =   -2147483648
-            InitialParent   =   "CookieControl"
-            Italic          =   ""
-            Left            =   465
-            LockBottom      =   True
-            LockedInPosition=   False
-            LockLeft        =   False
-            LockRight       =   True
-            LockTop         =   False
-            Scope           =   0
-            TabIndex        =   13
-            TabPanelIndex   =   5
-            TabStop         =   True
-            TextFont        =   "System"
-            TextSize        =   0
-            TextUnit        =   0
-            Top             =   369
-            Underline       =   ""
-            Visible         =   True
-            Width           =   115
-         End
-         Begin PushButton DeleteCookiesButton
-            AutoDeactivate  =   True
-            Bold            =   ""
-            ButtonStyle     =   0
-            Cancel          =   ""
-            Caption         =   "Delete Session"
-            Default         =   ""
-            Enabled         =   True
-            Height          =   22
-            HelpTag         =   ""
-            Index           =   -2147483648
-            InitialParent   =   "CookieControl"
-            Italic          =   ""
-            Left            =   465
-            LockBottom      =   True
-            LockedInPosition=   False
-            LockLeft        =   False
-            LockRight       =   True
-            LockTop         =   False
-            Scope           =   0
-            TabIndex        =   12
-            TabPanelIndex   =   5
-            TabStop         =   True
-            TextFont        =   "System"
-            TextSize        =   0
-            TextUnit        =   0
-            Top             =   347
-            Underline       =   ""
-            Visible         =   True
-            Width           =   115
-         End
-         Begin PushButton FlushCookiesButton
-            AutoDeactivate  =   True
-            Bold            =   ""
-            ButtonStyle     =   0
-            Cancel          =   ""
-            Caption         =   "Flush Changes"
-            Default         =   ""
-            Enabled         =   False
-            Height          =   22
-            HelpTag         =   ""
-            Index           =   -2147483648
-            InitialParent   =   "CookieControl"
-            Italic          =   ""
-            Left            =   465
-            LockBottom      =   True
-            LockedInPosition=   False
-            LockLeft        =   False
-            LockRight       =   True
-            LockTop         =   False
-            Scope           =   0
-            TabIndex        =   11
-            TabPanelIndex   =   5
-            TabStop         =   True
-            TextFont        =   "System"
-            TextSize        =   0
-            TextUnit        =   0
-            Top             =   323
-            Underline       =   ""
-            Visible         =   True
-            Width           =   115
          End
          Begin Label CookiesTotal
             AutoDeactivate  =   True
@@ -1650,7 +1418,7 @@ Begin Window DemoWindow
             TabIndex        =   9
             TabPanelIndex   =   5
             Text            =   "Cookies known: 0"
-            TextAlign       =   0
+            TextAlign       =   2
             TextColor       =   &h000000
             TextFont        =   "System"
             TextSize        =   0
@@ -1659,7 +1427,7 @@ Begin Window DemoWindow
             Transparent     =   True
             Underline       =   ""
             Visible         =   True
-            Width           =   143
+            Width           =   108
          End
          Begin Label CookiesShown
             AutoDeactivate  =   True
@@ -1672,7 +1440,7 @@ Begin Window DemoWindow
             Index           =   -2147483648
             InitialParent   =   "CookieControl"
             Italic          =   ""
-            Left            =   171
+            Left            =   13
             LockBottom      =   True
             LockedInPosition=   False
             LockLeft        =   True
@@ -1684,16 +1452,109 @@ Begin Window DemoWindow
             TabIndex        =   10
             TabPanelIndex   =   5
             Text            =   "Cookies shown: 0"
-            TextAlign       =   0
+            TextAlign       =   2
             TextColor       =   &h000000
             TextFont        =   "System"
             TextSize        =   0
             TextUnit        =   0
-            Top             =   378
+            Top             =   356
             Transparent     =   True
             Underline       =   ""
             Visible         =   True
-            Width           =   143
+            Width           =   108
+         End
+         Begin PushButton WriteCookies
+            AutoDeactivate  =   True
+            Bold            =   ""
+            ButtonStyle     =   0
+            Cancel          =   ""
+            Caption         =   "Save to file..."
+            Default         =   ""
+            Enabled         =   True
+            Height          =   22
+            HelpTag         =   ""
+            Index           =   -2147483648
+            InitialParent   =   "CookieControl"
+            Italic          =   ""
+            Left            =   350
+            LockBottom      =   True
+            LockedInPosition=   False
+            LockLeft        =   False
+            LockRight       =   True
+            LockTop         =   False
+            Scope           =   0
+            TabIndex        =   14
+            TabPanelIndex   =   5
+            TabStop         =   True
+            TextFont        =   "System"
+            TextSize        =   0
+            TextUnit        =   0
+            Top             =   369
+            Underline       =   ""
+            Visible         =   True
+            Width           =   115
+         End
+         Begin PushButton ReadCookies
+            AutoDeactivate  =   True
+            Bold            =   ""
+            ButtonStyle     =   0
+            Cancel          =   ""
+            Caption         =   "Load from file..."
+            Default         =   ""
+            Enabled         =   True
+            Height          =   22
+            HelpTag         =   ""
+            Index           =   -2147483648
+            InitialParent   =   "CookieControl"
+            Italic          =   ""
+            Left            =   465
+            LockBottom      =   True
+            LockedInPosition=   False
+            LockLeft        =   False
+            LockRight       =   True
+            LockTop         =   False
+            Scope           =   0
+            TabIndex        =   15
+            TabPanelIndex   =   5
+            TabStop         =   True
+            TextFont        =   "System"
+            TextSize        =   0
+            TextUnit        =   0
+            Top             =   369
+            Underline       =   ""
+            Visible         =   True
+            Width           =   115
+         End
+         Begin PushButton NewCookieSessionButton
+            AutoDeactivate  =   True
+            Bold            =   ""
+            ButtonStyle     =   0
+            Cancel          =   ""
+            Caption         =   "New Session"
+            Default         =   ""
+            Enabled         =   True
+            Height          =   22
+            HelpTag         =   ""
+            Index           =   -2147483648
+            InitialParent   =   "CookieControl"
+            Italic          =   ""
+            Left            =   234
+            LockBottom      =   True
+            LockedInPosition=   False
+            LockLeft        =   False
+            LockRight       =   True
+            LockTop         =   False
+            Scope           =   0
+            TabIndex        =   16
+            TabPanelIndex   =   5
+            TabStop         =   True
+            TextFont        =   "System"
+            TextSize        =   0
+            TextUnit        =   0
+            Top             =   369
+            Underline       =   ""
+            Visible         =   True
+            Width           =   115
          End
       End
       Begin CheckBox UseCookies
@@ -1743,7 +1604,7 @@ Begin Window DemoWindow
          Italic          =   False
          Left            =   480
          ListIndex       =   0
-         LockBottom      =   True
+         LockBottom      =   False
          LockedInPosition=   False
          LockLeft        =   True
          LockRight       =   False
@@ -1776,7 +1637,7 @@ Begin Window DemoWindow
          Italic          =   False
          Left            =   480
          ListIndex       =   0
-         LockBottom      =   True
+         LockBottom      =   False
          LockedInPosition=   False
          LockLeft        =   True
          LockRight       =   False
@@ -2837,10 +2698,6 @@ End
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private mCookiesDirty As Integer
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
 		Private mdlnow As Int64
 	#tag EndProperty
 
@@ -3378,16 +3235,6 @@ End
 		      Me.Cell(row, 2) = Me.CellTag(row, 2)
 		      Me.Cell(row, 3) = Me.CellTag(row, 3)
 		      Me.Cell(row, 4) = Me.CellTag(row, 4)
-		      
-		    ElseIf Client.Cookies.CookieJar <> Nil Then
-		      mCookiesDirty = mCookiesDirty + 1
-		    End If
-		    If mCookiesDirty > 0 Then
-		      FlushCookiesButton.Enabled = True
-		      FlushCookiesButton.Caption = "Flush Changes (" + Format(mCookiesDirty, "###,###,##0") + ")"
-		    Else
-		      FlushCookiesButton.Enabled = False
-		      FlushCookiesButton.Caption = "Flush Changes"
 		    End If
 		End Sub
 	#tag EndEvent
@@ -3414,14 +3261,6 @@ End
 		      If MsgBox("Delete this cookie?", 48 + 4, "Confirm deletion") = 6 Then
 		        Client.Cookies.Expiry(index) = New Date(1970, 2, 1, 0, 0, 0, 0.0)
 		        Me.RemoveRow(i)
-		        mCookiesDirty = mCookiesDirty + 1
-		      End If
-		      If mCookiesDirty > 0 Then
-		        FlushCookiesButton.Enabled = True
-		        FlushCookiesButton.Caption = "Flush Changes (" + Format(mCookiesDirty, "###,###,##0") + ")"
-		      Else
-		        FlushCookiesButton.Enabled = False
-		        FlushCookiesButton.Caption = "Flush Changes"
 		      End If
 		      Return True
 		    End If
@@ -3467,47 +3306,29 @@ End
 		End Sub
 	#tag EndEvent
 #tag EndEvents
-#tag Events CookieJarUnset
+#tag Events WriteCookies
 	#tag Event
 		Sub Action()
-		  Client.Cookies.CookieJar = Nil
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events CookieJar
-	#tag Event
-		Sub MouseUp(X As Integer, Y As Integer)
-		  #pragma Unused X
-		  #pragma Unused Y
-		  If Client.EasyItem.CookieEngine.CookieJar <> Nil Then
-		    Client.EasyItem.CookieEngine.CookieJar.Parent.Launch
-		  End If
-		End Sub
-	#tag EndEvent
-	#tag Event
-		Function MouseDown(X As Integer, Y As Integer) As Boolean
-		  #pragma Unused X
-		  #pragma Unused Y
-		  Return True
-		End Function
-	#tag EndEvent
-#tag EndEvents
-#tag Events CookieJarSet
-	#tag Event
-		Sub Action()
-		  Dim f As FolderItem
-		  If MsgBox("Would you like to open an existing cookie file?", 4 + 32, "Open existing?") = 6 Then
-		    f = GetOpenFolderItem(cURLTypes.NetscapeCookieJar)
-		  Else
-		    f = GetSaveFolderItem(cURLTypes.NetscapeCookieJar, "cookie.jar")
-		  End If
+		  Dim f As FolderItem = GetSaveFolderItem(cURLTypes.NetscapeCookieJar, "cookie.jar")
 		  If f <> Nil Then
-		    Client.EasyItem.CookieEngine.CookieJar = f
-		    CookieJar.Text = Client.EasyItem.CookieEngine.CookieJar.AbsolutePath
-		    UseCookies.Value = True
-		    If MsgBox("Cookie file set. Cookies will be loaded on the next connection attempt. Would you like to perform a dummy connection to load them now?", 4 + 32, "Cookies file ready") = 6 Then
-		      If Not Client.Head("http://www.example.net/") Then Return
+		    If Not Client.Cookies.WriteCookies(f) Then
+		      Call MsgBox(libcURL.FormatError(Client.EasyItem.LastError), 16, "Cookie save failed")
+		    Else
+		      MsgBox("Cookies saved!")
 		    End If
+		  End If
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events ReadCookies
+	#tag Event
+		Sub Action()
+		  Dim f As FolderItem = GetOpenFolderItem(cURLTypes.NetscapeCookieJar)
+		  If f <> Nil Then
+		    Client.Cookies.ReadCookies(f)
+		    UseCookies.Value = True
+		    Call Client.Cookies.Reload
+		    UpdateCookieList()
 		  End If
 		End Sub
 	#tag EndEvent
@@ -3517,28 +3338,6 @@ End
 		Sub Action()
 		  If Not Client.Cookies.NewSession Then Raise New libcURL.cURLException(Client.EasyItem)
 		  UpdateCookieList()
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events DeleteCookiesButton
-	#tag Event
-		Sub Action()
-		  If Not Client.Cookies.NewSession Then Raise New libcURL.cURLException(Client.EasyItem)
-		  UpdateCookieList()
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events FlushCookiesButton
-	#tag Event
-		Sub Action()
-		  If Client.Cookies.CookieJar <> Nil Then
-		    Call Client.Cookies.Flush()
-		  Else
-		    Call MsgBox("No cookie jar file specified!", 48, "No file")
-		  End If
-		  mCookiesDirty = 0
-		  Me.Enabled = False
-		  Me.Caption = "Flush Changes"
 		End Sub
 	#tag EndEvent
 #tag EndEvents
