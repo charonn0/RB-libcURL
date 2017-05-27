@@ -456,7 +456,9 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Function GetOption(OptionNumber As Integer, DefaultValue As Variant = Nil) As Variant
-		  Return mOptions.Lookup(OptionNumber, DefaultValue)
+		  Dim v As Variant = mOptions.Lookup(OptionNumber, DefaultValue)
+		  If v IsA WeakRef And WeakRef(v).Value IsA cURLHandle Then v = WeakRef(v).Value
+		  Return v
 		End Function
 	#tag EndMethod
 
@@ -850,7 +852,9 @@ Inherits libcURL.cURLHandle
 		      
 		    Case IsA libcURL.cURLHandle
 		      Dim cURL As libcURL.cURLHandle = NewValue
-		      Return Me.SetOption(OptionNumber, cURL.Handle)
+		      If Not Me.SetOption(OptionNumber, cURL.Handle) Then Return False
+		      mOptions.Value(OptionNumber) = New WeakRef(cURL)
+		      Return True
 		      
 		    Case IsA cURLProgressCallback
 		      mOptions.Value(OptionNumber) = NewValue
