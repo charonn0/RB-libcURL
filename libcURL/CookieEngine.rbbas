@@ -333,10 +333,13 @@ Protected Class CookieEngine
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine.WriteCookies
 		  
 		  If CookieFile <> Nil Then
-		    If Not Owner.SetOption(libcURL.Opts.COOKIEJAR, CookieFile) Then Return False
+		    Return Owner.SetOption(libcURL.Opts.COOKIEJAR, CookieFile)
+		  ElseIf libcURL.Version.IsAtLeast(7, 17, 1) Then 
+		    Return Owner.SetOption(libcURL.Opts.COOKIELIST, "FLUSH")
+		  Else
+		    ErrorSetter(Owner).LastError = libcURL.Errors.FEATURE_UNAVAILABLE
 		  End If
 		  
-		  Return (libcURL.Version.IsAtLeast(7, 17, 1) And Owner.SetOption(libcURL.Opts.COOKIELIST, "FLUSH")) Or Owner.LastError = 0
 		  
 		End Function
 	#tag EndMethod
