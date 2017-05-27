@@ -3325,7 +3325,7 @@ End
 		Sub Action()
 		  Dim f As FolderItem = GetOpenFolderItem(cURLTypes.NetscapeCookieJar)
 		  If f <> Nil Then
-		    Client.Cookies.ReadCookies(f, True)
+		    Client.Cookies.ReadCookies(f)
 		    UseCookies.Value = True
 		    Call Client.Cookies.Reload
 		    UpdateCookieList()

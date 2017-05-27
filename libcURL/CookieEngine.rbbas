@@ -189,7 +189,7 @@ Protected Class CookieEngine
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub ReadCookies(CookieFile As FolderItem, ReloadAll As Boolean = False)
+		Sub ReadCookies(CookieFile As FolderItem)
 		  ' Reads cookies from a file and adds them to the cookie list. Calling this multiple times
 		  ' simply adds more cookies. To write the cookie list to a file, use the WriteCookies method.
 		  '
@@ -198,7 +198,6 @@ Protected Class CookieEngine
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine.ReadCookies
 		  
 		  If Not Owner.SetOption(libcURL.Opts.COOKIEFILE, CookieFile) Then Raise New cURLException(Owner)
-		  If ReloadAll Then Call Me.Reload()
 		  mEnabled = True
 		End Sub
 	#tag EndMethod
