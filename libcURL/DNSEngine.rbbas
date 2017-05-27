@@ -1,29 +1,58 @@
 #tag Class
 Protected Class DNSEngine
 	#tag Method, Flags = &h0
-		Function AddOverride(Hostname As String, PortNumber As Integer, OverrideResult As String) As Boolean
-		  Dim d As Dictionary = mOverrides.Lookup(Hostname, New Dictionary)
-		  d.Value(PortNumber) = OverrideResult
-		  
-		  'Dim c As New cURLClient
-		  'Dim l As libcURL.ListPtr = Array("www.google.com:80:192.168.1.4")
-		  'If Not c.SetOption(libcURL.Opts.RESOLVE, l) Then Break
-		  'If Not c.Get("http://www.google.com/") Then Break
-		  'Break
-		End Function
+		Sub AddServer(ServerIP As String)
+		  If mServerList.IndexOf(ServerIP) = -1 Then
+		    mServerList.Append(ServerIP)
+		    Me.FlushServerList
+		  End If
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub Constructor(Owner As libcURL.EasyHandle)
 		  mOwner = New WeakRef(Owner)
-		  mOverrideList = New ListPtr(Nil, Owner.Flags)
-		  mOverrides = New Dictionary
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub FlushOverrides()
+		  If Not Owner.SetOption(libcURL.Opts.RESOLVE, mOverrideList) Then Raise New cURLException(Owner)
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub FlushServerList()
+		  If UBound(mServerList) > -1 Then
+		    If Not Owner.SetOption(libcURL.Opts.DNS_SERVERS, Join(mServerList, ",")) Then Raise New cURLException(Owner)
+		  Else
+		    If Not Owner.SetOption(libcURL.Opts.DNS_SERVERS, Nil) Then Raise New cURLException(Owner)
+		  End If
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function IsOverridden(Hostname As String, PortNumber As Integer) As Boolean
+		Function GetOverride(Hostname As String, PortNumber As Integer) As String
+		  If Hostname = "" Or PortNumber <= 0 Then Return ""
 		  
+		  Dim i As Integer = GetOverrideIndex(Hostname, PortNumber)
+		  If i > -1 Then Return NthField(mOverrideList.Item(i), ":", 3)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Function GetOverrideIndex(Hostname As String, PortNumber As Integer) As Integer
+		  If Hostname = "" Or PortNumber <= 0 Or mOverrideList = Nil Then Return -1
+		  
+		  Dim c As Integer = mOverrideList.Count
+		  For i As Integer = 0 To c - 1
+		    Dim h, p, tmp As String
+		    tmp = mOverrideList.Item(i)
+		    h = NthField(tmp, ":", 1)
+		    p = NthField(tmp, ":", 2)
+		    If Val(p) = PortNumber And CompareDomains(Hostname, h) Then Return i
+		  Next
+		  Return -1
 		End Function
 	#tag EndMethod
 
@@ -36,9 +65,66 @@ Protected Class DNSEngine
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function RemoveOverride(Hostname As String, PortNumber As Integer) As Boolean
+		Sub RemoveOverride(Hostname As String, PortNumber As Integer)
+		  Dim i As Integer = GetOverrideIndex(Hostname, PortNumber)
+		  If i <= -1 Then Return
+		  RemoveOverrideAtIndex(i)
+		  If mOverrideList = Nil Then mOverrideList = New ListPtr(Nil, Owner.Flags)
+		  If Not mOverrideList.Append("-" + Hostname + ":" + Str(PortNumber, "####0")) Then Raise New cURLException(mOverrideList)
+		  Me.FlushOverrides()
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub RemoveOverrideAtIndex(Index As Integer)
+		  If Index > -1 Then
+		    Dim s() As String = mOverrideList
+		    s.Remove(Index)
+		    If UBound(s) > -1 Then mOverrideList = s Else mOverrideList = New ListPtr(Nil, Owner.Flags)
+		  End If
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub RemoveServer(ServerIP As String)
+		  Dim i As Integer = mServerList.IndexOf(ServerIP)
+		  If i = -1 Then Return
+		  mServerList.Remove(i)
 		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Reset()
+		  ReDim mServerList(-1)
+		  Me.FlushServerList
+		  
+		  If mOverrideList = Nil Then mOverrideList = New ListPtr(Nil, Owner.Flags)
+		  Dim l As New ListPtr(Nil, Owner.Flags)
+		  Dim s() As String = mOverrideList
+		  For Each h As String In s
+		    If Left(h, 1) <> "-" Then h = "-" + NthField(h, ":", 1) + ":" + NthField(h, ":", 2)
+		    If Not l.Append(h) Then Raise New cURLException(l)
+		  Next
+		  mOverrideList = l
+		  Me.FlushOverrides()
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function ServerList() As String()
+		  Return mServerList()
 		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub SetOverride(Hostname As String, PortNumber As Integer, OverrideResult As String)
+		  Dim i As Integer = GetOverrideIndex(Hostname, PortNumber)
+		  If i > -1 Then RemoveOverrideAtIndex(i)
+		  If mOverrideList = Nil Then mOverrideList = New ListPtr(Nil, Owner.Flags)
+		  If Not mOverrideList.Append(Hostname + ":" + Str(PortNumber, "####0") + ":" + OverrideResult) Then Raise New cURLException(mOverrideList)
+		  Me.FlushOverrides()
+		End Sub
 	#tag EndMethod
 
 
@@ -53,44 +139,15 @@ Protected Class DNSEngine
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private mOverrides As Dictionary
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
 		Private mOwner As WeakRef
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private mResolver As String
+		Private mServerList() As String
 	#tag EndProperty
-
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
-			  return mResolver
-			End Get
-		#tag EndGetter
-		#tag Setter
-			Set
-			  mResolver = value
-			End Set
-		#tag EndSetter
-		Resolver As String
-	#tag EndComputedProperty
 
 
 	#tag ViewBehavior
-		#tag ViewProperty
-			Name="Address"
-			Group="Behavior"
-			Type="String"
-			EditorType="MultiLineEditor"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="HTTPTunnel"
-			Group="Behavior"
-			Type="Boolean"
-		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
 			Visible=true
@@ -112,21 +169,9 @@ Protected Class DNSEngine
 			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="Password"
+			Name="Resolver"
 			Group="Behavior"
 			Type="String"
-			EditorType="MultiLineEditor"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Port"
-			Group="Behavior"
-			Type="Integer"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="ServiceName"
-			Group="Behavior"
-			Type="String"
-			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
@@ -140,17 +185,6 @@ Protected Class DNSEngine
 			Group="Position"
 			InitialValue="0"
 			InheritedFrom="Object"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="UnifiedHeaders"
-			Group="Behavior"
-			Type="Boolean"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Username"
-			Group="Behavior"
-			Type="String"
-			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class
