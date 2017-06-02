@@ -119,13 +119,13 @@ Inherits libcURL.cURLHandle
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm.Count
 		  
-		  Dim p As Ptr = Ptr(Me.Handle)
-		  Dim i As Integer
-		  Do Until p = Nil
-		    i = i + 1
-		    p = p.Ptr(4)
+		  Dim e As libcURL.MultipartFormElement = Me.FirstElement
+		  Dim c As Integer
+		  Do Until e = Nil
+		    c = c + 1
+		    e = e.NextElement()
 		  Loop
-		  Return i
+		  Return c
 		End Function
 	#tag EndMethod
 
