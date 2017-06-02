@@ -272,7 +272,53 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function GetElement(Index As Integer) As Variant
+		Function GetElementName(Index As Integer) As String
+		  Dim element As libcURL.MultipartFormElement = Me.FirstElement
+		  Dim i As Integer
+		  Do Until element = Nil Or i >= Index
+		    element = element.NextElement
+		    i = i + 1
+		  Loop
+		  If element = Nil Then Raise New OutOfBoundsException
+		  
+		  Return element.Name
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function GetElementType(Index As Integer) As Integer
+		  Dim element As libcURL.MultipartFormElement = Me.FirstElement
+		  Dim i As Integer
+		  Do Until element = Nil Or i >= Index
+		    element = element.NextElement
+		    i = i + 1
+		  Loop
+		  If element = Nil Then Raise New OutOfBoundsException
+		  
+		  Select Case True
+		  Case element.StreamHandler <> Nil
+		    Return CURLFORM_STREAM
+		    
+		  Case element.FileName <> "" And element.Buffer <> Nil ' file buffer part
+		    Return CURLFORM_BUFFER
+		    
+		  Case element.FileName = "" And element.Buffer <> Nil ' buffer part
+		    Return CURLFORM_BUFFER
+		    
+		  Case element.FileName <> "" And element.Contents <> "" ' file path part
+		    Return CURLFORM_FILE
+		    
+		  Case element.FileName = "" And element.Contents <> "" ' string part
+		    Return CURLFORM_COPYCONTENTS
+		    
+		  Else
+		    Break
+		  End Select
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function GetElementValue(Index As Integer) As Variant
 		  Dim element As libcURL.MultipartFormElement = Me.FirstElement
 		  Dim i As Integer
 		  Do Until element = Nil Or i >= Index
@@ -282,6 +328,9 @@ Inherits libcURL.cURLHandle
 		  If element = Nil Then Return Nil
 		  
 		  Select Case True
+		  Case element.StreamHandler <> Nil ' CURLFORM_STREAM
+		    Return element.StreamHandler
+		    
 		  Case element.FileName <> "" And element.Buffer <> Nil ' file buffer part
 		    Dim mb As New MemoryBlock(element.BufferSize)
 		    mb.StringValue(0, mb.Size) = MemoryBlock(element.Buffer).StringValue(0, mb.Size)
