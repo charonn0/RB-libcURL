@@ -591,6 +591,17 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Attributes( hidden = true )  Shared Function QueryHandle(Handle As Ptr) As libcURL.EasyHandle
+		  If Instances = Nil Then Return Nil
+		  Dim curl As WeakRef = Instances.Lookup(Handle, Nil)
+		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
+		    Return EasyHandle(curl.Value)
+		  End If
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function Read(Count As Integer, encoding As TextEncoding = Nil) As String
 		  ' Only available after calling SetOption(libcURL.Opts.CONNECT_ONLY, True)
 		  ' Once Perform returns you may Read from the easy_handle by calling this method

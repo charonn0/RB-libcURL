@@ -137,10 +137,12 @@ Protected Class MultipartFormElement
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  Return mStruct.UserData
+			  Dim p As Ptr = mStruct.UserData
+			  If p = Nil Then Return Nil
+			  Return EasyHandle.QueryHandle(p)
 			End Get
 		#tag EndGetter
-		UserData As Ptr
+		StreamHandler As libcURL.EasyHandle
 	#tag EndComputedProperty
 
 
