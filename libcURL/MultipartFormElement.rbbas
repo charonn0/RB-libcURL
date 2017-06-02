@@ -7,14 +7,6 @@ Protected Class MultipartFormElement
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Function NextElement() As libcURL.MultipartFormElement
-		  Dim p As Ptr = mStruct.NextItem
-		  If p = Nil Then Return Nil
-		  Return New MultipartFormElement(p.curl_httppost(0), mOwner)
-		End Function
-	#tag EndMethod
-
 
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
@@ -105,6 +97,10 @@ Protected Class MultipartFormElement
 		Private mContentHeaders As libcURL.ListPtr
 	#tag EndProperty
 
+	#tag Property, Flags = &h21
+		Private mNextElement As libcURL.MultipartFormElement
+	#tag EndProperty
+
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
@@ -132,6 +128,19 @@ Protected Class MultipartFormElement
 			End Get
 		#tag EndGetter
 		Name As String
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  If mNextElement = Nil Then
+			    Dim p As Ptr = mStruct.NextItem
+			    If p <> Nil Then mNextElement = New MultipartFormElement(p.curl_httppost(0), mOwner)
+			  End If
+			  Return mNextElement
+			End Get
+		#tag EndGetter
+		NextElement As libcURL.MultipartFormElement
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
