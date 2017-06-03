@@ -1,9 +1,10 @@
 #tag Class
 Protected Class MultipartFormElement
 	#tag Method, Flags = &h0
-		Sub Constructor(ItemStruct As curl_httppost, Owner As libcURL.MultipartForm)
+		Sub Constructor(ItemStruct As curl_httppost, Owner As libcURL.MultipartForm, Prev As libcURL.MultipartFormElement)
 		  mOwner = Owner
 		  mStruct = ItemStruct
+		  If Prev <> Nil Then mPrevElement = New WeakRef(Prev)
 		End Sub
 	#tag EndMethod
 
@@ -106,7 +107,7 @@ Protected Class MultipartFormElement
 			Get
 			  Dim p As Ptr = mStruct.MoreFiles
 			  If p = Nil Then Return Nil
-			  Return New MultipartFormElement(p.curl_httppost, mOwner)
+			  Return New MultipartFormElement(p.curl_httppost, mOwner, Nil)
 			End Get
 		#tag EndGetter
 		MoreFiles As libcURL.MultipartFormElement
@@ -114,6 +115,10 @@ Protected Class MultipartFormElement
 
 	#tag Property, Flags = &h21
 		Private mOwner As libcURL.MultipartForm
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mPrevElement As WeakRef
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -133,14 +138,33 @@ Protected Class MultipartFormElement
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Returns a reference to the next element in the form. If there are no more
+			  ' elements then this returns Nil. Use MultipartForm.FirstElement to get a
+			  ' reference to the first element in a form.
+			  
 			  If mNextElement = Nil Then
 			    Dim p As Ptr = mStruct.NextItem
-			    If p <> Nil Then mNextElement = New MultipartFormElement(p.curl_httppost(0), mOwner)
+			    If p <> Nil Then mNextElement = New MultipartFormElement(p.curl_httppost(0), mOwner, Me)
 			  End If
 			  Return mNextElement
 			End Get
 		#tag EndGetter
 		NextElement As libcURL.MultipartFormElement
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  ' Returns a reference to the previous element in the form. If there are no previous
+			  ' elements then this returns Nil. Use MultipartForm.FirstElement to get a reference
+			  ' to the first element in a form.
+			  
+			  If mPrevElement <> Nil And mPrevElement.Value IsA MultipartFormElement Then
+			    Return MultipartFormElement(mPrevElement.Value)
+			  End If
+			End Get
+		#tag EndGetter
+		PrevElement As libcURL.MultipartFormElement
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0

@@ -1891,7 +1891,7 @@ Inherits libcURL.cURLHandle
 			Get
 			  Dim List As Ptr = Ptr(Me.Handle)
 			  If List = Nil Then Return Nil
-			  Return New MultipartFormElement(List.curl_httppost(0), Me)
+			  Return New MultipartFormElement(List.curl_httppost(0), Me, Nil)
 			  
 			  
 			End Get
