@@ -12,7 +12,7 @@ Protected Class MultipartFormElement
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  Return mStruct.Buffer
+			  If mStruct.Buffer <> Nil Then Return mStruct.Buffer
 			End Get
 		#tag EndGetter
 		Buffer As MemoryBlock
