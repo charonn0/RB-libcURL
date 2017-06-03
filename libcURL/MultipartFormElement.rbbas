@@ -52,6 +52,7 @@ Protected Class MultipartFormElement
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  If mStruct.UserData <> Nil Then Return "" ' CURLFORM_STREAM doesn't store the contents
 			  Dim mb As MemoryBlock = mStruct.Contents
 			  If mb <> Nil Then 
 			    If mStruct.ContentsLen > 0 Then
