@@ -32,11 +32,11 @@ Inherits libcURL.cURLHandle
 		  ' This method is invoked by libcURL. DO NOT CALL THIS METHOD
 		  
 		  #pragma X86CallingConvention CDecl
-		  If Instances = Nil Then Return CURL_SOCKET_BAD
-		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
-		    Return EasyHandle(curl.Value).curlClose(socket)
-		  End If
+		  
+		  Dim curl As EasyHandle = QueryHandle(UserData)
+		  If curl <> Nil Then Return curl.curlClose(socket)
+		  
+		  Break ' UserData does not refer to a valid instance!
 		  
 		  Return CURL_SOCKET_BAD
 		  
@@ -69,8 +69,7 @@ Inherits libcURL.cURLHandle
 		  
 		  mHandle = curl_easy_init()
 		  If mHandle > 0 Then
-		    If Instances = Nil Then Instances = New Dictionary
-		    Instances.Value(mHandle) = New WeakRef(Me)
+		    HandleRefs.Value(mHandle) = New WeakRef(Me)
 		    InitCallbacks()
 		  Else
 		    mLastError = libcURL.Errors.INIT_FAILED
@@ -99,7 +98,7 @@ Inherits libcURL.cURLHandle
 		  Super.Constructor(CopyOpts.Flags)
 		  mHandle = curl_easy_duphandle(CopyOpts.Handle)
 		  If mHandle > 0 Then
-		    Instances.Value(mHandle) = New WeakRef(Me)
+		    HandleRefs.Value(mHandle) = New WeakRef(Me)
 		    InitCallbacks()
 		    If CopyOpts.mAuthMethods <> Nil Then Call Me.SetAuthMethods(CopyOpts.GetAuthMethods)
 		    mAutoDisconnect = CopyOpts.AutoDisconnect
@@ -316,11 +315,9 @@ Inherits libcURL.cURLHandle
 		  
 		  #pragma X86CallingConvention CDecl
 		  #pragma Unused Handle ' handle is the cURL handle of the instance, which we stored in UserData already
-		  If Instances = Nil Then Return 0
-		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
-		    Return EasyHandle(curl.Value).curlDebug(info, data, size)
-		  End If
+		  
+		  Dim curl As EasyHandle = QueryHandle(UserData)
+		  If curl <> Nil Then Return curl.curlDebug(info, data, size)
 		  
 		  Break ' UserData does not refer to a valid instance!
 		End Function
@@ -335,13 +332,13 @@ Inherits libcURL.cURLHandle
 		  
 		  If mHandle <> 0 Then
 		    curl_easy_cleanup(mHandle)
-		    Instances.Remove(mHandle)
+		    HandleRefs.Remove(mHandle)
 		    mErrorBuffer = Nil
 		  End If
 		  mConnectionCount = 0
 		  mHandle = 0
 		  
-		  If Instances <> Nil And Instances.Count = 0 Then Instances = Nil
+		  If HandleRefs <> Nil And HandleRefs.Count = 0 Then HandleRefs = Nil
 		End Sub
 	#tag EndMethod
 
@@ -454,11 +451,9 @@ Inherits libcURL.cURLHandle
 		  ' This method is invoked by libcURL. DO NOT CALL THIS METHOD
 		  
 		  #pragma X86CallingConvention CDecl
-		  If Instances = Nil Then Return 0
-		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
-		    Return EasyHandle(curl.Value).curlHeader(char, size, nmemb)
-		  End If
+		  
+		  Dim curl As EasyHandle = QueryHandle(UserData)
+		  If curl <> Nil Then Return curl.curlHeader(char, size, nmemb)
 		  
 		  Break ' UserData does not refer to a valid instance!
 		End Function
@@ -511,13 +506,12 @@ Inherits libcURL.cURLHandle
 		  ' This method is invoked by libcURL. DO NOT CALL THIS METHOD
 		  
 		  #pragma X86CallingConvention CDecl
-		  If Instances = Nil Then Return 0
-		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
-		    Return EasyHandle(curl.Value).curlOpen(SocketType, Socket)
-		  End If
+		  
+		  Dim curl As EasyHandle = QueryHandle(UserData)
+		  If curl <> Nil Then Return curl.curlOpen(SocketType, Socket)
 		  
 		  Break ' UserData does not refer to a valid instance!
+		  
 		  Return CURL_SOCKET_BAD
 		End Function
 	#tag EndMethod
@@ -580,24 +574,11 @@ Inherits libcURL.cURLHandle
 		  ' This method is invoked by libcURL. DO NOT CALL THIS METHOD
 		  
 		  #pragma X86CallingConvention CDecl
-		  If Instances = Nil Then Return 0
-		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
-		    Return EasyHandle(curl.Value).curlProgress(dlTotal, dlnow, ultotal, ulnow)
-		  End If
+		  
+		  Dim curl As EasyHandle = QueryHandle(UserData)
+		  If curl <> Nil Then Return curl.curlProgress(dlTotal, dlnow, ultotal, ulnow)
 		  
 		  Break ' UserData does not refer to a valid instance!
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Attributes( hidden = true )  Shared Function QueryHandle(Handle As Ptr) As libcURL.EasyHandle
-		  If Instances = Nil Then Return Nil
-		  Dim curl As WeakRef = Instances.Lookup(Handle, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
-		    Return EasyHandle(curl.Value)
-		  End If
-		  
 		End Function
 	#tag EndMethod
 
@@ -644,11 +625,9 @@ Inherits libcURL.cURLHandle
 		  // called when data is needed
 		  
 		  #pragma X86CallingConvention CDecl
-		  If Instances = Nil Then Return 0
-		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
-		    Return EasyHandle(curl.Value).curlRead(char, size, nmemb)
-		  End If
+		  
+		  Dim curl As EasyHandle = QueryHandle(UserData)
+		  If curl <> Nil Then Return curl.curlRead(char, size, nmemb)
 		  
 		  Break ' UserData does not refer to a valid instance!
 		End Function
@@ -705,11 +684,9 @@ Inherits libcURL.cURLHandle
 		  ' This method is invoked by libcURL. DO NOT CALL THIS METHOD
 		  
 		  #pragma X86CallingConvention CDecl
-		  If Instances = Nil Then Return 0
-		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
-		    Return EasyHandle(curl.Value).curlSeek(Offset, Origin)
-		  End If
+		  
+		  Dim curl As EasyHandle = QueryHandle(UserData)
+		  If curl <> Nil Then Return curl.curlSeek(Offset, Origin)
 		  
 		  Break ' UserData does not refer to a valid instance!
 		End Function
@@ -967,11 +944,9 @@ Inherits libcURL.cURLHandle
 		  // Called when data is available
 		  
 		  #pragma X86CallingConvention CDecl
-		  If Instances = Nil Then Return 0
-		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
-		    Return EasyHandle(curl.Value).curlWrite(char, size, nmemb)
-		  End If
+		  
+		  Dim curl As EasyHandle = QueryHandle(UserData)
+		  If curl <> Nil Then Return curl.curlWrite(char, size, nmemb)
 		  
 		  Break ' UserData does not refer to a valid instance!
 		End Function
@@ -996,6 +971,10 @@ Inherits libcURL.cURLHandle
 
 	#tag Hook, Flags = &h0
 		Event Disconnected(Socket As Integer)
+	#tag EndHook
+
+	#tag Hook, Flags = &h0
+		Event GetFormElement(ElementTag As Integer, Buffer As MemoryBlock, MaxLength As Integer) As Integer
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
@@ -1332,10 +1311,6 @@ Inherits libcURL.cURLHandle
 		#tag EndSetter
 		HTTPVersion As libcURL.HTTPVersion
 	#tag EndComputedProperty
-
-	#tag Property, Flags = &h1
-		Protected Shared Instances As Dictionary
-	#tag EndProperty
 
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter

@@ -11,10 +11,9 @@ Inherits libcURL.EasyHandle
 		  
 		  #pragma X86CallingConvention CDecl
 		  
-		  If Instances = Nil Then Return CURL_CHUNK_BGN_FUNC_FAIL
-		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA FTPWildCard And TransferInfo <> Nil Then
-		    Return FTPWildCard(curl.Value).curlChunkBegin(TransferInfo.FileInfo, Remaining)
+		  Dim curl As FTPWildCard = QueryHandle(UserData)
+		  If curl <> Nil And TransferInfo <> Nil Then
+		    Return curl.curlChunkBegin(TransferInfo.FileInfo, Remaining)
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
@@ -35,10 +34,9 @@ Inherits libcURL.EasyHandle
 		  ' https://curl.haxx.se/libcurl/c/CURLOPT_CHUNK_END_FUNCTION.html
 		  
 		  #pragma X86CallingConvention CDecl
-		  If Instances = Nil Then Return 0
-		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA FTPWildCard Then
-		    Return FTPWildCard(curl.Value).curlChunkEnd()
+		  Dim curl As FTPWildCard = QueryHandle(UserData)
+		  If curl <> Nil And curl IsA FTPWildCard Then
+		    Return FTPWildCard(curl).curlChunkEnd()
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
@@ -140,10 +138,9 @@ Inherits libcURL.EasyHandle
 		  
 		  #pragma X86CallingConvention CDecl
 		  
-		  If Instances = Nil Then Return 0
-		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA FTPWildCard Then
-		    Return FTPWildCard(curl.Value).curlFNMatch(Pattern, FileName)
+		  Dim curl As FTPWildCard = QueryHandle(UserData)
+		  If curl <> Nil And curl IsA FTPWildCard Then
+		    Return FTPWildCard(curl).curlFNMatch(Pattern, FileName)
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
@@ -158,8 +155,8 @@ Inherits libcURL.EasyHandle
 
 	#tag Method, Flags = &h1
 		Protected Sub InitCallbacks()
-		  ' This method initializes the callbacks for the FTPWildCard; it is called by the 
-		  ' superclass Constructor and Reset methods. 
+		  ' This method initializes the callbacks for the FTPWildCard; it is called by the
+		  ' superclass Constructor and Reset methods.
 		  
 		  If Not libcURL.Version.IsAtLeast(7, 21, 0) Then
 		    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
@@ -172,6 +169,16 @@ Inherits libcURL.EasyHandle
 		  If Not Me.SetOption(libcURL.Opts.CHUNK_END_FUNCTION, AddressOf ChunkEndCallback) Then Raise New libcURL.cURLException(Me)
 		  If Not Me.SetOption(libcURL.Opts.CHUNK_DATA, mHandle) Then Raise New libcURL.cURLException(Me)
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Shared Function QueryHandle(UserData As Variant) As libcURL.Protocols.FTPWildCard
+		  Dim curl As EasyHandle = Super.QueryHandle(UserData)
+		  If curl <> Nil And curl IsA FTPWildCard Then
+		    Return FTPWildCard(curl)
+		  End If
+		  
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
