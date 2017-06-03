@@ -119,7 +119,7 @@ Inherits libcURL.cURLHandle
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm.Count
 		  
-		  Dim e As libcURL.MultipartFormElement = Me.FirstElement
+		  Dim e As libcURL.MultipartFormElement = Me.FirstItem
 		  Dim c As Integer
 		  Do Until e = Nil
 		    c = c + 1
@@ -1725,6 +1725,33 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function Operator_Subscript(Index As Integer) As libcURL.MultipartFormElement
+		  Dim e As libcURL.MultipartFormElement = Me.FirstItem
+		  Dim i As Integer
+		  Do
+		    If i < Index Then
+		      e = e.NextElement()
+		      If e = Nil Then
+		        Dim err As New OutOfBoundsException
+		        err.Message = "The form does not contain an element at that index."
+		        Raise err
+		      End If
+		      
+		    ElseIf i = Index Then
+		      Return e
+		      
+		    Else
+		      Dim err As New OutOfBoundsException
+		      err.Message = "Form indices must be greater than or equal to zero."
+		      Raise err
+		    End If
+		    i = i + 1
+		    
+		  Loop
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function Serialize() As String
 		  ' Serialize the form structure into a multipart/form-data string. The serialized form may be used with
 		  ' other HTTP libraries, including the built-in HTTPSocket.
@@ -1803,7 +1830,7 @@ Inherits libcURL.cURLHandle
 	#tag EndNote
 
 
-	#tag ComputedProperty, Flags = &h0
+	#tag ComputedProperty, Flags = &h1
 		#tag Getter
 			Get
 			  ' Returns a reference to the first element in the form. If the form is empty then
@@ -1816,7 +1843,7 @@ Inherits libcURL.cURLHandle
 			  
 			End Get
 		#tag EndGetter
-		FirstElement As libcURL.MultipartFormElement
+		Protected FirstItem As libcURL.MultipartFormElement
 	#tag EndComputedProperty
 
 	#tag Property, Flags = &h21
