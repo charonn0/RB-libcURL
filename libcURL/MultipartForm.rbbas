@@ -271,89 +271,6 @@ Inherits libcURL.cURLHandle
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Function GetElementName(Index As Integer) As String
-		  Dim element As libcURL.MultipartFormElement = Me.FirstElement
-		  Dim i As Integer
-		  Do Until element = Nil Or i >= Index
-		    element = element.NextElement
-		    i = i + 1
-		  Loop
-		  If element = Nil Then Raise New OutOfBoundsException
-		  
-		  Return element.Name
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function GetElementType(Index As Integer) As Integer
-		  Dim element As libcURL.MultipartFormElement = Me.FirstElement
-		  Dim i As Integer
-		  Do Until element = Nil Or i >= Index
-		    element = element.NextElement
-		    i = i + 1
-		  Loop
-		  If element = Nil Then Raise New OutOfBoundsException
-		  
-		  Select Case True
-		  Case element.StreamHandler <> Nil
-		    Return CURLFORM_STREAM
-		    
-		  Case element.FileName <> "" And element.Buffer <> Nil ' file buffer part
-		    Return CURLFORM_BUFFER
-		    
-		  Case element.FileName = "" And element.Buffer <> Nil ' buffer part
-		    Return CURLFORM_BUFFER
-		    
-		  Case element.FileName <> "" And element.Contents <> "" ' file path part
-		    Return CURLFORM_FILE
-		    
-		  Case element.FileName = "" And element.Contents <> "" ' string part
-		    Return CURLFORM_COPYCONTENTS
-		    
-		  Else
-		    Break
-		  End Select
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function GetElementValue(Index As Integer) As Variant
-		  Dim element As libcURL.MultipartFormElement = Me.FirstElement
-		  Dim i As Integer
-		  Do Until element = Nil Or i >= Index
-		    element = element.NextElement
-		    i = i + 1
-		  Loop
-		  If element = Nil Then Return Nil
-		  
-		  Select Case True
-		  Case element.StreamHandler <> Nil ' CURLFORM_STREAM
-		    Return element.StreamHandler
-		    
-		  Case element.FileName <> "" And element.Buffer <> Nil ' file buffer part
-		    Dim mb As New MemoryBlock(element.BufferSize)
-		    mb.StringValue(0, mb.Size) = MemoryBlock(element.Buffer).StringValue(0, mb.Size)
-		    Return mb
-		    
-		  Case element.FileName = "" And element.Buffer <> Nil ' buffer part
-		    Dim mb As New MemoryBlock(element.BufferSize)
-		    mb.StringValue(0, mb.Size) = MemoryBlock(element.Buffer).StringValue(0, mb.Size)
-		    Return mb
-		    
-		  Case element.FileName <> "" And element.Contents <> "" ' file path part
-		    Dim f As FolderItem = GetFolderItem(element.Contents)
-		    If f <> Nil Then Return f Else Raise New RuntimeException
-		    
-		  Case element.FileName = "" And element.Contents <> "" ' string part
-		    Return element.Contents
-		    
-		  Else
-		    Break
-		  End Select
-		End Function
-	#tag EndMethod
-
 	#tag Method, Flags = &h1
 		Protected Shared Function MimeType(File As FolderItem) As String
 		  Select Case NthField(File.Name, ".", CountFields(File.Name, "."))
@@ -1886,9 +1803,12 @@ Inherits libcURL.cURLHandle
 	#tag EndNote
 
 
-	#tag ComputedProperty, Flags = &h1
+	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Returns a reference to the first element in the form. If the form is empty then
+			  ' this method returns Nil.
+			  
 			  Dim List As Ptr = Ptr(Me.Handle)
 			  If List = Nil Then Return Nil
 			  Return New MultipartFormElement(List.curl_httppost(0), Me, Nil)
@@ -1896,7 +1816,7 @@ Inherits libcURL.cURLHandle
 			  
 			End Get
 		#tag EndGetter
-		Protected FirstElement As libcURL.MultipartFormElement
+		FirstElement As libcURL.MultipartFormElement
 	#tag EndComputedProperty
 
 	#tag Property, Flags = &h21
