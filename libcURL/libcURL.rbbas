@@ -330,7 +330,7 @@ Protected Module libcURL
 		      i = i + 1
 		      
 		    Case arg = "--cookie-jar", StrComp("-c", arg, 1) = 0
-		      Client.Cookies.CookieJar = GetFolderItem(output(i + 1))
+		      If Not Client.Cookies.WriteCookies(GetFolderItem(output(i + 1))) Then GoTo ParseError
 		      i = i + 1
 		      If Client.EasyItem.LastError <> 0 Then GoTo ParseError
 		      
