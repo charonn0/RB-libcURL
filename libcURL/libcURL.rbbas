@@ -978,6 +978,13 @@ Protected Module libcURL
 		Single
 	#tag EndEnum
 
+	#tag Enum, Name = FormElementType, Flags = &h1
+		MemoryBlock
+		  Stream
+		  String
+		File
+	#tag EndEnum
+
 	#tag Enum, Name = HTTPVersion, Type = Integer, Flags = &h1
 		None=0
 		  HTTP1_0=1

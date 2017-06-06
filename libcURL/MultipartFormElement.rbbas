@@ -187,6 +187,28 @@ Inherits libcURL.cURLHandle
 		StreamHandler As libcURL.EasyHandle
 	#tag EndComputedProperty
 
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  Select Case True
+			  Case Me.Buffer <> Nil
+			    Return FormElementType.MemoryBlock
+			    
+			  Case Me.StreamHandler <> Nil
+			    Return FormElementType.Stream
+			    
+			  Case Me.FileName <> ""
+			    Return FormElementType.File
+			    
+			  Else
+			    Return FormElementType.String
+			    
+			  End Select
+			End Get
+		#tag EndGetter
+		Type As libcURL.FormElementType
+	#tag EndComputedProperty
+
 
 	#tag Constant, Name = CURL_HTTPPOST_BUFFER, Type = Double, Dynamic = False, Default = \"16", Scope = Protected
 	#tag EndConstant
