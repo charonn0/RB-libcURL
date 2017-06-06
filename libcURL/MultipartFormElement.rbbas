@@ -153,7 +153,7 @@ Inherits libcURL.cURLHandle
 			  
 			  If mNextElement = Nil Then
 			    Dim p As Ptr = mStruct.NextItem
-			    If p <> Nil Then mNextElement = New MultipartFormElement(p.curl_httppost(0), mOwner, Me)
+			    If p <> Nil Then mNextElement = New MultipartFormElement(p.curl_httppost, mOwner, Me)
 			  End If
 			  Return mNextElement
 			End Get
