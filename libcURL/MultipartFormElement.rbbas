@@ -40,7 +40,7 @@ Inherits libcURL.cURLHandle
 			Get
 			  If mContentHeaders = Nil Then
 			    Dim p As Ptr = mStruct.ContentHeader
-			    If p <> Nil Then mContentHeaders = New ListPtr(p)
+			    If p <> Nil Then mContentHeaders = New ListPtr(p, mOwner.Flags)
 			  End If
 			  Return mContentHeaders
 			End Get
