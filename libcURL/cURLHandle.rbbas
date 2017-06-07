@@ -113,21 +113,6 @@ Implements ErrorSetter
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Shared Function QueryHandle(UserData As Variant) As libcURL.EasyHandle
-		  If HandleRefs = Nil Then Return Nil
-		  Dim curl As WeakRef = HandleRefs.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
-		    Return EasyHandle(curl.Value)
-		  End If
-		  
-		End Function
-	#tag EndMethod
-
-
-	#tag Property, Flags = &h1
-		Protected Shared HandleRefs As Dictionary
-	#tag EndProperty
 
 	#tag Property, Flags = &h21
 		Private Shared InitFlags As Dictionary

@@ -173,7 +173,7 @@ Inherits libcURL.EasyHandle
 
 	#tag Method, Flags = &h1
 		Protected Shared Function QueryHandle(UserData As Variant) As libcURL.Protocols.FTPWildCard
-		  Dim curl As EasyHandle = Super.QueryHandle(UserData)
+		  Dim curl As EasyHandle = libcURL.QueryHandle(UserData)
 		  If curl <> Nil And curl IsA FTPWildCard Then
 		    Return FTPWildCard(curl)
 		  End If

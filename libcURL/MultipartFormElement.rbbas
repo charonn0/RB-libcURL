@@ -1,19 +1,11 @@
 #tag Class
 Protected Class MultipartFormElement
-Inherits libcURL.cURLHandle
 	#tag Method, Flags = &h0
 		Sub Constructor(ItemStruct As curl_httppost, Owner As libcURL.MultipartForm, Prev As libcURL.MultipartFormElement)
-		  Super.Constructor(Owner.Flags)
 		  mOwner = Owner
 		  mStruct = ItemStruct
 		  If Prev <> Nil Then mPrevElement = New WeakRef(Prev)
 		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Function Handle() As Integer
-		  Return 0
-		End Function
 	#tag EndMethod
 
 
@@ -181,7 +173,7 @@ Inherits libcURL.cURLHandle
 			Get
 			  Dim p As Ptr = mStruct.UserData
 			  If p = Nil Then Return Nil
-			  Return EasyHandle.QueryHandle(p)
+			  Return QueryHandle(p)
 			End Get
 		#tag EndGetter
 		StreamHandler As libcURL.EasyHandle
