@@ -272,9 +272,43 @@ Protected Module Testing
 		  If Not m.AddElement("TestString", "Test Value2") Then Raise New libcURL.cURLException(m)
 		  If Not m.AddElement("TestFile1", App.ExecutableFile) Then Raise New libcURL.cURLException(m)
 		  If Not m.AddElement("TestFile2", App.ExecutableFile, "application/sgml") Then Raise New libcURL.cURLException(m)
+		  Dim test As MemoryBlock = "This is a test string!"
+		  Dim bs1 As New BinaryStream(test)
+		  Dim bs2 As New BinaryStream(test)
+		  If Not m.AddElement("TestStream1", bs1, test.Size, "file1.name", "application/sgml") Then Raise New libcURL.cURLException(m)
+		  If Not m.AddElement("TestStream2", bs2, test.Size, "file2.name", "application/xml") Then Raise New libcURL.cURLException(m)
+		  
 		  Dim data As MemoryBlock = m.Serialize()
 		  Assert(data <> Nil)
 		  Assert(data.Size > App.ExecutableFile.Length)
+		  
+		  Assert(m.GetElement(0).Name = "TestString")
+		  Assert(m.GetElement(0).Contents = "Test Value1")
+		  Assert(m.GetElement(0).Type = libcURL.FormElementType.String)
+		  
+		  Assert(m.GetElement(1).Name = "TestString")
+		  Assert(m.GetElement(1).Contents = "Test Value2")
+		  Assert(m.GetElement(1).Type = libcURL.FormElementType.String)
+		  
+		  Assert(m.GetElement(2).Name = "TestFile1")
+		  Assert(m.GetElement(2).Contents = App.ExecutableFile.ShellPath)
+		  Assert(m.GetElement(2).ContentType = "application/x-msdownload")
+		  Assert(m.GetElement(2).Type = libcURL.FormElementType.File)
+		  
+		  Assert(m.GetElement(3).Name = "TestFile2")
+		  Assert(m.GetElement(3).Contents = App.ExecutableFile.ShellPath)
+		  Assert(m.GetElement(3).ContentType = "application/sgml")
+		  Assert(m.GetElement(3).Type = libcURL.FormElementType.File)
+		  
+		  Assert(m.GetElement(4).Name = "TestStream1")
+		  Assert(m.GetElement(4).Stream Is bs1)
+		  Assert(m.GetElement(4).ContentType = "application/sgml")
+		  Assert(m.GetElement(4).Type = libcURL.FormElementType.Stream)
+		  
+		  Assert(m.GetElement(5).Name = "TestStream2")
+		  Assert(m.GetElement(5).Stream Is bs2)
+		  Assert(m.GetElement(5).ContentType = "application/xml")
+		  Assert(m.GetElement(5).Type = libcURL.FormElementType.Stream)
 		  
 		  Dim m2 As libcURL.MultipartForm = New Dictionary("TestString":"Test Value1", "TestString":"Test Value2", "TestFile1":App.ExecutableFile)
 		  data = m2.Serialize()
