@@ -271,6 +271,46 @@ Inherits libcURL.cURLHandle
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function GetElement(Index As Integer) As libcURL.MultipartFormElement
+		  Dim e As libcURL.MultipartFormElement = Me.FirstItem
+		  Dim i As Integer
+		  Do
+		    If i < Index Then
+		      e = e.NextElement()
+		      If e = Nil Then
+		        Dim err As New OutOfBoundsException
+		        err.Message = "The form does not contain an element at that index."
+		        Raise err
+		      End If
+		      
+		    ElseIf i = Index Then
+		      Return e
+		      
+		    Else
+		      Dim err As New OutOfBoundsException
+		      err.Message = "Form indices must be greater than or equal to zero."
+		      Raise err
+		    End If
+		    i = i + 1
+		    
+		  Loop
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function GetElement(Name As String) As Integer
+		  Dim e As libcURL.MultipartFormElement = Me.FirstItem
+		  Dim i As Integer
+		  Do Until e = Nil
+		    If e.Name = Name Then Return i
+		    e = e.NextElement()
+		    i = i + 1
+		  Loop
+		  Return -1
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h1
 		Protected Shared Function MimeType(File As FolderItem) As String
 		  Select Case NthField(File.Name, ".", CountFields(File.Name, "."))
@@ -1722,33 +1762,6 @@ Inherits libcURL.cURLHandle
 		    End Select
 		  Next
 		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function Operator_Subscript(Index As Integer) As libcURL.MultipartFormElement
-		  Dim e As libcURL.MultipartFormElement = Me.FirstItem
-		  Dim i As Integer
-		  Do
-		    If i < Index Then
-		      e = e.NextElement()
-		      If e = Nil Then
-		        Dim err As New OutOfBoundsException
-		        err.Message = "The form does not contain an element at that index."
-		        Raise err
-		      End If
-		      
-		    ElseIf i = Index Then
-		      Return e
-		      
-		    Else
-		      Dim err As New OutOfBoundsException
-		      err.Message = "Form indices must be greater than or equal to zero."
-		      Raise err
-		    End If
-		    i = i + 1
-		    
-		  Loop
-		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
