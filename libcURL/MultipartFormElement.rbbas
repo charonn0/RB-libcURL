@@ -1,18 +1,31 @@
 #tag Class
 Protected Class MultipartFormElement
 	#tag Method, Flags = &h0
-		Sub Constructor(ItemStruct As curl_httppost, Owner As libcURL.MultipartForm, Prev As libcURL.MultipartFormElement)
+		Sub Constructor(ItemStruct As Ptr, Owner As libcURL.MultipartForm)
 		  mOwner = Owner
 		  mStruct = ItemStruct
-		  If Prev <> Nil Then mPrevElement = New WeakRef(Prev)
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Operator_Compare(OtherFormElement As libcURL.MultipartFormElement) As Integer
+		  ' Overloads the comparison operator(=), permitting direct comparisons between instances of MultipartFormElement.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartFormElement.Operator_Compare
+		  
+		  If OtherFormElement Is Nil Then Return 1
+		  Dim i As Integer = mOwner.Operator_Compare(OtherFormElement.mOwner)
+		  If i = 0 Then i = Sign(Integer(mStruct) - Integer(OtherFormElement.mStruct))
+		  Return i
+		End Function
 	#tag EndMethod
 
 
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  If mStruct.Buffer <> Nil Then Return mStruct.Buffer
+			  If Struct.Buffer <> Nil Then Return Struct.Buffer
 			End Get
 		#tag EndGetter
 		Buffer As MemoryBlock
@@ -21,7 +34,7 @@ Protected Class MultipartFormElement
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  Return mStruct.BufferLen
+			  Return Struct.BufferLen
 			End Get
 		#tag EndGetter
 		BufferSize As Integer
@@ -31,7 +44,7 @@ Protected Class MultipartFormElement
 		#tag Getter
 			Get
 			  If mContentHeaders = Nil Then
-			    Dim p As Ptr = mStruct.ContentHeader
+			    Dim p As Ptr = Struct.ContentHeader
 			    If p <> Nil Then mContentHeaders = New ListPtr(p, mOwner.Flags)
 			  End If
 			  Return mContentHeaders
@@ -43,7 +56,7 @@ Protected Class MultipartFormElement
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  Return mStruct.ContentsLen
+			  Return Struct.ContentsLen
 			End Get
 		#tag EndGetter
 		ContentLen As Integer
@@ -52,11 +65,11 @@ Protected Class MultipartFormElement
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  If mStruct.UserData <> Nil Then Return "" ' CURLFORM_STREAM doesn't store the contents
-			  Dim mb As MemoryBlock = mStruct.Contents
-			  If mb <> Nil Then 
-			    If mStruct.ContentsLen > 0 Then
-			      Return mb.StringValue(0, mStruct.ContentsLen)
+			  If Struct.UserData <> Nil Then Return "" ' CURLFORM_STREAM doesn't store the contents
+			  Dim mb As MemoryBlock = Struct.Contents
+			  If mb <> Nil Then
+			    If Struct.ContentsLen > 0 Then
+			      Return mb.StringValue(0, Struct.ContentsLen)
 			    Else
 			      Return mb.CString(0)
 			    End If
@@ -69,7 +82,7 @@ Protected Class MultipartFormElement
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  Dim mb As MemoryBlock = mStruct.ContentType
+			  Dim mb As MemoryBlock = Struct.ContentType
 			  If mb <> Nil Then Return mb.CString(0)
 			End Get
 		#tag EndGetter
@@ -79,7 +92,7 @@ Protected Class MultipartFormElement
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  Dim mb As MemoryBlock = mStruct.ShowFileName
+			  Dim mb As MemoryBlock = Struct.ShowFileName
 			  If mb <> Nil Then Return mb.CString(0)
 			End Get
 		#tag EndGetter
@@ -89,7 +102,7 @@ Protected Class MultipartFormElement
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  Return mStruct.Flags
+			  Return Struct.Flags
 			End Get
 		#tag EndGetter
 		Flags As Integer
@@ -106,9 +119,9 @@ Protected Class MultipartFormElement
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  Dim p As Ptr = mStruct.MoreFiles
+			  Dim p As Ptr = Struct.MoreFiles
 			  If p = Nil Then Return Nil
-			  Return New MultipartFormElement(p.curl_httppost, mOwner, Nil)
+			  Return New MultipartFormElement(p, mOwner)
 			End Get
 		#tag EndGetter
 		MoreFiles As libcURL.MultipartFormElement
@@ -119,18 +132,14 @@ Protected Class MultipartFormElement
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private mPrevElement As WeakRef
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private mStruct As curl_httppost
+		Private mStruct As Ptr
 	#tag EndProperty
 
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  Dim mb As MemoryBlock = mStruct.Name
-			  If mb <> Nil Then Return mb.StringValue(0, mStruct.NameLen)
+			  Dim mb As MemoryBlock = Struct.Name
+			  If mb <> Nil Then Return mb.StringValue(0, Struct.NameLen)
 			End Get
 		#tag EndGetter
 		Name As String
@@ -144,8 +153,8 @@ Protected Class MultipartFormElement
 			  ' reference to the first element in a form.
 			  
 			  If mNextElement = Nil Then
-			    Dim p As Ptr = mStruct.NextItem
-			    If p <> Nil Then mNextElement = New MultipartFormElement(p.curl_httppost, mOwner, Me)
+			    Dim p As Ptr = Struct.NextItem
+			    If p <> Nil Then mNextElement = New MultipartFormElement(p, mOwner)
 			  End If
 			  Return mNextElement
 			End Get
@@ -156,35 +165,29 @@ Protected Class MultipartFormElement
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  ' Returns a reference to the previous element in the form. If there are no previous
-			  ' elements then this returns Nil. Use MultipartForm.FirstElement to get a reference
-			  ' to the first element in a form.
-			  
-			  If mPrevElement <> Nil And mPrevElement.Value IsA MultipartFormElement Then
-			    Return MultipartFormElement(mPrevElement.Value)
-			  End If
-			End Get
-		#tag EndGetter
-		PrevElement As libcURL.MultipartFormElement
-	#tag EndComputedProperty
-
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
-			  Return Integer(mStruct.UserData)
+			  Return Integer(Struct.UserData)
 			End Get
 		#tag EndGetter
 		StreamHandle As Integer
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h1
+		#tag Getter
+			Get
+			  If mStruct <> Nil Then Return mStruct.curl_httppost
+			End Get
+		#tag EndGetter
+		Protected Struct As curl_httppost
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
 			  Select Case True
-			  Case Me.Buffer <> Nil
+			  Case Struct.Buffer <> Nil
 			    Return FormElementType.MemoryBlock
 			    
-			  Case mStruct.UserData <> Nil
+			  Case Struct.UserData <> Nil
 			    Return FormElementType.Stream
 			    
 			  Case Me.FileName <> ""
