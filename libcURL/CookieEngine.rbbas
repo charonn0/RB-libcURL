@@ -127,11 +127,9 @@ Protected Class CookieEngine
 		      d = Me.Domain(i)
 		      If d = "" And CookieDomain = "" Then Return i
 		      If Strict Then
-		        If Not CompareDomains(CookieDomain, d, Owner) Then Continue For i
-		        Return i
+		        If CompareDomains(CookieDomain, d, Owner) Then Return i
 		      Else
-		        If CookieDomain <> "" And CookieDomain <> d And "." + CookieDomain <> d And InStr(d, CookieDomain) = 0 Then Continue For i
-		        Return i
+		        If CookieDomain = "" Or CookieDomain = d Or "." + CookieDomain = d Or (Not Strict And InStr(d, CookieDomain) > 0) Then Return i
 		      End If
 		    End If
 		  Next
@@ -324,8 +322,8 @@ Protected Class CookieEngine
 	#tag Method, Flags = &h0
 		Function WriteCookies(CookieFile As FolderItem) As Boolean
 		  ' Writes the cookie list to the CookieFile. If CookieFile is Nil then cookies will be flushed
-		  ' to the most recently set cookie file; if no file was previously set then an exception will
-		  ' be raised.
+		  ' to the most recently set cookie file. If an error occurs during the operation then this method
+		  ' will return false. Check Owner.LastError for details if this method returns false.
 		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/CURLOPT_COOKIEJAR.html
