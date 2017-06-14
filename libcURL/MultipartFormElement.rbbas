@@ -50,6 +50,17 @@ Protected Class MultipartFormElement
 			  Return mContentHeaders
 			End Get
 		#tag EndGetter
+		#tag Setter
+			Set
+			  If value <> Nil Then
+			    Dim p As Ptr = Ptr(value.Handle)
+			    Struct.ContentHeader = p
+			  Else
+			    Struct.ContentHeader = Nil
+			  End If
+			  mContentHeaders = value
+			End Set
+		#tag EndSetter
 		ContentHeaders As libcURL.ListPtr
 	#tag EndComputedProperty
 
@@ -112,10 +123,6 @@ Protected Class MultipartFormElement
 		Private mContentHeaders As libcURL.ListPtr
 	#tag EndProperty
 
-	#tag Property, Flags = &h21
-		Private mNextElement As libcURL.MultipartFormElement
-	#tag EndProperty
-
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
@@ -152,11 +159,8 @@ Protected Class MultipartFormElement
 			  ' elements then this returns Nil. Use MultipartForm.FirstElement to get a
 			  ' reference to the first element in a form.
 			  
-			  If mNextElement = Nil Then
-			    Dim p As Ptr = Struct.NextItem
-			    If p <> Nil Then mNextElement = New MultipartFormElement(p, mOwner)
-			  End If
-			  Return mNextElement
+			  Dim p As Ptr = Struct.NextItem
+			  If p <> Nil Then Return New MultipartFormElement(p, mOwner)
 			End Get
 		#tag EndGetter
 		NextElement As libcURL.MultipartFormElement
@@ -165,10 +169,10 @@ Protected Class MultipartFormElement
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  Return Integer(Struct.UserData)
+			  If Struct.UserData <> Nil Then Return FormStreamGetter(mOwner).GetStream(Struct.UserData)
 			End Get
 		#tag EndGetter
-		StreamHandle As Integer
+		Stream As Readable
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h1
