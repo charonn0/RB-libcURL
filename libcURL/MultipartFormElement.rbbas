@@ -171,9 +171,21 @@ Protected Class MultipartFormElement
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  Return Integer(mStruct.UserData)
+			End Get
+		#tag EndGetter
+		StreamHandle As Integer
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
 			  Select Case True
 			  Case Me.Buffer <> Nil
 			    Return FormElementType.MemoryBlock
+			    
+			  Case mStruct.UserData <> Nil
+			    Return FormElementType.Stream
 			    
 			  Case Me.FileName <> ""
 			    Return FormElementType.File
