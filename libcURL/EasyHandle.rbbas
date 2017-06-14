@@ -518,6 +518,7 @@ Inherits libcURL.cURLHandle
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
+		  
 		  Return CURL_SOCKET_BAD
 		End Function
 	#tag EndMethod
@@ -985,6 +986,10 @@ Inherits libcURL.cURLHandle
 
 	#tag Hook, Flags = &h0
 		Event Disconnected(Socket As Integer)
+	#tag EndHook
+
+	#tag Hook, Flags = &h0
+		Event GetFormElement(ElementTag As Integer, Buffer As MemoryBlock, MaxLength As Integer) As Integer
 	#tag EndHook
 
 	#tag Hook, Flags = &h0

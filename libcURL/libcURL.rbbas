@@ -951,6 +951,23 @@ Protected Module libcURL
 	#tag EndConstant
 
 
+	#tag Structure, Name = curl_httppost, Flags = &h21
+		NextItem As Ptr
+		  Name As Ptr
+		  NameLen As Integer
+		  Contents As Ptr
+		  ContentsLen As Integer
+		  Buffer As Ptr
+		  BufferLen As Integer
+		  ContentType As Ptr
+		  ContentHeader As Ptr
+		  MoreFiles As Ptr
+		  Flags As Integer
+		  ShowFileName As Ptr
+		  UserData As Ptr
+		ContentsLenLarge As Int64
+	#tag EndStructure
+
 	#tag Structure, Name = timeval, Flags = &h21
 		tv_sec As Integer
 		tv_usec As Integer
@@ -990,6 +1007,13 @@ Protected Module libcURL
 		Multi=1
 		  None
 		Single
+	#tag EndEnum
+
+	#tag Enum, Name = FormElementType, Flags = &h1
+		MemoryBlock
+		  Stream
+		  String
+		File
 	#tag EndEnum
 
 	#tag Enum, Name = HTTPVersion, Type = Integer, Flags = &h1
