@@ -30,7 +30,6 @@ Implements ErrorSetter
 		  
 		  Try
 		    If InitFlags = Nil Then InitFlags = New Dictionary
-		    If HandleRefs = Nil Then HandleRefs = New Dictionary
 		    If Not InitFlags.HasKey(GlobalInitFlags) Then
 		      mLastError = curl_global_init(GlobalInitFlags)
 		      If mLastError <> 0 Then Raise New cURLException(Me)

@@ -11,9 +11,10 @@ Inherits libcURL.EasyHandle
 		  
 		  #pragma X86CallingConvention CDecl
 		  
-		  Dim curl As FTPWildCard = QueryHandle(UserData)
-		  If curl <> Nil And TransferInfo <> Nil Then
-		    Return curl.curlChunkBegin(TransferInfo.FileInfo, Remaining)
+		  If Instances = Nil Then Return CURL_CHUNK_BGN_FUNC_FAIL
+		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
+		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA FTPWildCard And TransferInfo <> Nil Then
+		    Return FTPWildCard(curl.Value).curlChunkBegin(TransferInfo.FileInfo, Remaining)
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
@@ -34,9 +35,10 @@ Inherits libcURL.EasyHandle
 		  ' https://curl.haxx.se/libcurl/c/CURLOPT_CHUNK_END_FUNCTION.html
 		  
 		  #pragma X86CallingConvention CDecl
-		  Dim curl As FTPWildCard = QueryHandle(UserData)
-		  If curl <> Nil And curl IsA FTPWildCard Then
-		    Return FTPWildCard(curl).curlChunkEnd()
+		  If Instances = Nil Then Return 0
+		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
+		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA FTPWildCard Then
+		    Return FTPWildCard(curl.Value).curlChunkEnd()
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
@@ -138,9 +140,10 @@ Inherits libcURL.EasyHandle
 		  
 		  #pragma X86CallingConvention CDecl
 		  
-		  Dim curl As FTPWildCard = QueryHandle(UserData)
-		  If curl <> Nil And curl IsA FTPWildCard Then
-		    Return FTPWildCard(curl).curlFNMatch(Pattern, FileName)
+		  If Instances = Nil Then Return 0
+		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
+		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA FTPWildCard Then
+		    Return FTPWildCard(curl.Value).curlFNMatch(Pattern, FileName)
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
@@ -169,16 +172,6 @@ Inherits libcURL.EasyHandle
 		  If Not Me.SetOption(libcURL.Opts.CHUNK_END_FUNCTION, AddressOf ChunkEndCallback) Then Raise New libcURL.cURLException(Me)
 		  If Not Me.SetOption(libcURL.Opts.CHUNK_DATA, mHandle) Then Raise New libcURL.cURLException(Me)
 		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Shared Function QueryHandle(UserData As Variant) As libcURL.Protocols.FTPWildCard
-		  Dim curl As EasyHandle = libcURL.QueryHandle(UserData)
-		  If curl <> Nil And curl IsA FTPWildCard Then
-		    Return FTPWildCard(curl)
-		  End If
-		  
-		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0

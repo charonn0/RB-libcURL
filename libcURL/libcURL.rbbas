@@ -803,17 +803,6 @@ Protected Module libcURL
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Function QueryHandle(UserData As Variant) As libcURL.EasyHandle
-		  If HandleRefs = Nil Then Return Nil
-		  Dim curl As WeakRef = HandleRefs.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
-		    Return EasyHandle(curl.Value)
-		  End If
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
 		Private Function SplitQuoted(Data As String) As String()
 		  Dim output() As String
 		  Dim input As New BinaryStream(Data)
@@ -935,11 +924,6 @@ Protected Module libcURL
 		  If a copy of the MPL was not distributed with this file, You can obtain one at 
 		  https://mozilla.org/MPL/2.0/.
 	#tag EndNote
-
-
-	#tag Property, Flags = &h21
-		Private HandleRefs As Dictionary
-	#tag EndProperty
 
 
 	#tag Constant, Name = CURL_GLOBAL_ALL, Type = Double, Dynamic = False, Default = \"3", Scope = Protected

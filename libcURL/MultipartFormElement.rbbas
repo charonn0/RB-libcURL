@@ -171,23 +171,9 @@ Protected Class MultipartFormElement
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  Dim p As Ptr = mStruct.UserData
-			  If p = Nil Then Return Nil
-			  Return QueryHandle(p)
-			End Get
-		#tag EndGetter
-		StreamHandler As libcURL.EasyHandle
-	#tag EndComputedProperty
-
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
 			  Select Case True
 			  Case Me.Buffer <> Nil
 			    Return FormElementType.MemoryBlock
-			    
-			  Case Me.StreamHandler <> Nil
-			    Return FormElementType.Stream
 			    
 			  Case Me.FileName <> ""
 			    Return FormElementType.File
