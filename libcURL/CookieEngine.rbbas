@@ -127,11 +127,9 @@ Protected Class CookieEngine
 		      d = Me.Domain(i)
 		      If d = "" And CookieDomain = "" Then Return i
 		      If Strict Then
-		        If Not CompareDomains(CookieDomain, d, Owner) Then Continue For i
-		        Return i
+		        If CompareDomains(CookieDomain, d, Owner) Then Return i
 		      Else
-		        If CookieDomain <> "" And CookieDomain <> d And "." + CookieDomain <> d And InStr(d, CookieDomain) = 0 Then Continue For i
-		        Return i
+		        If CookieDomain = "" Or CookieDomain = d Or "." + CookieDomain = d Or (Not Strict And InStr(d, CookieDomain) > 0) Then Return i
 		      End If
 		    End If
 		  Next
