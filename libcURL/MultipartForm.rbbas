@@ -1741,6 +1741,28 @@ Implements FormStreamGetter
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function Operator_Convert() As Dictionary
+		  Dim e As MultipartFormElement = Me.FirstItem
+		  If e = Nil Then Return Nil
+		  Dim d As New Dictionary
+		  Do Until e = Nil
+		    Select Case e.Type
+		    Case libcURL.FormElementType.File
+		      d.Value(e.Name) = GetFolderItem(e.Contents)
+		    Case libcURL.FormElementType.MemoryBlock
+		      d.Value(e.Name) = e.Buffer
+		    Case libcURL.FormElementType.String
+		      d.Value(e.Name) = e.Contents
+		    Case libcURL.FormElementType.Stream
+		      d.Value(e.Name) = e.Stream
+		    End Select
+		    e = e.NextElement
+		  Loop
+		  Return d
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub Operator_Convert(FromDict As Dictionary)
 		  ' Overloads the conversion operator(=), permitting implicit and explicit conversion from a Dictionary
 		  ' into a MultipartForm. The dictionary contains NAME:VALUE pairs comprising HTML form elements: NAME
