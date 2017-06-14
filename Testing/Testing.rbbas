@@ -174,7 +174,7 @@ Protected Module Testing
 		  c.CA_ListFile = libcURL.Default_CA_File
 		  c.ConnectionTimeout = 304
 		  c.ConnectionType = libcURL.ConnectionType.AttemptSSL
-		  c.CookieJar = GetTemporaryFolderItem
+		  'c.CookieJar = GetTemporaryFolderItem
 		  c.FailOnServerError = True
 		  c.FollowRedirects = True
 		  c.HTTPVersion = libcURL.HTTPVersion.HTTP1_0
