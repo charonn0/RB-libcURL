@@ -9,9 +9,8 @@ The minimum supported libcURL version is [7.15.2](https://github.com/charonn0/RB
 This example performs a synchronous HTTP GET request on the calling thread. [**More examples**](https://github.com/charonn0/RB-libcURL/wiki#examples).
 ```vbnet
   Dim curl As New cURLClient
-  Dim page As String
   If curl.Get("http://www.example.com/index.html") Then 
-    page = curl.GetDownloadedData
+      Dim page As String = curl.GetDownloadedData()
   End If
 ```
 ## Hilights
