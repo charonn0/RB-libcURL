@@ -1,6 +1,7 @@
 #tag Class
 Protected Class MultipartForm
 Inherits libcURL.cURLHandle
+Implements FormStreamGetter
 	#tag Method, Flags = &h0
 		Function AddElement(Name As String, Value As FolderItem, ContentType As String = "", AdditionalHeaders As libcURL.ListPtr = Nil) As Boolean
 		  ' Adds the passed file to the form using the specified name.
@@ -22,12 +23,55 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function AddElement(Name As String, ValueCallbackHandler As libcURL.EasyHandle, ValueSize As Integer, Filename As String = "", ContentType As String = "", AdditionalHeaders As libcURL.ListPtr = Nil) As Boolean
-		  ' Adds an element using the specified name, with contents which will be read from the passed EasyHandle's
-		  ' DataNeeded event (or UploadStream object).
+		Function AddElement(Name As String, ByRef Value As MemoryBlock, Filename As String, ContentType As String = "") As Boolean
+		  ' Adds the passed buffer to the form as a file part using the specified name. The buffer pointed to by Value
+		  ' is used directly (i.e. not copied) so it must continue to exist until after the POST request has completed.
+		  ' This method allows file parts to be added without using an actual file. Specify an empty Filename parameter
+		  ' to add the Value as a non-file form part.
+		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_formadd.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm.AddElement
+		  
+		  If Value Is Nil Then Raise New NilObjectException
+		  If Value.Size < 0 Then Raise New OutOfBoundsException
+		  Dim n As MemoryBlock = Name + Chr(0)
+		  Select Case True
+		  Case ContentType <> "" And Filename <> "" ' file part with ContentType
+		    Dim tn As MemoryBlock = ContentType + Chr(0)
+		    Dim fn As MemoryBlock = Filename + Chr(0)
+		    Return FormAddPtr(CURLFORM_COPYNAME, n, CURLFORM_BUFFER, fn, CURLFORM_BUFFERLENGTH, Ptr(Value.Size), CURLFORM_BUFFERPTR, Value, CURLFORM_CONTENTTYPE, tn)
+		    
+		  Case ContentType = "" And Filename = "" ' string part
+		    Return FormAddPtr(CURLFORM_COPYNAME, n, CURLFORM_BUFFERLENGTH, Ptr(Value.Size), CURLFORM_BUFFERPTR, Value)
+		    
+		  Case ContentType = "" And Filename <> "" ' file part without ContentType
+		    ContentType = MimeType(SpecialFolder.Temporary.Child(Filename))
+		    If ContentType <> "" Then
+		      Return Me.AddElement(Name, Value, Filename, ContentType)
+		    Else
+		      Dim fn As MemoryBlock = Filename + Chr(0)
+		      Return FormAddPtr(CURLFORM_COPYNAME, n, CURLFORM_BUFFER, fn, CURLFORM_BUFFERLENGTH, Ptr(Value.Size), CURLFORM_BUFFERPTR, Value)
+		    End If
+		    
+		  Case ContentType <> "" And Filename = "" ' probably erroneous
+		    Return Me.AddElement(Name, Value, Filename)
+		    
+		  End Select
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function AddElement(Name As String, ValueStream As Readable, ValueSize As Integer, Filename As String = "", ContentType As String = "") As Boolean
+		  ' Adds an element using the specified name, with contents which will be read from the passed Readable object.
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/curl_formadd.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm.AddElement
+		  
+		  Dim e As New libcURL.EasyHandle(Me.Flags)
+		  e.UploadStream = ValueStream
+		  mStreams.Append(e)
 		  
 		  Dim n As MemoryBlock = Name + Chr(0)
 		  Dim nameopt As Integer = CURLFORM_END
@@ -46,39 +90,10 @@ Inherits libcURL.cURLHandle
 		  End If
 		  
 		  If ValueSize = 0 Then
-		    Return FormAddPtr(AdditionalHeaders, CURLFORM_COPYNAME, n, CURLFORM_STREAM, Ptr(ValueCallbackHandler.Handle), nameopt, fn)
+		    Return FormAddPtr(CURLFORM_COPYNAME, n, CURLFORM_STREAM, Ptr(e.Handle), nameopt, fn, typeopt, tn)
 		  Else
-		    Return FormAddPtr(AdditionalHeaders, CURLFORM_COPYNAME, n, CURLFORM_STREAM, Ptr(ValueCallbackHandler.Handle), CURLFORM_CONTENTSLENGTH, Ptr(ValueSize), nameopt, fn)
+		    Return FormAddPtr(CURLFORM_COPYNAME, n, CURLFORM_STREAM, Ptr(e.Handle), CURLFORM_CONTENTSLENGTH, Ptr(ValueSize), nameopt, fn, typeopt, tn)
 		  End If
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function AddElement(Name As String, ByRef Value As MemoryBlock, Filename As String, ContentType As String = "", AdditionalHeaders As libcURL.ListPtr = Nil) As Boolean
-		  ' Adds the passed buffer to the form as a file part using the specified name. The buffer pointed to by Value
-		  ' is used directly (i.e. not copied) so it must continue to exist until after the POST request has completed.
-		  ' This method allows file parts to be added without using an actual file. Specify an empty Filename parameter
-		  ' to add the Value as a non-file form part.
-		  '
-		  ' See:
-		  ' http://curl.haxx.se/libcurl/c/curl_formadd.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm.AddElement
-		  
-		  If Value Is Nil Then Raise New NilObjectException
-		  If Value.Size < 0 Then Raise New OutOfBoundsException
-		  If Filename <> ""  And ContentType = "" Then ContentType = MimeType(SpecialFolder.Temporary.Child(Filename))
-		  Dim nameopt As Integer = CURLFORM_COPYNAME
-		  Dim n As MemoryBlock = Name + Chr(0)
-		  Dim fn As MemoryBlock = Filename + Chr(0)
-		  If ContentType <> "" Then
-		    Dim tn As MemoryBlock = ContentType + Chr(0)
-		    Return FormAddPtr(AdditionalHeaders, CURLFORM_COPYNAME, n, CURLFORM_BUFFER, fn, _
-		    CURLFORM_BUFFERLENGTH, Ptr(Value.Size), CURLFORM_BUFFERPTR, Value, CURLFORM_CONTENTTYPE, tn)
-		  Else
-		    Return FormAddPtr(AdditionalHeaders, CURLFORM_COPYNAME, n, CURLFORM_BUFFER, fn, _
-		    CURLFORM_BUFFERLENGTH, Ptr(Value.Size), CURLFORM_BUFFERPTR, Value)
-		  End If
-		  
 		End Function
 	#tag EndMethod
 
@@ -99,6 +114,23 @@ Inherits libcURL.cURLHandle
 		  // Constructor(GlobalInitFlags As Integer) -- From libcURL.cURLHandle
 		  Super.Constructor(GlobalInitFlags)
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Count() As Integer
+		  ' Returns the number of elements in the form.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm.Count
+		  
+		  Dim e As libcURL.MultipartFormElement = Me.FirstItem
+		  Dim c As Integer
+		  Do Until e = Nil
+		    c = c + 1
+		    e = e.NextElement()
+		  Loop
+		  Return c
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
@@ -159,6 +191,7 @@ Inherits libcURL.cURLHandle
 	#tag Method, Flags = &h21
 		Private Sub Destructor()
 		  If mHandle <> 0 Then curl_formfree(mHandle)
+		  ReDim mStreams(-1)
 		  mHandle = 0
 		  LastItem = Nil
 		End Sub
@@ -183,8 +216,6 @@ Inherits libcURL.cURLHandle
 		  ' http://curl.haxx.se/libcurl/c/curl_formadd.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm.FormAdd
 		  
-		  'mLastError = curl_formadd(mHandle, LastItem, Option, Value, Option1, Value1, Option2, Value2, Option3, Value3, Option4, Value4, Option5, Value5, CURLFORM_END)
-		  'Return mLastError = 0
 		  If Value <> Nil Then Value = Value + Chr(0)
 		  If Value1 <> Nil Then Value1 = Value1 + Chr(0)
 		  If Value2 <> Nil Then Value2 = Value2 + Chr(0)
@@ -274,6 +305,54 @@ Inherits libcURL.cURLHandle
 		Exception Err As RuntimeException
 		  If Err IsA ThreadEndException Or Err IsA EndException Then Raise Err
 		  Return 0
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function GetElement(Index As Integer) As libcURL.MultipartFormElement
+		  Dim e As libcURL.MultipartFormElement = Me.FirstItem
+		  Dim i As Integer
+		  Do
+		    If i < Index Then
+		      e = e.NextElement()
+		      If e = Nil Then
+		        Dim err As New OutOfBoundsException
+		        err.Message = "The form does not contain an element at that index."
+		        Raise err
+		      End If
+		      
+		    ElseIf i = Index Then
+		      Return e
+		      
+		    Else
+		      Dim err As New OutOfBoundsException
+		      err.Message = "Form indices must be greater than or equal to zero."
+		      Raise err
+		    End If
+		    i = i + 1
+		    
+		  Loop
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function GetElement(Name As String) As Integer
+		  Dim e As libcURL.MultipartFormElement = Me.FirstItem
+		  Dim i As Integer
+		  Do Until e = Nil
+		    If e.Name = Name Then Return i
+		    e = e.NextElement()
+		    i = i + 1
+		  Loop
+		  Return -1
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Function GetStream(UserData As Ptr) As Readable
+		  For Each h As EasyHandle In mStreams
+		    If h.Handle = Integer(UserData) Then Return h.UploadStream
+		  Next
 		End Function
 	#tag EndMethod
 
@@ -1694,6 +1773,28 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function Operator_Convert() As Dictionary
+		  Dim e As MultipartFormElement = Me.FirstItem
+		  If e = Nil Then Return Nil
+		  Dim d As New Dictionary
+		  Do Until e = Nil
+		    Select Case e.Type
+		    Case libcURL.FormElementType.File
+		      d.Value(e.Name) = GetFolderItem(e.Contents)
+		    Case libcURL.FormElementType.MemoryBlock
+		      d.Value(e.Name) = e.Buffer
+		    Case libcURL.FormElementType.String
+		      d.Value(e.Name) = e.Contents
+		    Case libcURL.FormElementType.Stream
+		      d.Value(e.Name) = e.Stream
+		    End Select
+		    e = e.NextElement
+		  Loop
+		  Return d
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub Operator_Convert(FromDict As Dictionary)
 		  ' Overloads the conversion operator(=), permitting implicit and explicit conversion from a Dictionary
 		  ' into a MultipartForm. The dictionary contains NAME:VALUE pairs comprising HTML form elements: NAME
@@ -1720,8 +1821,8 @@ Inherits libcURL.cURLHandle
 		    Case value IsA FolderItem
 		      If Not Me.AddElement(item, FolderItem(value)) Then Raise New cURLException(Me)
 		      
-		    Case value IsA libcURL.EasyHandle ' rtfm about CURLFORM_STREAM before using this
-		      If Not Me.AddElement(item, EasyHandle(value), 0) Then Raise New cURLException(Me)
+		    Case value IsA Readable ' rtfm about CURLFORM_STREAM before using this
+		      If Not Me.AddElement(item, Readable(value), 0) Then Raise New cURLException(Me)
 		      
 		    Else
 		      Raise New UnsupportedFormatException
@@ -1809,6 +1910,22 @@ Inherits libcURL.cURLHandle
 	#tag EndNote
 
 
+	#tag ComputedProperty, Flags = &h1
+		#tag Getter
+			Get
+			  ' Returns a reference to the first element in the form. If the form is empty then
+			  ' this method returns Nil.
+			  
+			  Dim List As Ptr = Ptr(Me.Handle)
+			  If List = Nil Then Return Nil
+			  Return New MultipartFormElement(List, Me)
+			  
+			  
+			End Get
+		#tag EndGetter
+		Protected FirstItem As libcURL.MultipartFormElement
+	#tag EndComputedProperty
+
 	#tag Property, Flags = &h21
 		Private Shared FormGetStreams As Dictionary
 	#tag EndProperty
@@ -1822,6 +1939,9 @@ Inherits libcURL.cURLHandle
 			This array merely holds references to any header lists being used, to prevent them from going out of scope too early.
 		#tag EndNote
 		Private mAdditionalHeaders() As libcURL.ListPtr
+
+	#tag Property, Flags = &h1
+		Protected mStreams() As libcURL.EasyHandle
 	#tag EndProperty
 
 
