@@ -1,10 +1,10 @@
 #tag Class
 Protected Class DNSEngine
 	#tag Method, Flags = &h0
-		Sub AddServer(ServerIP As String)
-		  If mServerList.IndexOf(ServerIP) = -1 Then
-		    mServerList.Append(ServerIP)
-		    Me.FlushServerList
+		Sub AddResolver(ServerIP As String)
+		  If mResolvers.IndexOf(ServerIP) = -1 Then
+		    mResolvers.Append(ServerIP)
+		    Me.FlushResolvers
 		  End If
 		End Sub
 	#tag EndMethod
@@ -22,9 +22,9 @@ Protected Class DNSEngine
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Sub FlushServerList()
-		  If UBound(mServerList) > -1 Then
-		    If Not Owner.SetOption(libcURL.Opts.DNS_SERVERS, Join(mServerList, ",")) Then Raise New cURLException(Owner)
+		Private Sub FlushResolvers()
+		  If UBound(mResolvers) > -1 Then
+		    If Not Owner.SetOption(libcURL.Opts.DNS_SERVERS, Join(mResolvers, ",")) Then Raise New cURLException(Owner)
 		  Else
 		    If Not Owner.SetOption(libcURL.Opts.DNS_SERVERS, Nil) Then Raise New cURLException(Owner)
 		  End If
@@ -86,18 +86,18 @@ Protected Class DNSEngine
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub RemoveServer(ServerIP As String)
-		  Dim i As Integer = mServerList.IndexOf(ServerIP)
+		Sub RemoveResolver(ServerIP As String)
+		  Dim i As Integer = mResolvers.IndexOf(ServerIP)
 		  If i = -1 Then Return
-		  mServerList.Remove(i)
+		  mResolvers.Remove(i)
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub Reset()
-		  ReDim mServerList(-1)
-		  Me.FlushServerList
+		  ReDim mResolvers(-1)
+		  Me.FlushResolvers
 		  
 		  If mOverrideList = Nil Then mOverrideList = New ListPtr(Nil, Owner.Flags)
 		  Dim l As New ListPtr(Nil, Owner.Flags)
@@ -112,8 +112,8 @@ Protected Class DNSEngine
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ServerList() As String()
-		  Return mServerList()
+		Function Resolvers() As String()
+		  Return mResolvers()
 		End Function
 	#tag EndMethod
 
@@ -128,12 +128,6 @@ Protected Class DNSEngine
 	#tag EndMethod
 
 
-	#tag Note, Name = About this class
-		This class provides accessor methods to specify a proxy server for use with some or
-		all transfers performed with a particular EasyHandle.
-	#tag EndNote
-
-
 	#tag Property, Flags = &h21
 		Private mOverrideList As libcURL.ListPtr
 	#tag EndProperty
@@ -143,7 +137,7 @@ Protected Class DNSEngine
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private mServerList() As String
+		Private mResolvers() As String
 	#tag EndProperty
 
 

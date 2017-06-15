@@ -113,6 +113,17 @@ Protected Class cURLManager
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function DNS() As libcURL.DNSEngine
+		  ' Returns a reference to the DNSEngine instance
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.DNS
+		  
+		  Return mEasyItem.DNSEngine
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function GetCookie(Name As String, Domain As String) As String
 		  ' Gets the value of the first cookie named 'Name' set for the host matching 'Domain', or the empty 
 		  ' string ("") if no cookie is found. For more advanced lookups refer to the CookieEngine class.
@@ -288,17 +299,6 @@ Protected Class cURLManager
 		  mEasyItem.AutoReferer = True
 		  mEasyItem.HTTPCompression = libcURL.Version.LibZ.IsAvailable
 		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function Resolver() As libcURL.DNSEngine
-		  ' Returns a reference to the DNSEngine instance
-		  '
-		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.Resolver
-		  
-		  Return mEasyItem.DNSEngine
-		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
