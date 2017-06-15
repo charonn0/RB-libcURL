@@ -23,7 +23,7 @@ Implements FormStreamGetter
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function AddElement(Name As String, ByRef Value As MemoryBlock, Filename As String, ContentType As String = "") As Boolean
+		Function AddElement(Name As String, ByRef Value As MemoryBlock, Filename As String, ContentType As String = "", AdditionalHeaders As libcURL.ListPtr = Nil) As Boolean
 		  ' Adds the passed buffer to the form as a file part using the specified name. The buffer pointed to by Value
 		  ' is used directly (i.e. not copied) so it must continue to exist until after the POST request has completed.
 		  ' This method allows file parts to be added without using an actual file. Specify an empty Filename parameter
@@ -40,10 +40,10 @@ Implements FormStreamGetter
 		  Case ContentType <> "" And Filename <> "" ' file part with ContentType
 		    Dim tn As MemoryBlock = ContentType + Chr(0)
 		    Dim fn As MemoryBlock = Filename + Chr(0)
-		    Return FormAddPtr(CURLFORM_COPYNAME, n, CURLFORM_BUFFER, fn, CURLFORM_BUFFERLENGTH, Ptr(Value.Size), CURLFORM_BUFFERPTR, Value, CURLFORM_CONTENTTYPE, tn)
+		    Return FormAddPtr(AdditionalHeaders, CURLFORM_COPYNAME, n, CURLFORM_BUFFER, fn, CURLFORM_BUFFERLENGTH, Ptr(Value.Size), CURLFORM_BUFFERPTR, Value, CURLFORM_CONTENTTYPE, tn)
 		    
 		  Case ContentType = "" And Filename = "" ' string part
-		    Return FormAddPtr(CURLFORM_COPYNAME, n, CURLFORM_BUFFERLENGTH, Ptr(Value.Size), CURLFORM_BUFFERPTR, Value)
+		    Return FormAddPtr(AdditionalHeaders, CURLFORM_COPYNAME, n, CURLFORM_BUFFERLENGTH, Ptr(Value.Size), CURLFORM_BUFFERPTR, Value)
 		    
 		  Case ContentType = "" And Filename <> "" ' file part without ContentType
 		    ContentType = MimeType(SpecialFolder.Temporary.Child(Filename))
@@ -51,7 +51,7 @@ Implements FormStreamGetter
 		      Return Me.AddElement(Name, Value, Filename, ContentType)
 		    Else
 		      Dim fn As MemoryBlock = Filename + Chr(0)
-		      Return FormAddPtr(CURLFORM_COPYNAME, n, CURLFORM_BUFFER, fn, CURLFORM_BUFFERLENGTH, Ptr(Value.Size), CURLFORM_BUFFERPTR, Value)
+		      Return FormAddPtr(AdditionalHeaders, CURLFORM_COPYNAME, n, CURLFORM_BUFFER, fn, CURLFORM_BUFFERLENGTH, Ptr(Value.Size), CURLFORM_BUFFERPTR, Value)
 		    End If
 		    
 		  Case ContentType <> "" And Filename = "" ' probably erroneous
@@ -63,7 +63,7 @@ Implements FormStreamGetter
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function AddElement(Name As String, ValueStream As Readable, ValueSize As Integer, Filename As String = "", ContentType As String = "") As Boolean
+		Function AddElement(Name As String, ValueStream As Readable, ValueSize As Integer, Filename As String = "", ContentType As String = "", AdditionalHeaders As libcURL.ListPtr = Nil) As Boolean
 		  ' Adds an element using the specified name, with contents which will be read from the passed Readable object.
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_formadd.html
@@ -90,9 +90,9 @@ Implements FormStreamGetter
 		  End If
 		  
 		  If ValueSize = 0 Then
-		    Return FormAddPtr(CURLFORM_COPYNAME, n, CURLFORM_STREAM, Ptr(e.Handle), nameopt, fn, typeopt, tn)
+		    Return FormAddPtr(AdditionalHeaders, CURLFORM_COPYNAME, n, CURLFORM_STREAM, Ptr(e.Handle), nameopt, fn, typeopt, tn)
 		  Else
-		    Return FormAddPtr(CURLFORM_COPYNAME, n, CURLFORM_STREAM, Ptr(e.Handle), CURLFORM_CONTENTSLENGTH, Ptr(ValueSize), nameopt, fn, typeopt, tn)
+		    Return FormAddPtr(AdditionalHeaders, CURLFORM_COPYNAME, n, CURLFORM_STREAM, Ptr(e.Handle), CURLFORM_CONTENTSLENGTH, Ptr(ValueSize), nameopt, fn, typeopt, tn)
 		  End If
 		End Function
 	#tag EndMethod
@@ -1934,13 +1934,14 @@ Implements FormStreamGetter
 		Protected LastItem As Ptr
 	#tag EndProperty
 
-	#tag Property, Flags = &h21
+	#tag Property, Flags = &h1
+		Protected mAdditionalHeaders() As libcURL.ListPtr
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
 		#tag Note
 			This array merely holds references to any header lists being used, to prevent them from going out of scope too early.
 		#tag EndNote
-		Private mAdditionalHeaders() As libcURL.ListPtr
-
-	#tag Property, Flags = &h1
 		Protected mStreams() As libcURL.EasyHandle
 	#tag EndProperty
 
