@@ -3,7 +3,7 @@ Protected Class MultipartForm
 Inherits libcURL.cURLHandle
 Implements FormStreamGetter
 	#tag Method, Flags = &h0
-		Function AddElement(Name As String, Value As FolderItem, ContentType As String = "") As Boolean
+		Function AddElement(Name As String, Value As FolderItem, ContentType As String = "", AdditionalHeaders As libcURL.ListPtr = Nil) As Boolean
 		  ' Adds the passed file to the form using the specified name.
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_formadd.html
@@ -12,9 +12,9 @@ Implements FormStreamGetter
 		  If Value.Exists And Not Value.Directory Then
 		    If ContentType = "" Then ContentType = MimeType(Value)
 		    If ContentType <> "" Then
-		      Return FormAdd(CURLFORM_COPYNAME, Name, CURLFORM_FILE, Value.ShellPath, CURLFORM_FILENAME, Value.Name, CURLFORM_CONTENTTYPE, ContentType)
+		      Return FormAdd(AdditionalHeaders, CURLFORM_COPYNAME, Name, CURLFORM_FILE, Value.ShellPath, CURLFORM_FILENAME, Value.Name, CURLFORM_CONTENTTYPE, ContentType)
 		    Else
-		      Return FormAdd(CURLFORM_COPYNAME, Name, CURLFORM_FILE, Value.ShellPath, CURLFORM_FILENAME, Value.Name)
+		      Return FormAdd(AdditionalHeaders, CURLFORM_COPYNAME, Name, CURLFORM_FILE, Value.ShellPath, CURLFORM_FILENAME, Value.Name)
 		    End If
 		  Else
 		    mLastError = libcURL.Errors.INVALID_LOCAL_FILE
@@ -23,7 +23,7 @@ Implements FormStreamGetter
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function AddElement(Name As String, ByRef Value As MemoryBlock, Filename As String, ContentType As String = "") As Boolean
+		Function AddElement(Name As String, ByRef Value As MemoryBlock, Filename As String, ContentType As String = "", AdditionalHeaders As libcURL.ListPtr = Nil) As Boolean
 		  ' Adds the passed buffer to the form as a file part using the specified name. The buffer pointed to by Value
 		  ' is used directly (i.e. not copied) so it must continue to exist until after the POST request has completed.
 		  ' This method allows file parts to be added without using an actual file. Specify an empty Filename parameter
@@ -40,10 +40,10 @@ Implements FormStreamGetter
 		  Case ContentType <> "" And Filename <> "" ' file part with ContentType
 		    Dim tn As MemoryBlock = ContentType + Chr(0)
 		    Dim fn As MemoryBlock = Filename + Chr(0)
-		    Return FormAddPtr(CURLFORM_COPYNAME, n, CURLFORM_BUFFER, fn, CURLFORM_BUFFERLENGTH, Ptr(Value.Size), CURLFORM_BUFFERPTR, Value, CURLFORM_CONTENTTYPE, tn)
+		    Return FormAddPtr(AdditionalHeaders, CURLFORM_COPYNAME, n, CURLFORM_BUFFER, fn, CURLFORM_BUFFERLENGTH, Ptr(Value.Size), CURLFORM_BUFFERPTR, Value, CURLFORM_CONTENTTYPE, tn)
 		    
 		  Case ContentType = "" And Filename = "" ' string part
-		    Return FormAddPtr(CURLFORM_COPYNAME, n, CURLFORM_BUFFERLENGTH, Ptr(Value.Size), CURLFORM_BUFFERPTR, Value)
+		    Return FormAddPtr(AdditionalHeaders, CURLFORM_COPYNAME, n, CURLFORM_BUFFERLENGTH, Ptr(Value.Size), CURLFORM_BUFFERPTR, Value)
 		    
 		  Case ContentType = "" And Filename <> "" ' file part without ContentType
 		    ContentType = MimeType(SpecialFolder.Temporary.Child(Filename))
@@ -51,7 +51,7 @@ Implements FormStreamGetter
 		      Return Me.AddElement(Name, Value, Filename, ContentType)
 		    Else
 		      Dim fn As MemoryBlock = Filename + Chr(0)
-		      Return FormAddPtr(CURLFORM_COPYNAME, n, CURLFORM_BUFFER, fn, CURLFORM_BUFFERLENGTH, Ptr(Value.Size), CURLFORM_BUFFERPTR, Value)
+		      Return FormAddPtr(AdditionalHeaders, CURLFORM_COPYNAME, n, CURLFORM_BUFFER, fn, CURLFORM_BUFFERLENGTH, Ptr(Value.Size), CURLFORM_BUFFERPTR, Value)
 		    End If
 		    
 		  Case ContentType <> "" And Filename = "" ' probably erroneous
@@ -63,7 +63,7 @@ Implements FormStreamGetter
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function AddElement(Name As String, ValueStream As Readable, ValueSize As Integer, Filename As String = "", ContentType As String = "") As Boolean
+		Function AddElement(Name As String, ValueStream As Readable, ValueSize As Integer, Filename As String = "", ContentType As String = "", AdditionalHeaders As libcURL.ListPtr = Nil) As Boolean
 		  ' Adds an element using the specified name, with contents which will be read from the passed Readable object.
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_formadd.html
@@ -90,21 +90,21 @@ Implements FormStreamGetter
 		  End If
 		  
 		  If ValueSize = 0 Then
-		    Return FormAddPtr(CURLFORM_COPYNAME, n, CURLFORM_STREAM, Ptr(e.Handle), nameopt, fn, typeopt, tn)
+		    Return FormAddPtr(AdditionalHeaders, CURLFORM_COPYNAME, n, CURLFORM_STREAM, Ptr(e.Handle), nameopt, fn, typeopt, tn)
 		  Else
-		    Return FormAddPtr(CURLFORM_COPYNAME, n, CURLFORM_STREAM, Ptr(e.Handle), CURLFORM_CONTENTSLENGTH, Ptr(ValueSize), nameopt, fn, typeopt, tn)
+		    Return FormAddPtr(AdditionalHeaders, CURLFORM_COPYNAME, n, CURLFORM_STREAM, Ptr(e.Handle), CURLFORM_CONTENTSLENGTH, Ptr(ValueSize), nameopt, fn, typeopt, tn)
 		  End If
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function AddElement(Name As String, Value As String) As Boolean
+		Function AddElement(Name As String, Value As String, AdditionalHeaders As libcURL.ListPtr = Nil) As Boolean
 		  ' Adds the passed Value to the form using the specified name.
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_formadd.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm.AddElement
 		  
-		  Return FormAdd(CURLFORM_COPYNAME, Name, CURLFORM_COPYCONTENTS, Value)
+		  Return FormAdd(AdditionalHeaders, CURLFORM_COPYNAME, Name, CURLFORM_COPYCONTENTS, Value)
 		End Function
 	#tag EndMethod
 
@@ -198,7 +198,7 @@ Implements FormStreamGetter
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function FormAdd(Option As Integer, Value As MemoryBlock, Option1 As Integer = CURLFORM_END, Value1 As MemoryBlock = Nil, Option2 As Integer = CURLFORM_END, Value2 As MemoryBlock = Nil, Option3 As Integer = CURLFORM_END, Value3 As MemoryBlock = Nil, Option4 As Integer = CURLFORM_END, Value4 As MemoryBlock = Nil, Option5 As Integer = CURLFORM_END, Value5 As MemoryBlock = Nil) As Boolean
+		Protected Function FormAdd(Optional AdditionalHeaders As libcURL.ListPtr, Option As Integer, Value As MemoryBlock, Option1 As Integer = CURLFORM_END, Value1 As MemoryBlock = Nil, Option2 As Integer = CURLFORM_END, Value2 As MemoryBlock = Nil, Option3 As Integer = CURLFORM_END, Value3 As MemoryBlock = Nil, Option4 As Integer = CURLFORM_END, Value4 As MemoryBlock = Nil, Option5 As Integer = CURLFORM_END, Value5 As MemoryBlock = Nil) As Boolean
 		  ' This helper function is a wrapper for the variadic external method curl_formadd. Since external methods
 		  ' can't be variadic, this method simulates it by accepting a finite number of optional arguments.
 		  '
@@ -223,28 +223,60 @@ Implements FormStreamGetter
 		  If Value4 <> Nil Then Value4 = Value4 + Chr(0)
 		  If Value5 <> Nil Then Value5 = Value5 + Chr(0)
 		  
+		  
 		  Select Case True
 		  Case Option1 = CURLFORM_END
-		    Return FormAddPtr(Option, Value)
+		    Return FormAddPtr(AdditionalHeaders, Option, Value)
 		  Case Option2 = CURLFORM_END
-		    Return FormAddPtr(Option, Value, Option1, Value1)
+		    Return FormAddPtr(AdditionalHeaders, Option, Value, Option1, Value1)
 		  Case Option3 = CURLFORM_END
-		    Return FormAddPtr(Option, Value, Option1, Value1, Option2, Value2)
+		    Return FormAddPtr(AdditionalHeaders, Option, Value, Option1, Value1, Option2, Value2)
 		  Case Option4 = CURLFORM_END
-		    Return FormAddPtr(Option, Value, Option1, Value1, Option2, Value2, Option3, Value3)
+		    Return FormAddPtr(AdditionalHeaders, Option, Value, Option1, Value1, Option2, Value2, Option3, Value3)
 		  Case Option5 = CURLFORM_END
-		    Return FormAddPtr(Option, Value, Option1, Value1, Option2, Value2, Option3, Value3, Option4, Value4)
+		    Return FormAddPtr(AdditionalHeaders, Option, Value, Option1, Value1, Option2, Value2, Option3, Value3, Option4, Value4)
 		  Else
-		    Return FormAddPtr(Option, Value, Option1, Value1, Option2, Value2, Option3, Value3, Option4, Value4, Option5, Value5)
+		    Return FormAddPtr(AdditionalHeaders, Option, Value, Option1, Value1, Option2, Value2, Option3, Value3, Option4, Value4, Option5, Value5)
 		  End Select
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function FormAddPtr(Option As Integer, Value As Ptr, Option1 As Integer = CURLFORM_END, Value1 As Ptr = Nil, Option2 As Integer = CURLFORM_END, Value2 As Ptr = Nil, Option3 As Integer = CURLFORM_END, Value3 As Ptr = Nil, Option4 As Integer = CURLFORM_END, Value4 As Ptr = Nil, Option5 As Integer = CURLFORM_END, Value5 As Ptr = Nil) As Boolean
-		  mLastError = curl_formadd(mHandle, LastItem, Option, Value, Option1, Value1, Option2, Value2, Option3, Value3, Option4, Value4, Option5, Value5, CURLFORM_END)
-		  Return mLastError = 0
+		Protected Function FormAddPtr(AdditionalHeaders As libcURL.ListPtr, Option As Integer, Value As Ptr, Option1 As Integer = CURLFORM_END, Value1 As Ptr = Nil, Option2 As Integer = CURLFORM_END, Value2 As Ptr = Nil, Option3 As Integer = CURLFORM_END, Value3 As Ptr = Nil, Option4 As Integer = CURLFORM_END, Value4 As Ptr = Nil, Option5 As Integer = CURLFORM_END, Value5 As Ptr = Nil) As Boolean
+		  Dim option6 As Integer = CURLFORM_END
+		  Dim value6 As Ptr
 		  
+		  If AdditionalHeaders <> Nil Then
+		    Select Case True
+		    Case Option1 = CURLFORM_END
+		      Option1 = CURLFORM_CONTENTHEADER
+		      Value1 = Ptr(AdditionalHeaders.Handle)
+		    Case Option2 = CURLFORM_END
+		      Option2 = CURLFORM_CONTENTHEADER
+		      Value2 = Ptr(AdditionalHeaders.Handle)
+		    Case Option3 = CURLFORM_END
+		      Option3 = CURLFORM_CONTENTHEADER
+		      Value3 = Ptr(AdditionalHeaders.Handle)
+		    Case Option4 = CURLFORM_END
+		      Option4 = CURLFORM_CONTENTHEADER
+		      Value4 = Ptr(AdditionalHeaders.Handle)
+		    Case Option5 = CURLFORM_END
+		      Option5 = CURLFORM_CONTENTHEADER
+		      Value5 = Ptr(AdditionalHeaders.Handle)
+		    Else
+		      Option6 = CURLFORM_CONTENTHEADER
+		      Value6 = Ptr(AdditionalHeaders.Handle)
+		    End Select
+		    
+		    mLastError = curl_formadd(mHandle, LastItem, Option, Value, Option1, Value1, _
+		    Option2, Value2, Option3, Value3, Option4, Value4, Option5, Value5, Option6, Value6, CURLFORM_END)
+		    If mLastError <> 0 Then mAdditionalHeaders.Append(AdditionalHeaders)
+		    
+		  Else
+		    mLastError = curl_formadd(mHandle, LastItem, Option, Value, Option1, Value1, _
+		    Option2, Value2, Option3, Value3, Option4, Value4, Option5, Value5, CURLFORM_END, Nil, CURLFORM_END)
+		  End If
+		  Return mLastError = 0
 		End Function
 	#tag EndMethod
 
@@ -1822,7 +1854,7 @@ Implements FormStreamGetter
 	#tag Method, Flags = &h0
 		Function Serialize(WriteTo As Writeable) As Boolean
 		  ' Serialize the form and write the output to WriteTo. The serialized form may be used with
-		  ' other HTTP libraries, including the built-in HTTPSocket. If WriteTo is Nil then the 
+		  ' other HTTP libraries, including the built-in HTTPSocket. If WriteTo is Nil then the
 		  ' SerializePart event will be raised in lieu of writing the data to a stream.
 		  '
 		  ' See:
@@ -1903,6 +1935,13 @@ Implements FormStreamGetter
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
+		Protected mAdditionalHeaders() As libcURL.ListPtr
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		#tag Note
+			This array merely holds references to any header lists being used, to prevent them from going out of scope too early.
+		#tag EndNote
 		Protected mStreams() As libcURL.EasyHandle
 	#tag EndProperty
 
@@ -1914,6 +1953,9 @@ Implements FormStreamGetter
 	#tag EndConstant
 
 	#tag Constant, Name = CURLFORM_BUFFERPTR, Type = Double, Dynamic = False, Default = \"12", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURLFORM_CONTENTHEADER, Type = Double, Dynamic = False, Default = \"15", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = CURLFORM_CONTENTLEN, Type = Double, Dynamic = False, Default = \"20", Scope = Protected
