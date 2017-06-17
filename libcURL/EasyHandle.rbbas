@@ -417,7 +417,7 @@ Inherits libcURL.cURLHandle
 		    
 		  Case libcURL.Info.SSL_ENGINES, libcURL.Info.COOKIELIST
 		    mb = New MemoryBlock(8)
-		    If Me.GetInfo(InfoType, mb) And mb.Ptr(0) <> Nil Then Return New libcURL.ListPtr(mb.Ptr(0))
+		    If Me.GetInfo(InfoType, mb) And mb.Ptr(0) <> Nil Then Return New ListPtr(mb.Ptr(0), Me.Flags)
 		    
 		  Else
 		    Dim err As New TypeMismatchException
@@ -518,6 +518,7 @@ Inherits libcURL.cURLHandle
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
+		  
 		  Return CURL_SOCKET_BAD
 		End Function
 	#tag EndMethod
@@ -988,6 +989,10 @@ Inherits libcURL.cURLHandle
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
+		Event GetFormElement(ElementTag As Integer, Buffer As MemoryBlock, MaxLength As Integer) As Integer
+	#tag EndHook
+
+	#tag Hook, Flags = &h0
 		Event HeaderReceived(HeaderLine As String)
 	#tag EndHook
 
@@ -1177,29 +1182,6 @@ Inherits libcURL.cURLHandle
 			End Get
 		#tag EndGetter
 		CookieEngine As libcURL.CookieEngine
-	#tag EndComputedProperty
-
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
-			  ' Gets the local file to be used as cookie storage. If no file/folder is specified (default) then returns Nil.
-			  
-			  return Me.CookieEngine.CookieJar
-			End Get
-		#tag EndGetter
-		#tag Setter
-			Set
-			  ' Sets the local file to be used as cookie storage.
-			  '
-			  ' See:
-			  ' http://curl.haxx.se/libcurl/c/CURLOPT_COOKIEJAR.html
-			  ' http://curl.haxx.se/libcurl/c/CURLOPT_COOKIEFILE.html
-			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.CookieJar
-			  
-			  Me.CookieEngine.CookieJar = value
-			End Set
-		#tag EndSetter
-		Attributes( deprecated = "libcURL.EasyHandle.CookieEngine.CookieJar" ) CookieJar As FolderItem
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
