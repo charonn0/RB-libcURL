@@ -194,7 +194,7 @@ Protected Class MultipartFormElement
 			  Case Struct.UserData <> Nil
 			    Return FormElementType.Stream
 			    
-			  Case Me.FileName <> ""
+			  Case Struct.ShowFileName <> Nil, Struct.MoreFiles <> Nil
 			    Return FormElementType.File
 			    
 			  Else
