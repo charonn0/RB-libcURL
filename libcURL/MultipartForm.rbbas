@@ -127,7 +127,7 @@ Implements FormStreamGetter
 		  Dim c As Integer
 		  Do Until e = Nil
 		    c = c + 1
-		    e = e.NextElement()
+		    e = e.NextElement
 		  Loop
 		  Return c
 		End Function
