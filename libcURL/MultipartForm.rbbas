@@ -1821,6 +1821,10 @@ Implements FormStreamGetter
 		    Case value IsA Readable ' rtfm about CURLFORM_STREAM before using this
 		      If Not Me.AddElement(item, Readable(value), 0) Then Raise New cURLException(Me)
 		      
+		    Case value IsA MemoryBlock
+		      Dim mb As MemoryBlock = Value
+		      If Not Me.AddElement(item, mb, "") Then Raise New cURLException(Me)
+		      
 		    Else
 		      Raise New UnsupportedFormatException
 		    End Select
