@@ -197,8 +197,8 @@ Implements FormStreamGetter
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Function FormAdd(Optional AdditionalHeaders As libcURL.ListPtr, Option As Integer, Value As MemoryBlock, Option1 As Integer = CURLFORM_END, Value1 As MemoryBlock = Nil, Option2 As Integer = CURLFORM_END, Value2 As MemoryBlock = Nil, Option3 As Integer = CURLFORM_END, Value3 As MemoryBlock = Nil, Option4 As Integer = CURLFORM_END, Value4 As MemoryBlock = Nil, Option5 As Integer = CURLFORM_END, Value5 As MemoryBlock = Nil) As Boolean
+	#tag Method, Flags = &h0
+		Function FormAdd(Optional AdditionalHeaders As libcURL.ListPtr, Option As Integer, Value As Variant, Option1 As Integer = CURLFORM_END, Value1 As Variant = Nil, Option2 As Integer = CURLFORM_END, Value2 As Variant = Nil, Option3 As Integer = CURLFORM_END, Value3 As Variant = Nil, Option4 As Integer = CURLFORM_END, Value4 As Variant = Nil, Option5 As Integer = CURLFORM_END, Value5 As Variant = Nil, Option6 As Integer = CURLFORM_END, Value6 As Variant = Nil, Option7 As Integer = CURLFORM_END, Value7 As Variant = Nil, Option8 As Integer = CURLFORM_END, Value8 As Variant = Nil, Option9 As Integer = CURLFORM_END, Value9 As Variant = Nil) As Boolean
 		  ' This helper function is a wrapper for the variadic external method curl_formadd. Since external methods
 		  ' can't be variadic, this method simulates it by accepting a finite number of optional arguments.
 		  '
@@ -216,35 +216,43 @@ Implements FormStreamGetter
 		  ' http://curl.haxx.se/libcurl/c/curl_formadd.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm.FormAdd
 		  
-		  If Value <> Nil Then Value = Value + Chr(0)
-		  If Value1 <> Nil Then Value1 = Value1 + Chr(0)
-		  If Value2 <> Nil Then Value2 = Value2 + Chr(0)
-		  If Value3 <> Nil Then Value3 = Value3 + Chr(0)
-		  If Value4 <> Nil Then Value4 = Value4 + Chr(0)
-		  If Value5 <> Nil Then Value5 = Value5 + Chr(0)
+		  Dim v() As Variant = Array(Value, Value1, Value2, Value3, Value4, Value5, Value6, Value7, Value8, Value9)
+		  Dim m() As MemoryBlock
+		  Dim o() As Integer = Array(Option, Option1, Option2, Option3, Option4, Option5, Option6, Option7, Option8, Option9)
+		  For i As Integer = 0 To UBound(v)
+		    Select Case VarType(v(i))
+		    Case Variant.TypeNil
+		      m.Append(New MemoryBlock(0))
+		      
+		    Case Variant.TypePtr, Variant.TypeInteger
+		      m.Append(v(i).PtrValue)
+		      
+		    Case Variant.TypeObject
+		      Select Case v(i)
+		      Case IsA FolderItem
+		        Dim mb As MemoryBlock = FolderItem(v(i)).AbsolutePath + Chr(0) ' make doubleplus sure it's null terminated
+		        m.Append(mb)
+		      Case IsA cURLHandle
+		        Dim mb As New MemoryBlock(4)
+		        mb.Int32Value(0) = cURLHandle(v(i)).Handle
+		        m.Append(mb)
+		      End Select
+		      
+		    Case Variant.TypeString
+		      Dim mb As MemoryBlock = v(i).StringValue + Chr(0) ' make doubleplus sure it's null terminated
+		      m.Append(mb)
+		      
+		    End Select
+		  Next
 		  
-		  
-		  Select Case True
-		  Case Option1 = CURLFORM_END
-		    Return FormAddPtr(AdditionalHeaders, Option, Value)
-		  Case Option2 = CURLFORM_END
-		    Return FormAddPtr(AdditionalHeaders, Option, Value, Option1, Value1)
-		  Case Option3 = CURLFORM_END
-		    Return FormAddPtr(AdditionalHeaders, Option, Value, Option1, Value1, Option2, Value2)
-		  Case Option4 = CURLFORM_END
-		    Return FormAddPtr(AdditionalHeaders, Option, Value, Option1, Value1, Option2, Value2, Option3, Value3)
-		  Case Option5 = CURLFORM_END
-		    Return FormAddPtr(AdditionalHeaders, Option, Value, Option1, Value1, Option2, Value2, Option3, Value3, Option4, Value4)
-		  Else
-		    Return FormAddPtr(AdditionalHeaders, Option, Value, Option1, Value1, Option2, Value2, Option3, Value3, Option4, Value4, Option5, Value5)
-		  End Select
+		  Return FormAddPtr(AdditionalHeaders, o(0), m(0), o(1), m(1), o(2), m(2), o(3), m(3), o(4), m(4), o(5), m(5), o(6), m(6), o(7), m(7), o(8), m(8), o(9), m(9))
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function FormAddPtr(AdditionalHeaders As libcURL.ListPtr, Option As Integer, Value As Ptr, Option1 As Integer = CURLFORM_END, Value1 As Ptr = Nil, Option2 As Integer = CURLFORM_END, Value2 As Ptr = Nil, Option3 As Integer = CURLFORM_END, Value3 As Ptr = Nil, Option4 As Integer = CURLFORM_END, Value4 As Ptr = Nil, Option5 As Integer = CURLFORM_END, Value5 As Ptr = Nil) As Boolean
-		  Dim option6 As Integer = CURLFORM_END
-		  Dim value6 As Ptr
+		Protected Function FormAddPtr(AdditionalHeaders As libcURL.ListPtr, Option As Integer, Value As Ptr, Option1 As Integer = CURLFORM_END, Value1 As Ptr = Nil, Option2 As Integer = CURLFORM_END, Value2 As Ptr = Nil, Option3 As Integer = CURLFORM_END, Value3 As Ptr = Nil, Option4 As Integer = CURLFORM_END, Value4 As Ptr = Nil, Option5 As Integer = CURLFORM_END, Value5 As Ptr = Nil, Option6 As Integer = CURLFORM_END, Value6 As Ptr = Nil, Option7 As Integer = CURLFORM_END, Value7 As Ptr = Nil, Option8 As Integer = CURLFORM_END, Value8 As Ptr = Nil, Option9 As Integer = CURLFORM_END, Value9 As Ptr = Nil) As Boolean
+		  Dim option10 As Integer = CURLFORM_END
+		  Dim value10 As Ptr
 		  
 		  If AdditionalHeaders <> Nil Then
 		    Select Case True
@@ -263,18 +271,34 @@ Implements FormStreamGetter
 		    Case Option5 = CURLFORM_END
 		      Option5 = CURLFORM_CONTENTHEADER
 		      Value5 = Ptr(AdditionalHeaders.Handle)
-		    Else
+		    Case Option6 = CURLFORM_END
 		      Option6 = CURLFORM_CONTENTHEADER
 		      Value6 = Ptr(AdditionalHeaders.Handle)
+		    Case Option7 = CURLFORM_END
+		      Option7 = CURLFORM_CONTENTHEADER
+		      Value7 = Ptr(AdditionalHeaders.Handle)
+		    Case Option8 = CURLFORM_END
+		      Option8 = CURLFORM_CONTENTHEADER
+		      Value8 = Ptr(AdditionalHeaders.Handle)
+		    Case Option9 = CURLFORM_END
+		      Option9 = CURLFORM_CONTENTHEADER
+		      Value9 = Ptr(AdditionalHeaders.Handle)
+		    Case Option10 = CURLFORM_END
+		      Option10 = CURLFORM_CONTENTHEADER
+		      Value10 = Ptr(AdditionalHeaders.Handle)
+		    Else
+		      Option10 = CURLFORM_CONTENTHEADER
+		      Value10 = Ptr(AdditionalHeaders.Handle)
 		    End Select
 		    
 		    mLastError = curl_formadd(mHandle, LastItem, Option, Value, Option1, Value1, _
-		    Option2, Value2, Option3, Value3, Option4, Value4, Option5, Value5, Option6, Value6, CURLFORM_END)
+		    Option2, Value2, Option3, Value3, Option4, Value4, Option5, Value5, Option6, Value6, Option7, Value7, Option8, Value8, Option9, Value9, Option10, Value10, CURLFORM_END)
 		    If mLastError <> 0 Then mAdditionalHeaders.Append(AdditionalHeaders)
 		    
 		  Else
 		    mLastError = curl_formadd(mHandle, LastItem, Option, Value, Option1, Value1, _
-		    Option2, Value2, Option3, Value3, Option4, Value4, Option5, Value5, CURLFORM_END, Nil, CURLFORM_END)
+		    Option2, Value2, Option3, Value3, Option4, Value4, Option5, Value5, Option6, Value6, Option7, Value7, Option8, Value8, Option9, Value9, Option10, Nil, CURLFORM_END)
+		    
 		  End If
 		  Return mLastError = 0
 		End Function
@@ -1946,46 +1970,46 @@ Implements FormStreamGetter
 	#tag EndProperty
 
 
-	#tag Constant, Name = CURLFORM_BUFFER, Type = Double, Dynamic = False, Default = \"11", Scope = Protected
+	#tag Constant, Name = CURLFORM_BUFFER, Type = Double, Dynamic = False, Default = \"11", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = CURLFORM_BUFFERLENGTH, Type = Double, Dynamic = False, Default = \"13", Scope = Protected
+	#tag Constant, Name = CURLFORM_BUFFERLENGTH, Type = Double, Dynamic = False, Default = \"13", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = CURLFORM_BUFFERPTR, Type = Double, Dynamic = False, Default = \"12", Scope = Protected
+	#tag Constant, Name = CURLFORM_BUFFERPTR, Type = Double, Dynamic = False, Default = \"12", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = CURLFORM_CONTENTHEADER, Type = Double, Dynamic = False, Default = \"15", Scope = Protected
+	#tag Constant, Name = CURLFORM_CONTENTHEADER, Type = Double, Dynamic = False, Default = \"15", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = CURLFORM_CONTENTLEN, Type = Double, Dynamic = False, Default = \"20", Scope = Protected
+	#tag Constant, Name = CURLFORM_CONTENTLEN, Type = Double, Dynamic = False, Default = \"20", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = CURLFORM_CONTENTSLENGTH, Type = Double, Dynamic = False, Default = \"6", Scope = Protected
+	#tag Constant, Name = CURLFORM_CONTENTSLENGTH, Type = Double, Dynamic = False, Default = \"6", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = CURLFORM_CONTENTTYPE, Type = Double, Dynamic = False, Default = \"14", Scope = Protected
+	#tag Constant, Name = CURLFORM_CONTENTTYPE, Type = Double, Dynamic = False, Default = \"14", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = CURLFORM_COPYCONTENTS, Type = Double, Dynamic = False, Default = \"4", Scope = Protected
+	#tag Constant, Name = CURLFORM_COPYCONTENTS, Type = Double, Dynamic = False, Default = \"4", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = CURLFORM_COPYNAME, Type = Double, Dynamic = False, Default = \"1", Scope = Protected
+	#tag Constant, Name = CURLFORM_COPYNAME, Type = Double, Dynamic = False, Default = \"1", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = CURLFORM_END, Type = Double, Dynamic = False, Default = \"17", Scope = Protected
+	#tag Constant, Name = CURLFORM_END, Type = Double, Dynamic = False, Default = \"17", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = CURLFORM_FILE, Type = Double, Dynamic = False, Default = \"10", Scope = Protected
+	#tag Constant, Name = CURLFORM_FILE, Type = Double, Dynamic = False, Default = \"10", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = CURLFORM_FILECONTENT, Type = Double, Dynamic = False, Default = \"7", Scope = Protected
+	#tag Constant, Name = CURLFORM_FILECONTENT, Type = Double, Dynamic = False, Default = \"7", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = CURLFORM_FILENAME, Type = Double, Dynamic = False, Default = \"16", Scope = Protected
+	#tag Constant, Name = CURLFORM_FILENAME, Type = Double, Dynamic = False, Default = \"16", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = CURLFORM_STREAM, Type = Double, Dynamic = False, Default = \"19", Scope = Protected
+	#tag Constant, Name = CURLFORM_STREAM, Type = Double, Dynamic = False, Default = \"19", Scope = Public
 	#tag EndConstant
 
 
