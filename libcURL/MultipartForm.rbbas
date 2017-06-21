@@ -12,7 +12,10 @@ Implements FormStreamGetter
 		  If Value.Exists And Not Value.Directory Then
 		    If ContentType = "" Then ContentType = MimeType(Value)
 		    Dim headeropt As Integer = CURLFORM_END
-		    If AdditionalHeaders <> Nil Then headeropt = CURLFORM_CONTENTHEADER
+		    If AdditionalHeaders <> Nil Then
+		      headeropt = CURLFORM_CONTENTHEADER
+		      If mAdditionalHeaders.IndexOf(AdditionalHeaders) = -1 Then mAdditionalHeaders.Append(AdditionalHeaders)
+		    End If
 		    If ContentType <> "" Then
 		      Return FormAdd(CURLFORM_COPYNAME, Name, CURLFORM_FILE, Value.ShellPath, CURLFORM_FILENAME, Value.Name, CURLFORM_CONTENTTYPE, ContentType, headeropt, AdditionalHeaders)
 		    Else
@@ -38,7 +41,10 @@ Implements FormStreamGetter
 		  If Value Is Nil Then Raise New NilObjectException
 		  If Value.Size < 0 Then Raise New OutOfBoundsException
 		  Dim headeropt As Integer = CURLFORM_END
-		  If AdditionalHeaders <> Nil Then headeropt = CURLFORM_CONTENTHEADER
+		  If AdditionalHeaders <> Nil Then
+		    headeropt = CURLFORM_CONTENTHEADER
+		    If mAdditionalHeaders.IndexOf(AdditionalHeaders) = -1 Then mAdditionalHeaders.Append(AdditionalHeaders)
+		  End If
 		  Dim n As MemoryBlock = Name + Chr(0)
 		  Select Case True
 		  Case ContentType <> "" And Filename <> "" ' file part with ContentType
@@ -94,7 +100,10 @@ Implements FormStreamGetter
 		  End If
 		  
 		  Dim headeropt As Integer = CURLFORM_END
-		  If AdditionalHeaders <> Nil Then headeropt = CURLFORM_CONTENTHEADER
+		  If AdditionalHeaders <> Nil Then
+		    headeropt = CURLFORM_CONTENTHEADER
+		    If mAdditionalHeaders.IndexOf(AdditionalHeaders) = -1 Then mAdditionalHeaders.Append(AdditionalHeaders)
+		  End If
 		  
 		  If ValueSize = 0 Then
 		    Return FormAdd(CURLFORM_COPYNAME, n, CURLFORM_STREAM, Ptr(e.Handle), nameopt, fn, typeopt, tn, headeropt, AdditionalHeaders)
@@ -112,6 +121,7 @@ Implements FormStreamGetter
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm.AddElement
 		  
 		  If AdditionalHeaders <> Nil Then
+		    If mAdditionalHeaders.IndexOf(AdditionalHeaders) = -1 Then mAdditionalHeaders.Append(AdditionalHeaders)
 		    Return FormAdd(CURLFORM_COPYNAME, Name, CURLFORM_COPYCONTENTS, Value, CURLFORM_CONTENTHEADER, AdditionalHeaders)
 		  Else
 		    Return FormAdd(CURLFORM_COPYNAME, Name, CURLFORM_COPYCONTENTS, Value)
@@ -1934,13 +1944,13 @@ Implements FormStreamGetter
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
+		#tag Note
+			This array merely holds references to any header lists being used, to prevent them from going out of scope too early.
+		#tag EndNote
 		Protected mAdditionalHeaders() As libcURL.ListPtr
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		#tag Note
-			This array merely holds references to any header lists being used, to prevent them from going out of scope too early.
-		#tag EndNote
 		Protected mStreams() As libcURL.EasyHandle
 	#tag EndProperty
 
