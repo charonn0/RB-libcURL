@@ -244,9 +244,7 @@ Implements FormStreamGetter
 		        Dim mb As MemoryBlock = FolderItem(v(i)).AbsolutePath + Chr(0) ' make doubleplus sure it's null terminated
 		        m.Append(mb)
 		      Case IsA cURLHandle
-		        Dim mb As New MemoryBlock(4)
-		        mb.Int32Value(0) = cURLHandle(v(i)).Handle
-		        m.Append(mb)
+		        m.Append(Ptr(cURLHandle(v(i)).Handle))
 		      Case IsA MemoryBlock
 		        m.Append(MemoryBlock(v(i)))
 		      Else
