@@ -83,33 +83,48 @@ Implements FormStreamGetter
 		  e.UploadStream = ValueStream
 		  mStreams.Append(e)
 		  
-		  Dim n As MemoryBlock = Name + Chr(0)
-		  Dim nameopt As Integer = CURLFORM_END
-		  Dim typeopt As Integer = CURLFORM_END
+		  Dim params() As Variant
+		  Dim opts() As Integer
 		  
-		  Dim fn As MemoryBlock = ""
+		  opts.Append(CURLFORM_COPYNAME)
+		  params.Append(Name)
+		  opts.Append(CURLFORM_STREAM)
+		  params.Append(e)
+		  
 		  If Filename.Trim <> "" Then
-		    nameopt = CURLFORM_FILENAME
-		    fn = Filename + Chr(0)
+		    opts.Append(CURLFORM_FILENAME)
+		    params.Append(Filename)
 		  End If
 		  
-		  Dim tn As MemoryBlock = ""
 		  If ContentType.Trim <> "" Then
-		    typeopt = CURLFORM_CONTENTTYPE
-		    tn = ContentType + Chr(0)
+		    opts.Append(CURLFORM_CONTENTTYPE)
+		    params.Append(ContentType)
 		  End If
 		  
-		  Dim headeropt As Integer = CURLFORM_END
 		  If AdditionalHeaders <> Nil Then
-		    headeropt = CURLFORM_CONTENTHEADER
+		    opts.Append(CURLFORM_CONTENTHEADER)
+		    params.Append(AdditionalHeaders)
 		    If mAdditionalHeaders.IndexOf(AdditionalHeaders) = -1 Then mAdditionalHeaders.Append(AdditionalHeaders)
 		  End If
 		  
-		  If ValueSize = 0 Then
-		    Return FormAdd(CURLFORM_COPYNAME, n, CURLFORM_STREAM, Ptr(e.Handle), nameopt, fn, typeopt, tn, headeropt, AdditionalHeaders)
-		  Else
-		    Return FormAdd(CURLFORM_COPYNAME, n, CURLFORM_STREAM, Ptr(e.Handle), CURLFORM_CONTENTSLENGTH, Ptr(ValueSize), nameopt, fn, typeopt, tn, headeropt, AdditionalHeaders)
+		  If ValueSize > 0 Then
+		    opts.Append(CURLFORM_CONTENTSLENGTH)
+		    params.Append(ValueSize)
 		  End If
+		  
+		  
+		  Select Case UBound(opts)
+		  Case 1
+		    Return FormAdd(opts(0), params(0), opts(1), params(1))
+		  Case 2
+		    Return FormAdd(opts(0), params(0), opts(1), params(1), opts(2), params(2))
+		  Case 3
+		    Return FormAdd(opts(0), params(0), opts(1), params(1), opts(2), params(2), opts(3), params(3))
+		  Case 4
+		    Return FormAdd(opts(0), params(0), opts(1), params(1), opts(2), params(2), opts(3), params(3), opts(4), params(4))
+		  Case 5
+		    Return FormAdd(opts(0), params(0), opts(1), params(1), opts(2), params(2), opts(3), params(3), opts(4), params(4), opts(5), params(5))
+		  End Select
 		End Function
 	#tag EndMethod
 
