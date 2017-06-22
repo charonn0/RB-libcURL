@@ -40,35 +40,32 @@ Implements FormStreamGetter
 		  
 		  If Value Is Nil Then Raise New NilObjectException
 		  If Value.Size < 0 Then Raise New OutOfBoundsException
-		  Dim headeropt As Integer = CURLFORM_END
+		  
+		  Dim v() As Variant
+		  Dim o() As Integer
+		  o.Append(CURLFORM_COPYNAME)
+		  v.Append(Name)
+		  o.Append(CURLFORM_BUFFERPTR)
+		  v.Append(Value)
+		  If Filename.Trim <> "" Then
+		    o.Append(CURLFORM_BUFFER)
+		    v.Append(Filename)
+		  End If
+		  o.Append(CURLFORM_BUFFERLENGTH)
+		  v.Append(Value.Size)
+		  
+		  If ContentType.Trim <> "" Then
+		    o.Append(CURLFORM_CONTENTTYPE)
+		    v.Append(ContentType)
+		  End If
+		  
 		  If AdditionalHeaders <> Nil Then
-		    headeropt = CURLFORM_CONTENTHEADER
+		    o.Append(CURLFORM_CONTENTHEADER)
+		    v.Append(AdditionalHeaders)
 		    If mAdditionalHeaders.IndexOf(AdditionalHeaders) = -1 Then mAdditionalHeaders.Append(AdditionalHeaders)
 		  End If
-		  Dim n As MemoryBlock = Name + Chr(0)
-		  Select Case True
-		  Case ContentType <> "" And Filename <> "" ' file part with ContentType
-		    Dim tn As MemoryBlock = ContentType + Chr(0)
-		    Dim fn As MemoryBlock = Filename + Chr(0)
-		    Return FormAdd(CURLFORM_COPYNAME, n, CURLFORM_BUFFER, fn, CURLFORM_BUFFERLENGTH, Ptr(Value.Size), CURLFORM_BUFFERPTR, Value, CURLFORM_CONTENTTYPE, tn, headeropt, AdditionalHeaders)
-		    
-		  Case ContentType = "" And Filename = "" ' string part
-		    Return FormAdd(CURLFORM_COPYNAME, n, CURLFORM_BUFFERLENGTH, Ptr(Value.Size), CURLFORM_BUFFERPTR, Value, headeropt, AdditionalHeaders)
-		    
-		  Case ContentType = "" And Filename <> "" ' file part without ContentType
-		    ContentType = MimeType(SpecialFolder.Temporary.Child(Filename))
-		    If ContentType <> "" Then
-		      Return Me.AddElement(Name, Value, Filename, ContentType, AdditionalHeaders)
-		    Else
-		      Dim fn As MemoryBlock = Filename + Chr(0)
-		      Return FormAdd(CURLFORM_COPYNAME, n, CURLFORM_BUFFER, fn, CURLFORM_BUFFERLENGTH, Ptr(Value.Size), CURLFORM_BUFFERPTR, Value, headeropt, AdditionalHeaders)
-		    End If
-		    
-		  Case ContentType <> "" And Filename = "" ' probably erroneous
-		    Return Me.AddElement(Name, Value, Filename, ContentType, AdditionalHeaders)
-		    
-		  End Select
 		  
+		  Return FormAdd(o, v)
 		End Function
 	#tag EndMethod
 
@@ -83,48 +80,36 @@ Implements FormStreamGetter
 		  e.UploadStream = ValueStream
 		  mStreams.Append(e)
 		  
-		  Dim params() As Variant
-		  Dim opts() As Integer
+		  Dim v() As Variant
+		  Dim o() As Integer
 		  
-		  opts.Append(CURLFORM_COPYNAME)
-		  params.Append(Name)
-		  opts.Append(CURLFORM_STREAM)
-		  params.Append(e)
+		  o.Append(CURLFORM_COPYNAME)
+		  v.Append(Name)
+		  o.Append(CURLFORM_STREAM)
+		  v.Append(e)
 		  
 		  If Filename.Trim <> "" Then
-		    opts.Append(CURLFORM_FILENAME)
-		    params.Append(Filename)
+		    o.Append(CURLFORM_FILENAME)
+		    v.Append(Filename)
 		  End If
 		  
 		  If ContentType.Trim <> "" Then
-		    opts.Append(CURLFORM_CONTENTTYPE)
-		    params.Append(ContentType)
+		    o.Append(CURLFORM_CONTENTTYPE)
+		    v.Append(ContentType)
 		  End If
 		  
 		  If AdditionalHeaders <> Nil Then
-		    opts.Append(CURLFORM_CONTENTHEADER)
-		    params.Append(AdditionalHeaders)
+		    o.Append(CURLFORM_CONTENTHEADER)
+		    v.Append(AdditionalHeaders)
 		    If mAdditionalHeaders.IndexOf(AdditionalHeaders) = -1 Then mAdditionalHeaders.Append(AdditionalHeaders)
 		  End If
 		  
 		  If ValueSize > 0 Then
-		    opts.Append(CURLFORM_CONTENTSLENGTH)
-		    params.Append(ValueSize)
+		    o.Append(CURLFORM_CONTENTSLENGTH)
+		    v.Append(ValueSize)
 		  End If
 		  
-		  
-		  Select Case UBound(opts)
-		  Case 1
-		    Return FormAdd(opts(0), params(0), opts(1), params(1))
-		  Case 2
-		    Return FormAdd(opts(0), params(0), opts(1), params(1), opts(2), params(2))
-		  Case 3
-		    Return FormAdd(opts(0), params(0), opts(1), params(1), opts(2), params(2), opts(3), params(3))
-		  Case 4
-		    Return FormAdd(opts(0), params(0), opts(1), params(1), opts(2), params(2), opts(3), params(3), opts(4), params(4))
-		  Case 5
-		    Return FormAdd(opts(0), params(0), opts(1), params(1), opts(2), params(2), opts(3), params(3), opts(4), params(4), opts(5), params(5))
-		  End Select
+		  Return FormAdd(o, v)
 		End Function
 	#tag EndMethod
 
@@ -231,6 +216,37 @@ Implements FormStreamGetter
 		  mHandle = 0
 		  LastItem = Nil
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function FormAdd(Options() As Integer, Values() As Variant) As Boolean
+		  If UBound(Options) <> UBound(Values) Then Raise New OutOfBoundsException
+		  
+		  Select Case UBound(Options)
+		  Case 1
+		    Return FormAdd(Options(0), Values(0), Options(1), Values(1))
+		  Case 2
+		    Return FormAdd(Options(0), Values(0), Options(1), Values(1), Options(2), Values(2))
+		  Case 3
+		    Return FormAdd(Options(0), Values(0), Options(1), Values(1), Options(2), Values(2), Options(3), Values(3))
+		  Case 4
+		    Return FormAdd(Options(0), Values(0), Options(1), Values(1), Options(2), Values(2), Options(3), Values(3), Options(4), Values(4))
+		  Case 5
+		    Return FormAdd(Options(0), Values(0), Options(1), Values(1), Options(2), Values(2), Options(3), Values(3), Options(4), Values(4), Options(5), Values(5))
+		  Case 6
+		    Return FormAdd(Options(0), Values(0), Options(1), Values(1), Options(2), Values(2), Options(3), Values(3), Options(4), Values(4), Options(5), Values(5), Options(6), Values(6))
+		  Case 7
+		    Return FormAdd(Options(0), Values(0), Options(1), Values(1), Options(2), Values(2), Options(3), Values(3), Options(4), Values(4), Options(5), Values(5), Options(6), Values(6), Options(7), Values(7))
+		  Case 8
+		    Return FormAdd(Options(0), Values(0), Options(1), Values(1), Options(2), Values(2), Options(3), Values(3), Options(4), Values(4), Options(5), Values(5), Options(6), Values(6), Options(7), Values(7), Options(8), Values(8))
+		  Case 9
+		    Return FormAdd(Options(0), Values(0), Options(1), Values(1), Options(2), Values(2), Options(3), Values(3), Options(4), Values(4), Options(5), Values(5), Options(6), Values(6), Options(7), Values(7), Options(8), Values(8), Options(9), Values(9))
+		  Case 10
+		    Return FormAdd(Options(0), Values(0), Options(1), Values(1), Options(2), Values(2), Options(3), Values(3), Options(4), Values(4), Options(5), Values(5), Options(6), Values(6), Options(7), Values(7), Options(8), Values(8), Options(9), Values(9), Options(10), Values(10))
+		  Else
+		    Raise New OutOfBoundsException
+		  End Select
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
