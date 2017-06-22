@@ -58,7 +58,7 @@ Implements FormStreamGetter
 		  Case ContentType = "" And Filename <> "" ' file part without ContentType
 		    ContentType = MimeType(SpecialFolder.Temporary.Child(Filename))
 		    If ContentType <> "" Then
-		      Return Me.AddElement(Name, Value, Filename, ContentType)
+		      Return Me.AddElement(Name, Value, Filename, ContentType, AdditionalHeaders)
 		    Else
 		      Dim fn As MemoryBlock = Filename + Chr(0)
 		      Return FormAdd(CURLFORM_COPYNAME, n, CURLFORM_BUFFER, fn, CURLFORM_BUFFERLENGTH, Ptr(Value.Size), CURLFORM_BUFFERPTR, Value, headeropt, AdditionalHeaders)
