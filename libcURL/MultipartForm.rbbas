@@ -350,7 +350,7 @@ Implements FormStreamGetter
 		  Dim i As Integer
 		  Do
 		    If i < Index Then
-		      e = e.NextElement()
+		      e = e.NextElement
 		      If e = Nil Then
 		        Dim err As New OutOfBoundsException
 		        err.Message = "The form does not contain an element at that index."
