@@ -2668,8 +2668,10 @@ End
 		    Dim i As Integer = Client.Cookies.Lookup(CookieSearchName.Text, CookieSearchDomain.Text, 0, StrictLookup.Value)
 		    Do Until i <= -1
 		      Dim expire As String
-		      If Client.Cookies.Expiry(i) <> Nil Then expire = libcURL.ParseDate(Client.Cookies.Expiry(i))
+		      Dim d As Date = Client.Cookies.Expiry(i)
+		      If d <> Nil Then expire = libcURL.ParseDate(d)
 		      CookieList.AddRow(Client.Cookies.Name(i), Client.Cookies.Value(i), Client.Cookies.Domain(i), expire, Client.Cookies.Path(i))
+		      CookieList.CellTag(CookieList.LastIndex, 3) = d
 		      CookieList.CellType(CookieList.LastIndex, 5) = Listbox.TypeCheckbox
 		      If Client.Cookies.HTTPOnly(i) Then
 		        CookieList.CellState(CookieList.LastIndex, 5) = CheckBox.CheckedStates.Checked
@@ -3297,6 +3299,26 @@ End
 		    End If
 		    Return True
 		  End If
+		  
+		  If column = 3 Then
+		    Dim d1 As Date = Me.CellTag(row1, 3)
+		    Dim d2 As Date = Me.CellTag(row2, 3)
+		    Select Case True
+		    Case d1 = Nil And d2 = Nil
+		      result = 0
+		    Case d1 = Nil And d2 <> Nil
+		      result = -1
+		    Case d1 <> Nil And d2 = Nil
+		      result = 1
+		    Else
+		      Dim s1, s2 As Double
+		      s1 = d1.TotalSeconds
+		      s2 = d2.TotalSeconds
+		      result = Sign(s1 - s2)
+		    End Select
+		    Return True
+		  End If
+		  
 		End Function
 	#tag EndEvent
 #tag EndEvents

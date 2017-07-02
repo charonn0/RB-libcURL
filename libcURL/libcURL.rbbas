@@ -87,7 +87,7 @@ Protected Module libcURL
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Function curl_formadd Lib "libcurl" (ByRef FirstItem As Integer, ByRef LastItem As Ptr, Option As Integer, Value As Ptr, Option1 As Integer, Value1 As Ptr, Option2 As Integer, Value2 As Ptr, Option3 As Integer, Value3 As Ptr, Option4 As Integer, Value4 As Ptr, Option5 As Integer, Value5 As Ptr, FinalOption As Integer) As Integer
+		Private Soft Declare Function curl_formadd Lib "libcurl" (ByRef FirstItem As Integer, ByRef LastItem As Ptr, Option As Integer, Value As Ptr, Option1 As Integer, Value1 As Ptr, Option2 As Integer, Value2 As Ptr, Option3 As Integer, Value3 As Ptr, Option4 As Integer, Value4 As Ptr, Option5 As Integer, Value5 As Ptr, Option6 As Integer, Value6 As Ptr, Option7 As Integer, Value7 As Ptr, Option8 As Integer, Value8 As Ptr, Option9 As Integer, Value9 As Ptr, Option10 As Integer, Value10 As Ptr, FinalOption As Integer) As Integer
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
@@ -521,6 +521,11 @@ Protected Module libcURL
 		      If Not Client.SetOption(libcURL.Opts.MAIL_RCPT, output(i + 1)) Then GoTo ParseError
 		      i = i + 1
 		      
+		    Case arg = "--max-time", StrComp("-m", arg, 1) = 0
+		      Client.EasyItem.Timeout = Val(output(i + 1))
+		      i = i + 1
+		      If Client.EasyItem.LastError <> 0 Then GoTo ParseError
+		      
 		    Case arg = "--negotiate"
 		      Dim ha As libcURL.HTTPAuthMethods = 0
 		      ha.SetOnly(CURLAUTH.NEGOTIATE)
@@ -571,6 +576,11 @@ Protected Module libcURL
 		      If Not Client.Proxy.SetProxyHeader(name, value) Then GoTo ParseError
 		      i = i + 1
 		      
+		    Case arg = "--proxy-pass"
+		      Client.Proxy.Password = output(i + 1)
+		      If Client.EasyItem.LastError <> 0 Then GoTo ParseError
+		      i = i + 1
+		      
 		    Case arg = "--proxytunnel", StrComp("-p", arg, 1) = 0
 		      Client.Proxy.HTTPTunnel = True
 		      If Client.EasyItem.LastError <> 0 Then GoTo ParseError
@@ -598,6 +608,27 @@ Protected Module libcURL
 		      
 		    Case arg = "--request", StrComp("-X", arg, 1) = 0
 		      If Not Client.SetRequestMethod(output(i + 1)) Then GoTo ParseError
+		      i = i + 1
+		      
+		    Case arg = "--socks4", arg = "--socks4a", arg = "--socks5-hostname", arg = "--socks5"
+		      Dim host As String = output(i + 1)
+		      Dim port As String
+		      If InStr(host, ":") > 0 Then
+		        port = NthField(host, ":", 2)
+		        host = NthField(host, ":", 1)
+		      End If
+		      Client.Proxy.Address = host
+		      If port <> "" Then Client.Proxy.Port = Val(port)
+		      Select Case arg
+		      Case "--socks4"
+		        Client.Proxy.Type = libcURL.ProxyType.SOCKS4
+		      Case "--socks4a"
+		        Client.Proxy.Type = libcURL.ProxyType.SOCKS4A
+		      Case "--socks5"
+		        Client.Proxy.Type = libcURL.ProxyType.SOCKS5
+		      Case "--socks5-hostname"
+		        Client.Proxy.Type = libcURL.ProxyType.SOCKS5_HOSTNAME
+		      End Select
 		      i = i + 1
 		      
 		    Case arg = "--ssl"
@@ -876,7 +907,7 @@ Protected Module libcURL
 
 	#tag Note, Name = Copying
 		RB-libcURL 
-		Copyright (c)2014-16 Andrew Lambert, all rights reserved.
+		Copyright (c)2014-17 Andrew Lambert, all rights reserved.
 		
 		 Permission to use, copy, modify, and distribute this software for any purpose
 		 with or without fee is hereby granted, provided that the above copyright
@@ -928,6 +959,23 @@ Protected Module libcURL
 	#tag EndConstant
 
 
+	#tag Structure, Name = curl_httppost, Flags = &h21
+		NextItem As Ptr
+		  Name As Ptr
+		  NameLen As Integer
+		  Contents As Ptr
+		  ContentsLen As Integer
+		  Buffer As Ptr
+		  BufferLen As Integer
+		  ContentType As Ptr
+		  ContentHeader As Ptr
+		  MoreFiles As Ptr
+		  Flags As Integer
+		  ShowFileName As Ptr
+		  UserData As Ptr
+		ContentsLenLarge As Int64
+	#tag EndStructure
+
 	#tag Structure, Name = timeval, Flags = &h21
 		tv_sec As Integer
 		tv_usec As Integer
@@ -967,6 +1015,13 @@ Protected Module libcURL
 		Multi=1
 		  None
 		Single
+	#tag EndEnum
+
+	#tag Enum, Name = FormElementType, Flags = &h1
+		MemoryBlock
+		  Stream
+		  String
+		File
 	#tag EndEnum
 
 	#tag Enum, Name = HTTPVersion, Type = Integer, Flags = &h1
