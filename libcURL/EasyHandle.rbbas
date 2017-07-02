@@ -989,10 +989,6 @@ Inherits libcURL.cURLHandle
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
-		Event GetFormElement(ElementTag As Integer, Buffer As MemoryBlock, MaxLength As Integer) As Integer
-	#tag EndHook
-
-	#tag Hook, Flags = &h0
 		Event HeaderReceived(HeaderLine As String)
 	#tag EndHook
 
