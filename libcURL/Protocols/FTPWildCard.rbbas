@@ -158,8 +158,8 @@ Inherits libcURL.EasyHandle
 
 	#tag Method, Flags = &h1
 		Protected Sub InitCallbacks()
-		  ' This method initializes the callbacks for the FTPWildCard; it is called by the 
-		  ' superclass Constructor and Reset methods. 
+		  ' This method initializes the callbacks for the FTPWildCard; it is called by the
+		  ' superclass Constructor and Reset methods.
 		  
 		  If Not libcURL.Version.IsAtLeast(7, 21, 0) Then
 		    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
@@ -194,7 +194,6 @@ Inherits libcURL.EasyHandle
 		  
 		  Super.Reset
 		  CustomMatch = mCustomMatch
-		  LocalRoot = Nil
 		  mLastFile = Nil
 		  mLastFileName = ""
 		  mLastError = 0
