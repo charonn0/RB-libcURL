@@ -17,10 +17,3 @@ Copyright ©2014-17 Andrew Lambert, all rights reserved.
  Except as contained in this notice, the name of a copyright holder shall not
  be used in advertising or otherwise to promote the sale, use or other dealings
  in this Software without prior written authorization of the copyright holder.
-
-----
-### License for the [DEFAULT_CA_INFO_PEM](https://github.com/charonn0/RB-libcURL/blob/master/DEFAULT_CA_INFO_PEM) file:
-
-  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. 
-  If a copy of the MPL was not distributed with this file, You can obtain one at 
-  https://mozilla.org/MPL/2.0/.
