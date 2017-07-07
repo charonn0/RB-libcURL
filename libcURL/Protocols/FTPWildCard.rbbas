@@ -194,7 +194,6 @@ Inherits libcURL.EasyHandle
 		  
 		  Super.Reset
 		  CustomMatch = mCustomMatch
-		  LocalRoot = Nil
 		  mLastFile = Nil
 		  mLastFileName = ""
 		  mLastError = 0
