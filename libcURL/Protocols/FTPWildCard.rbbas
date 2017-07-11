@@ -175,17 +175,6 @@ Inherits libcURL.EasyHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Remaining() As Integer
-		  ' Returns the number of LIST entries which remain to be processed.
-		  '
-		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Protocols.FTPWildCard.Remaining
-		  
-		  Return mRemaining
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Sub Reset()
 		  ' Resets the curl_easy handle to a pristine state. You may reuse the handle immediately.
 		  ' See:
@@ -333,6 +322,20 @@ Inherits libcURL.EasyHandle
 		#tag EndNote
 		OverwriteLocalFiles As Boolean = False
 	#tag EndProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  ' Returns the number of LIST entries which remain to be processed.
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Protocols.FTPWildCard.Remaining
+			  
+			  Return mRemaining
+			End Get
+		#tag EndGetter
+		Remaining As Integer
+	#tag EndComputedProperty
 
 
 	#tag Constant, Name = CURL_CHUNK_BGN_FUNC_FAIL, Type = Double, Dynamic = False, Default = \"1", Scope = Private
