@@ -1458,8 +1458,8 @@ Inherits libcURL.cURLHandle
 		Private mMaxRedirects As Integer = -1
 	#tag EndProperty
 
-	#tag Property, Flags = &h21
-		Private mOptions As Dictionary
+	#tag Property, Flags = &h1
+		Protected mOptions As Dictionary
 	#tag EndProperty
 
 	#tag Property, Flags = &h21

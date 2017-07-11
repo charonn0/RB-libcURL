@@ -202,12 +202,15 @@ Inherits libcURL.EasyHandle
 		  
 		  Select Case True
 		  Case NewValue IsA cURLChunkBegin
+		    mOptions.Value(OptionNumber) = NewValue
 		    Dim p As cURLChunkBegin = NewValue
 		    Return Me.SetOptionPtr(OptionNumber, p)
 		  Case NewValue IsA cURLChunkEnd
+		    mOptions.Value(OptionNumber) = NewValue
 		    Dim p As cURLChunkEnd = NewValue
 		    Return Me.SetOptionPtr(OptionNumber, p)
 		  Case NewValue IsA cURLFNMatch
+		    mOptions.Value(OptionNumber) = NewValue
 		    Dim p As cURLFNMatch = NewValue
 		    Return Me.SetOptionPtr(OptionNumber, p)
 		  End Select
