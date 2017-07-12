@@ -28,6 +28,8 @@ This example performs a synchronous HTTP GET request on the calling thread. [**M
 * Interact directly with libcurl using idiomatic RB/Xojo objects, methods, and events; no shell or plugins required.
 * International domain name support†.
 * IPv6 support.
+* High performance, even when doing several transfers at once.
+* Build complex [HTTP forms](https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm), including nested forms and file uploads.
 
 †= feature might not be available at run-time due to a build-time decision of the installed version of libcURL
 
@@ -80,6 +82,7 @@ RB-libcURL will raise a PlatformNotSupportedException when used if all required 
 ## Examples
 * [HTTP GET](https://github.com/charonn0/RB-libcURL/wiki/HTTP-GET-Example)
 * [HTTP GET with a persistent connection](https://github.com/charonn0/RB-libcURL/wiki/HTTP-persistent-connection-example)
+* [HTTP GET with pipelining](https://github.com/charonn0/RB-libcURL/wiki/HTTP-Pipelining-Example)
 * [HTTP HEAD](https://github.com/charonn0/RB-libcURL/wiki/HTTP-HEAD-Example)
 * [HTTP POST](https://github.com/charonn0/RB-libcURL/wiki/HTTP-POST-Example)
 * [HTTP TRACE](https://github.com/charonn0/RB-libcURL/wiki/HTTP-TRACE-Example)
