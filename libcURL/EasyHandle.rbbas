@@ -806,7 +806,7 @@ Inherits libcURL.cURLHandle
 		    libcURL.Opts.SSLCERT)
 		    ' These option numbers explicitly accept NULL. Refer to the curl documentation on the individual option numbers for details.
 		    If Nilable.IndexOf(OptionNumber) > -1 Then
-		      mOptions.Value(OptionNumber) = Nil
+		      If mOptions.HasKey(OptionNumber) Then mOptions.Remove(OptionNumber)
 		      Return Me.SetOptionPtr(OptionNumber, Nil)
 		    Else
 		      ' for all other option numbers reject NULL values.
