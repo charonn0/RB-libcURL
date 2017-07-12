@@ -440,7 +440,7 @@ Begin Window DemoWindow
          TextFont        =   "System"
          TextSize        =   0
          TextUnit        =   0
-         Top             =   242
+         Top             =   268
          Transparent     =   True
          Underline       =   ""
          Visible         =   True
@@ -473,7 +473,7 @@ Begin Window DemoWindow
          TextFont        =   "System"
          TextSize        =   0.0
          TextUnit        =   0
-         Top             =   242
+         Top             =   268
          Underline       =   False
          UseFocusRing    =   True
          Visible         =   True
@@ -763,7 +763,7 @@ Begin Window DemoWindow
          TextFont        =   "System"
          TextSize        =   0
          TextUnit        =   0
-         Top             =   267
+         Top             =   293
          Transparent     =   True
          Underline       =   ""
          Visible         =   True
@@ -806,7 +806,7 @@ Begin Window DemoWindow
          TextFont        =   "System"
          TextSize        =   0
          TextUnit        =   0
-         Top             =   267
+         Top             =   293
          Underline       =   ""
          UseFocusRing    =   True
          Visible         =   True
@@ -840,7 +840,7 @@ Begin Window DemoWindow
          TextFont        =   "System"
          TextSize        =   0
          TextUnit        =   0
-         Top             =   290
+         Top             =   316
          Transparent     =   True
          Underline       =   ""
          Visible         =   True
@@ -873,7 +873,7 @@ Begin Window DemoWindow
          TextFont        =   "System"
          TextSize        =   0.0
          TextUnit        =   0
-         Top             =   290
+         Top             =   316
          Underline       =   False
          UseFocusRing    =   True
          Visible         =   True
@@ -1736,6 +1736,38 @@ Begin Window DemoWindow
          Visible         =   True
          Width           =   145
       End
+      Begin CheckBox YieldOnLoop
+         AutoDeactivate  =   True
+         Bold            =   ""
+         Caption         =   "Yield"
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel2"
+         Italic          =   ""
+         Left            =   224
+         LockBottom      =   ""
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   ""
+         LockTop         =   True
+         Scope           =   0
+         State           =   0
+         TabIndex        =   30
+         TabPanelIndex   =   3
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   230
+         Underline       =   ""
+         Value           =   False
+         Visible         =   True
+         Width           =   120
+      End
    End
    Begin cURLClient Client
       Height          =   32
@@ -2576,6 +2608,7 @@ End
 		    Secure.Value = Client.EasyItem.Secure
 		    UseCookies.Value = Client.Cookies.Enabled
 		    Verbose.Value = Client.EasyItem.Verbose
+		    YieldOnLoop.Value = Client.Yield
 		    
 		    If Client.Proxy.Address <> "" Then
 		      ProxyServer.Text = Client.Proxy.Address
@@ -3452,6 +3485,23 @@ End
 		      Me.InsertRow(row + 1, l(i), 1)
 		    Next
 		  End If
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events YieldOnLoop
+	#tag Event
+		Sub Open()
+		  If Client.EasyItem.FollowRedirects Then
+		    Me.State = CheckBox.CheckedStates.Checked
+		  Else
+		    Me.State = CheckBox.CheckedStates.Unchecked
+		  End If
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Sub Action()
+		  If mLockUI Then Return
+		  Client.Yield = Me.Value
 		End Sub
 	#tag EndEvent
 #tag EndEvents
