@@ -1,7 +1,32 @@
 #tag Class
 Protected Class DNSEngine
 	#tag Method, Flags = &h0
+		Sub AddOverride(Hostname As String, PortNumber As Integer, OverrideResult As String)
+		  ' Override the DNS result for the specified hostname and port number.
+		  
+		  If Not libcURL.Version.IsAtLeast(7, 21, 3) Then
+		    ErrorSetter(Owner).LastError = libcURL.Errors.FEATURE_UNAVAILABLE
+		    Raise New cURLException(Owner)
+		  End If
+		  Dim i As Integer = GetOverrideIndex(Hostname, PortNumber)
+		  If i > -1 Then RemoveOverrideAtIndex(i)
+		  If mOverrideList = Nil Then mOverrideList = New ListPtr(Nil, Owner.Flags)
+		  If Not mOverrideList.Append(Hostname + ":" + Str(PortNumber, "####0") + ":" + OverrideResult) Then Raise New cURLException(mOverrideList)
+		  Me.FlushOverrides()
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub AddResolver(ServerIP As String)
+		  ' Add the specified DNS server to the list of preferred resolvers.
+		  ' This feature is available only if libcURL was built with c-ares
+		  ' as the DNS backend.
+		  
+		  If Not libcURL.Version.IsAtLeast(7, 24, 0) Then
+		    ErrorSetter(Owner).LastError = libcURL.Errors.FEATURE_UNAVAILABLE
+		    Raise New cURLException(Owner)
+		  End If
+		  
 		  If mResolvers.IndexOf(ServerIP) = -1 Then
 		    mResolvers.Append(ServerIP)
 		    Me.FlushResolvers
@@ -33,6 +58,8 @@ Protected Class DNSEngine
 
 	#tag Method, Flags = &h0
 		Function GetOverride(Hostname As String, PortNumber As Integer) As String
+		  ' If Hostname:PortNumber has been overridden then this returns the override address.
+		  
 		  If Hostname = "" Or PortNumber <= 0 Then Return ""
 		  
 		  Dim i As Integer = GetOverrideIndex(Hostname, PortNumber)
@@ -66,6 +93,12 @@ Protected Class DNSEngine
 
 	#tag Method, Flags = &h0
 		Sub RemoveOverride(Hostname As String, PortNumber As Integer)
+		  ' Return to normal DNS lookups for the specified hostname and port number.
+		  
+		  If Not libcURL.Version.IsAtLeast(7, 42, 0) Then
+		    ErrorSetter(Owner).LastError = libcURL.Errors.FEATURE_UNAVAILABLE
+		    Raise New cURLException(Owner)
+		  End If
 		  Dim i As Integer = GetOverrideIndex(Hostname, PortNumber)
 		  If i <= -1 Then Return
 		  RemoveOverrideAtIndex(i)
@@ -87,15 +120,24 @@ Protected Class DNSEngine
 
 	#tag Method, Flags = &h0
 		Sub RemoveResolver(ServerIP As String)
+		  ' Remove the specified DNS server from the list of preferred resolvers.
+		  
+		  If Not libcURL.Version.IsAtLeast(7, 24, 0) Then
+		    ErrorSetter(Owner).LastError = libcURL.Errors.FEATURE_UNAVAILABLE
+		    Raise New cURLException(Owner)
+		  End If
+		  
 		  Dim i As Integer = mResolvers.IndexOf(ServerIP)
 		  If i = -1 Then Return
 		  mResolvers.Remove(i)
-		  
+		  Me.FlushResolvers()
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub Reset()
+		  ' Reset all DNS overrides and server lists to default.
+		  
 		  ReDim mResolvers(-1)
 		  Me.FlushResolvers
 		  
@@ -113,18 +155,10 @@ Protected Class DNSEngine
 
 	#tag Method, Flags = &h0
 		Function Resolvers() As String()
+		  ' Returns an array of preferred DNS server addresses.
+		  
 		  Return mResolvers()
 		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub SetOverride(Hostname As String, PortNumber As Integer, OverrideResult As String)
-		  Dim i As Integer = GetOverrideIndex(Hostname, PortNumber)
-		  If i > -1 Then RemoveOverrideAtIndex(i)
-		  If mOverrideList = Nil Then mOverrideList = New ListPtr(Nil, Owner.Flags)
-		  If Not mOverrideList.Append(Hostname + ":" + Str(PortNumber, "####0") + ":" + OverrideResult) Then Raise New cURLException(mOverrideList)
-		  Me.FlushOverrides()
-		End Sub
 	#tag EndMethod
 
 
