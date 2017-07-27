@@ -132,7 +132,7 @@ Inherits libcURL.EasyHandle
 
 	#tag Method, Flags = &h21
 		Private Shared Function FNMatchCallback(UserData As Integer, Pattern As Ptr, FileName As Ptr) As Integer
-		  ' This method handles the CURLOPT_FNMATCH_FUNCTION callback by invoking curlChunkEnd
+		  ' This method handles the CURLOPT_FNMATCH_FUNCTION callback by invoking curlFNMatch
 		  ' on the appropriate instance of FTPWildCard
 		  '
 		  ' See:
