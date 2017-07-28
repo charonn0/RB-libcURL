@@ -201,7 +201,7 @@ Inherits libcURL.cURLHandle
 		  End If
 		  If mLastError = 0 Then
 		    Dim d As Double = CDbl(Str(time.tv_sec) + "." + Str(time.tv_usec))
-		    If d < 0.0 Then d = 10.0
+		    If d < 0.0 Or d > 1000.0 Then d = 10.0
 		    Return d
 		  End If
 		End Function

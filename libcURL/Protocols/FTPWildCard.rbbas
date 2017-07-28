@@ -124,15 +124,16 @@ Inherits libcURL.EasyHandle
 
 	#tag Method, Flags = &h21
 		Private Function curlFNMatch(Pattern As MemoryBlock, FileName As MemoryBlock) As Integer
-		  If FileName.CString(0) = "." Or FileName.CString(0) = ".." Then Return CURL_FNMATCHFUNC_NOMATCH
-		  If RaiseEvent PatternMatch(Pattern.CString(0), FileName.CString(0)) Then Return CURL_FNMATCHFUNC_MATCH
+		  Dim fn As String = FileName.CString(0)
+		  If fn = "." Or fn = ".." Then Return CURL_FNMATCHFUNC_NOMATCH
+		  If RaiseEvent PatternMatch(Pattern.CString(0), fn) Then Return CURL_FNMATCHFUNC_MATCH
 		  Return CURL_FNMATCHFUNC_NOMATCH
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
 		Private Shared Function FNMatchCallback(UserData As Integer, Pattern As Ptr, FileName As Ptr) As Integer
-		  ' This method handles the CURLOPT_FNMATCH_FUNCTION callback by invoking curlChunkEnd
+		  ' This method handles the CURLOPT_FNMATCH_FUNCTION callback by invoking curlFNMatch
 		  ' on the appropriate instance of FTPWildCard
 		  '
 		  ' See:
