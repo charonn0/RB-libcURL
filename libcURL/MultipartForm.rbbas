@@ -261,7 +261,7 @@ Implements FormStreamGetter
 		  '      CURLFORM_COPYNAME, "username", CURLFORM_COPYCONTENTS, "Bob", _
 		  '      CURLFORM_COPYNAME, "password", CURLFORM_COPYCONTENTS, "seekrit")
 		  '
-		  ' At least 1 and up to 6 pairs of arguments may be passed at once. Refer the to the libcURL documentation
+		  ' At least 1 and up to 11 pairs of arguments may be passed at once. Refer the to the libcURL documentation
 		  ' for details.
 		  '
 		  ' See:
@@ -346,6 +346,13 @@ Implements FormStreamGetter
 
 	#tag Method, Flags = &h0
 		Function GetElement(Index As Integer) As libcURL.MultipartFormElement
+		  ' Returns a reference to the MultipartFormElement at the specified index; if the index is out of bounds
+		  ' then an OutOfBoundsException will be raised. 
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm.GetElement
+		  
+		  
 		  Dim e As libcURL.MultipartFormElement = Me.FirstItem
 		  Dim i As Integer
 		  Do
@@ -373,6 +380,11 @@ Implements FormStreamGetter
 
 	#tag Method, Flags = &h0
 		Function GetElement(Name As String) As Integer
+		  ' Returns a reference to the first MultipartFormElement that matches the given name.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm.GetElement
+		  
 		  Dim e As libcURL.MultipartFormElement = Me.FirstItem
 		  Dim i As Integer
 		  Do Until e = Nil
