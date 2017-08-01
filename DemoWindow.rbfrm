@@ -1922,7 +1922,7 @@ Begin Window DemoWindow
          Index           =   -2147483648
          InitialParent   =   "TabPanel1"
          Italic          =   ""
-         Left            =   9
+         Left            =   11
          LockBottom      =   ""
          LockedInPosition=   False
          LockLeft        =   True
@@ -1935,10 +1935,10 @@ Begin Window DemoWindow
          TextFont        =   "System"
          TextSize        =   0
          TextUnit        =   0
-         Top             =   33
+         Top             =   31
          Underline       =   ""
          Visible         =   True
-         Width           =   80
+         Width           =   100
       End
       Begin PushButton PushButton2
          AutoDeactivate  =   True
@@ -1953,7 +1953,7 @@ Begin Window DemoWindow
          Index           =   -2147483648
          InitialParent   =   "TabPanel1"
          Italic          =   ""
-         Left            =   101
+         Left            =   117
          LockBottom      =   ""
          LockedInPosition=   False
          LockLeft        =   True
@@ -1966,10 +1966,10 @@ Begin Window DemoWindow
          TextFont        =   "System"
          TextSize        =   0
          TextUnit        =   0
-         Top             =   33
+         Top             =   31
          Underline       =   ""
          Visible         =   True
-         Width           =   80
+         Width           =   100
       End
       Begin PushButton PushButton3
          AutoDeactivate  =   True
@@ -2000,7 +2000,7 @@ Begin Window DemoWindow
          Top             =   31
          Underline       =   ""
          Visible         =   True
-         Width           =   80
+         Width           =   100
       End
       Begin PushButton PushButton4
          AutoDeactivate  =   True
@@ -2015,7 +2015,7 @@ Begin Window DemoWindow
          Index           =   -2147483648
          InitialParent   =   "TabPanel1"
          Italic          =   ""
-         Left            =   103
+         Left            =   117
          LockBottom      =   ""
          LockedInPosition=   False
          LockLeft        =   True
@@ -2031,7 +2031,7 @@ Begin Window DemoWindow
          Top             =   31
          Underline       =   ""
          Visible         =   True
-         Width           =   80
+         Width           =   100
       End
       Begin PushButton PushButton5
          AutoDeactivate  =   True
@@ -2062,7 +2062,7 @@ Begin Window DemoWindow
          Top             =   31
          Underline       =   ""
          Visible         =   True
-         Width           =   80
+         Width           =   100
       End
       Begin PushButton PushButton6
          AutoDeactivate  =   True
@@ -2077,7 +2077,7 @@ Begin Window DemoWindow
          Index           =   -2147483648
          InitialParent   =   "TabPanel1"
          Italic          =   ""
-         Left            =   103
+         Left            =   117
          LockBottom      =   ""
          LockedInPosition=   False
          LockLeft        =   True
@@ -2093,7 +2093,7 @@ Begin Window DemoWindow
          Top             =   31
          Underline       =   ""
          Visible         =   True
-         Width           =   80
+         Width           =   100
       End
       Begin PushButton PushButton7
          AutoDeactivate  =   True
@@ -2124,7 +2124,7 @@ Begin Window DemoWindow
          Top             =   58
          Underline       =   ""
          Visible         =   True
-         Width           =   91
+         Width           =   100
       End
       Begin PushButton PushButton8
          AutoDeactivate  =   True
@@ -2139,7 +2139,7 @@ Begin Window DemoWindow
          Index           =   -2147483648
          InitialParent   =   "TabPanel1"
          Italic          =   ""
-         Left            =   103
+         Left            =   117
          LockBottom      =   ""
          LockedInPosition=   False
          LockLeft        =   True
@@ -2155,7 +2155,7 @@ Begin Window DemoWindow
          Top             =   31
          Underline       =   ""
          Visible         =   True
-         Width           =   104
+         Width           =   100
       End
       Begin PushButton PushButton9
          AutoDeactivate  =   True
@@ -2186,7 +2186,7 @@ Begin Window DemoWindow
          Top             =   31
          Underline       =   ""
          Visible         =   True
-         Width           =   80
+         Width           =   100
       End
       Begin CheckBox CheckBox1
          AutoDeactivate  =   True
@@ -3657,6 +3657,8 @@ End
 		    Else
 		      Break
 		    End If
+		  Else
+		    Call MsgBox("Please specify an HTTP form to be POSTed", 16, "Missing form")
 		  End If
 		End Sub
 	#tag EndEvent
@@ -3664,11 +3666,15 @@ End
 #tag Events PushButton6
 	#tag Event
 		Sub Action()
-		  PauseButton.Enabled = True
-		  ResetButton.Enabled = False
-		  AbortButton.Enabled = True
-		  mURL = TextField1.Text
-		  PostThread.Run
+		  If FormValue <> Nil Then
+		    PauseButton.Enabled = True
+		    ResetButton.Enabled = False
+		    AbortButton.Enabled = True
+		    mURL = TextField1.Text
+		    PostThread.Run
+		  Else
+		    Call MsgBox("Please specify an HTTP form to be POSTed", 16, "Missing form")
+		  End If
 		End Sub
 	#tag EndEvent
 #tag EndEvents
