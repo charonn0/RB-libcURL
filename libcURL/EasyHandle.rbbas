@@ -169,6 +169,16 @@ Inherits libcURL.cURLHandle
 		  ' This method is the intermediary between DebugCallback and the DebugMessage event.
 		  ' DO NOT CALL THIS METHOD
 		  
+		  #If LOG_DEBUG Then
+		    ' writes debug messages to System.DebugLog
+		    Select Case info
+		    Case libcURL.curl_infotype.data_in, libcURL.curl_infotype.data_out, libcURL.curl_infotype.ssl_in, libcURL.curl_infotype.ssl_out
+		      ' skip raw data messages
+		    Else
+		      System.DebugLog(curl_infoname(info) + ": " + DefineEncoding(data.StringValue(0, size), Encodings.UTF8).Trim)
+		    End Select
+		  #endif
+		  
 		  RaiseEvent DebugMessage(info, DefineEncoding(data.StringValue(0, size), Encodings.UTF8))
 		  Return size
 		  
@@ -1853,6 +1863,9 @@ Inherits libcURL.cURLHandle
 	#tag EndConstant
 
 	#tag Constant, Name = HTTP_VERSION_NONE, Type = Double, Dynamic = False, Default = \"0", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = LOG_DEBUG, Type = Boolean, Dynamic = False, Default = \"True", Scope = Private
 	#tag EndConstant
 
 
