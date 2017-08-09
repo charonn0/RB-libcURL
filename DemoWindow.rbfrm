@@ -1230,7 +1230,7 @@ Begin Window DemoWindow
             LockTop         =   True
             RequiresSelection=   ""
             Scope           =   0
-            ScrollbarHorizontal=   ""
+            ScrollbarHorizontal=   True
             ScrollBarVertical=   True
             SelectionType   =   0
             TabIndex        =   0
