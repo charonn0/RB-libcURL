@@ -213,6 +213,7 @@ Implements FormStreamGetter
 		Private Sub Destructor()
 		  If mHandle <> 0 Then curl_formfree(mHandle)
 		  ReDim mStreams(-1)
+		  ReDim mAdditionalHeaders(-1)
 		  mHandle = 0
 		  LastItem = Nil
 		End Sub
@@ -2025,7 +2026,7 @@ Implements FormStreamGetter
 	#tag Constant, Name = CURLFORM_COPYNAME, Type = Double, Dynamic = False, Default = \"1", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = CURLFORM_END, Type = Double, Dynamic = False, Default = \"17", Scope = Public
+	#tag Constant, Name = CURLFORM_END, Type = Double, Dynamic = False, Default = \"17", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = CURLFORM_FILE, Type = Double, Dynamic = False, Default = \"10", Scope = Public
