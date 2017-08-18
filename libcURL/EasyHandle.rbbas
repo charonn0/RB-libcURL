@@ -193,14 +193,12 @@ Inherits libcURL.cURLHandle
 	#tag EndDelegateDeclaration
 
 	#tag Method, Flags = &h21
-		Private Function curlHeader(char As Ptr, size As Integer, nmemb As Integer) As Integer
+		Private Function curlHeader(char As MemoryBlock, size As Integer, nmemb As Integer) As Integer
 		  ' This method is the intermediary between HeaderCallback and the HeaderReceived event.
 		  ' DO NOT CALL THIS METHOD
 		  
 		  Dim sz As Integer = nmemb * size
-		  Dim data As MemoryBlock = char
-		  Dim s As String = data.StringValue(0, sz)
-		  RaiseEvent HeaderReceived(s)
+		  RaiseEvent HeaderReceived(char.StringValue(0, sz))
 		  Return sz
 		  
 		Exception Err As RuntimeException
