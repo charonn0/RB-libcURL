@@ -204,10 +204,12 @@ Inherits libcURL.cURLManager
 		  ' The protocol is inferred from the URL; explictly specify the protocol in the URL to avoid bad guesses. The
 		  ' path part of the URL specifies the remote directory and file name to store the file under.
 		  ' ReadFrom is an object that implements the Readable interface (e.g. BinaryStream). The uploaded data will be
-		  ' read from this object.
-		  ' WriteTo is an optional Writeable object (e.g. BinaryStream); downloaded data will be written to this
-		  ' object directly. If WriteTo is Nil then use the GetDownloadedData method to get any downloaded data.
-		  ' The transfer will be performed on the event loop (main thread).
+		  ' read from this object. WriteTo is an optional Writeable object (e.g. BinaryStream); downloaded data will be
+		  ' written to this object directly. If WriteTo is Nil then use the GetDownloadedData method to get any
+		  ' downloaded data. The transfer will be performed on the event loop (main thread).
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLClient.Put
 		  
 		  Me.EasyItem.UploadMode = True
 		  Me.Perform(URL, ReadFrom, WriteTo)
