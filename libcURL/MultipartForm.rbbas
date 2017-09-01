@@ -144,7 +144,7 @@ Implements FormStreamGetter
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm.Count
 		  
-		  Dim e As libcURL.MultipartFormElement = Me.FirstItem
+		  Dim e As libcURL.MultipartFormElement = Me.FirstElement
 		  Dim c As Integer
 		  Do Until e = Nil
 		    c = c + 1
@@ -354,7 +354,7 @@ Implements FormStreamGetter
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm.GetElement
 		  
 		  
-		  Dim e As libcURL.MultipartFormElement = Me.FirstItem
+		  Dim e As libcURL.MultipartFormElement = Me.FirstElement
 		  Dim i As Integer
 		  Do
 		    If i < Index Then
@@ -386,7 +386,7 @@ Implements FormStreamGetter
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm.GetElement
 		  
-		  Dim e As libcURL.MultipartFormElement = Me.FirstItem
+		  Dim e As libcURL.MultipartFormElement = Me.FirstElement
 		  Dim i As Integer
 		  Do Until e = Nil
 		    If e.Name = Name Then Return i
@@ -1823,7 +1823,7 @@ Implements FormStreamGetter
 
 	#tag Method, Flags = &h0
 		Function Operator_Convert() As Dictionary
-		  Dim e As MultipartFormElement = Me.FirstItem
+		  Dim e As MultipartFormElement = Me.FirstElement
 		  If e = Nil Then Return Nil
 		  Dim d As New Dictionary
 		  Do Until e = Nil
@@ -1976,7 +1976,7 @@ Implements FormStreamGetter
 			  
 			End Get
 		#tag EndGetter
-		Protected FirstItem As libcURL.MultipartFormElement
+		Protected FirstElement As libcURL.MultipartFormElement
 	#tag EndComputedProperty
 
 	#tag Property, Flags = &h21
