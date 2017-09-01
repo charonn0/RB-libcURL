@@ -381,7 +381,7 @@ Implements FormStreamGetter
 
 	#tag Method, Flags = &h0
 		Function GetElement(Name As String) As Integer
-		  ' Returns a reference to the first MultipartFormElement that matches the given name.
+		  ' Returns the index of the first MultipartFormElement that matches the given name.
 		  '
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm.GetElement
@@ -1847,8 +1847,8 @@ Implements FormStreamGetter
 		Sub Operator_Convert(FromDict As Dictionary)
 		  ' Overloads the conversion operator(=), permitting implicit and explicit conversion from a Dictionary
 		  ' into a MultipartForm. The dictionary contains NAME:VALUE pairs comprising HTML form elements: NAME
-		  ' is a string containing the form-element name; VALUE may be a string, FolderItem, or an instance of
-		  ' EasyHandle whose DataNeeded event will be raised when the form is actually used.
+		  ' is a string containing the form-element name; VALUE may be a string, FolderItem, or an object that
+		  ' implements then Readable interface.
 		  '
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm.Operator_Convert
