@@ -143,6 +143,50 @@ Protected Module libcURL
 	#tag EndMethod
 
 	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Function curl_mime_addpart Lib "libcurl" (MIME As Integer) As Ptr
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Function curl_mime_data Lib "libcurl" (MIMEPart As Ptr, Data As Ptr, DataSize As Integer) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Function curl_mime_data_cb Lib "libcurl" (MIMEPart As Ptr, DataSize As Integer, ReadCallback As Ptr, SeekCallback As Ptr, FreeCallback As Ptr, UserData As Ptr) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Function curl_mime_filedata Lib "libcurl" (MIMEPart As Ptr, FilePath As CString) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Function curl_mime_filename Lib "libcurl" (MIMEPart As Ptr, FileName As CString) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Sub curl_mime_free Lib "libcurl" (MIME As Integer)
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Function curl_mime_headers Lib "libcurl" (MIMEPart As Ptr, HeaderList As Integer, TakeOwnership As Integer) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Function curl_mime_init Lib "libcurl" (EasyHandle As Integer) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Function curl_mime_name Lib "libcurl" (MIMEPart As Ptr, Name As Ptr, NameSize As Integer) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Function curl_mime_subparts Lib "libcurl" (MIMEPart As Ptr, SubParts As Ptr) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Function curl_mime_type Lib "libcurl" (MIMEPart As Ptr, Type As CString) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h21
 		Private Soft Declare Function curl_multi_add_handle Lib "libcurl" (MultiHandle As Integer, EasyHandle As Integer) As Integer
 	#tag EndExternalMethod
 
