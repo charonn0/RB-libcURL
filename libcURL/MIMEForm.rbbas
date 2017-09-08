@@ -2,7 +2,7 @@
 Protected Class MIMEForm
 Inherits libcURL.cURLHandle
 	#tag Method, Flags = &h0
-		Function AddElement(Name As String, Value As FolderItem, ContentType As String = "", AdditionalHeaders As libcURL.ListPtr = Nil) As Boolean
+		Function AddElement(Name As String, Value As FolderItem, ContentType As String = "", AdditionalHeaders As libcURL.ListPtr = Nil, Encoding As libcURL.MIMEForm.TransferEncoding = libcURL.MIMEForm.TransferEncoding.Binary) As Boolean
 		  Dim element As Ptr = AddPart()
 		  If element = Nil Then
 		    mLastError = libcURL.Errors.MIME_ADD_FAILED
@@ -16,11 +16,14 @@ Inherits libcURL.cURLHandle
 		  If AdditionalHeaders <> Nil Then
 		    If Not SetPartHeaders(element, AdditionalHeaders, False) Then Return False
 		  End If
+		  If Encoding <> TransferEncoding.Binary Then
+		    If Not SetPartEncoding(element, encoding) Then Return False
+		  End If
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function AddElement(Name As String, ValueStream As Readable, ValueSize As Integer, Filename As String = "", ContentType As String = "", AdditionalHeaders As libcURL.ListPtr = Nil) As Boolean
+		Function AddElement(Name As String, ValueStream As Readable, ValueSize As Integer, Filename As String = "", ContentType As String = "", AdditionalHeaders As libcURL.ListPtr = Nil, Encoding As libcURL.MIMEForm.TransferEncoding = libcURL.MIMEForm.TransferEncoding.Binary) As Boolean
 		  Dim element As Ptr = AddPart()
 		  If element = Nil Then
 		    mLastError = libcURL.Errors.MIME_ADD_FAILED
@@ -36,6 +39,9 @@ Inherits libcURL.cURLHandle
 		  If AdditionalHeaders <> Nil Then
 		    If Not SetPartHeaders(element, AdditionalHeaders, False) Then Return False
 		  End If
+		  If Encoding <> TransferEncoding.Binary Then
+		    If Not SetPartEncoding(element, encoding) Then Return False
+		  End If
 		  If PartStreams = Nil Then PartStreams = New Dictionary
 		  PartStreams.Value(element) = ValueStream
 		  If Not SetPartCallbacks(element, ValueSize, AddressOf ReadCallback, AddressOf SeekCallback, AddressOf FreeCallback, element) Then Return False
@@ -43,7 +49,7 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function AddElement(Name As String, Value As String, AdditionalHeaders As libcURL.ListPtr = Nil) As Boolean
+		Function AddElement(Name As String, Value As String, AdditionalHeaders As libcURL.ListPtr = Nil, Encoding As libcURL.MIMEForm.TransferEncoding = libcURL.MIMEForm.TransferEncoding.Binary) As Boolean
 		  Dim element As Ptr = AddPart()
 		  If element = Nil Then
 		    mLastError = libcURL.Errors.MIME_ADD_FAILED
@@ -51,6 +57,9 @@ Inherits libcURL.cURLHandle
 		  End If
 		  If Not SetPartName(element, Name) Then Return False
 		  If Not SetPartData(element, Value) Then Return False
+		  If Encoding <> TransferEncoding.Binary Then
+		    If Not SetPartEncoding(element, encoding) Then Return False
+		  End If
 		  If AdditionalHeaders <> Nil Then
 		    If Not SetPartHeaders(element, AdditionalHeaders, False) Then Return False
 		  End If
@@ -123,6 +132,27 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
+		Protected Function SetPartEncoding(Part As Ptr, Encoding As TransferEncoding) As Boolean
+		  Dim mb As MemoryBlock
+		  Select Case Encoding
+		  Case TransferEncoding.Binary
+		    mb = "binary" + Chr(0)
+		  Case TransferEncoding.SevenBit
+		    mb = "7bit" + Chr(0)
+		  Case TransferEncoding.EightBit
+		    mb = "8bit" + Chr(0)
+		  Case TransferEncoding.Base64
+		    mb = "base64" + Chr(0)
+		  Case TransferEncoding.QuotedPrintable
+		    mb = "quoted-printable" + Chr(0)
+		  End Select
+		  
+		  mLastError = curl_mime_encoder(Part, mb)
+		  Return mLastError = 0
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
 		Protected Function SetPartFile(Part As Ptr, File As FolderItem) As Boolean
 		  Dim mb As MemoryBlock = File.AbsolutePath + Chr(0)
 		  mLastError = curl_mime_filedata(Part, mb)
@@ -174,6 +204,15 @@ Inherits libcURL.cURLHandle
 	#tag Property, Flags = &h21
 		Private Shared PartStreams As Dictionary
 	#tag EndProperty
+
+
+	#tag Enum, Name = TransferEncoding, Type = Integer, Flags = &h0
+		Binary
+		  SevenBit
+		  EightBit
+		  Base64
+		QuotedPrintable
+	#tag EndEnum
 
 
 	#tag ViewBehavior

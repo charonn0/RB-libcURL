@@ -155,6 +155,10 @@ Protected Module libcURL
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Function curl_mime_encoder Lib "libcurl" (MIMEPart As Ptr, Encoding As Ptr) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h21
 		Private Soft Declare Function curl_mime_filedata Lib "libcurl" (MIMEPart As Ptr, FilePath As CString) As Integer
 	#tag EndExternalMethod
 
