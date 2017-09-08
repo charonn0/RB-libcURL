@@ -1,8 +1,8 @@
 #tag Class
-Protected Class MIMEForm
+Protected Class MIMEMessage
 Inherits libcURL.cURLHandle
 	#tag Method, Flags = &h0
-		Function AddElement(Name As String, Value As FolderItem, ContentType As String = "", AdditionalHeaders As libcURL.ListPtr = Nil, Encoding As libcURL.MIMEForm.TransferEncoding = libcURL.MIMEForm.TransferEncoding.Binary) As Boolean
+		Function AddElement(Name As String, Value As FolderItem, ContentType As String = "", AdditionalHeaders As libcURL.ListPtr = Nil, Encoding As libcURL.MIMEMessage.TransferEncoding = libcURL.MIMEMessage.TransferEncoding.Binary) As Boolean
 		  Dim element As Ptr = AddPart()
 		  If element = Nil Then
 		    mLastError = libcURL.Errors.MIME_ADD_FAILED
@@ -10,7 +10,7 @@ Inherits libcURL.cURLHandle
 		  End If
 		  If Not SetPartName(element, Name) Then Return False
 		  If Not SetPartFile(element, Value) Then Return False
-		  If ContentType <> "" Then 
+		  If ContentType <> "" Then
 		    If Not SetPartType(element, ContentType) Then Return False
 		  End If
 		  If AdditionalHeaders <> Nil Then
@@ -23,7 +23,7 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function AddElement(Name As String, ValueStream As Readable, ValueSize As Integer, Filename As String = "", ContentType As String = "", AdditionalHeaders As libcURL.ListPtr = Nil, Encoding As libcURL.MIMEForm.TransferEncoding = libcURL.MIMEForm.TransferEncoding.Binary) As Boolean
+		Function AddElement(Name As String, ValueStream As Readable, ValueSize As Integer, Filename As String = "", ContentType As String = "", AdditionalHeaders As libcURL.ListPtr = Nil, Encoding As libcURL.MIMEMessage.TransferEncoding = libcURL.MIMEMessage.TransferEncoding.Binary) As Boolean
 		  Dim element As Ptr = AddPart()
 		  If element = Nil Then
 		    mLastError = libcURL.Errors.MIME_ADD_FAILED
@@ -49,7 +49,7 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function AddElement(Name As String, Value As String, AdditionalHeaders As libcURL.ListPtr = Nil, Encoding As libcURL.MIMEForm.TransferEncoding = libcURL.MIMEForm.TransferEncoding.Binary) As Boolean
+		Function AddElement(Name As String, Value As String, AdditionalHeaders As libcURL.ListPtr = Nil, Encoding As libcURL.MIMEMessage.TransferEncoding = libcURL.MIMEMessage.TransferEncoding.Binary) As Boolean
 		  Dim element As Ptr = AddPart()
 		  If element = Nil Then
 		    mLastError = libcURL.Errors.MIME_ADD_FAILED
@@ -124,7 +124,7 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function SetPartData(Part As Ptr, Data As MemoryBlock, DataLength As Integer = -1) As Boolean
+		Protected Function SetPartData(Part As Ptr, Data As MemoryBlock, DataLength As Integer = - 1) As Boolean
 		  If DataLength = -1 Then DataLength = Data.Size
 		  mLastError = curl_mime_data(Part, Data, DataLength)
 		  Return mLastError = 0
@@ -186,7 +186,7 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function SetPartSubparts(Part As Ptr, Subparts As libcURL.MIMEForm) As Boolean
+		Protected Function SetPartSubparts(Part As Ptr, Subparts As libcURL.MIMEMessage) As Boolean
 		  mLastError = curl_mime_subparts(Part, Subparts.Handle)
 		  Return mLastError = 0
 		End Function
