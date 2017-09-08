@@ -19,6 +19,28 @@ Inherits libcURL.cURLHandle
 		  If Encoding <> TransferEncoding.Binary Then
 		    If Not SetPartEncoding(element, encoding) Then Return False
 		  End If
+		  Return mLastError = 0
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function AddElement(Name As String, Value As libcURL.MIMEMessage, AdditionalHeaders As libcURL.ListPtr = Nil) As Boolean
+		  If Value Is Me Then
+		    mLastError = libcURL.Errors.CALL_LOOP_DETECTED
+		    Raise New cURLException(Me)
+		  End If
+		  
+		  Dim element As Ptr = AddPart()
+		  If element = Nil Then
+		    mLastError = libcURL.Errors.MIME_ADD_FAILED
+		    Return False
+		  End If
+		  If Not SetPartName(element, Name) Then Return False
+		  If Not SetPartSubparts(element, Value) Then Return False
+		  If AdditionalHeaders <> Nil Then
+		    If Not SetPartHeaders(element, AdditionalHeaders, False) Then Return False
+		  End If
+		  Return mLastError = 0
 		End Function
 	#tag EndMethod
 
