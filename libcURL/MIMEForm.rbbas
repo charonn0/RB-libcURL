@@ -156,8 +156,8 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function SetPartSubparts(Part As Ptr, Subparts As Ptr) As Boolean
-		  mLastError = curl_mime_subparts(Part, Subparts)
+		Protected Function SetPartSubparts(Part As Ptr, Subparts As libcURL.MIMEForm) As Boolean
+		  mLastError = curl_mime_subparts(Part, Subparts.Handle)
 		  Return mLastError = 0
 		End Function
 	#tag EndMethod

@@ -179,7 +179,7 @@ Protected Module libcURL
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Function curl_mime_subparts Lib "libcurl" (MIMEPart As Ptr, SubParts As Ptr) As Integer
+		Private Soft Declare Function curl_mime_subparts Lib "libcurl" (MIMEPart As Ptr, SubParts As Integer) As Integer
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
