@@ -128,18 +128,39 @@ Inherits libcURL.cURLHandle
 	#tag Method, Flags = &h21
 		Private Shared Sub FreeCallback(UserData As Ptr)
 		  #pragma X86CallingConvention CDecl
+		  If PartStreams <> Nil And PartStreams.HasKey(UserData) Then PartStreams.Remove(UserData)
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Shared Function ReadCallback(Buffer As Ptr, Size As Integer, NumItems As Integer, UserData As Ptr) As Integer
+		Private Shared Function ReadCallback(Buffer As MemoryBlock, Size As Integer, NumItems As Integer, UserData As Ptr) As Integer
 		  #pragma X86CallingConvention CDecl
+		  
+		  Dim r As Readable = PartStreams.Lookup(UserData, Nil)
+		  If r = Nil Then Return 0 ' fail read
+		  Dim sz As Integer = NumItems * Size
+		  Dim mb As MemoryBlock = r.Read(sz)
+		  If mb.Size > 0 Then Buffer.StringValue(0, mb.Size) = mb.StringValue(0, mb.Size)
+		  Return mb.Size
+		  
+		Exception Err As RuntimeException
+		  If Err IsA ThreadEndException Or Err IsA EndException Then Raise Err
+		  Return CURL_READFUNC_ABORT
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
 		Private Shared Function SeekCallback(UserData As Ptr, Offset As Integer, Origin As Integer) As Integer
 		  #pragma X86CallingConvention CDecl
+		  #pragma Unused Origin
+		  
+		  Dim r As Readable = PartStreams.Lookup(UserData, Nil)
+		  If r = Nil Then Return 1 ' fail seek
+		  If Not r IsA BinaryStream Then Return 2 ' fail seek but libcURL can try to work around it
+		  Dim ps As BinaryStream = BinaryStream(r)
+		  If ps.Length < Offset Then Return 2 ' fail seek but libcURL can try to work around it
+		  ps.Position = Offset
+		  Return 0 ' OK
 		End Function
 	#tag EndMethod
 
