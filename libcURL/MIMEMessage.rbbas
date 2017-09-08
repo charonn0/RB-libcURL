@@ -90,6 +90,7 @@ Inherits libcURL.cURLHandle
 		  If AdditionalHeaders <> Nil Then
 		    If Not SetPartHeaders(element, AdditionalHeaders, False) Then Return False
 		  End If
+		  Return mLastError = 0
 		End Function
 	#tag EndMethod
 
