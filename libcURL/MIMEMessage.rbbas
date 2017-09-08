@@ -66,7 +66,12 @@ Inherits libcURL.cURLHandle
 		  End If
 		  If PartStreams = Nil Then PartStreams = New Dictionary
 		  PartStreams.Value(element) = ValueStream
-		  If Not SetPartCallbacks(element, ValueSize, AddressOf ReadCallback, AddressOf SeekCallback, AddressOf FreeCallback, element) Then Return False
+		  If ValueStream IsA BinaryStream Then ' seekable
+		    If Not SetPartCallbacks(element, ValueSize, AddressOf ReadCallback, AddressOf SeekCallback, AddressOf FreeCallback, element) Then Return False
+		  Else
+		    If Not SetPartCallbacks(element, ValueSize, AddressOf ReadCallback, Nil, AddressOf FreeCallback, element) Then Return False
+		  End If
+		  Return mLastError = 0
 		End Function
 	#tag EndMethod
 
