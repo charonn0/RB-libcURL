@@ -94,8 +94,8 @@ Inherits libcURL.cURLHandle
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Function AddPart() As Ptr
+	#tag Method, Flags = &h21
+		Private Function AddPart() As Ptr
 		  Return curl_mime_addpart(mHandle)
 		End Function
 	#tag EndMethod
