@@ -106,16 +106,16 @@ Inherits libcURL.cURLHandle
 		End Sub
 	#tag EndMethod
 
-	#tag DelegateDeclaration, Flags = &h1
-		Protected Delegate Sub cURLFreeCallback(UserData As Ptr)
+	#tag DelegateDeclaration, Flags = &h21
+		Private Delegate Sub cURLFreeCallback(UserData As Ptr)
 	#tag EndDelegateDeclaration
 
-	#tag DelegateDeclaration, Flags = &h1
-		Protected Delegate Function cURLReadCallback(Buffer As Ptr, Size As Integer, NumItems As Integer, UserData As Ptr) As Integer
+	#tag DelegateDeclaration, Flags = &h21
+		Private Delegate Function cURLReadCallback(Buffer As MemoryBlock, Size As Integer, NumItems As Integer, UserData As Ptr) As Integer
 	#tag EndDelegateDeclaration
 
-	#tag DelegateDeclaration, Flags = &h1
-		Protected Delegate Function cURLSeekCallback(UserData As Ptr, Offset As Integer, Origin As Integer) As Integer
+	#tag DelegateDeclaration, Flags = &h21
+		Private Delegate Function cURLSeekCallback(UserData As Ptr, Offset As Integer, Origin As Integer) As Integer
 	#tag EndDelegateDeclaration
 
 	#tag Method, Flags = &h21
@@ -143,23 +143,23 @@ Inherits libcURL.cURLHandle
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Function SetPartCallbacks(Part As Ptr, ReadLength As Integer, ReadFunction As cURLReadCallback, SeekFunction As cURLSeekCallback, FreeFunction As cURLFreeCallback, UserData As Ptr) As Boolean
+	#tag Method, Flags = &h21
+		Private Function SetPartCallbacks(Part As Ptr, ReadLength As Integer, ReadFunction As cURLReadCallback, SeekFunction As cURLSeekCallback, FreeFunction As cURLFreeCallback, UserData As Ptr) As Boolean
 		  mLastError = curl_mime_data_cb(Part, ReadLength, ReadFunction, SeekFunction, FreeFunction, UserData)
 		  Return mLastError = 0
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Function SetPartData(Part As Ptr, Data As MemoryBlock, DataLength As Integer = - 1) As Boolean
+	#tag Method, Flags = &h21
+		Private Function SetPartData(Part As Ptr, Data As MemoryBlock, DataLength As Integer = - 1) As Boolean
 		  If DataLength = -1 Then DataLength = Data.Size
 		  mLastError = curl_mime_data(Part, Data, DataLength)
 		  Return mLastError = 0
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Function SetPartEncoding(Part As Ptr, Encoding As TransferEncoding) As Boolean
+	#tag Method, Flags = &h21
+		Private Function SetPartEncoding(Part As Ptr, Encoding As TransferEncoding) As Boolean
 		  Dim mb As MemoryBlock
 		  Select Case Encoding
 		  Case TransferEncoding.Binary
@@ -179,24 +179,24 @@ Inherits libcURL.cURLHandle
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Function SetPartFile(Part As Ptr, File As FolderItem) As Boolean
+	#tag Method, Flags = &h21
+		Private Function SetPartFile(Part As Ptr, File As FolderItem) As Boolean
 		  Dim mb As MemoryBlock = File.AbsolutePath + Chr(0)
 		  mLastError = curl_mime_filedata(Part, mb)
 		  Return mLastError = 0
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Function SetPartFileName(Part As Ptr, Filename As String) As Boolean
+	#tag Method, Flags = &h21
+		Private Function SetPartFileName(Part As Ptr, Filename As String) As Boolean
 		  Dim mb As MemoryBlock = Filename + Chr(0)
 		  mLastError = curl_mime_filename(Part, mb)
 		  Return mLastError = 0
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Function SetPartHeaders(Part As Ptr, Headers As libcURL.ListPtr, TakeOwnerShip As Boolean) As Boolean
+	#tag Method, Flags = &h21
+		Private Function SetPartHeaders(Part As Ptr, Headers As libcURL.ListPtr, TakeOwnerShip As Boolean) As Boolean
 		  Dim own As Integer
 		  If TakeOwnerShip Then own = 1
 		  mLastError = curl_mime_headers(Part, Headers.Handle, own)
@@ -204,23 +204,23 @@ Inherits libcURL.cURLHandle
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Function SetPartName(Part As Ptr, Name As String) As Boolean
+	#tag Method, Flags = &h21
+		Private Function SetPartName(Part As Ptr, Name As String) As Boolean
 		  Dim mb As MemoryBlock = Name
 		  mLastError = curl_mime_name(Part, mb, mb.Size)
 		  Return mLastError = 0
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Function SetPartSubparts(Part As Ptr, Subparts As libcURL.MIMEMessage) As Boolean
+	#tag Method, Flags = &h21
+		Private Function SetPartSubparts(Part As Ptr, Subparts As libcURL.MIMEMessage) As Boolean
 		  mLastError = curl_mime_subparts(Part, Subparts.Handle)
 		  Return mLastError = 0
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Function SetPartType(Part As Ptr, MIMEType As String) As Boolean
+	#tag Method, Flags = &h21
+		Private Function SetPartType(Part As Ptr, MIMEType As String) As Boolean
 		  Dim mb As MemoryBlock = MIMEType + Chr(0)
 		  mLastError = curl_mime_type(Part, mb)
 		  Return mLastError = 0
