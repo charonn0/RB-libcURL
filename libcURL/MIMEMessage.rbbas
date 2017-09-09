@@ -266,6 +266,23 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  Dim List As Ptr = Ptr(Me.Handle)
+			  If List <> Nil Then 
+			    Dim m As curl_mime = List.curl_mime
+			    Return New MIMEMessagePart(m.FirstPart, Me)
+			  End If
+			End Get
+		#tag EndGetter
+		FirstElement As libcURL.MIMEMessagePart
+	#tag EndComputedProperty
+
+	#tag Property, Flags = &h21
+		Private mOwner As WeakRef
+	#tag EndProperty
+
 	#tag Property, Flags = &h21
 		Private Shared PartStreams As Dictionary
 	#tag EndProperty
