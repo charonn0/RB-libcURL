@@ -103,7 +103,16 @@ Inherits libcURL.cURLHandle
 	#tag Method, Flags = &h0
 		Sub Constructor(Owner As libcURL.EasyHandle)
 		  Super.Constructor(Owner.Flags)
+		  If Not System.IsFunctionAvailable("curl_mime_init", "libcurl") Then
+		    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
+		    Raise New cURLException(Me)
+		  End If
+		  
 		  mHandle = curl_mime_init(Owner.Handle)
+		  If mHandle = 0 Then
+		    mLastError = libcURL.Errors.INIT_FAILED
+		    Raise New cURLException(Me)
+		  End If
 		End Sub
 	#tag EndMethod
 
