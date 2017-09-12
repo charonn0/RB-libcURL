@@ -3,21 +3,21 @@ Protected Class MIMEMessage
 Inherits libcURL.cURLHandle
 	#tag Method, Flags = &h0
 		Function AddElement(Name As String, Value As FolderItem, ContentType As String = "", AdditionalHeaders As libcURL.ListPtr = Nil, Encoding As libcURL.MIMEMessage.TransferEncoding = libcURL.MIMEMessage.TransferEncoding.Binary) As Boolean
-		  Dim element As Ptr = AddPart()
-		  If element = Nil Then
+		  Dim part As Ptr = AddPart()
+		  If part = Nil Then
 		    mLastError = libcURL.Errors.MIME_ADD_FAILED
 		    Return False
 		  End If
-		  If Not SetPartName(element, Name) Then Return False
-		  If Not SetPartFile(element, Value) Then Return False
+		  If Not SetPartName(part, Name) Then Return False
+		  If Not SetPartFile(part, Value) Then Return False
 		  If ContentType <> "" Then
-		    If Not SetPartType(element, ContentType) Then Return False
+		    If Not SetPartType(part, ContentType) Then Return False
 		  End If
 		  If AdditionalHeaders <> Nil Then
-		    If Not SetPartHeaders(element, AdditionalHeaders, False) Then Return False
+		    If Not SetPartHeaders(part, AdditionalHeaders, False) Then Return False
 		  End If
 		  If Encoding <> TransferEncoding.Binary Then
-		    If Not SetPartEncoding(element, encoding) Then Return False
+		    If Not SetPartEncoding(part, encoding) Then Return False
 		  End If
 		  Return mLastError = 0
 		End Function
@@ -30,13 +30,13 @@ Inherits libcURL.cURLHandle
 		    Raise New cURLException(Me)
 		  End If
 		  
-		  Dim element As Ptr = AddPart()
-		  If element = Nil Then
+		  Dim part As Ptr = AddPart()
+		  If part = Nil Then
 		    mLastError = libcURL.Errors.MIME_ADD_FAILED
 		    Return False
 		  End If
-		  If Not SetPartName(element, Name) Then Return False
-		  If Not SetPartSubparts(element, Value) Then Return False
+		  If Not SetPartName(part, Name) Then Return False
+		  If Not SetPartSubparts(part, Value) Then Return False
 		  If AdditionalHeaders <> Nil Then
 		    If Not SetPartHeaders(element, AdditionalHeaders, False) Then Return False
 		  End If
@@ -46,30 +46,30 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Function AddElement(Name As String, ValueStream As Readable, ValueSize As Integer, Filename As String = "", ContentType As String = "", AdditionalHeaders As libcURL.ListPtr = Nil, Encoding As libcURL.MIMEMessage.TransferEncoding = libcURL.MIMEMessage.TransferEncoding.Binary) As Boolean
-		  Dim element As Ptr = AddPart()
-		  If element = Nil Then
+		  Dim part As Ptr = AddPart()
+		  If part = Nil Then
 		    mLastError = libcURL.Errors.MIME_ADD_FAILED
 		    Return False
 		  End If
-		  If Not SetPartName(element, Name) Then Return False
+		  If Not SetPartName(part, Name) Then Return False
 		  If Filename <> "" Then
-		    If Not SetPartFileName(element, Filename + Chr(0)) Then Return False
+		    If Not SetPartFileName(part, Filename + Chr(0)) Then Return False
 		  End If
 		  If ContentType <> "" Then
-		    If Not SetPartType(element, ContentType) Then Return False
+		    If Not SetPartType(part, ContentType) Then Return False
 		  End If
 		  If AdditionalHeaders <> Nil Then
-		    If Not SetPartHeaders(element, AdditionalHeaders, False) Then Return False
+		    If Not SetPartHeaders(part, AdditionalHeaders, False) Then Return False
 		  End If
 		  If Encoding <> TransferEncoding.Binary Then
-		    If Not SetPartEncoding(element, encoding) Then Return False
+		    If Not SetPartEncoding(part, encoding) Then Return False
 		  End If
 		  If PartStreams = Nil Then PartStreams = New Dictionary
-		  PartStreams.Value(element) = ValueStream
+		  PartStreams.Value(part) = ValueStream
 		  If ValueStream IsA BinaryStream Then ' seekable
-		    If Not SetPartCallbacks(element, ValueSize, AddressOf ReadCallback, AddressOf SeekCallback, AddressOf FreeCallback, element) Then Return False
+		    If Not SetPartCallbacks(part, ValueSize, AddressOf ReadCallback, AddressOf SeekCallback, AddressOf FreeCallback, part) Then Return False
 		  Else
-		    If Not SetPartCallbacks(element, ValueSize, AddressOf ReadCallback, Nil, AddressOf FreeCallback, element) Then Return False
+		    If Not SetPartCallbacks(part, ValueSize, AddressOf ReadCallback, Nil, AddressOf FreeCallback, part) Then Return False
 		  End If
 		  Return mLastError = 0
 		End Function
@@ -77,18 +77,18 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Function AddElement(Name As String, Value As String, AdditionalHeaders As libcURL.ListPtr = Nil, Encoding As libcURL.MIMEMessage.TransferEncoding = libcURL.MIMEMessage.TransferEncoding.Binary) As Boolean
-		  Dim element As Ptr = AddPart()
-		  If element = Nil Then
+		  Dim part As Ptr = AddPart()
+		  If part = Nil Then
 		    mLastError = libcURL.Errors.MIME_ADD_FAILED
 		    Return False
 		  End If
-		  If Not SetPartName(element, Name) Then Return False
-		  If Not SetPartData(element, Value) Then Return False
+		  If Not SetPartName(part, Name) Then Return False
+		  If Not SetPartData(part, Value) Then Return False
 		  If Encoding <> TransferEncoding.Binary Then
-		    If Not SetPartEncoding(element, encoding) Then Return False
+		    If Not SetPartEncoding(part, encoding) Then Return False
 		  End If
 		  If AdditionalHeaders <> Nil Then
-		    If Not SetPartHeaders(element, AdditionalHeaders, False) Then Return False
+		    If Not SetPartHeaders(part, AdditionalHeaders, False) Then Return False
 		  End If
 		  Return mLastError = 0
 		End Function
