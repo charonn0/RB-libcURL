@@ -1825,7 +1825,7 @@ Implements FormStreamGetter
 		Function Operator_Convert() As Dictionary
 		  ' Overloads the conversion operator(=), permitting implicit and explicit conversion from a MultipartForm
 		  ' into a Dictionary. The Dictionary contains form elements as NAME:VALUE pairs. NAME is a string containing
-		  ' the form-element name; VALUE can be a string, FolderItem, or an object that implements then Readable interface.
+		  ' the form-element name; VALUE can be a string, FolderItem, or an object that implements the Readable interface.
 		  '
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm.Operator_Convert
