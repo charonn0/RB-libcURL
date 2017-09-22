@@ -440,7 +440,7 @@ Begin Window DemoWindow
          TextFont        =   "System"
          TextSize        =   0
          TextUnit        =   0
-         Top             =   242
+         Top             =   268
          Transparent     =   True
          Underline       =   ""
          Visible         =   True
@@ -473,7 +473,7 @@ Begin Window DemoWindow
          TextFont        =   "System"
          TextSize        =   0.0
          TextUnit        =   0
-         Top             =   242
+         Top             =   268
          Underline       =   False
          UseFocusRing    =   True
          Visible         =   True
@@ -763,7 +763,7 @@ Begin Window DemoWindow
          TextFont        =   "System"
          TextSize        =   0
          TextUnit        =   0
-         Top             =   267
+         Top             =   293
          Transparent     =   True
          Underline       =   ""
          Visible         =   True
@@ -806,7 +806,7 @@ Begin Window DemoWindow
          TextFont        =   "System"
          TextSize        =   0
          TextUnit        =   0
-         Top             =   267
+         Top             =   293
          Underline       =   ""
          UseFocusRing    =   True
          Visible         =   True
@@ -840,7 +840,7 @@ Begin Window DemoWindow
          TextFont        =   "System"
          TextSize        =   0
          TextUnit        =   0
-         Top             =   290
+         Top             =   316
          Transparent     =   True
          Underline       =   ""
          Visible         =   True
@@ -873,7 +873,7 @@ Begin Window DemoWindow
          TextFont        =   "System"
          TextSize        =   0.0
          TextUnit        =   0
-         Top             =   290
+         Top             =   316
          Underline       =   False
          UseFocusRing    =   True
          Visible         =   True
@@ -1230,7 +1230,7 @@ Begin Window DemoWindow
             LockTop         =   True
             RequiresSelection=   ""
             Scope           =   0
-            ScrollbarHorizontal=   ""
+            ScrollbarHorizontal=   True
             ScrollBarVertical=   True
             SelectionType   =   0
             TabIndex        =   0
@@ -1736,6 +1736,38 @@ Begin Window DemoWindow
          Visible         =   True
          Width           =   145
       End
+      Begin CheckBox YieldOnLoop
+         AutoDeactivate  =   True
+         Bold            =   ""
+         Caption         =   "Yield"
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel2"
+         Italic          =   ""
+         Left            =   224
+         LockBottom      =   ""
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   ""
+         LockTop         =   True
+         Scope           =   0
+         State           =   0
+         TabIndex        =   30
+         TabPanelIndex   =   3
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   230
+         Underline       =   ""
+         Value           =   False
+         Visible         =   True
+         Width           =   120
+      End
    End
    Begin cURLClient Client
       Height          =   32
@@ -1890,7 +1922,7 @@ Begin Window DemoWindow
          Index           =   -2147483648
          InitialParent   =   "TabPanel1"
          Italic          =   ""
-         Left            =   9
+         Left            =   11
          LockBottom      =   ""
          LockedInPosition=   False
          LockLeft        =   True
@@ -1903,10 +1935,10 @@ Begin Window DemoWindow
          TextFont        =   "System"
          TextSize        =   0
          TextUnit        =   0
-         Top             =   33
+         Top             =   31
          Underline       =   ""
          Visible         =   True
-         Width           =   80
+         Width           =   100
       End
       Begin PushButton PushButton2
          AutoDeactivate  =   True
@@ -1921,7 +1953,7 @@ Begin Window DemoWindow
          Index           =   -2147483648
          InitialParent   =   "TabPanel1"
          Italic          =   ""
-         Left            =   101
+         Left            =   117
          LockBottom      =   ""
          LockedInPosition=   False
          LockLeft        =   True
@@ -1934,10 +1966,10 @@ Begin Window DemoWindow
          TextFont        =   "System"
          TextSize        =   0
          TextUnit        =   0
-         Top             =   33
+         Top             =   31
          Underline       =   ""
          Visible         =   True
-         Width           =   80
+         Width           =   100
       End
       Begin PushButton PushButton3
          AutoDeactivate  =   True
@@ -1968,7 +2000,7 @@ Begin Window DemoWindow
          Top             =   31
          Underline       =   ""
          Visible         =   True
-         Width           =   80
+         Width           =   100
       End
       Begin PushButton PushButton4
          AutoDeactivate  =   True
@@ -1983,7 +2015,7 @@ Begin Window DemoWindow
          Index           =   -2147483648
          InitialParent   =   "TabPanel1"
          Italic          =   ""
-         Left            =   103
+         Left            =   117
          LockBottom      =   ""
          LockedInPosition=   False
          LockLeft        =   True
@@ -1999,7 +2031,7 @@ Begin Window DemoWindow
          Top             =   31
          Underline       =   ""
          Visible         =   True
-         Width           =   80
+         Width           =   100
       End
       Begin PushButton PushButton5
          AutoDeactivate  =   True
@@ -2030,7 +2062,7 @@ Begin Window DemoWindow
          Top             =   31
          Underline       =   ""
          Visible         =   True
-         Width           =   80
+         Width           =   100
       End
       Begin PushButton PushButton6
          AutoDeactivate  =   True
@@ -2045,7 +2077,7 @@ Begin Window DemoWindow
          Index           =   -2147483648
          InitialParent   =   "TabPanel1"
          Italic          =   ""
-         Left            =   103
+         Left            =   117
          LockBottom      =   ""
          LockedInPosition=   False
          LockLeft        =   True
@@ -2061,7 +2093,7 @@ Begin Window DemoWindow
          Top             =   31
          Underline       =   ""
          Visible         =   True
-         Width           =   80
+         Width           =   100
       End
       Begin PushButton PushButton7
          AutoDeactivate  =   True
@@ -2092,7 +2124,7 @@ Begin Window DemoWindow
          Top             =   58
          Underline       =   ""
          Visible         =   True
-         Width           =   91
+         Width           =   100
       End
       Begin PushButton PushButton8
          AutoDeactivate  =   True
@@ -2107,7 +2139,7 @@ Begin Window DemoWindow
          Index           =   -2147483648
          InitialParent   =   "TabPanel1"
          Italic          =   ""
-         Left            =   103
+         Left            =   117
          LockBottom      =   ""
          LockedInPosition=   False
          LockLeft        =   True
@@ -2123,7 +2155,7 @@ Begin Window DemoWindow
          Top             =   31
          Underline       =   ""
          Visible         =   True
-         Width           =   104
+         Width           =   100
       End
       Begin PushButton PushButton9
          AutoDeactivate  =   True
@@ -2154,7 +2186,7 @@ Begin Window DemoWindow
          Top             =   31
          Underline       =   ""
          Visible         =   True
-         Width           =   80
+         Width           =   100
       End
       Begin CheckBox CheckBox1
          AutoDeactivate  =   True
@@ -2576,6 +2608,7 @@ End
 		    Secure.Value = Client.EasyItem.Secure
 		    UseCookies.Value = Client.Cookies.Enabled
 		    Verbose.Value = Client.EasyItem.Verbose
+		    YieldOnLoop.Value = Client.Yield
 		    
 		    If Client.Proxy.Address <> "" Then
 		      ProxyServer.Text = Client.Proxy.Address
@@ -3455,6 +3488,23 @@ End
 		End Sub
 	#tag EndEvent
 #tag EndEvents
+#tag Events YieldOnLoop
+	#tag Event
+		Sub Open()
+		  If Client.EasyItem.FollowRedirects Then
+		    Me.State = CheckBox.CheckedStates.Checked
+		  Else
+		    Me.State = CheckBox.CheckedStates.Unchecked
+		  End If
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Sub Action()
+		  If mLockUI Then Return
+		  Client.Yield = Me.Value
+		End Sub
+	#tag EndEvent
+#tag EndEvents
 #tag Events Client
 	#tag Event
 		Function Progress(dlTotal As Int64, dlNow As Int64, ulTotal As Int64, ulNow As Int64) As Boolean
@@ -3607,6 +3657,8 @@ End
 		    Else
 		      Break
 		    End If
+		  Else
+		    Call MsgBox("Please specify an HTTP form to be POSTed", 16, "Missing form")
 		  End If
 		End Sub
 	#tag EndEvent
@@ -3614,11 +3666,15 @@ End
 #tag Events PushButton6
 	#tag Event
 		Sub Action()
-		  PauseButton.Enabled = True
-		  ResetButton.Enabled = False
-		  AbortButton.Enabled = True
-		  mURL = TextField1.Text
-		  PostThread.Run
+		  If FormValue <> Nil Then
+		    PauseButton.Enabled = True
+		    ResetButton.Enabled = False
+		    AbortButton.Enabled = True
+		    mURL = TextField1.Text
+		    PostThread.Run
+		  Else
+		    Call MsgBox("Please specify an HTTP form to be POSTed", 16, "Missing form")
+		  End If
 		End Sub
 	#tag EndEvent
 #tag EndEvents
