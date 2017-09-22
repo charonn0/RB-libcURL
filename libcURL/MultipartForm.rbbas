@@ -1823,6 +1823,13 @@ Implements FormStreamGetter
 
 	#tag Method, Flags = &h0
 		Function Operator_Convert() As Dictionary
+		  ' Overloads the conversion operator(=), permitting implicit and explicit conversion from a MultipartForm
+		  ' into a Dictionary. The Dictionary contains form elements as NAME:VALUE pairs. NAME is a string containing
+		  ' the form-element name; VALUE can be a string, FolderItem, or an object that implements then Readable interface.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm.Operator_Convert
+		  
 		  Dim e As MultipartFormElement = Me.FirstElement
 		  If e = Nil Then Return Nil
 		  Dim d As New Dictionary
