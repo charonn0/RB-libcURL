@@ -22,7 +22,7 @@ Protected Class DNSEngine
 		  ' This feature is available only if libcURL was built with c-ares
 		  ' as the DNS backend.
 		  
-		  If Not libcURL.Version.IsAtLeast(7, 24, 0) Then
+		  If Not libcURL.Version.IsAtLeast(7, 24, 0) Or Not libcURL.Version.C_ARES Then
 		    ErrorSetter(Owner).LastError = libcURL.Errors.FEATURE_UNAVAILABLE
 		    Raise New cURLException(Owner)
 		  End If
@@ -48,6 +48,11 @@ Protected Class DNSEngine
 
 	#tag Method, Flags = &h21
 		Private Sub FlushResolvers()
+		  If Not libcURL.Version.IsAtLeast(7, 24, 0) Or Not libcURL.Version.C_ARES Then
+		    ErrorSetter(Owner).LastError = libcURL.Errors.FEATURE_UNAVAILABLE
+		    Return
+		  End If
+		  
 		  If UBound(mResolvers) > -1 Then
 		    If Not Owner.SetOption(libcURL.Opts.DNS_SERVERS, Join(mResolvers, ",")) Then Raise New cURLException(Owner)
 		  Else
@@ -122,7 +127,7 @@ Protected Class DNSEngine
 		Sub RemoveResolver(ServerIP As String)
 		  ' Remove the specified DNS server from the list of preferred resolvers.
 		  
-		  If Not libcURL.Version.IsAtLeast(7, 24, 0) Then
+		  If Not libcURL.Version.IsAtLeast(7, 24, 0) Or Not libcURL.Version.C_ARES Then
 		    ErrorSetter(Owner).LastError = libcURL.Errors.FEATURE_UNAVAILABLE
 		    Raise New cURLException(Owner)
 		  End If
