@@ -115,6 +115,18 @@ Protected Module Version
 	#tag ComputedProperty, Flags = &h1
 		#tag Getter
 			Get
+			  ' Returns True if libcURL was built to use the C-ARES DNS library
+			  ' See: https://curl.haxx.se/libcurl/c/curl_version_info.html
+			  
+			  Return Struct.aresnum > 0  // built with C-ARES
+			End Get
+		#tag EndGetter
+		Protected C_ARES As Boolean
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h1
+		#tag Getter
+			Get
 			  Return BitAnd(Struct.Features, FEATURE_DEBUG) = FEATURE_DEBUG // built with debug capabilities
 			End Get
 		#tag EndGetter
