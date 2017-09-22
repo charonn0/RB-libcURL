@@ -249,7 +249,7 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h1
 		Protected Function SetPartName(Part As Ptr, Name As String) As Boolean
-		  Dim mb As MemoryBlock = Name
+		  Dim mb As MemoryBlock = Name + Chr(0)
 		  mLastError = curl_mime_name(Part, mb, mb.Size)
 		  Return mLastError = 0
 		End Function
