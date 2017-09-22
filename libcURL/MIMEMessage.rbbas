@@ -104,6 +104,7 @@ Inherits libcURL.cURLHandle
 		Sub Constructor(Owner As libcURL.EasyHandle)
 		  Super.Constructor(Owner.Flags)
 		  If Not System.IsFunctionAvailable("curl_mime_init", "libcurl") Then
+		    ' this feature is only available if you build the latest libcurl from source
 		    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
 		    Raise New cURLException(Me)
 		  End If
@@ -133,6 +134,7 @@ Inherits libcURL.cURLHandle
 		Private Sub Destructor()
 		  If mHandle <> 0 Then curl_mime_free(mHandle)
 		  mHandle = 0
+		  ReDim mOwnedLists(-1)
 		End Sub
 	#tag EndMethod
 
@@ -236,7 +238,10 @@ Inherits libcURL.cURLHandle
 	#tag Method, Flags = &h1
 		Protected Function SetPartHeaders(Part As Ptr, Headers As libcURL.ListPtr, TakeOwnerShip As Boolean) As Boolean
 		  Dim own As Integer
-		  If TakeOwnerShip Then own = 1
+		  If TakeOwnerShip Then 
+		    own = 1
+		    If mOwnedLists.IndexOf(Headers) = -1 Then mOwnedLists.Append(Headers)
+		  End If
 		  mLastError = curl_mime_headers(Part, Headers.Handle, own)
 		  Return mLastError = 0
 		End Function
@@ -278,6 +283,10 @@ Inherits libcURL.cURLHandle
 		#tag EndGetter
 		FirstElement As libcURL.MIMEMessagePart
 	#tag EndComputedProperty
+
+	#tag Property, Flags = &h21
+		Private mOwnedLists() As libcURL.ListPtr
+	#tag EndProperty
 
 	#tag Property, Flags = &h21
 		Private mOwner As WeakRef
