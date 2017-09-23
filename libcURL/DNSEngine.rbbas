@@ -167,6 +167,30 @@ Protected Class DNSEngine
 	#tag EndMethod
 
 
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  return mCacheTimeout
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  If Not libcURL.Version.IsAtLeast(7, 33, 0) Or Not libcURL.Version.C_ARES Then
+			    ErrorSetter(Owner).LastError = libcURL.Errors.FEATURE_UNAVAILABLE
+			    Raise New cURLException(Owner)
+			  End If
+			  
+			  'If Not Owner.SetOption(libcURL.Opts.DNS_CACHE_TIMEOUT, value) Then Raise New cURLException(Owner)
+			  mCacheTimeout = value
+			End Set
+		#tag EndSetter
+		CacheTimeout As Integer
+	#tag EndComputedProperty
+
+	#tag Property, Flags = &h21
+		Private mCacheTimeout As Integer = 60
+	#tag EndProperty
+
 	#tag Property, Flags = &h21
 		Private mOverrideList As libcURL.ListPtr
 	#tag EndProperty
