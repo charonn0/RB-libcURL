@@ -6,8 +6,9 @@ Protected Class DNSEngine
 		  
 		  If Not libcURL.Version.IsAtLeast(7, 21, 3) Then
 		    ErrorSetter(Owner).LastError = libcURL.Errors.FEATURE_UNAVAILABLE
-		    Raise New cURLException(Owner)
+		    Return
 		  End If
+		  
 		  Dim i As Integer = GetOverrideIndex(Hostname, PortNumber)
 		  If i > -1 Then RemoveOverrideAtIndex(i)
 		  If mOverrideList = Nil Then mOverrideList = New ListPtr(Nil, Owner.Flags)
@@ -24,7 +25,7 @@ Protected Class DNSEngine
 		  
 		  If Not libcURL.Version.IsAtLeast(7, 24, 0) Or Not libcURL.Version.C_ARES Then
 		    ErrorSetter(Owner).LastError = libcURL.Errors.FEATURE_UNAVAILABLE
-		    Raise New cURLException(Owner)
+		    Return
 		  End If
 		  
 		  If mResolvers.IndexOf(ServerIP) = -1 Then
@@ -102,8 +103,9 @@ Protected Class DNSEngine
 		  
 		  If Not libcURL.Version.IsAtLeast(7, 42, 0) Then
 		    ErrorSetter(Owner).LastError = libcURL.Errors.FEATURE_UNAVAILABLE
-		    Raise New cURLException(Owner)
+		    Return
 		  End If
+		  
 		  Dim i As Integer = GetOverrideIndex(Hostname, PortNumber)
 		  If i <= -1 Then Return
 		  RemoveOverrideAtIndex(i)
@@ -129,7 +131,7 @@ Protected Class DNSEngine
 		  
 		  If Not libcURL.Version.IsAtLeast(7, 24, 0) Or Not libcURL.Version.C_ARES Then
 		    ErrorSetter(Owner).LastError = libcURL.Errors.FEATURE_UNAVAILABLE
-		    Raise New cURLException(Owner)
+		    Return
 		  End If
 		  
 		  Dim i As Integer = mResolvers.IndexOf(ServerIP)
@@ -177,7 +179,7 @@ Protected Class DNSEngine
 			Set
 			  If Not libcURL.Version.IsAtLeast(7, 33, 0) Or Not libcURL.Version.C_ARES Then
 			    ErrorSetter(Owner).LastError = libcURL.Errors.FEATURE_UNAVAILABLE
-			    Raise New cURLException(Owner)
+			    Return
 			  End If
 			  
 			  'If Not Owner.SetOption(libcURL.Opts.DNS_CACHE_TIMEOUT, value) Then Raise New cURLException(Owner)
