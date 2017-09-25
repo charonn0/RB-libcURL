@@ -906,7 +906,7 @@ Protected Module libcURL
 
 
 	#tag Note, Name = Copying
-		RB-libcURL 
+		RB-libcURL (https://github.com/charonn0/RB-libcURL)
 		Copyright (c)2014-17 Andrew Lambert, all rights reserved.
 		
 		 Permission to use, copy, modify, and distribute this software for any purpose
