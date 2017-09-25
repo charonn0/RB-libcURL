@@ -182,7 +182,7 @@ Protected Class DNSEngine
 			    Return
 			  End If
 			  
-			  'If Not Owner.SetOption(libcURL.Opts.DNS_CACHE_TIMEOUT, value) Then Raise New cURLException(Owner)
+			  If Not Owner.SetOption(libcURL.Opts.DNS_CACHE_TIMEOUT, value) Then Raise New cURLException(Owner)
 			  mCacheTimeout = value
 			End Set
 		#tag EndSetter
