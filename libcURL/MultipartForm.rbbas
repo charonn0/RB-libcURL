@@ -9,21 +9,23 @@ Implements FormStreamGetter
 		  ' http://curl.haxx.se/libcurl/c/curl_formadd.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm.AddElement
 		  
-		  If Value.Exists And Not Value.Directory Then
-		    If ContentType = "" Then ContentType = MimeType(Value)
-		    Dim headeropt As Integer = CURLFORM_END
-		    If AdditionalHeaders <> Nil Then
-		      headeropt = CURLFORM_CONTENTHEADER
-		      If mAdditionalHeaders.IndexOf(AdditionalHeaders) = -1 Then mAdditionalHeaders.Append(AdditionalHeaders)
-		    End If
-		    If ContentType <> "" Then
-		      Return FormAdd(CURLFORM_COPYNAME, Name, CURLFORM_FILE, Value.ShellPath, CURLFORM_FILENAME, Value.Name, CURLFORM_CONTENTTYPE, ContentType, headeropt, AdditionalHeaders)
-		    Else
-		      Return FormAdd(CURLFORM_COPYNAME, Name, CURLFORM_FILE, Value.ShellPath, CURLFORM_FILENAME, Value.Name, headeropt, AdditionalHeaders)
-		    End If
-		  Else
+		  If Not Value.Exists Or Value.Directory Then
 		    mLastError = libcURL.Errors.INVALID_LOCAL_FILE
+		    Return False
 		  End If
+		  
+		  If ContentType = "" Then ContentType = MimeType(Value)
+		  Dim headeropt As Integer = CURLFORM_END
+		  If AdditionalHeaders <> Nil Then
+		    headeropt = CURLFORM_CONTENTHEADER
+		    If mAdditionalHeaders.IndexOf(AdditionalHeaders) = -1 Then mAdditionalHeaders.Append(AdditionalHeaders)
+		  End If
+		  If ContentType <> "" Then
+		    Return FormAdd(CURLFORM_COPYNAME, Name, CURLFORM_FILE, Value.ShellPath, CURLFORM_FILENAME, Value.Name, CURLFORM_CONTENTTYPE, ContentType, headeropt, AdditionalHeaders)
+		  Else
+		    Return FormAdd(CURLFORM_COPYNAME, Name, CURLFORM_FILE, Value.ShellPath, CURLFORM_FILENAME, Value.Name, headeropt, AdditionalHeaders)
+		  End If
+		  
 		End Function
 	#tag EndMethod
 
