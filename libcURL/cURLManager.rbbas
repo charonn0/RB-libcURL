@@ -287,6 +287,7 @@ Protected Class cURLManager
 		  mEasyItem.FollowRedirects = True
 		  mEasyItem.AutoReferer = True
 		  mEasyItem.HTTPCompression = libcURL.Version.LibZ.IsAvailable
+		  Me.Yield = True
 		End Sub
 	#tag EndMethod
 

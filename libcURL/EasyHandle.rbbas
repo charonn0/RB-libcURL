@@ -680,6 +680,7 @@ Inherits libcURL.cURLHandle
 		  mTimeOut = 0
 		  mUploadMode = False
 		  mUserAgent = ""
+		  UseProgressEvent = True
 		  mUsername = ""
 		  Verbose = mVerbose
 		  InitCallbacks()
