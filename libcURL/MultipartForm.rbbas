@@ -190,7 +190,7 @@ Implements FormStreamGetter
 		    name = ReplaceAll(name, """", "")
 		    If name.Trim = "" Then Continue For i
 		    If CountFields(line, ";") < 3 Then 'form field
-		      If Not form.AddElement(name, NthField(elements(i), EndOfLine.Windows + EndOfLine.Windows, 2)) Then Raise New libcURL.cURLException(form)
+		      If Not form.AddElement(name, NthField(elements(i), EndOfLine.Windows + EndOfLine.Windows, 2)) Then Raise New cURLException(form)
 		    Else 'file field
 		      Dim filename As String = NthField(line, ";", 3)
 		      filename = NthField(filename, "=", 2)
@@ -202,7 +202,7 @@ Implements FormStreamGetter
 		      filedata = filedata.StringValue(t, filedata.Size - t - 2)
 		      bs.Write(filedata)
 		      bs.Close
-		      If Not form.AddElement(name, tmp) Then Raise New libcURL.cURLException(form)
+		      If Not form.AddElement(name, tmp) Then Raise New cURLException(form)
 		    End If
 		  Next
 		  
