@@ -9,21 +9,23 @@ Implements FormStreamGetter
 		  ' http://curl.haxx.se/libcurl/c/curl_formadd.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm.AddElement
 		  
-		  If Value.Exists And Not Value.Directory Then
-		    If ContentType = "" Then ContentType = MimeType(Value)
-		    Dim headeropt As Integer = CURLFORM_END
-		    If AdditionalHeaders <> Nil Then
-		      headeropt = CURLFORM_CONTENTHEADER
-		      If mAdditionalHeaders.IndexOf(AdditionalHeaders) = -1 Then mAdditionalHeaders.Append(AdditionalHeaders)
-		    End If
-		    If ContentType <> "" Then
-		      Return FormAdd(CURLFORM_COPYNAME, Name, CURLFORM_FILE, Value.ShellPath, CURLFORM_FILENAME, Value.Name, CURLFORM_CONTENTTYPE, ContentType, headeropt, AdditionalHeaders)
-		    Else
-		      Return FormAdd(CURLFORM_COPYNAME, Name, CURLFORM_FILE, Value.ShellPath, CURLFORM_FILENAME, Value.Name, headeropt, AdditionalHeaders)
-		    End If
-		  Else
+		  If Not Value.Exists Or Value.Directory Then
 		    mLastError = libcURL.Errors.INVALID_LOCAL_FILE
+		    Return False
 		  End If
+		  
+		  If ContentType = "" Then ContentType = MimeType(Value)
+		  Dim headeropt As Integer = CURLFORM_END
+		  If AdditionalHeaders <> Nil Then
+		    headeropt = CURLFORM_CONTENTHEADER
+		    If mAdditionalHeaders.IndexOf(AdditionalHeaders) = -1 Then mAdditionalHeaders.Append(AdditionalHeaders)
+		  End If
+		  If ContentType <> "" Then
+		    Return FormAdd(CURLFORM_COPYNAME, Name, CURLFORM_FILE, Value.ShellPath, CURLFORM_FILENAME, Value.Name, CURLFORM_CONTENTTYPE, ContentType, headeropt, AdditionalHeaders)
+		  Else
+		    Return FormAdd(CURLFORM_COPYNAME, Name, CURLFORM_FILE, Value.ShellPath, CURLFORM_FILENAME, Value.Name, headeropt, AdditionalHeaders)
+		  End If
+		  
 		End Function
 	#tag EndMethod
 
@@ -144,7 +146,7 @@ Implements FormStreamGetter
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm.Count
 		  
-		  Dim e As libcURL.MultipartFormElement = Me.FirstItem
+		  Dim e As libcURL.MultipartFormElement = Me.FirstElement
 		  Dim c As Integer
 		  Do Until e = Nil
 		    c = c + 1
@@ -188,7 +190,7 @@ Implements FormStreamGetter
 		    name = ReplaceAll(name, """", "")
 		    If name.Trim = "" Then Continue For i
 		    If CountFields(line, ";") < 3 Then 'form field
-		      If Not form.AddElement(name, NthField(elements(i), EndOfLine.Windows + EndOfLine.Windows, 2)) Then Raise New libcURL.cURLException(form)
+		      If Not form.AddElement(name, NthField(elements(i), EndOfLine.Windows + EndOfLine.Windows, 2)) Then Raise New cURLException(form)
 		    Else 'file field
 		      Dim filename As String = NthField(line, ";", 3)
 		      filename = NthField(filename, "=", 2)
@@ -200,7 +202,7 @@ Implements FormStreamGetter
 		      filedata = filedata.StringValue(t, filedata.Size - t - 2)
 		      bs.Write(filedata)
 		      bs.Close
-		      If Not form.AddElement(name, tmp) Then Raise New libcURL.cURLException(form)
+		      If Not form.AddElement(name, tmp) Then Raise New cURLException(form)
 		    End If
 		  Next
 		  
@@ -213,6 +215,7 @@ Implements FormStreamGetter
 		Private Sub Destructor()
 		  If mHandle <> 0 Then curl_formfree(mHandle)
 		  ReDim mStreams(-1)
+		  ReDim mAdditionalHeaders(-1)
 		  mHandle = 0
 		  LastItem = Nil
 		End Sub
@@ -353,7 +356,7 @@ Implements FormStreamGetter
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm.GetElement
 		  
 		  
-		  Dim e As libcURL.MultipartFormElement = Me.FirstItem
+		  Dim e As libcURL.MultipartFormElement = Me.FirstElement
 		  Dim i As Integer
 		  Do
 		    If i < Index Then
@@ -380,12 +383,12 @@ Implements FormStreamGetter
 
 	#tag Method, Flags = &h0
 		Function GetElement(Name As String) As Integer
-		  ' Returns a reference to the first MultipartFormElement that matches the given name.
+		  ' Returns the index of the first MultipartFormElement that matches the given name.
 		  '
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm.GetElement
 		  
-		  Dim e As libcURL.MultipartFormElement = Me.FirstItem
+		  Dim e As libcURL.MultipartFormElement = Me.FirstElement
 		  Dim i As Integer
 		  Do Until e = Nil
 		    If e.Name = Name Then Return i
@@ -1822,7 +1825,14 @@ Implements FormStreamGetter
 
 	#tag Method, Flags = &h0
 		Function Operator_Convert() As Dictionary
-		  Dim e As MultipartFormElement = Me.FirstItem
+		  ' Overloads the conversion operator(=), permitting implicit and explicit conversion from a MultipartForm
+		  ' into a Dictionary. The Dictionary contains form elements as NAME:VALUE pairs. NAME is a string containing
+		  ' the form-element name; VALUE can be a string, FolderItem, or an object that implements the Readable interface.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm.Operator_Convert
+		  
+		  Dim e As MultipartFormElement = Me.FirstElement
 		  If e = Nil Then Return Nil
 		  Dim d As New Dictionary
 		  Do Until e = Nil
@@ -1846,8 +1856,8 @@ Implements FormStreamGetter
 		Sub Operator_Convert(FromDict As Dictionary)
 		  ' Overloads the conversion operator(=), permitting implicit and explicit conversion from a Dictionary
 		  ' into a MultipartForm. The dictionary contains NAME:VALUE pairs comprising HTML form elements: NAME
-		  ' is a string containing the form-element name; VALUE may be a string, FolderItem, or an instance of
-		  ' EasyHandle whose DataNeeded event will be raised when the form is actually used.
+		  ' is a string containing the form-element name; VALUE may be a string, FolderItem, or an object that
+		  ' implements then Readable interface.
 		  '
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm.Operator_Convert
@@ -1975,7 +1985,7 @@ Implements FormStreamGetter
 			  
 			End Get
 		#tag EndGetter
-		Protected FirstItem As libcURL.MultipartFormElement
+		Protected FirstElement As libcURL.MultipartFormElement
 	#tag EndComputedProperty
 
 	#tag Property, Flags = &h21
@@ -2025,7 +2035,7 @@ Implements FormStreamGetter
 	#tag Constant, Name = CURLFORM_COPYNAME, Type = Double, Dynamic = False, Default = \"1", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = CURLFORM_END, Type = Double, Dynamic = False, Default = \"17", Scope = Public
+	#tag Constant, Name = CURLFORM_END, Type = Double, Dynamic = False, Default = \"17", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = CURLFORM_FILE, Type = Double, Dynamic = False, Default = \"10", Scope = Public

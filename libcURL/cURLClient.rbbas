@@ -8,6 +8,9 @@ Inherits libcURL.cURLManager
 		  ' WriteTo is an optional Writeable object (e.g. BinaryStream); downloaded data will be written to this
 		  ' object directly. If WriteTo is Nil then use the GetDownloadedData method to get any downloaded data.
 		  ' The transfer will be performed on the event loop (main thread).
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLClient.Get
 		  
 		  Me.Perform(URL, Nil, WriteTo)
 		End Sub
@@ -21,6 +24,9 @@ Inherits libcURL.cURLManager
 		  ' object directly. If WriteTo is Nil then use the GetDownloadedData method to get any downloaded data.
 		  ' This method will block the calling thread until the transfer completes. All events will be raised
 		  ' on the calling thread.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLClient.Get
 		  
 		  Return Me.Perform(URL, Nil, WriteTo)
 		  
@@ -32,6 +38,9 @@ Inherits libcURL.cURLManager
 		  ' Asynchronously performs a headers-only operation using protocol-appropriate semantics (http HEAD, etc.)
 		  ' The protocol is inferred from the URL; explictly specify the protocol in the URL to avoid bad guesses.
 		  ' The transfer will be performed on the event loop (main thread).
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLClient.Head
 		  
 		  Call Me.SetOption(libcURL.Opts.NOBODY, True)
 		  Me.Perform(URL, Nil, Nil)
@@ -44,6 +53,9 @@ Inherits libcURL.cURLManager
 		  ' The protocol is inferred from the URL; explictly specify the protocol in the URL to avoid bad guesses.
 		  ' This method will block the calling thread until the transfer completes. All events will be raised
 		  ' on the calling thread.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLClient.Head
 		  
 		  Call Me.SetOption(libcURL.Opts.NOBODY, True)
 		  Return Me.Perform(URL, Nil, Nil)
@@ -51,40 +63,16 @@ Inherits libcURL.cURLManager
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Post(URL As String, FormData As Dictionary, WriteTo As Writeable = Nil)
-		  ' Asynchronously POST the passed FormData via HTTP(S) using multipart/form-data encoding. The FormData dictionary
-		  ' contains NAME:VALUE pairs comprising HTML form elements. NAME is a string containing the form-element name; VALUE
-		  ' may be a string or a FolderItem.
-		  ' WriteTo is an optional Writeable object (e.g. BinaryStream); downloaded data will be written to this
-		  ' object directly. If WriteTo is Nil then use the GetDownloadedData method to get any downloaded data.
-		  ' The transfer will be performed on the event loop (main thread).
-		  
-		  Dim frm As libcURL.MultipartForm = FormData
-		  Me.Post(URL, frm, WriteTo)
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function Post(URL As String, FormData As Dictionary, WriteTo As Writeable = Nil) As Boolean
-		  ' Synchronously POST the passed FormData via HTTP(S) using multipart/form-data encoding. The FormData dictionary
-		  ' contains NAME:VALUE pairs comprising HTML form elements. NAME is a string containing the form-element name; VALUE
-		  ' may be a string or a FolderItem.
-		  ' WriteTo is an optional Writeable object (e.g. BinaryStream); downloaded data will be written to this
-		  ' object directly. If WriteTo is Nil then use the GetDownloadedData method to get any downloaded data.
-		  ' This method will block the calling thread until the transfer completes. All events will be raised
-		  ' on the calling thread.
-		  
-		  Dim frm As libcURL.MultipartForm = FormData
-		  Return Me.Post(URL, frm, WriteTo)
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Sub Post(URL As String, FormData As libcurl.MultipartForm, WriteTo As Writeable = Nil)
-		  ' Asynchronously POST the passed FormData via HTTP(S) using multipart/form-data encoding. 
-		  ' WriteTo is an optional Writeable object (e.g. BinaryStream); downloaded data will be written to this
-		  ' object directly. If WriteTo is Nil then use the GetDownloadedData method to get any downloaded data.
-		  ' The transfer will be performed on the event loop (main thread).
+		  ' Asynchronously POST the passed FormData via HTTP(S) using multipart/form-data encoding. The FormData parameter
+		  ' may be an instace of MultipartForm, or a Dictionary of NAME:VALUE pairs comprising HTML form elements: NAME is
+		  ' a string containing the form-element name; VALUE may be a string or a FolderItem. WriteTo is an optional
+		  ' Writeable object (e.g. BinaryStream); downloaded data will be written to this object directly. If WriteTo is
+		  ' Nil then use the GetDownloadedData method to get any downloaded data. The transfer will be performed on the
+		  ' event loop (main thread).
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLClient.Post
 		  
 		  Me.EasyItem.SetFormData(FormData)
 		  Me.Perform(URL, Nil, WriteTo)
@@ -93,13 +81,15 @@ Inherits libcURL.cURLManager
 
 	#tag Method, Flags = &h0
 		Function Post(URL As String, FormData As libcurl.MultipartForm, WriteTo As Writeable = Nil) As Boolean
-		  ' Synchronously POST the passed FormData via HTTP(S) using multipart/form-data encoding. The FormData dictionary
-		  ' contains NAME:VALUE pairs comprising HTML form elements. NAME is a string containing the form-element name; VALUE
-		  ' may be a string or a FolderItem.
-		  ' WriteTo is an optional Writeable object (e.g. BinaryStream); downloaded data will be written to this
-		  ' object directly. If WriteTo is Nil then use the GetDownloadedData method to get any downloaded data.
-		  ' This method will block the calling thread until the transfer completes. All events will be raised
-		  ' on the calling thread.
+		  ' Synchronously POST the passed FormData via HTTP(S) using multipart/form-data encoding. The FormData parameter
+		  ' may be an instace of MultipartForm, or a Dictionary of NAME:VALUE pairs comprising HTML form elements: NAME is
+		  ' a string containing the form-element name; VALUE may be a string or a FolderItem. WriteTo is an optional Writeable
+		  ' object (e.g. BinaryStream); downloaded data will be written to this object directly. If WriteTo is Nil then use
+		  ' the GetDownloadedData method to get any downloaded data. This method will block the calling thread until the 
+		  ' transfer completes. All events will be raised on the calling thread.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLClient.Post
 		  
 		  Me.EasyItem.SetFormData(FormData)
 		  Return Me.Perform(URL, Nil, WriteTo)
@@ -114,6 +104,9 @@ Inherits libcURL.cURLManager
 		  ' WriteTo is an optional Writeable object (e.g. BinaryStream); downloaded data will be written to this
 		  ' object directly. If WriteTo is Nil then use the GetDownloadedData method to get any downloaded data.
 		  ' The transfer will be performed on the event loop (main thread).
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLClient.Post
 		  
 		  Me.EasyItem.SetFormData(PostFields)
 		  Me.Perform(URL, Nil, WriteTo)
@@ -128,6 +121,9 @@ Inherits libcURL.cURLManager
 		  ' object directly. If WriteTo is Nil then use the GetDownloadedData method to get any downloaded data.
 		  ' This method will block the calling thread until the transfer completes. All events will be raised
 		  ' on the calling thread.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLClient.Post
 		  
 		  Me.EasyItem.SetFormData(PostFields)
 		  Return Me.Perform(URL, Nil, WriteTo)
@@ -136,6 +132,16 @@ Inherits libcURL.cURLManager
 
 	#tag Method, Flags = &h0
 		Sub Put(URL As String, Data As MemoryBlock, WriteTo As Writeable = Nil)
+		  ' Asynchronously uploads the Data MemoryBlock using protocol-appropriate semantics (http PUT, ftp STOR, etc.)
+		  ' The protocol is inferred from the URL; explictly specify the protocol in the URL to avoid bad guesses.
+		  ' WriteTo is an optional Writeable object (e.g. BinaryStream); downloaded data will be written to this
+		  ' object directly. If WriteTo is Nil then use the GetDownloadedData method to get any downloaded data.
+		  ' This method will block the calling thread until the transfer completes. The transfer will be performed 
+		  ' on the event loop (main thread).
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLClient.Put
+		  
 		  Dim bs As New BinaryStream(Data)
 		  Me.Put(URL, bs, WriteTo)
 		End Sub
@@ -143,6 +149,16 @@ Inherits libcURL.cURLManager
 
 	#tag Method, Flags = &h0
 		Function Put(URL As String, Data As MemoryBlock, WriteTo As Writeable = Nil) As Boolean
+		  ' Synchronously uploads the Data MemoryBlock using protocol-appropriate semantics (http PUT, ftp STOR, etc.)
+		  ' The protocol is inferred from the URL; explictly specify the protocol in the URL to avoid bad guesses.
+		  ' WriteTo is an optional Writeable object (e.g. BinaryStream); downloaded data will be written to this
+		  ' object directly. If WriteTo is Nil then use the GetDownloadedData method to get any downloaded data.
+		  ' This method will block the calling thread until the transfer completes. All events will be raised
+		  ' on the calling thread.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLClient.Put
+		  
 		  Dim bs As New BinaryStream(Data)
 		  Return Me.Put(URL, bs, WriteTo)
 		End Function
@@ -154,10 +170,12 @@ Inherits libcURL.cURLManager
 		  ' The protocol is inferred from the URL; explictly specify the protocol in the URL to avoid bad guesses. The
 		  ' path part of the URL specifies the remote directory and file name to store the file under.
 		  ' ReadFrom is an object that implements the Readable interface (e.g. BinaryStream). The uploaded data will be
-		  ' read from this object.
-		  ' WriteTo is an optional Writeable object (e.g. BinaryStream); downloaded data will be written to this
-		  ' object directly. If WriteTo is Nil then use the GetDownloadedData method to get any downloaded data.
-		  ' The transfer will be performed on the event loop (main thread).
+		  ' read from this object. WriteTo is an optional Writeable object (e.g. BinaryStream); downloaded data will be
+		  ' written to this object directly. If WriteTo is Nil then use the GetDownloadedData method to get any
+		  ' downloaded data. The transfer will be performed on the event loop (main thread).
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLClient.Put
 		  
 		  Me.EasyItem.UploadMode = True
 		  Me.Perform(URL, ReadFrom, WriteTo)
@@ -168,10 +186,14 @@ Inherits libcURL.cURLManager
 		Function Put(URL As String, ReadFrom As Readable, WriteTo As Writeable = Nil) As Boolean
 		  ' Synchronously performs an upload using protocol-appropriate semantics (http PUT, ftp STOR, etc.)
 		  ' The protocol is inferred from the URL; explictly specify the protocol in the URL to avoid bad guesses.
-		  ' WriteTo is an optional Writeable object (e.g. BinaryStream); downloaded data will be written to this
-		  ' object directly. If WriteTo is Nil then use the GetDownloadedData method to get any downloaded data.
-		  ' This method will block the calling thread until the transfer completes. All events will be raised
+		  ' ReadFrom is an object that implements the Readable interface (e.g. BinaryStream). The uploaded data will be
+		  ' read from this object. WriteTo is an optional Writeable object (e.g. BinaryStream); downloaded data will be 
+		  ' written to this object directly. If WriteTo is Nil then use the GetDownloadedData method to get any downloaded
+		  ' data. This method will block the calling thread until the transfer completes. All events will be raised
 		  ' on the calling thread.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLClient.Put
 		  
 		  Me.EasyItem.UploadMode = True
 		  Return Me.Perform(URL, ReadFrom, WriteTo)
