@@ -170,7 +170,7 @@ Protected Class ProxyEngine
 			  ' http://curl.haxx.se/libcurl/c/CURLOPT_PROXY.html
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ProxyEngine.Address
 			  
-			  If Not Owner.SetOption(libcURL.Opts.PROXY, value) Then Raise New libcURL.cURLException(Owner)
+			  If Not Owner.SetOption(libcURL.Opts.PROXY, value) Then Raise New cURLException(Owner)
 			  mAddress = value
 			End Set
 		#tag EndSetter
@@ -190,7 +190,7 @@ Protected Class ProxyEngine
 			  ' See:
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ProxyEngine.HTTPTunnel
 			  
-			  If Not Owner.SetOption(libcURL.Opts.HTTPPROXYTUNNEL, value) Then Raise New libcURL.cURLException(Owner)
+			  If Not Owner.SetOption(libcURL.Opts.HTTPPROXYTUNNEL, value) Then Raise New cURLException(Owner)
 			  mHTTPTunnel = value
 			End Set
 		#tag EndSetter
@@ -258,7 +258,7 @@ Protected Class ProxyEngine
 			  ' See:
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ProxyEngine.Password
 			  
-			  If Not Owner.SetOption(libcURL.Opts.PROXYUSERPWD, Me.Username + ":" + value) Then Raise New libcURL.cURLException(Owner)
+			  If Not Owner.SetOption(libcURL.Opts.PROXYUSERPWD, Me.Username + ":" + value) Then Raise New cURLException(Owner)
 			  mPassword = value
 			End Set
 		#tag EndSetter
@@ -278,7 +278,7 @@ Protected Class ProxyEngine
 			  ' See:
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ProxyEngine.Port
 			  
-			  If Not Owner.SetOption(libcURL.Opts.PROXYPORT, value) Then Raise New libcURL.cURLException(Owner)
+			  If Not Owner.SetOption(libcURL.Opts.PROXYPORT, value) Then Raise New cURLException(Owner)
 			  mPort = value
 			End Set
 		#tag EndSetter
@@ -300,7 +300,7 @@ Protected Class ProxyEngine
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ProxyEngine.ServiceName
 			  
 			  If libcURL.Version.IsAtLeast(7, 43, 0) Then
-			    If Not Owner.SetOption(libcURL.Opts.PROXY_SERVICE_NAME, value) Then Raise New libcURL.cURLException(Owner)
+			    If Not Owner.SetOption(libcURL.Opts.PROXY_SERVICE_NAME, value) Then Raise New cURLException(Owner)
 			    mServiceName = value
 			  Else
 			    ErrorSetter(Me.Owner).LastError = libcURL.Errors.FEATURE_UNAVAILABLE
@@ -323,7 +323,7 @@ Protected Class ProxyEngine
 			  ' See:
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ProxyEngine.Type
 			  
-			  If Not Owner.SetOption(libcURL.Opts.PROXYTYPE, Integer(value)) Then Raise New libcURL.cURLException(Owner)
+			  If Not Owner.SetOption(libcURL.Opts.PROXYTYPE, Integer(value)) Then Raise New cURLException(Owner)
 			  mType = value
 			End Set
 		#tag EndSetter
@@ -368,7 +368,7 @@ Protected Class ProxyEngine
 			  ' See:
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ProxyEngine.Username
 			  
-			  If Not Owner.SetOption(libcURL.Opts.PROXYUSERPWD, value + ":" + Me.Password) Then Raise New libcURL.cURLException(Owner)
+			  If Not Owner.SetOption(libcURL.Opts.PROXYUSERPWD, value + ":" + Me.Password) Then Raise New cURLException(Owner)
 			  mUsername = value
 			End Set
 		#tag EndSetter

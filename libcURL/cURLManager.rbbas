@@ -267,7 +267,7 @@ Protected Class cURLManager
 
 	#tag Method, Flags = &h21
 		Private Sub QueueTransfer(URL As String, ReadFrom As Readable, WriteTo As Writeable)
-		  If Not mMultiItem.AddItem(mEasyItem) Then Raise New libcURL.cURLException(mMultiItem)
+		  If Not mMultiItem.AddItem(mEasyItem) Then Raise New cURLException(mMultiItem)
 		  
 		  mIsTransferComplete = False
 		  mAbort = False
@@ -298,6 +298,7 @@ Protected Class cURLManager
 		  mEasyItem.FollowRedirects = True
 		  mEasyItem.AutoReferer = True
 		  mEasyItem.HTTPCompression = libcURL.Version.LibZ.IsAvailable
+		  Me.Yield = True
 		End Sub
 	#tag EndMethod
 
