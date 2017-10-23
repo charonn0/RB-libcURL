@@ -24,7 +24,7 @@ This example performs a synchronous HTTP GET request on the calling thread. [**M
 * Transparent support for [RB/Xojo threads](https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.PerformOnce).
 * Full support for HTTP, SOCKS4, SOCKS4A, SOCKS5, and SOCKS5_HOSTNAME [proxy servers](https://github.com/charonn0/RB-libcURL/wiki/libcURL.ProxyEngine).
 * [Stream-oriented](https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.Perform), using Xojo's built-in [Readable](http://docs.xojo.com/index.php/Readable) and [Writeable](http://docs.xojo.com/index.php/Writeable) interfaces. Download or upload directly to or from a file, [MemoryBlock](http://www.boredomsoft.org/string-building-in-realbasic.bs), Xojo socket, or your own custom class.
-* [Easy to use](https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLClient), but still exposing [the full range of libcURL's features](https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle).
+* A [consistent, high-level API](https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLClient) over [the full range of libcURL's features](https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle).
 * Interact directly with libcurl using idiomatic RB/Xojo objects, methods, and events; no shell or plugins required.
 * International domain name support†.
 * IPv6 support.
@@ -54,7 +54,7 @@ libcURL uses several different handle types or equivalents:
 |[`curl_multi`](http://curl.haxx.se/libcurl/c/libcurl-multi.html)|[`MultiHandle`](https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle)|A set of one or more `curl_easy` handles whose transfers will be performed simultaneously.|
 |[`curl_share`](http://curl.haxx.se/libcurl/c/libcurl-share.html)|[`ShareHandle`](https://github.com/charonn0/RB-libcURL/wiki/libcURL.ShareHandle)|A set of one or more `curl_easy` handles that will share SSL session data, DNS caches, and/or HTTP cookies.|
 |[`slist`](http://curl.haxx.se/libcurl/c/curl_slist_append.html)|[`ListPtr`](https://github.com/charonn0/RB-libcURL/wiki/libcURL.ListPtr)|A linked list of string values.|
-|[`form`](http://curl.haxx.se/libcurl/c/curl_formadd.html)|[`MultipartForm`](https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm)|An HTML form which libcURL will encode as `multipart/form-data`.|
+|[`form`](http://curl.haxx.se/libcurl/c/curl_formadd.html)|[`MultipartForm`](https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm)|An HTTP form which libcURL will encode as `multipart/form-data`.|
 
 Every transfer is associated with an `EasyHandle`. After creating a new `EasyHandle` instance, you can set various options for the handle by calling the [`SetOption`](https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.SetOption) method with the desired [cURL option number](http://curl.haxx.se/libcurl/c/curl_easy_setopt.html) and its new value. Options will persist until they are overridden or reset.
 
