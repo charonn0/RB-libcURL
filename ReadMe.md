@@ -1,7 +1,7 @@
 ## Introduction
 [libcurl](http://curl.haxx.se/libcurl/c/libcurl.html) is a cross-platform multi-protocol network transfer library. It is widely used both as a stand-alone command-line utility and as a standard or optional library for [many programming languages](http://curl.haxx.se/libcurl/bindings.html) and development environments.
 
-**RB-libcURL** is a libcurl [binding](http://en.wikipedia.org/wiki/Language_binding) for Realbasic and Xojo ("classic" framework) projects. It is designed and tested using REALstudio 2011r4.3 on Windows 7 against [curl-7.40.0-devel-mingw32](http://curl.haxx.se/gknw.net/7.40.0/dist-w32/curl-7.40.0-devel-mingw32.zip) and associated security (e.g. OpenSSL, SChannel, etc.) and compression (i.e. zlib) libraries. Library binaries for [other platforms](http://curl.haxx.se/download.html) are available, or can built from source. 
+**RB-libcURL** is a libcurl [binding](http://en.wikipedia.org/wiki/Language_binding) for Realbasic and Xojo ("classic" framework) projects. Library binaries for [various platforms](http://curl.haxx.se/download.html) are available, or can built from source. 
 
 The minimum supported libcURL version is [7.15.2](https://github.com/charonn0/RB-libcURL/wiki/libcURL.IsAvailable). The recommended minimum version is [7.33.0](https://curl.haxx.se/changes.html#7_33_0). Versions prior to 7.33.0 will function with degraded features, but versions prior to 7.15.2 will not function properly at all.
 
