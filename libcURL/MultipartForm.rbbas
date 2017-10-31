@@ -106,10 +106,8 @@ Implements FormStreamGetter
 		    If mAdditionalHeaders.IndexOf(AdditionalHeaders) = -1 Then mAdditionalHeaders.Append(AdditionalHeaders)
 		  End If
 		  
-		  If ValueSize > 0 Then
-		    o.Append(CURLFORM_CONTENTSLENGTH)
-		    v.Append(ValueSize)
-		  End If
+		  o.Append(CURLFORM_CONTENTSLENGTH)
+		  v.Append(ValueSize)
 		  
 		  Return FormAdd(o, v)
 		End Function
