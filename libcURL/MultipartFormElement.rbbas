@@ -117,7 +117,8 @@ Protected Class MultipartFormElement
 			  Dim mb As MemoryBlock = Struct.Contents
 			  If mb <> Nil Then
 			    If Struct.ContentsLen > 0 Then
-			      Return mb.StringValue(0, Struct.ContentsLen)
+			      mb.Size = Struct.ContentsLen
+			      Return mb
 			    Else
 			      Return mb.CString(0)
 			    End If
@@ -210,7 +211,9 @@ Protected Class MultipartFormElement
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartFormElement.Name
 			  
 			  Dim mb As MemoryBlock = Struct.Name
-			  If mb <> Nil Then Return mb.StringValue(0, Struct.NameLen)
+			  If mb = Nil Then Return ""
+			  mb.Size = Struct.NameLen
+			  Return mb
 			End Get
 		#tag EndGetter
 		Name As String

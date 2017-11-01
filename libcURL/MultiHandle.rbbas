@@ -165,7 +165,7 @@ Inherits libcURL.cURLHandle
 		  
 		  If StackLocked Then
 		    mLastError = libcURL.Errors.CALL_LOOP_DETECTED
-		    Raise New libcURL.cURLException(Me) ' Called by an EasyHandle or MultiHandle event!
+		    Raise New cURLException(Me) ' Called by an EasyHandle or MultiHandle event!
 		  End If
 		  StackLocked = True
 		  Try
@@ -524,9 +524,9 @@ Inherits libcURL.cURLHandle
 			  End If
 			  
 			  If value Then
-			    If Not Me.SetOption(libcURL.Opts.Multi.PIPELINING, 2) Then Raise new libcURL.cURLException(Me)
+			    If Not Me.SetOption(libcURL.Opts.Multi.PIPELINING, 2) Then Raise New cURLException(Me)
 			  Else
-			    If Not Me.SetOption(libcURL.Opts.Multi.PIPELINING, mHTTPPipelining) Then Raise new libcURL.cURLException(Me)
+			    If Not Me.SetOption(libcURL.Opts.Multi.PIPELINING, mHTTPPipelining) Then Raise New cURLException(Me)
 			  End If
 			  mHTTPMultiplexing = value
 			End Set
@@ -554,7 +554,7 @@ Inherits libcURL.cURLHandle
 			    Return
 			  End If
 			  
-			  If Not Me.SetOption(libcURL.Opts.Multi.PIPELINING, value) Then Raise new libcURL.cURLException(Me)
+			  If Not Me.SetOption(libcURL.Opts.Multi.PIPELINING, value) Then Raise New cURLException(Me)
 			  mHTTPPipelining = value
 			End Set
 		#tag EndSetter

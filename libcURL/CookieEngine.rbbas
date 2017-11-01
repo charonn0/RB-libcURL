@@ -80,7 +80,7 @@ Protected Class CookieEngine
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine.Expiry
 		  
 		  If Not Me.SetCookie(Me.Name(Index), Me.Value(Index), Me.Domain(Index), NewExpiry, Me.Path(Index), Me.HTTPOnly(Index)) Then
-		    Raise New libcURL.cURLException(Owner)
+		    Raise New cURLException(Owner)
 		  End If
 		End Sub
 	#tag EndMethod
@@ -314,7 +314,7 @@ Protected Class CookieEngine
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine.Value
 		  
 		  If Not Me.SetCookie(Me.Name(Index), NewValue, Me.Domain(Index), Me.Expiry(Index), Me.Path(Index), Me.HTTPOnly(Index)) Then
-		    Raise New libcURL.cURLException(Owner)
+		    Raise New cURLException(Owner)
 		  End If
 		End Sub
 	#tag EndMethod
