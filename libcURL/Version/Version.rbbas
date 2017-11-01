@@ -19,6 +19,24 @@ Protected Module Version
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
+		Protected Function IsExactly(Major As Integer, Minor As Integer, Patch As Integer) As Boolean
+		  ' Returns True if libcURL is available and at least the version specified.
+		  
+		  Static min, maj, pat As Integer
+		  Static avail As Boolean = System.IsFunctionAvailable("curl_global_init", "libcurl")
+		  If Not avail Then Return False
+		  If maj = 0 Then
+		    Dim n As String = UserAgent()
+		    maj = Val(NthField(NthField(NthField(n, " ", 1), "/", 2), ".", 1))
+		    min = Val(NthField(NthField(NthField(n, " ", 1), "/", 2), ".", 2))
+		    pat = Val(NthField(NthField(NthField(n, " ", 1), "/", 2), ".", 3))
+		  End If
+		  
+		  Return maj = Major And min = Minor And pat = Patch
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
 		Attributes( deprecated = "libcurl.Version.UserAgent" ) Protected Function Name() As String
 		  Return UserAgent()
 		End Function

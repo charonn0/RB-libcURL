@@ -9,7 +9,9 @@ Inherits libcURL.cURLHandle
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.ClearFormData
 		  
-		  If Not Me.SetOption(libcURL.Opts.POSTFIELDSIZE, -1) Then Raise New cURLException(Me)
+		  If Not libcURL.Version.IsExactly(7, 56, 1) Then // broken in this version only
+		    If Not Me.SetOption(libcURL.Opts.POSTFIELDSIZE, -1) Then Raise New cURLException(Me)
+		  End If
 		  If libcURL.Version.IsAtLeast(7, 17, 1) Then
 		    If Not Me.SetOption(libcURL.Opts.COPYPOSTFIELDS, Nil) Then Raise New cURLException(Me)
 		  End If
