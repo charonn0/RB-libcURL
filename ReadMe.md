@@ -91,7 +91,7 @@ RB-libcURL will raise a PlatformNotSupportedException when used if all required 
 * [FTP Download](https://github.com/charonn0/RB-libcURL/wiki/FTP-Download-Example)
 * [FTP Upload](https://github.com/charonn0/RB-libcURL/wiki/FTP-Upload-Example)
 * [FTP custom commands](https://github.com/charonn0/RB-libcURL/wiki/FTP-custom-commands)
-* [FTP directory enumeration](https://github.com/charonn0/RB-libcURL/wiki/FTP-Directory-Listing-Example)
+* [FTP directory listing](https://github.com/charonn0/RB-libcURL/wiki/FTP-Directory-Listing-Example)
 * [SMTP Send](https://github.com/charonn0/RB-libcURL/wiki/SMTP-Example)
 * [POP3 examples](https://github.com/charonn0/RB-libcURL/wiki/POP3-Examples)
 * [DNS control](https://github.com/charonn0/RB-libcURL/wiki/DNS-Example)
