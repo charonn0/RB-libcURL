@@ -51,26 +51,21 @@ Protected Module Version
 
 	#tag Method, Flags = &h1
 		Protected Function Protocols() As String()
-		  Static prots() As String
-		  If UBound(prots) > -1 Or Not System.IsFunctionAvailable("curl_version", "libcurl") Then Return prots
+		  ' Returns an array of available protocols.
 		  
-		  Dim mb As MemoryBlock = Struct.Protocols.Ptr(0)
-		  Dim s As String
+		  Dim prots() As String
+		  Dim lst As Ptr = Struct.Protocols
+		  If lst = Nil Then Return prots
+		  
 		  Dim i As Integer
-		  Do
-		    s = mb.CString(i)
-		    If s.Trim = "" Then
-		      i = i + 1
-		      Continue
-		    End If
-		    Dim isPrintable As Boolean = (AscB(LeftB(s, 1)) > 65 And AscB(LeftB(s, 1)) < 91) Or (AscB(LeftB(s, 1)) > 96 And AscB(LeftB(s, 1)) < 123)
-		    If isPrintable Then ' not empty, first char is a letter
-		      prots.Append(s)
-		      i = i + s.LenB
-		    Else
-		      Exit Do
-		    End If
-		  Loop Until UBound(prots) > 50 ' If we get this far then we're probably reading random garbage, so bail out
+		  Dim item As Ptr = lst.Ptr(0)
+		  Do Until item = Nil
+		    Dim mb As MemoryBlock = item
+		    prots.Append(mb.CString(0))
+		    i = i + 1
+		    item = lst.Ptr(i * 4)
+		  Loop
+		  
 		  Return prots
 		End Function
 	#tag EndMethod
