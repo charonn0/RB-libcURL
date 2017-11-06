@@ -210,7 +210,8 @@ Protected Class MultipartFormElement
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartFormElement.Name
 			  
 			  Dim mb As MemoryBlock = Struct.Name
-			  If mb <> Nil Then Return mb.StringValue(0, Struct.NameLen)
+			  If mb = Nil Then Return ""
+			  Return mb.StringValue(0, Struct.NameLen)
 			End Get
 		#tag EndGetter
 		Name As String
