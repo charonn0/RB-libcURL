@@ -164,14 +164,14 @@ Inherits libcURL.EasyHandle
 		  
 		  If Not libcURL.Version.IsAtLeast(7, 21, 0) Then
 		    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
-		    Raise New libcURL.cURLException(Me)
+		    Raise New cURLException(Me)
 		  End If
 		  
 		  Super.InitCallbacks()
-		  If Not Me.SetOption(libcURL.Opts.WILDCARDMATCH, True) Then Raise New libcURL.cURLException(Me)
-		  If Not Me.SetOption(libcURL.Opts.CHUNK_BGN_FUNCTION, AddressOf ChunkBeginCallback) Then Raise New libcURL.cURLException(Me)
-		  If Not Me.SetOption(libcURL.Opts.CHUNK_END_FUNCTION, AddressOf ChunkEndCallback) Then Raise New libcURL.cURLException(Me)
-		  If Not Me.SetOption(libcURL.Opts.CHUNK_DATA, mHandle) Then Raise New libcURL.cURLException(Me)
+		  If Not Me.SetOption(libcURL.Opts.WILDCARDMATCH, True) Then Raise New cURLException(Me)
+		  If Not Me.SetOption(libcURL.Opts.CHUNK_BGN_FUNCTION, AddressOf ChunkBeginCallback) Then Raise New cURLException(Me)
+		  If Not Me.SetOption(libcURL.Opts.CHUNK_END_FUNCTION, AddressOf ChunkEndCallback) Then Raise New cURLException(Me)
+		  If Not Me.SetOption(libcURL.Opts.CHUNK_DATA, mHandle) Then Raise New cURLException(Me)
 		End Sub
 	#tag EndMethod
 
@@ -276,11 +276,11 @@ Inherits libcURL.EasyHandle
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Protocols.FTPWildCard.CustomMatch
 			  
 			  If value Then
-			    If Not Me.SetOption(libcURL.Opts.FNMATCH_FUNCTION, AddressOf FNMatchCallback) Then Raise New libcURL.cURLException(Me)
-			    If Not Me.SetOption(libcURL.Opts.FNMATCH_DATA, mHandle) Then Raise New libcURL.cURLException(Me)
+			    If Not Me.SetOption(libcURL.Opts.FNMATCH_FUNCTION, AddressOf FNMatchCallback) Then Raise New cURLException(Me)
+			    If Not Me.SetOption(libcURL.Opts.FNMATCH_DATA, mHandle) Then Raise New cURLException(Me)
 			  Else
-			    If Not Me.SetOption(libcURL.Opts.FNMATCH_FUNCTION, Nil) Then Raise New libcURL.cURLException(Me)
-			    If Not Me.SetOption(libcURL.Opts.FNMATCH_DATA, 0) Then Raise New libcURL.cURLException(Me)
+			    If Not Me.SetOption(libcURL.Opts.FNMATCH_FUNCTION, Nil) Then Raise New cURLException(Me)
+			    If Not Me.SetOption(libcURL.Opts.FNMATCH_DATA, 0) Then Raise New cURLException(Me)
 			  End If
 			  mCustomMatch = value
 			End Set

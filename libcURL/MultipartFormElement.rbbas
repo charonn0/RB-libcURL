@@ -179,7 +179,7 @@ Protected Class MultipartFormElement
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  ' If the element contains several file parts then this method returns the first extra file. Use the 
+			  ' If the element contains several file parts then this property returns the first extra file. Use the
 			  ' NextElement property of the returned MultipartFormElement to iterate over the file list.
 			  '
 			  ' See:
@@ -210,7 +210,8 @@ Protected Class MultipartFormElement
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartFormElement.Name
 			  
 			  Dim mb As MemoryBlock = Struct.Name
-			  If mb <> Nil Then Return mb.StringValue(0, Struct.NameLen)
+			  If mb = Nil Then Return ""
+			  Return mb.StringValue(0, Struct.NameLen)
 			End Get
 		#tag EndGetter
 		Name As String
@@ -235,7 +236,7 @@ Protected Class MultipartFormElement
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  ' Holds a reference to the Readable object from which the form element contents will be read when
+			  ' Returns a reference to the Readable object from which the form element contents will be read when
 			  ' the form is actually posted to a server. If the element Type is not FormElementType.Stream then
 			  ' this will be Nil.
 			  '

@@ -9,14 +9,16 @@ Inherits libcURL.cURLHandle
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.ClearFormData
 		  
-		  If Not Me.SetOption(libcURL.Opts.POSTFIELDSIZE, -1) Then Raise New libcURL.cURLException(Me)
-		  If libcURL.Version.IsAtLeast(7, 17, 1) Then
-		    If Not Me.SetOption(libcURL.Opts.COPYPOSTFIELDS, Nil) Then Raise New libcURL.cURLException(Me)
+		  If Not libcURL.Version.IsExactly(7, 56, 1) Then // broken in this version only
+		    If Not Me.SetOption(libcURL.Opts.POSTFIELDSIZE, -1) Then Raise New cURLException(Me)
 		  End If
-		  If Not Me.SetOption(libcURL.Opts.HTTPPOST, Nil) Then Raise New libcURL.cURLException(Me)
+		  If libcURL.Version.IsAtLeast(7, 17, 1) Then
+		    If Not Me.SetOption(libcURL.Opts.COPYPOSTFIELDS, Nil) Then Raise New cURLException(Me)
+		  End If
+		  If Not Me.SetOption(libcURL.Opts.HTTPPOST, Nil) Then Raise New cURLException(Me)
 		  mForm = Nil
 		  mUploadMode = False
-		  If Not Me.SetOption(libcURL.Opts.HTTPGET, True) Then Raise New libcURL.cURLException(Me)
+		  If Not Me.SetOption(libcURL.Opts.HTTPGET, True) Then Raise New cURLException(Me)
 		  
 		End Sub
 	#tag EndMethod
@@ -174,6 +176,16 @@ Inherits libcURL.cURLHandle
 		  ' This method is the intermediary between DebugCallback and the DebugMessage event.
 		  ' DO NOT CALL THIS METHOD
 		  
+		  #If LOG_DEBUG Then
+		    ' writes debug messages to System.DebugLog
+		    Select Case info
+		    Case libcURL.curl_infotype.data_in, libcURL.curl_infotype.data_out, libcURL.curl_infotype.ssl_in, libcURL.curl_infotype.ssl_out
+		      ' skip raw data messages
+		    Else
+		      System.DebugLog(curl_infoname(info) + ": " + DefineEncoding(data.StringValue(0, size), Encodings.UTF8).Trim)
+		    End Select
+		  #endif
+		  
 		  RaiseEvent DebugMessage(info, DefineEncoding(data.StringValue(0, size), Encodings.UTF8))
 		  Return size
 		  
@@ -188,14 +200,12 @@ Inherits libcURL.cURLHandle
 	#tag EndDelegateDeclaration
 
 	#tag Method, Flags = &h21
-		Private Function curlHeader(char As Ptr, size As Integer, nmemb As Integer) As Integer
+		Private Function curlHeader(char As MemoryBlock, size As Integer, nmemb As Integer) As Integer
 		  ' This method is the intermediary between HeaderCallback and the HeaderReceived event.
 		  ' DO NOT CALL THIS METHOD
 		  
 		  Dim sz As Integer = nmemb * size
-		  Dim data As MemoryBlock = char
-		  Dim s As String = data.StringValue(0, sz)
-		  RaiseEvent HeaderReceived(s)
+		  RaiseEvent HeaderReceived(char.StringValue(0, sz))
 		  Return sz
 		  
 		Exception Err As RuntimeException
@@ -686,6 +696,7 @@ Inherits libcURL.cURLHandle
 		  mTimeOut = 0
 		  mUploadMode = False
 		  mUserAgent = ""
+		  UseProgressEvent = True
 		  mUsername = ""
 		  Verbose = mVerbose
 		  InitCallbacks()
@@ -744,7 +755,7 @@ Inherits libcURL.cURLHandle
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.SetFormData
 		  
 		  Me.ClearFormData
-		  If Not Me.SetOption(libcURL.Opts.HTTPPOST, FormData) Then Raise New libcURL.cURLException(Me)
+		  If Not Me.SetOption(libcURL.Opts.HTTPPOST, FormData) Then Raise New cURLException(Me)
 		  mForm = FormData
 		End Sub
 	#tag EndMethod
@@ -760,13 +771,13 @@ Inherits libcURL.cURLHandle
 		  
 		  If Not libcURL.Version.IsAtLeast(7, 17, 1) Then
 		    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
-		    Raise New libcURL.cURLException(Me)
+		    Raise New cURLException(Me)
 		  End If
 		  
 		  Me.ClearFormData
 		  Dim data As String = Join(FormData, "&")
-		  If Not Me.SetOption(libcURL.Opts.POSTFIELDSIZE, data.LenB) Then Raise New libcURL.cURLException(Me)
-		  If Not Me.SetOption(libcURL.Opts.COPYPOSTFIELDS, data) Then Raise New libcURL.cURLException(Me)
+		  If Not Me.SetOption(libcURL.Opts.POSTFIELDSIZE, data.LenB) Then Raise New cURLException(Me)
+		  If Not Me.SetOption(libcURL.Opts.COPYPOSTFIELDS, data) Then Raise New cURLException(Me)
 		  
 		End Sub
 	#tag EndMethod
@@ -1320,7 +1331,7 @@ Inherits libcURL.cURLHandle
 			  
 			  Dim mask As Integer
 			  If value Then mask = 7 ' CURL_REDIR_POST_ALL
-			  If Not Me.SetOption(libcURL.Opts.POSTREDIR, mask) Then Raise New libcURL.cURLException(Me)
+			  If Not Me.SetOption(libcURL.Opts.POSTREDIR, mask) Then Raise New cURLException(Me)
 			  mHTTPPreserveMethod = value
 			End Set
 		#tag EndSetter
@@ -1395,7 +1406,7 @@ Inherits libcURL.cURLHandle
 		#tag EndGetter
 		#tag Setter
 			Set
-			  If Not Me.SetOption(libcURL.Opts.MAXREDIRS, value) Then Raise New libcURL.cURLException(Me)
+			  If Not Me.SetOption(libcURL.Opts.MAXREDIRS, value) Then Raise New cURLException(Me)
 			  mMaxRedirects = value
 			End Set
 		#tag EndSetter
@@ -1697,7 +1708,7 @@ Inherits libcURL.cURLHandle
 			  ' http://curl.haxx.se/libcurl/c/CURLOPT_UPLOAD.html
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.UploadMode
 			  
-			  If Not Me.SetOption(libcURL.Opts.UPLOAD, value) Then Raise New libcURL.cURLException(Me)
+			  If Not Me.SetOption(libcURL.Opts.UPLOAD, value) Then Raise New cURLException(Me)
 			  mUploadMode = value
 			End Set
 		#tag EndSetter
@@ -1883,6 +1894,9 @@ Inherits libcURL.cURLHandle
 	#tag EndConstant
 
 	#tag Constant, Name = HTTP_VERSION_NONE, Type = Double, Dynamic = False, Default = \"0", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = LOG_DEBUG, Type = Boolean, Dynamic = False, Default = \"True", Scope = Private
 	#tag EndConstant
 
 
