@@ -3,27 +3,59 @@ Protected Class MultipartForm
 Inherits libcURL.cURLHandle
 Implements FormStreamGetter
 	#tag Method, Flags = &h0
+		Function AddElement(Name As String, Values() As FolderItem) As Boolean
+		  ' Adds the passed file array to the form using the specified name.
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/curl_formadd.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm.AddElement
+		  
+		  Dim v() As Variant
+		  Dim o() As Integer
+		  
+		  o.Append(CURLFORM_COPYNAME)
+		  v.Append(Name)
+		  For i As Integer = 0 To UBound(Values)
+		    Dim file As FolderItem = Values(i)
+		    If Not file.Exists Or file.Directory Then
+		      mLastError = libcURL.Errors.INVALID_LOCAL_FILE
+		      Return False
+		    End If
+		    
+		    o.Append(CURLFORM_FILE)
+		    v.Append(file)
+		    
+		    o.Append(CURLFORM_CONTENTTYPE)
+		    v.Append(MimeType(file))
+		  Next
+		  
+		  Return FormAdd(o, v)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function AddElement(Name As String, Value As FolderItem, ContentType As String = "", AdditionalHeaders As libcURL.ListPtr = Nil) As Boolean
 		  ' Adds the passed file to the form using the specified name.
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_formadd.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm.AddElement
 		  
-		  If Value.Exists And Not Value.Directory Then
-		    If ContentType = "" Then ContentType = MimeType(Value)
-		    Dim headeropt As Integer = CURLFORM_END
-		    If AdditionalHeaders <> Nil Then
-		      headeropt = CURLFORM_CONTENTHEADER
-		      If mAdditionalHeaders.IndexOf(AdditionalHeaders) = -1 Then mAdditionalHeaders.Append(AdditionalHeaders)
-		    End If
-		    If ContentType <> "" Then
-		      Return FormAdd(CURLFORM_COPYNAME, Name, CURLFORM_FILE, Value.ShellPath, CURLFORM_FILENAME, Value.Name, CURLFORM_CONTENTTYPE, ContentType, headeropt, AdditionalHeaders)
-		    Else
-		      Return FormAdd(CURLFORM_COPYNAME, Name, CURLFORM_FILE, Value.ShellPath, CURLFORM_FILENAME, Value.Name, headeropt, AdditionalHeaders)
-		    End If
-		  Else
+		  If Not Value.Exists Or Value.Directory Then
 		    mLastError = libcURL.Errors.INVALID_LOCAL_FILE
+		    Return False
 		  End If
+		  
+		  If ContentType = "" Then ContentType = MimeType(Value)
+		  Dim headeropt As Integer = CURLFORM_END
+		  If AdditionalHeaders <> Nil Then
+		    headeropt = CURLFORM_CONTENTHEADER
+		    If mAdditionalHeaders.IndexOf(AdditionalHeaders) = -1 Then mAdditionalHeaders.Append(AdditionalHeaders)
+		  End If
+		  If ContentType <> "" Then
+		    Return FormAdd(CURLFORM_COPYNAME, Name, CURLFORM_FILE, Value.ShellPath, CURLFORM_FILENAME, Value.Name, CURLFORM_CONTENTTYPE, ContentType, headeropt, AdditionalHeaders)
+		  Else
+		    Return FormAdd(CURLFORM_COPYNAME, Name, CURLFORM_FILE, Value.ShellPath, CURLFORM_FILENAME, Value.Name, headeropt, AdditionalHeaders)
+		  End If
+		  
 		End Function
 	#tag EndMethod
 
@@ -104,10 +136,8 @@ Implements FormStreamGetter
 		    If mAdditionalHeaders.IndexOf(AdditionalHeaders) = -1 Then mAdditionalHeaders.Append(AdditionalHeaders)
 		  End If
 		  
-		  If ValueSize > 0 Then
-		    o.Append(CURLFORM_CONTENTSLENGTH)
-		    v.Append(ValueSize)
-		  End If
+		  o.Append(CURLFORM_CONTENTSLENGTH)
+		  v.Append(ValueSize)
 		  
 		  Return FormAdd(o, v)
 		End Function
@@ -188,7 +218,7 @@ Implements FormStreamGetter
 		    name = ReplaceAll(name, """", "")
 		    If name.Trim = "" Then Continue For i
 		    If CountFields(line, ";") < 3 Then 'form field
-		      If Not form.AddElement(name, NthField(elements(i), EndOfLine.Windows + EndOfLine.Windows, 2)) Then Raise New libcURL.cURLException(form)
+		      If Not form.AddElement(name, NthField(elements(i), EndOfLine.Windows + EndOfLine.Windows, 2)) Then Raise New cURLException(form)
 		    Else 'file field
 		      Dim filename As String = NthField(line, ";", 3)
 		      filename = NthField(filename, "=", 2)
@@ -200,7 +230,7 @@ Implements FormStreamGetter
 		      filedata = filedata.StringValue(t, filedata.Size - t - 2)
 		      bs.Write(filedata)
 		      bs.Close
-		      If Not form.AddElement(name, tmp) Then Raise New libcURL.cURLException(form)
+		      If Not form.AddElement(name, tmp) Then Raise New cURLException(form)
 		    End If
 		  Next
 		  
@@ -245,7 +275,9 @@ Implements FormStreamGetter
 		  Case 10
 		    Return FormAdd(Options(0), Values(0), Options(1), Values(1), Options(2), Values(2), Options(3), Values(3), Options(4), Values(4), Options(5), Values(5), Options(6), Values(6), Options(7), Values(7), Options(8), Values(8), Options(9), Values(9), Options(10), Values(10))
 		  Else
-		    Raise New OutOfBoundsException
+		    Dim err As New OutOfBoundsException
+		    err.Message = "Too many parameters for one call to FormAdd!"
+		    Raise err
 		  End Select
 		End Function
 	#tag EndMethod
