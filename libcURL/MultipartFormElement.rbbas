@@ -117,8 +117,7 @@ Protected Class MultipartFormElement
 			  Dim mb As MemoryBlock = Struct.Contents
 			  If mb <> Nil Then
 			    If Struct.ContentsLen > 0 Then
-			      mb.Size = Struct.ContentsLen
-			      Return mb
+			      Return mb.StringValue(0, Struct.ContentsLen)
 			    Else
 			      Return mb.CString(0)
 			    End If
@@ -212,8 +211,7 @@ Protected Class MultipartFormElement
 			  
 			  Dim mb As MemoryBlock = Struct.Name
 			  If mb = Nil Then Return ""
-			  mb.Size = Struct.NameLen
-			  Return mb
+			  Return mb.StringValue(0, Struct.NameLen)
 			End Get
 		#tag EndGetter
 		Name As String
