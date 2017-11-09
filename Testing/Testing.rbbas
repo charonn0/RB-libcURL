@@ -292,7 +292,9 @@ Protected Module Testing
 		  
 		  Assert(m.GetElement(2).Name = "TestFile1")
 		  Assert(m.GetElement(2).Contents = App.ExecutableFile.ShellPath)
-		  Assert(m.GetElement(2).ContentType = "application/x-msdownload")
+		  #If TargetWin32 Then
+		    Assert(m.GetElement(2).ContentType = "application/x-msdownload")
+		  #endif
 		  Assert(m.GetElement(2).Type = libcURL.FormElementType.File)
 		  
 		  Assert(m.GetElement(3).Name = "TestFile2")
