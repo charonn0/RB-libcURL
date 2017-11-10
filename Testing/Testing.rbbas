@@ -277,6 +277,17 @@ Protected Module Testing
 		  Dim bs2 As New BinaryStream(test)
 		  If Not m.AddElement("TestStream1", bs1, test.Size, "file1.name", "application/sgml") Then Raise New libcURL.cURLException(m)
 		  If Not m.AddElement("TestStream2", bs2, test.Size, "file2.name", "application/xml") Then Raise New libcURL.cURLException(m)
+		  Dim tmp1, tmp2 As FolderItem
+		  tmp1 = GetTemporaryFolderItem()
+		  tmp2 = GetTemporaryFolderItem()
+		  Dim bs As BinaryStream = BinaryStream.Open(tmp1, True)
+		  bs.Write("This is test file #1.")
+		  bs.Close
+		  bs = BinaryStream.Open(tmp2, True)
+		  bs.Write("This is test file #2.")
+		  bs.Close
+		  If Not m.AddElement("TestArray", Array(tmp1, tmp2)) Then Raise New libcURL.cURLException(m)
+		  
 		  
 		  Dim data As MemoryBlock = m.Serialize()
 		  Assert(data <> Nil)
@@ -311,6 +322,12 @@ Protected Module Testing
 		  Assert(m.GetElement(5).Stream Is bs2)
 		  Assert(m.GetElement(5).ContentType = "application/xml")
 		  Assert(m.GetElement(5).Type = libcURL.FormElementType.Stream)
+		  
+		  Assert(m.GetElement(6).Name = "TestArray")
+		  Dim mpe As libcURL.MultipartFormElement = m.GetElement(6).MoreFiles
+		  Assert(mpe <> Nil)
+		  Assert(mpe.MoreFiles = Nil)
+		  Assert(m.GetElement(6).Type = libcURL.FormElementType.File)
 		  
 		  Dim m2 As libcURL.MultipartForm = New Dictionary("TestString":"Test Value1", "TestString":"Test Value2", "TestFile1":App.ExecutableFile)
 		  data = m2.Serialize()
