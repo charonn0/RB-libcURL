@@ -1868,7 +1868,18 @@ Implements FormStreamGetter
 		  Do Until e = Nil
 		    Select Case e.Type
 		    Case libcURL.FormElementType.File
-		      d.Value(e.Name) = GetFolderItem(e.Contents)
+		      If e.MoreFiles = Nil Then ' single file
+		        d.Value(e.Name) = GetFolderItem(e.Contents)
+		      Else
+		        Dim f() As FolderItem
+		        f.Append(GetFolderItem(e.Contents))
+		        Dim tmp As MultipartFormElement = e.MoreFiles
+		        Do Until tmp = Nil
+		          f.Append(GetFolderItem(tmp.Contents))
+		          tmp = tmp.NextElement
+		        Loop
+		        d.Value(e.Name) = f
+		      End If
 		    Case libcURL.FormElementType.MemoryBlock
 		      d.Value(e.Name) = e.Buffer
 		    Case libcURL.FormElementType.String
@@ -1917,7 +1928,12 @@ Implements FormStreamGetter
 		      If Not Me.AddElement(item, mb, "") Then Raise New cURLException(Me)
 		      
 		    Else
-		      Raise New UnsupportedFormatException
+		      If VarType(value) >= Variant.TypeArray Then ' files
+		        Dim f() As FolderItem = value
+		        If Not Me.AddElement(item, f) Then Raise New cURLException(Me)
+		      Else
+		        Raise New UnsupportedFormatException
+		      End If
 		    End Select
 		  Next
 		End Sub
