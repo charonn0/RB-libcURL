@@ -1094,6 +1094,31 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  return mBufferSize
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  ' Set preferred receive buffer size (in bytes). The main point of this would be that the DataAvailable event 
+			  ' gets called more often and with smaller chunks. Secondly, for some protocols, there's a benefit of having
+			  ' a larger buffer for performance. This is just treated as a request, not an order. You cannot be guaranteed
+			  ' to actually get the given size.
+			  '
+			  ' See:
+			  ' https://curl.haxx.se/libcurl/c/CURLOPT_BUFFERSIZE.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.BufferSize
+			  
+			  If value < CURL_MIN_READ_SIZE Or value > CURL_MAX_READ_SIZE Then Raise New OutOfBoundsException
+			  If Not Me.SetOption(libcURL.Opts.BUFFERSIZE, value) Then Raise New cURLException(Me)
+			  mBufferSize = value
+			End Set
+		#tag EndSetter
+		BufferSize As Integer
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
 			  ' Gets the PEM file (or a directory of PEM files) containing one or more certificate authorities libcURL
 			  ' will trust to verify the peer with. If no file/folder is specified (default) then returns Nil.
 			  
@@ -1386,6 +1411,10 @@ Inherits libcURL.cURLHandle
 		#tag EndSetter
 		MaxRedirects As Integer
 	#tag EndComputedProperty
+
+	#tag Property, Flags = &h21
+		Private mBufferSize As Integer = CURL_DEFAULT_READ_SIZE
+	#tag EndProperty
 
 	#tag Property, Flags = &h21
 		Private mCA_ListFile As FolderItem
@@ -1840,6 +1869,15 @@ Inherits libcURL.cURLHandle
 	#tag EndConstant
 
 	#tag Constant, Name = CURLPAUSE_SEND, Type = Double, Dynamic = False, Default = \"4", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = CURL_DEFAULT_READ_SIZE, Type = Double, Dynamic = False, Default = \"16384", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = CURL_MAX_READ_SIZE, Type = Double, Dynamic = False, Default = \"524288", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = CURL_MIN_READ_SIZE, Type = Double, Dynamic = False, Default = \"1024", Scope = Public
 	#tag EndConstant
 
 	#tag Constant, Name = CURL_SOCKET_BAD, Type = Double, Dynamic = False, Default = \"1", Scope = Protected

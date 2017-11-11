@@ -1011,7 +1011,8 @@ Protected Module libcURL
 		MemoryBlock
 		  Stream
 		  String
-		File
+		  File
+		FileArray
 	#tag EndEnum
 
 	#tag Enum, Name = HTTPVersion, Type = Integer, Flags = &h1
