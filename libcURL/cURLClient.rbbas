@@ -169,8 +169,7 @@ Inherits libcURL.cURLManager
 		  ' The protocol is inferred from the URL; explictly specify the protocol in the URL to avoid bad guesses.
 		  ' WriteTo is an optional Writeable object (e.g. BinaryStream); downloaded data will be written to this
 		  ' object directly. If WriteTo is Nil then use the GetDownloadedData method to get any downloaded data.
-		  ' This method will block the calling thread until the transfer completes. The transfer will be performed 
-		  ' on the event loop (main thread).
+		  ' The transfer will be performed on the event loop (main thread).
 		  '
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLClient.Put
