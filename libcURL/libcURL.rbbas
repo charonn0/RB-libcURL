@@ -35,83 +35,83 @@ Protected Module libcURL
 	#tag EndMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Sub curl_easy_cleanup Lib "libcurl" (EasyHandle As Integer)
+		Private Soft Declare Sub curl_easy_cleanup Lib cURLLib (EasyHandle As Integer)
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Function curl_easy_duphandle Lib "libcurl" (EasyHandle As Integer) As Integer
+		Private Soft Declare Function curl_easy_duphandle Lib cURLLib (EasyHandle As Integer) As Integer
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Function curl_easy_escape Lib "libcurl" (EasyHandle As Integer, CharBuffer As Ptr, Length As Integer) As Ptr
+		Private Soft Declare Function curl_easy_escape Lib cURLLib (EasyHandle As Integer, CharBuffer As Ptr, Length As Integer) As Ptr
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Function curl_easy_getinfo Lib "libcurl" (EasyHandle As Integer, InfoCode As Integer, Buffer As Ptr) As Integer
+		Private Soft Declare Function curl_easy_getinfo Lib cURLLib (EasyHandle As Integer, InfoCode As Integer, Buffer As Ptr) As Integer
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Function curl_easy_init Lib "libcurl" () As Integer
+		Private Soft Declare Function curl_easy_init Lib cURLLib () As Integer
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Function curl_easy_pause Lib "libcurl" (EasyHandle As Integer, Mask As Integer) As Integer
+		Private Soft Declare Function curl_easy_pause Lib cURLLib (EasyHandle As Integer, Mask As Integer) As Integer
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Function curl_easy_perform Lib "libcurl" (EasyHandle As Integer) As Integer
+		Private Soft Declare Function curl_easy_perform Lib cURLLib (EasyHandle As Integer) As Integer
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Function curl_easy_recv Lib "libcurl" (EasyHandle As Integer, Buffer As Ptr, BytesToRead As Integer, ByRef BytesRead As Integer) As Integer
+		Private Soft Declare Function curl_easy_recv Lib cURLLib (EasyHandle As Integer, Buffer As Ptr, BytesToRead As Integer, ByRef BytesRead As Integer) As Integer
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Sub curl_easy_reset Lib "libcurl" (EasyHandle As Integer)
+		Private Soft Declare Sub curl_easy_reset Lib cURLLib (EasyHandle As Integer)
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Function curl_easy_send Lib "libcurl" (EasyHandle As Integer, Buffer As Ptr, BytesToWrite As Integer, ByRef BytesWritten As Integer) As Integer
+		Private Soft Declare Function curl_easy_send Lib cURLLib (EasyHandle As Integer, Buffer As Ptr, BytesToWrite As Integer, ByRef BytesWritten As Integer) As Integer
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Function curl_easy_setopt Lib "libcurl" (EasyHandle As Integer, Option As Integer, Value As Ptr) As Integer
+		Private Soft Declare Function curl_easy_setopt Lib cURLLib (EasyHandle As Integer, Option As Integer, Value As Ptr) As Integer
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Function curl_easy_strerror Lib "libcurl" (EasyError As Integer) As CString
+		Private Soft Declare Function curl_easy_strerror Lib cURLLib (EasyError As Integer) As CString
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Function curl_easy_unescape Lib "libcurl" (EasyHandle As Integer, char As Ptr, Length As Integer, ByRef OutLength As Integer) As Ptr
+		Private Soft Declare Function curl_easy_unescape Lib cURLLib (EasyHandle As Integer, char As Ptr, Length As Integer, ByRef OutLength As Integer) As Ptr
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Function curl_formadd Lib "libcurl" (ByRef FirstItem As Integer, ByRef LastItem As Ptr, Option As Integer, Value As Ptr, Option1 As Integer, Value1 As Ptr, Option2 As Integer, Value2 As Ptr, Option3 As Integer, Value3 As Ptr, Option4 As Integer, Value4 As Ptr, Option5 As Integer, Value5 As Ptr, Option6 As Integer, Value6 As Ptr, Option7 As Integer, Value7 As Ptr, Option8 As Integer, Value8 As Ptr, Option9 As Integer, Value9 As Ptr, Option10 As Integer, Value10 As Ptr, FinalOption As Integer) As Integer
+		Private Soft Declare Function curl_formadd Lib cURLLib (ByRef FirstItem As Integer, ByRef LastItem As Ptr, Option As Integer, Value As Ptr, Option1 As Integer, Value1 As Ptr, Option2 As Integer, Value2 As Ptr, Option3 As Integer, Value3 As Ptr, Option4 As Integer, Value4 As Ptr, Option5 As Integer, Value5 As Ptr, Option6 As Integer, Value6 As Ptr, Option7 As Integer, Value7 As Ptr, Option8 As Integer, Value8 As Ptr, Option9 As Integer, Value9 As Ptr, Option10 As Integer, Value10 As Ptr, FinalOption As Integer) As Integer
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Sub curl_formfree Lib "libcurl" (curlform As Integer)
+		Private Soft Declare Sub curl_formfree Lib cURLLib (curlform As Integer)
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Function curl_formget Lib "libcurl" (First As Integer, UserData As Integer, Callback As Ptr) As Integer
+		Private Soft Declare Function curl_formget Lib cURLLib (First As Integer, UserData As Integer, Callback As Ptr) As Integer
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Sub curl_free Lib "libcurl" (char As Ptr)
+		Private Soft Declare Sub curl_free Lib cURLLib (char As Ptr)
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Function curl_getdate Lib "libcurl" (DateString As CString, Reserved As Ptr) As Integer
+		Private Soft Declare Function curl_getdate Lib cURLLib (DateString As CString, Reserved As Ptr) As Integer
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Sub curl_global_cleanup Lib "libcurl" ()
+		Private Soft Declare Sub curl_global_cleanup Lib cURLLib ()
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Function curl_global_init Lib "libcurl" (flags As Integer) As Integer
+		Private Soft Declare Function curl_global_init Lib cURLLib (flags As Integer) As Integer
 	#tag EndExternalMethod
 
 	#tag Method, Flags = &h1
@@ -143,71 +143,71 @@ Protected Module libcURL
 	#tag EndMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Function curl_multi_add_handle Lib "libcurl" (MultiHandle As Integer, EasyHandle As Integer) As Integer
+		Private Soft Declare Function curl_multi_add_handle Lib cURLLib (MultiHandle As Integer, EasyHandle As Integer) As Integer
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Function curl_multi_cleanup Lib "libcurl" (MultiHandle As Integer) As Integer
+		Private Soft Declare Function curl_multi_cleanup Lib cURLLib (MultiHandle As Integer) As Integer
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Function curl_multi_info_read Lib "libcurl" (MultiHandle As Integer, ByRef MsgCount As Integer) As Ptr
+		Private Soft Declare Function curl_multi_info_read Lib cURLLib (MultiHandle As Integer, ByRef MsgCount As Integer) As Ptr
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Function curl_multi_init Lib "libcurl" () As Integer
+		Private Soft Declare Function curl_multi_init Lib cURLLib () As Integer
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Function curl_multi_perform Lib "libcurl" (MultiHandle As Integer, ByRef ActiveCount As Integer) As Integer
+		Private Soft Declare Function curl_multi_perform Lib cURLLib (MultiHandle As Integer, ByRef ActiveCount As Integer) As Integer
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Function curl_multi_remove_handle Lib "libcurl" (MultiHandle As Integer, EasyHandle As Integer) As Integer
+		Private Soft Declare Function curl_multi_remove_handle Lib cURLLib (MultiHandle As Integer, EasyHandle As Integer) As Integer
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Function curl_multi_setopt Lib "libcurl" (MultiHandle As Integer, Option As Integer, Value As Ptr) As Integer
+		Private Soft Declare Function curl_multi_setopt Lib cURLLib (MultiHandle As Integer, Option As Integer, Value As Ptr) As Integer
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Function curl_multi_strerror Lib "libcurl" (errNo As Integer) As CString
+		Private Soft Declare Function curl_multi_strerror Lib cURLLib (errNo As Integer) As CString
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Function curl_multi_timeout Lib "libcurl" (MultiHandle As Integer, ByRef Timeout As timeval) As Integer
+		Private Soft Declare Function curl_multi_timeout Lib cURLLib (MultiHandle As Integer, ByRef Timeout As timeval) As Integer
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Function curl_share_cleanup Lib "libcurl" (ShareHandle As Integer) As Integer
+		Private Soft Declare Function curl_share_cleanup Lib cURLLib (ShareHandle As Integer) As Integer
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Function curl_share_init Lib "libcurl" () As Integer
+		Private Soft Declare Function curl_share_init Lib cURLLib () As Integer
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Function curl_share_setopt Lib "libcurl" (ShareHandle As Integer, Option As Integer, Value As Ptr) As Integer
+		Private Soft Declare Function curl_share_setopt Lib cURLLib (ShareHandle As Integer, Option As Integer, Value As Ptr) As Integer
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Function curl_share_strerror Lib "libcurl" (errNo As Integer) As CString
+		Private Soft Declare Function curl_share_strerror Lib cURLLib (errNo As Integer) As CString
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Function curl_slist_append Lib "libcurl" (sList As Ptr, Data As CString) As Ptr
+		Private Soft Declare Function curl_slist_append Lib cURLLib (sList As Ptr, Data As CString) As Ptr
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Sub curl_slist_free_all Lib "libcurl" (sList As Ptr)
+		Private Soft Declare Sub curl_slist_free_all Lib cURLLib (sList As Ptr)
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Function curl_version Lib "libcurl" () As Ptr
+		Private Soft Declare Function curl_version Lib cURLLib () As Ptr
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Function curl_version_info Lib "libcurl" (Version As Integer) As Ptr
+		Private Soft Declare Function curl_version_info Lib cURLLib (Version As Integer) As Ptr
 	#tag EndExternalMethod
 
 	#tag Method, Flags = &h1
@@ -946,6 +946,12 @@ Protected Module libcURL
 	#tag EndConstant
 
 	#tag Constant, Name = CURL_WRITEFUNC_PAUSE, Type = Double, Dynamic = False, Default = \"CURL_READFUNC_PAUSE", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = cURLLib, Type = String, Dynamic = False, Default = \"libcurl", Scope = Private
+		#Tag Instance, Platform = Mac OS, Language = Default, Definition  = \"libcurl.4.dylib"
+		#Tag Instance, Platform = Windows, Language = Default, Definition  = \"libcurl"
+		#Tag Instance, Platform = Linux, Language = Default, Definition  = \"libcurl.4.so"
 	#tag EndConstant
 
 
