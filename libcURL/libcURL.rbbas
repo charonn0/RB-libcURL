@@ -924,6 +924,12 @@ Protected Module libcURL
 	#tag EndNote
 
 
+	#tag Constant, Name = cURLLib, Type = String, Dynamic = False, Default = \"libcurl", Scope = Private
+		#Tag Instance, Platform = Mac OS, Language = Default, Definition  = \"libcurl.4.dylib"
+		#Tag Instance, Platform = Windows, Language = Default, Definition  = \"libcurl.dll"
+		#Tag Instance, Platform = Linux, Language = Default, Definition  = \"libcurl"
+	#tag EndConstant
+
 	#tag Constant, Name = CURL_GLOBAL_ALL, Type = Double, Dynamic = False, Default = \"3", Scope = Protected
 	#tag EndConstant
 
@@ -946,12 +952,6 @@ Protected Module libcURL
 	#tag EndConstant
 
 	#tag Constant, Name = CURL_WRITEFUNC_PAUSE, Type = Double, Dynamic = False, Default = \"CURL_READFUNC_PAUSE", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = cURLLib, Type = String, Dynamic = False, Default = \"libcurl", Scope = Private
-		#Tag Instance, Platform = Mac OS, Language = Default, Definition  = \"libcurl.4.dylib"
-		#Tag Instance, Platform = Windows, Language = Default, Definition  = \"libcurl"
-		#Tag Instance, Platform = Linux, Language = Default, Definition  = \"libcurl.4.so"
 	#tag EndConstant
 
 
