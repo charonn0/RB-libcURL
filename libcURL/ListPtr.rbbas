@@ -50,6 +50,11 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h21
 		Private Sub Destructor()
+		  ' Frees the list.
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/curl_slist_free_all.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ListPtr.Destructor
+		  
 		  If List <> Nil Then curl_slist_free_all(List)
 		  List = Nil
 		End Sub
@@ -59,7 +64,6 @@ Inherits libcURL.cURLHandle
 		Attributes( deprecated = "libcURL.ListPtr.Destructor" )  Sub Free()
 		  ' Frees the list.
 		  ' See:
-		  ' http://curl.haxx.se/libcurl/c/curl_slist_free_all.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ListPtr.Free
 		  
 		  Me.Destructor
@@ -69,7 +73,7 @@ Inherits libcURL.cURLHandle
 	#tag Method, Flags = &h0
 		Function Item(Index As Integer) As String
 		  ' Reads the string located at Index. The first item is at Index=0
-		  ' If the list does not contain a string at Index, an OutOfBoundsException will be raised.
+		  ' If the list does not contain a string at Index then an OutOfBoundsException will be raised.
 		  ' If the list is empty then a NilObjectException will be raised.
 		  '
 		  ' See:
