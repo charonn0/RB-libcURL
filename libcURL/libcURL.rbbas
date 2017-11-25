@@ -223,7 +223,7 @@ Protected Module libcURL
 		  Static CA_File As FolderItem
 		  If CA_File = Nil Then
 		    CA_File = GetTemporaryFolderItem()
-		    Dim bs As BinaryStream = BinaryStream.Create(CA_File, True)
+		    Dim bs As BinaryStream = BinaryStream.Open(CA_File, True)
 		    bs.Write(DEFAULT_CA_INFO_PEM)
 		    bs.Close
 		  End If
