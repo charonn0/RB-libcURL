@@ -821,6 +821,11 @@ Inherits libcURL.cURLHandle
 		  Case Variant.TypePtr, Variant.TypeInteger
 		    Return Me.SetOptionPtr(OptionNumber, NewValue.PtrValue)
 		    
+		    #If Target64Bit Then
+		  Case Variant.TypeInt64
+		    Return Me.SetOptionPtr(OptionNumber, NewValue.PtrValue)
+		    #EndIf
+		    
 		  Case Variant.TypeString
 		    Dim mb As MemoryBlock = NewValue.CStringValue + Chr(0) ' make doubleplus sure it's null terminated
 		    Return Me.SetOptionPtr(OptionNumber, mb)
