@@ -89,7 +89,11 @@ Inherits libcURL.cURLHandle
 		  Dim i As Integer
 		  Do
 		    If i < Index Then
-		      nxt = nxt.Ptr(4)
+		      #If Not Target64Bit Then
+		        nxt = nxt.Ptr(4)
+		      #Else
+		        nxt = nxt.Ptr(8)
+		      #Endif
 		      If nxt = Nil Then
 		        Dim err As New OutOfBoundsException
 		        err.Message = "The list does not contain an entry at that index."
@@ -138,7 +142,11 @@ Inherits libcURL.cURLHandle
 		  Dim nxt As Ptr = List
 		  Do Until nxt = Nil
 		    Dim txt As MemoryBlock = nxt.Ptr(0)
-		    nxt = nxt.Ptr(4)
+		    #If Not Target64Bit Then
+		      nxt = nxt.Ptr(4)
+		    #Else
+		      nxt = nxt.Ptr(8)
+		    #Endif
 		    If txt = Nil Then Continue
 		    ret.Append(txt.CString(0))
 		  Loop
