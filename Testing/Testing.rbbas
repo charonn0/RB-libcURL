@@ -327,7 +327,7 @@ Protected Module Testing
 		  Dim mpe As libcURL.MultipartFormElement = m.GetElement(6).MoreFiles
 		  Assert(mpe <> Nil)
 		  Assert(mpe.MoreFiles = Nil)
-		  Assert(m.GetElement(6).Type = libcURL.FormElementType.File)
+		  Assert(m.GetElement(6).Type = libcURL.FormElementType.FileArray)
 		  
 		  Dim m2 As libcURL.MultipartForm = New Dictionary("TestString":"Test Value1", "TestString":"Test Value2", "TestFile1":App.ExecutableFile)
 		  data = m2.Serialize()
