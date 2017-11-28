@@ -42,7 +42,11 @@ Inherits libcURL.cURLHandle
 		  Dim i As Integer
 		  Do Until nxt = Nil
 		    i = i + 1
-		    nxt = nxt.Ptr(4)
+		    #If Not Target64Bit Then
+		      nxt = nxt.Ptr(4)
+		    #Else
+		      nxt = nxt.Ptr(8)
+		    #Endif
 		  Loop
 		  Return i
 		End Function
