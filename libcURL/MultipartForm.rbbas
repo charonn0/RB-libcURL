@@ -312,6 +312,11 @@ Implements FormStreamGetter
 		    Case Variant.TypePtr, Variant.TypeInteger
 		      m.Append(v(i).PtrValue)
 		      
+		      #If Target64Bit Then
+		    Case Variant.TypeInt64
+		      m.Append(v(i).PtrValue)
+		      #endif
+		      
 		    Case Variant.TypeObject
 		      Select Case v(i)
 		      Case IsA FolderItem

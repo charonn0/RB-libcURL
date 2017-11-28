@@ -50,6 +50,11 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h21
 		Private Sub Destructor()
+		  ' Frees the list.
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/curl_slist_free_all.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ListPtr.Destructor
+		  
 		  If List <> Nil Then curl_slist_free_all(List)
 		  List = Nil
 		End Sub
@@ -59,7 +64,6 @@ Inherits libcURL.cURLHandle
 		Attributes( deprecated = "libcURL.ListPtr.Destructor" )  Sub Free()
 		  ' Frees the list.
 		  ' See:
-		  ' http://curl.haxx.se/libcurl/c/curl_slist_free_all.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ListPtr.Free
 		  
 		  Me.Destructor
@@ -69,7 +73,7 @@ Inherits libcURL.cURLHandle
 	#tag Method, Flags = &h0
 		Function Item(Index As Integer) As String
 		  ' Reads the string located at Index. The first item is at Index=0
-		  ' If the list does not contain a string at Index, an OutOfBoundsException will be raised.
+		  ' If the list does not contain a string at Index then an OutOfBoundsException will be raised.
 		  ' If the list is empty then a NilObjectException will be raised.
 		  '
 		  ' See:
@@ -85,7 +89,11 @@ Inherits libcURL.cURLHandle
 		  Dim i As Integer
 		  Do
 		    If i < Index Then
-		      nxt = nxt.Ptr(4)
+		      #If Not Target64Bit Then
+		        nxt = nxt.Ptr(4)
+		      #Else
+		        nxt = nxt.Ptr(8)
+		      #Endif
 		      If nxt = Nil Then
 		        Dim err As New OutOfBoundsException
 		        err.Message = "The list does not contain an entry at that index."
@@ -134,7 +142,11 @@ Inherits libcURL.cURLHandle
 		  Dim nxt As Ptr = List
 		  Do Until nxt = Nil
 		    Dim txt As MemoryBlock = nxt.Ptr(0)
-		    nxt = nxt.Ptr(4)
+		    #If Not Target64Bit Then
+		      nxt = nxt.Ptr(4)
+		    #Else
+		      nxt = nxt.Ptr(8)
+		    #Endif
 		    If txt = Nil Then Continue
 		    ret.Append(txt.CString(0))
 		  Loop
