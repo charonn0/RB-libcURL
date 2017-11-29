@@ -229,6 +229,10 @@ Inherits libcURL.cURLHandle
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
+		Private mShareConnections As Boolean
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
 		Private mShareCookies As Boolean
 	#tag EndProperty
 
@@ -239,6 +243,28 @@ Inherits libcURL.cURLHandle
 	#tag Property, Flags = &h21
 		Private mShareSSL As Boolean
 	#tag EndProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  return mShareConnections
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  If Not libcURL.Version.IsAtLeast(7, 57, 0) Then
+			    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
+			    Return
+			  End If
+			  
+			  mShareConnections = value
+			  Dim shareoption As Integer
+			  If mShareConnections Then shareoption = CURLSHOPT_SHARE Else shareoption = CURLSHOPT_UNSHARE
+			  If Not Me.SetOption(shareoption, curl_lock_data.LOCK_CONNECT) Then Raise New cURLException(Me)
+			End Set
+		#tag EndSetter
+		ShareConnections As Boolean
+	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
