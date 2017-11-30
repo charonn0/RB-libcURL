@@ -213,10 +213,10 @@ Inherits libcURL.cURLHandle
 			    Return
 			  End If
 			  
-			  mShareConnections = value
 			  Dim shareoption As Integer
-			  If mShareConnections Then shareoption = CURLSHOPT_SHARE Else shareoption = CURLSHOPT_UNSHARE
+			  If value Then shareoption = CURLSHOPT_SHARE Else shareoption = CURLSHOPT_UNSHARE
 			  If Not Me.SetOption(shareoption, curl_lock_data.LOCK_CONNECT) Then Raise New cURLException(Me)
+			  mShareConnections = value
 			End Set
 		#tag EndSetter
 		ShareConnections As Boolean
@@ -230,10 +230,10 @@ Inherits libcURL.cURLHandle
 		#tag EndGetter
 		#tag Setter
 			Set
-			  mShareCookies = value
 			  Dim shareoption As Integer
-			  If mShareCookies Then shareoption = CURLSHOPT_SHARE Else shareoption = CURLSHOPT_UNSHARE
+			  If value Then shareoption = CURLSHOPT_SHARE Else shareoption = CURLSHOPT_UNSHARE
 			  If Not Me.SetOption(shareoption, curl_lock_data.LOCK_COOKIE) Then Raise New cURLException(Me)
+			  mShareCookies = value
 			End Set
 		#tag EndSetter
 		ShareCookies As Boolean
@@ -251,10 +251,10 @@ Inherits libcURL.cURLHandle
 		#tag EndGetter
 		#tag Setter
 			Set
-			  mShareDNSCache = value
 			  Dim shareoption As Integer
-			  If mShareDNSCache Then shareoption = CURLSHOPT_SHARE Else shareoption = CURLSHOPT_UNSHARE
+			  If value Then shareoption = CURLSHOPT_SHARE Else shareoption = CURLSHOPT_UNSHARE
 			  If Not Me.SetOption(shareoption, curl_lock_data.LOCK_DNS) Then Raise New cURLException(Me)
+			  mShareDNSCache = value
 			End Set
 		#tag EndSetter
 		ShareDNSCache As Boolean
@@ -268,10 +268,10 @@ Inherits libcURL.cURLHandle
 		#tag EndGetter
 		#tag Setter
 			Set
-			  mShareSSL = value
 			  Dim shareoption As Integer
-			  If mShareSSL Then shareoption = CURLSHOPT_SHARE Else shareoption = CURLSHOPT_UNSHARE
+			  If value Then shareoption = CURLSHOPT_SHARE Else shareoption = CURLSHOPT_UNSHARE
 			  If Not Me.SetOption(shareoption, curl_lock_data.LOCK_SSL) Then Raise New cURLException(Me)
+			  mShareSSL = value
 			End Set
 		#tag EndSetter
 		ShareSSL As Boolean
