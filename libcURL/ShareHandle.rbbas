@@ -52,16 +52,7 @@ Inherits libcURL.cURLHandle
 		  End If
 		  SharedHandles = New Dictionary
 		  
-		  If Instances = Nil Then Instances = New Dictionary
-		  Instances.Value(mHandle) = New WeakRef(Me)
-		  CookieLock = New Mutex(Hex(mHandle) + "_Cookie")
-		  SSLLock = New Mutex(Hex(mHandle) + "_SSL")
-		  DNSLock = New Mutex(Hex(mHandle) + "_DNS")
-		  
 		  If Not Me.SetOption(libcURL.Opts.SHOPT_USERDATA, mHandle) Then Raise New cURLException(Me)
-		  If Not Me.SetOption(libcURL.Opts.SHOPT_LOCKFUNC, AddressOf LockCallback) Then Raise New cURLException(Me)
-		  If Not Me.SetOption(libcURL.Opts.SHOPT_UNLOCKFUNC, AddressOf UnlockCallback) Then Raise New cURLException(Me)
-		  
 		End Sub
 	#tag EndMethod
 
@@ -74,79 +65,10 @@ Inherits libcURL.cURLHandle
 	#tag EndDelegateDeclaration
 
 	#tag Method, Flags = &h21
-		Private Sub curl_Lock(Data As curl_lock_data, Access As curl_lock_access)
-		  #pragma Unused Access
-		  Select Case Data
-		  Case curl_lock_data.LOCK_COOKIE
-		    CookieLock.Enter
-		    
-		  Case curl_lock_data.LOCK_DNS
-		    DNSLock.Enter
-		    
-		  Case curl_lock_data.LOCK_SSL
-		    SSLLock.Enter
-		    
-		  Case curl_lock_data.LOCK_SHARE
-		    SSLLock.Enter
-		    DNSLock.Enter
-		    CookieLock.Enter
-		    
-		  Else
-		    Raise New IllegalLockingException
-		    
-		  End Select
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Sub curl_Unlock(Data As curl_lock_data)
-		  Select Case Data
-		  Case curl_lock_data.LOCK_COOKIE
-		    CookieLock.Leave
-		    
-		  Case curl_lock_data.LOCK_DNS
-		    DNSLock.Leave
-		    
-		  Case curl_lock_data.LOCK_SSL
-		    SSLLock.Leave
-		    
-		  Case curl_lock_data.LOCK_SHARE
-		    SSLLock.Leave
-		    DNSLock.Leave
-		    CookieLock.Leave
-		    
-		  Else
-		    Raise New IllegalLockingException
-		    
-		  End Select
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
 		Private Sub Destructor()
 		  Me.Close
-		  If mHandle <> 0 Then 
-		    mLastError = curl_share_cleanup(mHandle)
-		    If mLastError = 0 Then
-		      If Instances <> Nil And Instances.HasKey(mHandle) Then Instances.Remove(mHandle)
-		      mHandle = 0
-		    End If
-		  End If
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Shared Sub LockCallback(ShareItem As Integer, Data As curl_lock_data, Access As curl_lock_access, UserData As Integer)
-		  #pragma X86CallingConvention CDecl
-		  #pragma Unused ShareItem
-		  
-		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA ShareHandle Then
-		    ShareHandle(curl.Value).curl_Lock(Data, Access)
-		    Return
-		  End If
-		  Break 'UserData does not refer to a valid instance!
+		  If mHandle <> 0 Then mLastError = curl_share_cleanup(mHandle)
+		  mHandle = 0
 		End Sub
 	#tag EndMethod
 
@@ -176,33 +98,71 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Function SetOption(OptionNumber As Integer, NewValue As Variant) As Boolean
-		  Select Case NewValue
-		  Case IsA cURLLock
-		    Dim p As cURLLock = NewValue
-		    mLastError = curl_share_setopt(mHandle, OptionNumber, p)
-		  Case IsA cURLUnlock
-		    Dim p As cURLUnlock = NewValue
-		    mLastError = curl_share_setopt(mHandle, OptionNumber, p)
-		  Else
-		    mLastError = curl_share_setopt(mHandle, OptionNumber, NewValue.PtrValue)
+		  Dim ValueType As Integer = VarType(NewValue)
+		  Select Case ValueType
+		    
+		  Case Variant.TypeNil ' Sometimes Nil is an error; sometimes not
+		    Static Nilable() As Integer = Array(libcURL.Opts.SHOPT_LOCKFUNC,libcURL.Opts.SHOPT_UNLOCKFUNC)
+		    ' These option numbers explicitly accept NULL. Refer to the curl documentation on the individual option numbers for details.
+		    If Nilable.IndexOf(OptionNumber) > -1 Then
+		      Return Me.SetOptionPtr(OptionNumber, Nil)
+		    Else
+		      ' for all other option numbers reject NULL values.
+		      Dim err As New NilObjectException
+		      err.Message = "cURL option number 0x" + Hex(OptionNumber) + " may not be set to null."
+		      Raise err
+		    End If
+		    
+		  Case Variant.TypeBoolean
+		    If NewValue.BooleanValue Then
+		      Return Me.SetOption(OptionNumber, 1)
+		    Else
+		      Return Me.SetOption(OptionNumber, 0)
+		    End If
+		    
+		  Case Variant.TypePtr, Variant.TypeInteger
+		    Return Me.SetOptionPtr(OptionNumber, NewValue.PtrValue)
+		    
+		    #If Target64Bit Then
+		  Case Variant.TypeInt64
+		    Return Me.SetOptionPtr(OptionNumber, NewValue.PtrValue)
+		    #EndIf
+		    
+		  Case Variant.TypeString
+		    Dim mb As MemoryBlock = NewValue.CStringValue + Chr(0) ' make doubleplus sure it's null terminated
+		    Return Me.SetOptionPtr(OptionNumber, mb)
+		    
+		  Case Variant.TypeObject
+		    ' To add support for a custom object type, add a block to this Select statement
+		    Select Case NewValue
+		    Case IsA MemoryBlock
+		      Return Me.SetOptionPtr(OptionNumber, NewValue.PtrValue)
+		      
+		    Case IsA FolderItem
+		      Return Me.SetOption(OptionNumber, FolderItem(NewValue).AbsolutePath)
+		      
+		    Case IsA cURLLock
+		      Dim p As cURLLock = NewValue
+		      Return Me.SetOptionPtr(OptionNumber, p)
+		      
+		    Case IsA cURLUnlock
+		      Dim p As cURLUnlock = NewValue
+		      Return Me.SetOptionPtr(OptionNumber, p)
+		      
+		    End Select
 		  End Select
 		  
-		  Return mLastError = 0
+		  Dim err As New TypeMismatchException
+		  err.Message = "NewValue is of unsupported vartype: " + Str(ValueType)
+		  Raise err
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h21
-		Private Shared Sub UnlockCallback(ShareItem As Integer, Data As curl_lock_data, UserData As Integer)
-		  #pragma X86CallingConvention CDecl
-		  #pragma Unused ShareItem
-		  
-		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA ShareHandle Then
-		    ShareHandle(curl.Value).curl_Unlock(Data)
-		    Return
-		  End If
-		  Break 'UserData does not refer to a valid instance!
-		End Sub
+	#tag Method, Flags = &h0
+		Function SetOptionPtr(OptionNumber As Integer, NewValue As Ptr) As Boolean
+		  mLastError = curl_share_setopt(mHandle, OptionNumber, NewValue)
+		  Return mLastError = 0
+		End Function
 	#tag EndMethod
 
 
@@ -222,10 +182,6 @@ Inherits libcURL.cURLHandle
 
 	#tag Property, Flags = &h21
 		Private DNSLock As Mutex
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private Shared Instances As Dictionary
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -333,7 +289,7 @@ Inherits libcURL.cURLHandle
 	#tag EndConstant
 
 
-	#tag Enum, Name = curl_lock_access, Type = Integer, Flags = &h21
+	#tag Enum, Name = curl_lock_access, Flags = &h21
 		ACCESS_NONE=0
 		  ACCESS_SHARED
 		  ACCESS_SINGLE
