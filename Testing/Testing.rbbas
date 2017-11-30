@@ -95,7 +95,8 @@ Protected Module Testing
 		    index = c.Cookies.Lookup("test2", "api.example.com", index)
 		    If index > -1 Then
 		      Assert(Not c.Cookies.HTTPOnly(index))
-		      Assert(c.Cookies.Expiry(index) > New Date)
+		      Dim d As Date = c.Cookies.Expiry(index)
+		      Assert(d.Day = expiry.Day And d.Month = expiry.Month And d.Year = expiry.Year And d.Hour = expiry.Hour And d.Minute = expiry.Minute And d.Second = expiry.Second)
 		      Assert(c.Cookies.Name(index) = "test2")
 		      Assert(c.Cookies.Value(index) = "value2")
 		      Assert(c.Cookies.Domain(index) = ".api.example.com")
@@ -133,7 +134,8 @@ Protected Module Testing
 		  
 		  If index > -1 Then
 		    Assert(Not c.Cookies.HTTPOnly(index))
-		    Assert(c.Cookies.Expiry(index) > New Date)
+		    Dim d As Date = c.Cookies.Expiry(index)
+		    Assert(d.Day = expiry.Day And d.Month = expiry.Month And d.Year = expiry.Year And d.Hour = expiry.Hour And d.Minute = expiry.Minute And d.Second = expiry.Second)
 		    Assert(c.Cookies.Name(index) = "test5")
 		    Assert(c.Cookies.Value(index) = "value5")
 		    Assert(c.Cookies.Domain(index) = ".example.net")
