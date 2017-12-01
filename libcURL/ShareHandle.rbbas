@@ -74,6 +74,12 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Function Operator_Compare(OtherShare As libcURL.ShareHandle) As Integer
+		  ' This method overloads the comparison operator(=), permitting direct
+		  ' comparisons between instances of ShareHandle.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ShareHandle.Operator_Compare
+		  
 		  Dim i As Integer = Super.Operator_Compare(OtherShare)
 		  If i = 0 Then i = Sign(mHandle - OtherShare.Handle)
 		  Return i
@@ -98,6 +104,18 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Function SetOption(OptionNumber As Integer, NewValue As Variant) As Boolean
+		  ' SetOption is the primary interface to the share handle. Call this method with a curl option number
+		  ' and a value that is acceptable for that option. SetOption does not check that a value is valid for
+		  ' a particular option (except Nil,) however it will raise an exception if an unsupported type is passed.
+		  
+		  ' If the option was set then this method returns True. If it returns False then the option was not set
+		  ' and the curl error number is stored in EasyHandle.LastError.
+		  
+		  ' See:
+		  ' https://curl.haxx.se/libcurl/c/curl_share_setopt.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ShareHandle.SetOption
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Opts
+		  
 		  Dim ValueType As Integer = VarType(NewValue)
 		  Select Case ValueType
 		    
@@ -160,6 +178,17 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Function SetOptionPtr(OptionNumber As Integer, NewValue As Ptr) As Boolean
+		  ' Call this method with a share option number and a Ptr to a representation of the new value for that option.
+		  ' The Ptr is passed verbatim to libcURL.
+		  '
+		  ' If the option was set this method returns True. If it returns False the option was not set and the
+		  ' curl error number is stored in ShareHandle.LastError.
+		  
+		  ' See:
+		  ' https://curl.haxx.se/libcurl/c/curl_share_setopt.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ShareHandle.SetOptionPtr
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Opts
+		  
 		  mLastError = curl_share_setopt(mHandle, OptionNumber, NewValue)
 		  Return mLastError = 0
 		End Function
@@ -167,11 +196,9 @@ Inherits libcURL.cURLHandle
 
 
 	#tag Note, Name = About this class
-		This class wraps the curl_share interface. It allows you to share cookies, DNS results, and SSL session data among
-		two or more EasyHandles. By default, nothing is shared. You must enabled each type of sharing by modifying the
-		appropriate property of this class (ShareCookies, ShareDNSCache, and ShareSSL.)
-		
-		You must enable the sharing types you want before the first EasyHandle is added. 
+		This class wraps the curl_share API. EasyHandles that are added to a ShareHandle instance may share SSL session data, 
+		DNS caches, connection pools, and/or HTTP cookies. By default nothing is shared. You must enable the share options 
+		you want before adding any EasyHandles to the share. Doing so after will raise an error (CURLSHE_IN_USE (2))
 		
 	#tag EndNote
 
@@ -208,6 +235,12 @@ Inherits libcURL.cURLHandle
 		#tag EndGetter
 		#tag Setter
 			Set
+			  ' Specifies whether the connection cache is shared. This feature was added in libcurl 7.57.0.
+			  '
+			  ' See:
+			  ' https://curl.haxx.se/libcurl/c/curl_share_setopt.html#CURLSHOPTSHARE
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ShareHandle.ShareConnections
+			  
 			  If Not libcURL.Version.IsAtLeast(7, 57, 0) Then
 			    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
 			    Return
@@ -230,6 +263,13 @@ Inherits libcURL.cURLHandle
 		#tag EndGetter
 		#tag Setter
 			Set
+			  ' Specifies whether cookies are shared.
+			  '
+			  ' See:
+			  ' https://curl.haxx.se/libcurl/c/curl_share_setopt.html#CURLSHOPTSHARE
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ShareHandle.ShareCookies
+			  
+			  
 			  Dim shareoption As Integer
 			  If value Then shareoption = CURLSHOPT_SHARE Else shareoption = CURLSHOPT_UNSHARE
 			  If Not Me.SetOption(shareoption, curl_lock_data.LOCK_COOKIE) Then Raise New cURLException(Me)
@@ -251,6 +291,12 @@ Inherits libcURL.cURLHandle
 		#tag EndGetter
 		#tag Setter
 			Set
+			  ' Specifies whether the DNS cache is shared.
+			  '
+			  ' See:
+			  ' https://curl.haxx.se/libcurl/c/curl_share_setopt.html#CURLSHOPTSHARE
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ShareHandle.ShareDNSCache
+			  
 			  Dim shareoption As Integer
 			  If value Then shareoption = CURLSHOPT_SHARE Else shareoption = CURLSHOPT_UNSHARE
 			  If Not Me.SetOption(shareoption, curl_lock_data.LOCK_DNS) Then Raise New cURLException(Me)
@@ -268,6 +314,12 @@ Inherits libcURL.cURLHandle
 		#tag EndGetter
 		#tag Setter
 			Set
+			  ' Specifies whether the SSL session data is shared.
+			  '
+			  ' See:
+			  ' https://curl.haxx.se/libcurl/c/curl_share_setopt.html#CURLSHOPTSHARE
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ShareHandle.ShareSSL
+			  
 			  Dim shareoption As Integer
 			  If value Then shareoption = CURLSHOPT_SHARE Else shareoption = CURLSHOPT_UNSHARE
 			  If Not Me.SetOption(shareoption, curl_lock_data.LOCK_SSL) Then Raise New cURLException(Me)
