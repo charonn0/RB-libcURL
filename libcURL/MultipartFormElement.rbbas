@@ -75,17 +75,6 @@ Protected Class MultipartFormElement
 			  Return mContentHeaders
 			End Get
 		#tag EndGetter
-		#tag Setter
-			Set
-			  If value <> Nil Then
-			    Dim p As Ptr = Ptr(value.Handle)
-			    Struct.ContentHeader = p
-			  Else
-			    Struct.ContentHeader = Nil
-			  End If
-			  mContentHeaders = value
-			End Set
-		#tag EndSetter
 		ContentHeaders As libcURL.ListPtr
 	#tag EndComputedProperty
 
