@@ -151,7 +151,7 @@ Protected Module libcURL
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Function curl_mime_data_cb Lib cURLLib (MIMEPart As Ptr, DataSize As Integer, ReadCallback As Ptr, SeekCallback As Ptr, FreeCallback As Ptr, UserData As Ptr) As Integer
+		Private Soft Declare Function curl_mime_data_cb Lib cURLLib (MIMEPart As Ptr, DataSize As Int64, ReadCallback As Ptr, SeekCallback As Ptr, FreeCallback As Ptr, UserData As Ptr) As Integer
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21

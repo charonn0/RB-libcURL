@@ -123,7 +123,7 @@ Inherits libcURL.cURLHandle
 	#tag EndDelegateDeclaration
 
 	#tag DelegateDeclaration, Flags = &h21
-		Private Delegate Function cURLReadCallback(Buffer As MemoryBlock, Size As Integer, NumItems As Integer, UserData As Ptr) As Integer
+		Private Delegate Function cURLReadCallback(Buffer As Ptr, Size As UInt32, NumItems As Integer, UserData As Ptr) As Integer
 	#tag EndDelegateDeclaration
 
 	#tag DelegateDeclaration, Flags = &h21
@@ -152,14 +152,15 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Shared Function ReadCallback(Buffer As MemoryBlock, Size As Integer, NumItems As Integer, UserData As Ptr) As Integer
+		Private Shared Function ReadCallback(Buffer As Ptr, Size As UInt32, NumItems As Integer, UserData As Ptr) As Integer
 		  #pragma X86CallingConvention CDecl
 		  
 		  Dim r As Readable = PartStreams.Lookup(UserData, Nil)
 		  If r = Nil Then Return 0 ' fail read
 		  Dim sz As Integer = NumItems * Size
 		  Dim mb As MemoryBlock = r.Read(sz)
-		  If mb.Size > 0 Then Buffer.StringValue(0, mb.Size) = mb.StringValue(0, mb.Size)
+		  Dim buf As MemoryBlock = Buffer
+		  If mb.Size > 0 Then buf.StringValue(0, mb.Size) = mb.StringValue(0, mb.Size)
 		  Return mb.Size
 		  
 		Exception Err As RuntimeException
