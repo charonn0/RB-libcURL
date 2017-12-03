@@ -103,7 +103,13 @@ Protected Class MIMEMessagePart
 		#tag Getter
 			Get
 			  Dim mb As MemoryBlock = Struct.Name
-			  If mb <> Nil Then Return mb.StringValue(0, Struct.NameSize)
+			  If mb <> Nil Then 
+			    If Struct.NameSize > 0 Then
+			      Return mb.StringValue(0, Struct.NameSize)
+			    Else
+			      Return mb.CString(0)
+			    End If
+			  End If
 			End Get
 		#tag EndGetter
 		Name As String
