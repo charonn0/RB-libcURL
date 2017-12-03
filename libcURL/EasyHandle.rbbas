@@ -430,7 +430,11 @@ Inherits libcURL.cURLHandle
 		    If Me.GetInfo(InfoType, mb) Then Return mb.DoubleValue(0)
 		    
 		  Case libcURL.Info.SSL_ENGINES, libcURL.Info.COOKIELIST
-		    mb = New MemoryBlock(8)
+		    #If Not Target64Bit Then
+		      mb = New MemoryBlock(4)
+		    #Else
+		      mb = New MemoryBlock(8)
+		    #Endif
 		    If Me.GetInfo(InfoType, mb) And mb.Ptr(0) <> Nil Then Return New ListPtr(mb.Ptr(0), Me.Flags)
 		    
 		  Else
@@ -837,6 +841,11 @@ Inherits libcURL.cURLHandle
 		    
 		  Case Variant.TypePtr, Variant.TypeInteger
 		    Return Me.SetOptionPtr(OptionNumber, NewValue.PtrValue)
+		    
+		    #If Target64Bit Then
+		  Case Variant.TypeInt64
+		    Return Me.SetOptionPtr(OptionNumber, NewValue.PtrValue)
+		    #EndIf
 		    
 		  Case Variant.TypeString
 		    Dim mb As MemoryBlock = NewValue.CStringValue + Chr(0) ' make doubleplus sure it's null terminated

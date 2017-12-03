@@ -5,7 +5,7 @@ Protected Module Version
 		  ' Returns True if libcURL is available and at least the version specified.
 		  
 		  Static min, maj, pat As Integer
-		  Static avail As Boolean = System.IsFunctionAvailable("curl_global_init", "libcurl")
+		  Static avail As Boolean = System.IsFunctionAvailable("curl_global_init", cURLLib)
 		  If Not avail Then Return False
 		  If maj = 0 Then
 		    Dim n As String = UserAgent()
@@ -23,7 +23,7 @@ Protected Module Version
 		  ' Returns True if libcURL is available and at least the version specified.
 		  
 		  Static min, maj, pat As Integer
-		  Static avail As Boolean = System.IsFunctionAvailable("curl_global_init", "libcurl")
+		  Static avail As Boolean = System.IsFunctionAvailable("curl_global_init", cURLLib)
 		  If Not avail Then Return False
 		  If maj = 0 Then
 		    Dim n As String = UserAgent()
@@ -86,7 +86,7 @@ Protected Module Version
 
 	#tag Method, Flags = &h1
 		Protected Function UserAgent() As String
-		  If Not System.IsFunctionAvailable("curl_version", "libcurl") Then Return ""
+		  If Not System.IsFunctionAvailable("curl_version", cURLLib) Then Return ""
 		  Static p As MemoryBlock
 		  If p = Nil Then
 		    p = curl_version()
@@ -239,7 +239,7 @@ Protected Module Version
 			Get
 			  Static mStruct As CURLVersion
 			  Static init As Boolean
-			  If Not init And System.IsFunctionAvailable("curl_version_info", "libcurl") Then
+			  If Not init And System.IsFunctionAvailable("curl_version_info", cURLLib) Then
 			    Dim error As Integer = curl_global_init(CURL_GLOBAL_DEFAULT) ' do not try to replace with cURLHandle, which performs version checks
 			    If error = 0 Then
 			      init = True

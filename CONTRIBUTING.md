@@ -6,3 +6,6 @@ If you do have code to contribute then you should [create a pull request](https:
 
 ### Code style
 When contributing code, please make an effort to conform to [these guidelines](https://github.com/charonn0/RB-libcURL/wiki/Coding-Style-Guide).
+
+### Licensing
+By submitting a pull request to this repository you are agreeing to license all submitted code under the MIT license.
