@@ -103,8 +103,7 @@ Inherits libcURL.cURLHandle
 	#tag Method, Flags = &h0
 		Sub Constructor(Owner As libcURL.EasyHandle)
 		  Super.Constructor(Owner.Flags)
-		  If Not System.IsFunctionAvailable("curl_mime_init", "libcurl") Then
-		    ' this feature is only available if you build the latest libcurl from source
+		  If Not libcURL.Version.IsAtLeast(7, 56, 0) Then
 		    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
 		    Raise New cURLException(Me)
 		  End If
