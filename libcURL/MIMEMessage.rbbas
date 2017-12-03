@@ -14,7 +14,7 @@ Inherits libcURL.cURLHandle
 		    If Not SetPartType(part, ContentType) Then Return False
 		  End If
 		  If AdditionalHeaders <> Nil Then
-		    If Not SetPartHeaders(part, AdditionalHeaders, False) Then Return False
+		    If Not SetPartHeaders(part, AdditionalHeaders) Then Return False
 		  End If
 		  If Encoding <> TransferEncoding.Binary Then
 		    If Not SetPartEncoding(part, encoding) Then Return False
@@ -38,7 +38,7 @@ Inherits libcURL.cURLHandle
 		  If Not SetPartName(part, Name) Then Return False
 		  If Not SetPartSubparts(part, Value) Then Return False
 		  If AdditionalHeaders <> Nil Then
-		    If Not SetPartHeaders(part, AdditionalHeaders, False) Then Return False
+		    If Not SetPartHeaders(part, AdditionalHeaders) Then Return False
 		  End If
 		  Return mLastError = 0
 		End Function
@@ -59,7 +59,7 @@ Inherits libcURL.cURLHandle
 		    If Not SetPartType(part, ContentType) Then Return False
 		  End If
 		  If AdditionalHeaders <> Nil Then
-		    If Not SetPartHeaders(part, AdditionalHeaders, False) Then Return False
+		    If Not SetPartHeaders(part, AdditionalHeaders) Then Return False
 		  End If
 		  If Encoding <> TransferEncoding.Binary Then
 		    If Not SetPartEncoding(part, encoding) Then Return False
@@ -88,7 +88,7 @@ Inherits libcURL.cURLHandle
 		    If Not SetPartEncoding(part, encoding) Then Return False
 		  End If
 		  If AdditionalHeaders <> Nil Then
-		    If Not SetPartHeaders(part, AdditionalHeaders, False) Then Return False
+		    If Not SetPartHeaders(part, AdditionalHeaders) Then Return False
 		  End If
 		  Return mLastError = 0
 		End Function
@@ -237,7 +237,7 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function SetPartHeaders(Part As Ptr, Headers As libcURL.ListPtr, TakeOwnerShip As Boolean) As Boolean
+		Protected Function SetPartHeaders(Part As Ptr, Headers As libcURL.ListPtr, TakeOwnerShip As Boolean = True) As Boolean
 		  Dim own As Integer
 		  If TakeOwnerShip Then 
 		    own = 1
