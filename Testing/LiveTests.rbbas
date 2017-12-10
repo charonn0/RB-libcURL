@@ -5,7 +5,6 @@ Protected Module LiveTests
 		  mSession = New cURLClient
 		  mSession.EasyItem.Verbose = True
 		  mSession.EasyItem.UseErrorBuffer = True
-		  AddHandler mSession.DebugMessage, AddressOf _DebugMessageHandler
 		  TestResult = 0
 		  Try
 		    TestCookieGet()
@@ -157,18 +156,6 @@ Protected Module LiveTests
 		  Assert(mSession.EasyItem.URL = "https://nghttp2.org/httpbin/get")
 		  Assert(Not mSession.Get("https://nghttp2.org/httpbin/redirect/7"))
 		  Assert(mSession.LastError = libcURL.Errors.TOO_MANY_REDIRECTS)
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Sub _DebugMessageHandler(Sender As libcURL.cURLClient, MessageType As libcURL.curl_infotype, data As String)
-		  #pragma Unused Sender
-		  Select Case MessageType
-		  Case libcURL.curl_infotype.data_in, libcURL.curl_infotype.data_out, libcURL.curl_infotype.ssl_in, libcURL.curl_infotype.ssl_out
-		    Return
-		  End Select
-		  System.DebugLog(libcURL.curl_infoname(MessageType) + ": " + data.Trim)
-		  
 		End Sub
 	#tag EndMethod
 
