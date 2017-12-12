@@ -213,6 +213,10 @@ Inherits libcURL.cURLHandle
 		End Function
 	#tag EndMethod
 
+	#tag DelegateDeclaration, Flags = &h21
+		Private Delegate Function cURLSeekCallback(Userdata As Integer, Offset As Integer, Origin As Integer) As Integer
+	#tag EndDelegateDeclaration
+
 	#tag Method, Flags = &h21
 		Private Function curlWrite(char As MemoryBlock, size As Integer, nmemb As Integer) As Integer
 		  ' This method is the intermediary between WriteCallback and the DataAvailable event.
@@ -749,6 +753,10 @@ Inherits libcURL.cURLHandle
 		      
 		    Case IsA cURLDebugCallback
 		      Dim p As cURLDebugCallback = NewValue
+		      Return Me.SetOptionPtr(OptionNumber, p)
+		      
+		    Case IsA cURLSeekCallback
+		      Dim p As cURLSeekCallback = NewValue
 		      Return Me.SetOptionPtr(OptionNumber, p)
 		      
 		    End Select
