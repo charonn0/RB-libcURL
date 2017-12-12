@@ -24,39 +24,6 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Attributes( deprecated = "libcURL.CookieEngine.NewSession" )  Sub ClearSessionCookies()
-		  If Not Me.CookieEngine.NewSession Then Raise New cURLException(Me)
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Shared Function CloseCallback(UserData As Integer, Socket As Integer) As Integer
-		  ' This method is invoked by libcURL. DO NOT CALL THIS METHOD
-		  
-		  #pragma X86CallingConvention CDecl
-		  If Instances = Nil Then Return CURL_SOCKET_BAD
-		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
-		    Return EasyHandle(curl.Value).curlClose(socket)
-		  End If
-		  
-		  Return CURL_SOCKET_BAD
-		  
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function ConnectionCount() As Integer
-		  ' Returns the number of sockets employed by the easy handle which have not yet disconnected.
-		  ' libcURL will attempt to reuse connections, so this may be greater-than zero even after a
-		  ' transfer has completed.
-		  
-		  Return mConnectionCount
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Sub Constructor(GlobalInitFlags As Integer = libcURL.CURL_GLOBAL_DEFAULT)
 		  ' Creates a new curl_easy handle. If creating the handle fails for any reason
 		  ' an exception will be raised; otherwise, the handle may be used immediately.
@@ -139,34 +106,6 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Function curlClose(Socket As Integer) As Integer
-		  ' This method is the intermediary between CloseCallback and the Disconnected event.
-		  ' DO NOT CALL THIS METHOD
-		  mConnectionCount = mConnectionCount - 1
-		  RaiseEvent Disconnected(Socket)
-		  
-		  #If TargetWin32 Then
-		    Declare Function closesocket Lib "Ws2_32" (SocketHandle As Integer) As Integer
-		    mLastError = closesocket(Socket)
-		  #else
-		    Dim bs As BinaryStream
-		    bs = New BinaryStream(Socket, BinaryStream.HandleTypeFileNumber)
-		    bs.Close
-		    mLastError = bs.LastErrorCode
-		  #endif
-		  Return CURL_SOCKOPT_OK
-		  
-		Exception Err As RuntimeException
-		  If Err IsA ThreadEndException Or Err IsA EndException Then Raise Err
-		  Return CURL_SOCKOPT_ERROR
-		End Function
-	#tag EndMethod
-
-	#tag DelegateDeclaration, Flags = &h21
-		Private Delegate Function cURLCloseCallback(UserData As Integer, cURLSocket As Integer) As Integer
-	#tag EndDelegateDeclaration
-
-	#tag Method, Flags = &h21
 		Private Function curlDebug(info As curl_infotype, data As MemoryBlock, Size As Integer) As Integer
 		  ' This method is the intermediary between DebugCallback and the DebugMessage event.
 		  ' DO NOT CALL THIS METHOD
@@ -211,34 +150,6 @@ Inherits libcURL.cURLHandle
 
 	#tag DelegateDeclaration, Flags = &h21
 		Private Delegate Function cURLIOCallback(char As Ptr, size As Integer, nmemb As Integer, UserData As Integer) As Integer
-	#tag EndDelegateDeclaration
-
-	#tag Method, Flags = &h21
-		Private Function curlOpen(SocketType As Integer, Socket As Integer) As Integer
-		  ' This method is the intermediary between OpenCallback and the CreateSocket event.
-		  ' DO NOT CALL THIS METHOD
-		  
-		  Const CURL_SOCKOPT_BAD = 1
-		  Const CURLSOCKTYPE_IPCXN = 0
-		  Const CURLSOCKTYPE_ACCEPT = 1
-		  
-		  Select Case SocketType
-		  Case CURLSOCKTYPE_IPCXN, CURLSOCKTYPE_ACCEPT
-		    RaiseEvent CreateSocket(Socket)
-		    mConnectionCount = mConnectionCount + 1
-		    Return CURL_SOCKOPT_OK
-		  End Select
-		  
-		  Return CURL_SOCKOPT_BAD
-		  
-		Exception Err As RuntimeException
-		  If Err IsA ThreadEndException Or Err IsA EndException Then Raise Err
-		  Return CURL_SOCKOPT_BAD
-		End Function
-	#tag EndMethod
-
-	#tag DelegateDeclaration, Flags = &h21
-		Private Delegate Function cURLOpenCallback(UserData As Integer, Socket As Integer, SocketType As Integer) As Integer
 	#tag EndDelegateDeclaration
 
 	#tag Method, Flags = &h21
@@ -348,7 +259,6 @@ Inherits libcURL.cURLHandle
 		    Instances.Remove(mHandle)
 		    mErrorBuffer = Nil
 		  End If
-		  mConnectionCount = 0
 		  mHandle = 0
 		  
 		  If Instances <> Nil And Instances.Count = 0 Then Instances = Nil
@@ -482,16 +392,6 @@ Inherits libcURL.cURLHandle
 		Protected Sub InitCallbacks()
 		  ' This method sets up the callback functions for the EasyHandle.
 		  
-		  If libcURL.Version.IsAtLeast(7, 16, 0) Then
-		    If Not SetOption(libcURL.Opts.SOCKOPTDATA, mHandle) Then Raise New cURLException(Me)
-		    If Not SetOption(libcURL.Opts.SOCKOPTFUNCTION, AddressOf OpenCallback) Then Raise New cURLException(Me)
-		  End If
-		  
-		  If libcURL.Version.IsAtLeast(7, 21, 7) Then
-		    If Not SetOption(libcURL.Opts.CLOSESOCKETDATA, mHandle) Then Raise New cURLException(Me)
-		    If Not SetOption(libcURL.Opts.CLOSESOCKETFUNCTION, AddressOf CloseCallback) Then Raise New cURLException(Me)
-		  End If
-		  
 		  If libcURL.Version.IsAtLeast(7, 18, 0) Then
 		    If Not SetOption(libcURL.Opts.SEEKDATA, mHandle) Then Raise New cURLException(Me)
 		    If Not SetOption(libcURL.Opts.SEEKFUNCTION, AddressOf SeekCallback) Then Raise New cURLException(Me)
@@ -518,23 +418,6 @@ Inherits libcURL.cURLHandle
 		  If Not SetOption(libcURL.Opts.DEBUGDATA, mHandle) Then Raise New cURLException(Me)
 		  If Not SetOption(libcURL.Opts.DEBUGFUNCTION, AddressOf DebugCallback) Then Raise New cURLException(Me)
 		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Shared Function OpenCallback(UserData As Integer, Socket As Integer, SocketType As Integer) As Integer
-		  ' This method is invoked by libcURL. DO NOT CALL THIS METHOD
-		  
-		  #pragma X86CallingConvention CDecl
-		  If Instances = Nil Then Return 0
-		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
-		    Return EasyHandle(curl.Value).curlOpen(SocketType, Socket)
-		  End If
-		  
-		  Break ' UserData does not refer to a valid instance!
-		  
-		  Return CURL_SOCKET_BAD
-		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -868,14 +751,6 @@ Inherits libcURL.cURLHandle
 		      Dim p As cURLDebugCallback = NewValue
 		      Return Me.SetOptionPtr(OptionNumber, p)
 		      
-		    Case IsA cURLCloseCallback
-		      Dim p As cURLCloseCallback = NewValue
-		      Return Me.SetOptionPtr(OptionNumber, p)
-		      
-		    Case IsA cURLOpenCallback
-		      Dim p As cURLOpenCallback = NewValue
-		      Return Me.SetOptionPtr(OptionNumber, p)
-		      
 		    End Select
 		  End Select
 		  
@@ -989,10 +864,6 @@ Inherits libcURL.cURLHandle
 
 
 	#tag Hook, Flags = &h0
-		Event CreateSocket(Socket As Integer)
-	#tag EndHook
-
-	#tag Hook, Flags = &h0
 		Event DataAvailable(NewData As MemoryBlock) As Integer
 	#tag EndHook
 
@@ -1002,10 +873,6 @@ Inherits libcURL.cURLHandle
 
 	#tag Hook, Flags = &h0
 		Event DebugMessage(MessageType As libcURL.curl_infotype, Data As String)
-	#tag EndHook
-
-	#tag Hook, Flags = &h0
-		Event Disconnected(Socket As Integer)
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
@@ -1427,10 +1294,6 @@ Inherits libcURL.cURLHandle
 
 	#tag Property, Flags = &h21
 		Private mCA_ListFile As FolderItem
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private mConnectionCount As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h21

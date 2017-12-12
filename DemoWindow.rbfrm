@@ -42,7 +42,7 @@ Begin Window DemoWindow
       Panels          =   ""
       Scope           =   0
       SmallTabs       =   ""
-      TabDefinition   =   "Information\rOutput\rFeatures\rCommand Line\rCookies"
+      TabDefinition   =   "Information\rOutput\rFeatures\rCookies"
       TabIndex        =   11
       TabPanelIndex   =   0
       TabStop         =   True
@@ -51,7 +51,7 @@ Begin Window DemoWindow
       TextUnit        =   0
       Top             =   119
       Underline       =   ""
-      Value           =   4
+      Value           =   3
       Visible         =   True
       Width           =   596
       Begin Listbox Headers
@@ -879,117 +879,6 @@ Begin Window DemoWindow
          Visible         =   True
          Width           =   174
       End
-      Begin Label Label9
-         AutoDeactivate  =   True
-         Bold            =   ""
-         DataField       =   ""
-         DataSource      =   ""
-         Enabled         =   True
-         Height          =   20
-         HelpTag         =   ""
-         Index           =   -2147483648
-         InitialParent   =   "TabPanel2"
-         Italic          =   ""
-         Left            =   20
-         LockBottom      =   ""
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   ""
-         LockTop         =   True
-         Multiline       =   ""
-         Scope           =   0
-         Selectable      =   False
-         TabIndex        =   1
-         TabPanelIndex   =   4
-         Text            =   "Enter a curl command line:"
-         TextAlign       =   0
-         TextColor       =   &h000000
-         TextFont        =   "System"
-         TextSize        =   0
-         TextUnit        =   0
-         Top             =   148
-         Transparent     =   True
-         Underline       =   ""
-         Visible         =   True
-         Width           =   560
-      End
-      Begin PushButton PushButton10
-         AutoDeactivate  =   True
-         Bold            =   ""
-         ButtonStyle     =   0
-         Cancel          =   ""
-         Caption         =   "Parse"
-         Default         =   ""
-         Enabled         =   True
-         Height          =   22
-         HelpTag         =   ""
-         Index           =   -2147483648
-         InitialParent   =   "TabPanel2"
-         Italic          =   ""
-         Left            =   268
-         LockBottom      =   True
-         LockedInPosition=   False
-         LockLeft        =   False
-         LockRight       =   True
-         LockTop         =   False
-         Scope           =   0
-         TabIndex        =   2
-         TabPanelIndex   =   4
-         TabStop         =   True
-         TextFont        =   "System"
-         TextSize        =   0
-         TextUnit        =   0
-         Top             =   371
-         Underline       =   ""
-         Visible         =   True
-         Width           =   80
-      End
-      Begin TextArea CmdLine
-         AcceptTabs      =   ""
-         Alignment       =   0
-         AutoDeactivate  =   True
-         AutomaticallyCheckSpelling=   True
-         BackColor       =   &hFFFFFF
-         Bold            =   ""
-         Border          =   True
-         DataField       =   ""
-         DataSource      =   ""
-         Enabled         =   True
-         Format          =   ""
-         Height          =   195
-         HelpTag         =   ""
-         HideSelection   =   True
-         Index           =   -2147483648
-         InitialParent   =   "TabPanel2"
-         Italic          =   ""
-         Left            =   20
-         LimitText       =   0
-         LockBottom      =   True
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   True
-         LockTop         =   True
-         Mask            =   ""
-         Multiline       =   True
-         ReadOnly        =   ""
-         Scope           =   0
-         ScrollbarHorizontal=   ""
-         ScrollbarVertical=   True
-         Styled          =   True
-         TabIndex        =   0
-         TabPanelIndex   =   4
-         TabStop         =   True
-         Text            =   "-H ""X-Header: TestValue1"" --url ""http://192.168.1.10:8080"""
-         TextColor       =   &h000000
-         TextFont        =   "System"
-         TextSize        =   0
-         TextUnit        =   0
-         Top             =   172
-         Underline       =   ""
-         UseFocusRing    =   True
-         Visible         =   True
-         Width           =   560
-      End
       Begin CheckBox NoProgress
          AutoDeactivate  =   True
          Bold            =   ""
@@ -1189,7 +1078,7 @@ Begin Window DemoWindow
          LockTop         =   True
          Scope           =   0
          TabIndex        =   1
-         TabPanelIndex   =   5
+         TabPanelIndex   =   4
          TextFont        =   "System"
          TextSize        =   0
          TextUnit        =   0
@@ -1234,7 +1123,7 @@ Begin Window DemoWindow
             ScrollBarVertical=   True
             SelectionType   =   0
             TabIndex        =   0
-            TabPanelIndex   =   5
+            TabPanelIndex   =   4
             TabStop         =   True
             TextFont        =   "System"
             TextSize        =   0
@@ -1276,7 +1165,7 @@ Begin Window DemoWindow
             ReadOnly        =   ""
             Scope           =   0
             TabIndex        =   1
-            TabPanelIndex   =   5
+            TabPanelIndex   =   4
             TabStop         =   True
             Text            =   ""
             TextColor       =   &h000000
@@ -1310,7 +1199,7 @@ Begin Window DemoWindow
             LockTop         =   False
             Scope           =   0
             TabIndex        =   3
-            TabPanelIndex   =   5
+            TabPanelIndex   =   4
             TabStop         =   True
             TextFont        =   "System"
             TextSize        =   0
@@ -1350,7 +1239,7 @@ Begin Window DemoWindow
             ReadOnly        =   ""
             Scope           =   0
             TabIndex        =   2
-            TabPanelIndex   =   5
+            TabPanelIndex   =   4
             TabStop         =   True
             Text            =   ""
             TextColor       =   &h000000
@@ -1384,7 +1273,7 @@ Begin Window DemoWindow
             Scope           =   0
             State           =   1
             TabIndex        =   4
-            TabPanelIndex   =   5
+            TabPanelIndex   =   4
             TabStop         =   True
             TextFont        =   "System"
             TextSize        =   0
@@ -1416,7 +1305,7 @@ Begin Window DemoWindow
             Scope           =   0
             Selectable      =   False
             TabIndex        =   9
-            TabPanelIndex   =   5
+            TabPanelIndex   =   4
             Text            =   "Cookies known: 0"
             TextAlign       =   2
             TextColor       =   &h000000
@@ -1450,7 +1339,7 @@ Begin Window DemoWindow
             Scope           =   0
             Selectable      =   False
             TabIndex        =   10
-            TabPanelIndex   =   5
+            TabPanelIndex   =   4
             Text            =   "Cookies shown: 0"
             TextAlign       =   2
             TextColor       =   &h000000
@@ -1484,7 +1373,7 @@ Begin Window DemoWindow
             LockTop         =   False
             Scope           =   0
             TabIndex        =   14
-            TabPanelIndex   =   5
+            TabPanelIndex   =   4
             TabStop         =   True
             TextFont        =   "System"
             TextSize        =   0
@@ -1515,7 +1404,7 @@ Begin Window DemoWindow
             LockTop         =   False
             Scope           =   0
             TabIndex        =   15
-            TabPanelIndex   =   5
+            TabPanelIndex   =   4
             TabStop         =   True
             TextFont        =   "System"
             TextSize        =   0
@@ -1546,7 +1435,7 @@ Begin Window DemoWindow
             LockTop         =   False
             Scope           =   0
             TabIndex        =   16
-            TabPanelIndex   =   5
+            TabPanelIndex   =   4
             TabStop         =   True
             TextFont        =   "System"
             TextSize        =   0
@@ -1578,7 +1467,7 @@ Begin Window DemoWindow
          Scope           =   0
          State           =   0
          TabIndex        =   0
-         TabPanelIndex   =   5
+         TabPanelIndex   =   4
          TabStop         =   True
          TextFont        =   "System"
          TextSize        =   0
@@ -1779,6 +1668,7 @@ Begin Window DemoWindow
       TabPanelIndex   =   0
       Top             =   437
       Width           =   32
+      Yield           =   True
    End
    Begin TextField TextField1
       AcceptTabs      =   ""
@@ -3090,21 +2980,6 @@ End
 		  Case "HTTP 1.0"
 		    Client.Proxy.Type = libcURL.ProxyType.HTTP1_0
 		  End Select
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events PushButton10
-	#tag Event
-		Sub Action()
-		  Try
-		    libcURL.ParseCommandLine(CmdLine.Text, Self.Client)
-		  Catch Err
-		    Call MsgBox(Err.Message, 16, "Unable to parse!")
-		    Return
-		  End Try
-		  
-		  MsgBox("All options parsed successfully.")
-		  ResetUI()
 		End Sub
 	#tag EndEvent
 #tag EndEvents
