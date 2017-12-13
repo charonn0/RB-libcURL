@@ -270,6 +270,9 @@ Protected Module Opts
 	#tag Constant, Name = PROGRESSFUNCTION, Type = Double, Dynamic = False, Default = \"20056", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = PROTOCOLS, Type = Double, Dynamic = False, Default = \"181", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = PROXY, Type = Double, Dynamic = False, Default = \"10004", Scope = Protected
 	#tag EndConstant
 
