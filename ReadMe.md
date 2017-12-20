@@ -27,6 +27,7 @@ This example performs a synchronous HTTP GET request on the calling thread. [**M
 * A [consistent, high-level API](https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLClient) over [the full range of libcURL's features](https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle).
 * Interact directly with libcurl using idiomatic RB/Xojo objects, methods, and events; no shell or plugins required.
 * International domain name support†.
+* 64-bit ready.
 * IPv6 support.
 * High performance, even when doing several transfers at once.
 * Build complex [HTTP forms](https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm), including nested forms and file uploads.
