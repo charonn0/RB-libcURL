@@ -108,9 +108,10 @@ Implements FormStreamGetter
 		  ' http://curl.haxx.se/libcurl/c/curl_formadd.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm.AddElement
 		  
-		  Dim e As New libcURL.EasyHandle(Me.Flags)
-		  e.UploadStream = ValueStream
-		  mStreams.Append(e)
+		  ' this dummy EasyHandle handles the ReadCallback by reading from ValueStream
+		  Dim dummy As New libcURL.EasyHandle(Me.Flags)
+		  dummy.UploadStream = ValueStream
+		  mStreams.Append(dummy)
 		  
 		  Dim v() As Variant
 		  Dim o() As Integer
@@ -118,7 +119,7 @@ Implements FormStreamGetter
 		  o.Append(CURLFORM_COPYNAME)
 		  v.Append(Name)
 		  o.Append(CURLFORM_STREAM)
-		  v.Append(e)
+		  v.Append(dummy)
 		  
 		  If Filename.Trim <> "" Then
 		    o.Append(CURLFORM_FILENAME)
