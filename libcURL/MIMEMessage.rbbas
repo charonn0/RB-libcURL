@@ -131,7 +131,7 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h21
 		Private Sub Destructor()
-		  If mHandle <> 0 Then curl_mime_free(mHandle)
+		  If mFreeable And mHandle <> 0 Then curl_mime_free(mHandle)
 		  mHandle = 0
 		  ReDim mOwnedLists(-1)
 		End Sub
@@ -258,6 +258,7 @@ Inherits libcURL.cURLHandle
 	#tag Method, Flags = &h1
 		Protected Function SetPartSubparts(Part As Ptr, Subparts As libcURL.MIMEMessage) As Boolean
 		  mLastError = curl_mime_subparts(Part, Subparts.Handle)
+		  If mLastError = 0 Then Subparts.mFreeable = False
 		  Return mLastError = 0
 		End Function
 	#tag EndMethod
@@ -283,6 +284,10 @@ Inherits libcURL.cURLHandle
 		#tag EndGetter
 		FirstElement As libcURL.MIMEMessagePart
 	#tag EndComputedProperty
+
+	#tag Property, Flags = &h21
+		Private mFreeable As Boolean = True
+	#tag EndProperty
 
 	#tag Property, Flags = &h21
 		Private mOwnedLists() As libcURL.ListPtr
