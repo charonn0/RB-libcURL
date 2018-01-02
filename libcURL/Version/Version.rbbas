@@ -20,7 +20,7 @@ Protected Module Version
 
 	#tag Method, Flags = &h1
 		Protected Function IsExactly(Major As Integer, Minor As Integer, Patch As Integer) As Boolean
-		  ' Returns True if libcURL is available and at least the version specified.
+		  ' Returns True if libcURL is available and exactly the version specified.
 		  
 		  Static min, maj, pat As Integer
 		  Static avail As Boolean = System.IsFunctionAvailable("curl_global_init", cURLLib)

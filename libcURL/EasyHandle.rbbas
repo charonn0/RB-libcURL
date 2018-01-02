@@ -497,7 +497,7 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Read(Count As Integer, encoding As TextEncoding = Nil) As String
+		Attributes( deprecated )  Function Read(Count As Integer, encoding As TextEncoding = Nil) As String
 		  ' Only available after calling SetOption(libcURL.Opts.CONNECT_ONLY, True)
 		  ' Once Perform returns you may Read from the easy_handle by calling this method
 		  ' See:
@@ -838,7 +838,7 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Write(Text As String) As Integer
+		Attributes( deprecated )  Function Write(Text As String) As Integer
 		  ' Only available after calling SetOption(libcURL.Opts.CONNECT_ONLY, True)
 		  ' Once Perform returns you may Write to the easy_handle by calling this method
 		  ' If the write succeeded this method returns then number of bytes actually written.
