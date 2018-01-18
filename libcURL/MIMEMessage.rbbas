@@ -1,6 +1,7 @@
 #tag Class
 Protected Class MIMEMessage
 Inherits libcURL.cURLHandle
+Implements FormStreamGetter
 	#tag Method, Flags = &h0
 		Function AddElement(Name As String, Value As FolderItem, ContentType As String = "", AdditionalHeaders As libcURL.ListPtr = Nil, Encoding As libcURL.MIMEMessage.TransferEncoding = libcURL.MIMEMessage.TransferEncoding.Binary) As Boolean
 		  ' Adds the passed file to the form using the specified name.
@@ -180,6 +181,25 @@ Inherits libcURL.cURLHandle
 		  #pragma X86CallingConvention CDecl
 		  If PartStreams <> Nil And PartStreams.HasKey(UserData) Then PartStreams.Remove(UserData)
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Function GetStream(UserData As Ptr) As Readable
+		  Return PartStreams.Lookup(UserData, Nil)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Operator_Compare(OtherMessage As libcURL.MIMEMessage) As Integer
+		  ' Overloads the comparison operator(=), permitting direct comparisons between instances of MIMEMessage.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MIMEMessage.Operator_Compare
+		  
+		  Dim i As Integer = Super.Operator_Compare(OtherMessage)
+		  If i = 0 Then i = Sign(mHandle - OtherMessage.Handle)
+		  Return i
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
