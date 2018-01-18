@@ -563,39 +563,6 @@ Protected Module libcURL
 		ContentsLenLarge As Int64
 	#tag EndStructure
 
-	#tag Structure, Name = curl_mime, Flags = &h21
-		Easy As Ptr
-		  Parent As Ptr
-		  FirstPart As Ptr
-		  LastPart As Ptr
-		  Boundary As Ptr
-		State As Integer
-	#tag EndStructure
-
-	#tag Structure, Name = curl_mimepart, Flags = &h21
-		Easy As Integer
-		  Parent As Ptr
-		  NextPart As Ptr
-		  Kind As Integer
-		  Data As Ptr
-		  ReadFunc As Ptr
-		  SeekFunc As Ptr
-		  FreeFunc As Ptr
-		  UserData As Ptr
-		  FilePtr As Ptr
-		  Headers As Ptr
-		  UserHeaders As Ptr
-		  MIMEType As Ptr
-		  FileName As Ptr
-		  Name As Ptr
-		  NameSize As Integer
-		  DataSize As UInt32
-		  Flags As UInt32
-		  State As Integer
-		  Encoder As Ptr
-		EncoderState As Integer
-	#tag EndStructure
-
 	#tag Structure, Name = timeval, Flags = &h21
 		tv_sec As Integer
 		tv_usec As Integer

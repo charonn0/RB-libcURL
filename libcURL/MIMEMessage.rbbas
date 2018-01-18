@@ -393,6 +393,16 @@ Inherits libcURL.cURLHandle
 	#tag EndProperty
 
 
+	#tag Structure, Name = curl_mime, Flags = &h21
+		Easy As Ptr
+		  Parent As Ptr
+		  FirstPart As Ptr
+		  LastPart As Ptr
+		  Boundary As Ptr
+		State As Integer
+	#tag EndStructure
+
+
 	#tag Enum, Name = TransferEncoding, Type = Integer, Flags = &h0
 		Binary
 		  SevenBit

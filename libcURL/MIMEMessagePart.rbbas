@@ -260,6 +260,31 @@ Protected Class MIMEMessagePart
 	#tag EndComputedProperty
 
 
+	#tag Structure, Name = curl_mimepart, Flags = &h21
+		Easy As Integer
+		  Parent As Ptr
+		  NextPart As Ptr
+		  Kind As Integer
+		  Data As Ptr
+		  ReadFunc As Ptr
+		  SeekFunc As Ptr
+		  FreeFunc As Ptr
+		  UserData As Ptr
+		  FilePtr As Ptr
+		  Headers As Ptr
+		  UserHeaders As Ptr
+		  MIMEType As Ptr
+		  FileName As Ptr
+		  Name As Ptr
+		  NameSize As Integer
+		  DataSize As UInt32
+		  Flags As UInt32
+		  State As Integer
+		  Encoder As Ptr
+		EncoderState As Integer
+	#tag EndStructure
+
+
 	#tag ViewBehavior
 		#tag ViewProperty
 			Name="ContentType"
