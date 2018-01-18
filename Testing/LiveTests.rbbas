@@ -99,9 +99,9 @@ Protected Module LiveTests
 		Private Sub TestCookieSet()
 		  mSession.Cookies.Enabled = True
 		  Assert(mSession.Cookies.SetCookie("TestCookie", "TestValue", "nghttp2.org"))
-		  If Not mSession.Get("https://nghttp2.org/httpbin/cookies") Then Return
+		  Assert(mSession.Get("https://nghttp2.org/httpbin/cookies"))
 		  Dim js As New JSONItem(mSession.GetDownloadedData)
-		  If Not js.HasName("cookies") Then Return
+		  Assert(js.HasName("cookies"))
 		  js = js.Value("cookies")
 		  Assert(js.Value("TestCookie") = "TestValue")
 		End Sub
