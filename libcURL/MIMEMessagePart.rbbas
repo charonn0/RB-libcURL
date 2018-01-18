@@ -217,12 +217,11 @@ Protected Class MIMEMessagePart
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MIMEMessagePart.SubPart
 			  
 			  #pragma Warning "Fixme"
-			  'Dim p As Ptr = Struct.MoreFiles
-			  'If p = Nil Then Return Nil
-			  'Return New MIMEMessagePart(p, mOwner)
+			  If Me.Type <> MIMEPartType.Multipart Then Return Nil
+			  Return New MIMEMessage(Struct.UserData, mOwner)
 			End Get
 		#tag EndGetter
-		SubPart As libcURL.MIMEMessagePart
+		SubPart As libcURL.MIMEMessage
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
