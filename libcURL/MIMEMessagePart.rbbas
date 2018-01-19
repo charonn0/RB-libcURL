@@ -191,7 +191,7 @@ Protected Class MIMEMessagePart
 			  ' See:
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MIMEMessagePart.Stream
 			  
-			  If Struct.UserData <> Nil Then Return FormStreamGetter(mOwner).GetStream(Struct.UserData)
+			  If Struct.UserData <> Nil And Me.Type = MIMEPartType.Callback Then Return FormStreamGetter(mOwner).GetStream(Struct.UserData)
 			End Get
 		#tag EndGetter
 		Stream As Readable
