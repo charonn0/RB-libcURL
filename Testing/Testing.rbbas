@@ -276,8 +276,7 @@ Protected Module Testing
 	#tag Method, Flags = &h21
 		Private Sub TestMIMEMessage()
 		  If Not libcURL.Version.IsAtLeast(7, 56, 0) Then Return
-		  Dim e As New libcURL.EasyHandle
-		  Dim m As New libcURL.MIMEMessage(e)
+		  Dim m As New libcURL.MIMEMessage(New libcURL.EasyHandle)
 		  Assert(m <> Nil)
 		  If Not m.AddElement("TestString", "Test Value1") Then Raise New libcURL.cURLException(m)
 		  If Not m.AddElement("TestString", "Test Value2") Then Raise New libcURL.cURLException(m)
@@ -305,7 +304,7 @@ Protected Module Testing
 		  Assert(m.GetElement(2).Type = libcURL.MIMEPartType.File)
 		  
 		  Assert(m.GetElement(3).Name = "TestFile2")
-		  Assert(m.GetElement(3).Data = App.ExecutableFile.ShellPath)
+		  Assert(m.GetElement(3).Data = App.ExecutableFile.AbsolutePath)
 		  Assert(m.GetElement(3).ContentType = "application/sgml")
 		  Assert(m.GetElement(3).Type = libcURL.MIMEPartType.File)
 		  
