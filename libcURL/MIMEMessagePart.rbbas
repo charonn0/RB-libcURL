@@ -51,14 +51,18 @@ Protected Class MIMEMessagePart
 			  ' See:
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MIMEMessagePart.Data
 			  
-			  If Me.Type = MIMEPartType.Callback Then Return "" ' callbacks doesn't store the contents
 			  Dim mb As MemoryBlock = Struct.Data
 			  If mb <> Nil Then
-			    If Struct.DataSize > 0 Then
-			      Return mb.StringValue(0, Struct.DataSize)
-			    Else
+			    Select Case Me.Type
+			    Case MIMEPartType.File ' file path
 			      Return mb.CString(0)
-			    End If
+			    Case MIMEPartType.Data
+			      If Struct.DataSize > 0 Then
+			        Return mb.StringValue(0, Struct.DataSize)
+			      Else
+			        Return mb.CString(0)
+			      End If
+			    End Select
 			  End If
 			End Get
 		#tag EndGetter
