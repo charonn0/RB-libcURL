@@ -16,6 +16,7 @@ Implements FormStreamGetter
 		  End If
 		  If Not SetPartName(part, Name) Then Return False
 		  If Not SetPartFile(part, Value) Then Return False
+		  If ContentType = "" Then ContentType = MIMEType(Value)
 		  If ContentType <> "" Then
 		    If Not SetPartType(part, ContentType) Then Return False
 		  End If
@@ -71,6 +72,7 @@ Implements FormStreamGetter
 		  If Filename <> "" Then
 		    If Not SetPartFileName(part, Filename + Chr(0)) Then Return False
 		  End If
+		  If Filename <> "" And ContentType = "" Then ContentType = MIMEType(SpecialFolder.Temporary.Child(Filename))
 		  If ContentType <> "" Then
 		    If Not SetPartType(part, ContentType) Then Return False
 		  End If
