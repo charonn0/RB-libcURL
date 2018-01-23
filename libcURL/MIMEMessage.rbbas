@@ -198,6 +198,58 @@ Implements FormStreamGetter
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function GetElement(Index As Integer) As libcURL.MIMEMessagePart
+		  ' Returns a reference to the MultipartFormElement at the specified index; if the index is out of bounds
+		  ' then an OutOfBoundsException will be raised.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MIMEMessage.GetElement
+		  
+		  
+		  Dim e As libcURL.MIMEMessagePart = Me.FirstPart
+		  Dim i As Integer
+		  Do
+		    If i < Index Then
+		      e = e.NextPart
+		      If e = Nil Then
+		        Dim err As New OutOfBoundsException
+		        err.Message = "The message does not contain an element at that index."
+		        Raise err
+		      End If
+		      
+		    ElseIf i = Index Then
+		      Return e
+		      
+		    Else
+		      Dim err As New OutOfBoundsException
+		      err.Message = "Message indices must be greater than or equal to zero."
+		      Raise err
+		    End If
+		    i = i + 1
+		    
+		  Loop
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function GetElement(Name As String) As Integer
+		  ' Returns the index of the first MultipartFormElement that matches the given name.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MIMEMessage.GetElement
+		  
+		  Dim e As libcURL.MIMEMessagePart = Me.FirstPart
+		  Dim i As Integer
+		  Do Until e = Nil
+		    If e.Name = Name Then Return i
+		    e = e.NextPart
+		    i = i + 1
+		  Loop
+		  Return -1
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h21
 		Private Function GetStream(UserData As Ptr) As Readable
 		  Return PartStreams.Lookup(UserData, Nil)
