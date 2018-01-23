@@ -51,6 +51,13 @@ Protected Module Testing
 		    Return False
 		  End Try
 		  
+		  Try
+		    TestMIMEMessage()
+		  Catch
+		    TestResult = 7
+		    Return False
+		  End Try
+		  
 		  #If RunLiveTests Then
 		    Return Testing.LiveTests.RunTests()
 		  #else
@@ -263,6 +270,56 @@ Protected Module Testing
 		  Assert(l.Item(4) = "string")
 		  Dim s() As String = l
 		  Assert(UBound(s) + 1 = l.Count)
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub TestMIMEMessage()
+		  If Not libcURL.Version.IsAtLeast(7, 56, 0) Then Return
+		  Dim e As New libcURL.EasyHandle
+		  Dim m As New libcURL.MIMEMessage(e)
+		  Assert(m <> Nil)
+		  If Not m.AddElement("TestString", "Test Value1") Then Raise New libcURL.cURLException(m)
+		  If Not m.AddElement("TestString", "Test Value2") Then Raise New libcURL.cURLException(m)
+		  If Not m.AddElement("TestFile1", App.ExecutableFile) Then Raise New libcURL.cURLException(m)
+		  If Not m.AddElement("TestFile2", App.ExecutableFile, "application/sgml") Then Raise New libcURL.cURLException(m)
+		  Dim test As MemoryBlock = "This is a test string!"
+		  Dim bs1 As New BinaryStream(test)
+		  Dim bs2 As New BinaryStream(test)
+		  If Not m.AddElement("TestStream1", bs1, test.Size, "file1.name", "application/sgml") Then Raise New libcURL.cURLException(m)
+		  If Not m.AddElement("TestStream2", bs2, test.Size, "file2.name", "application/xml") Then Raise New libcURL.cURLException(m)
+		  
+		  Assert(m.GetElement(0).Name = "TestString")
+		  Assert(m.GetElement(0).Data = "Test Value1")
+		  Assert(m.GetElement(0).Type = libcURL.MIMEPartType.Data)
+		  
+		  Assert(m.GetElement(1).Name = "TestString")
+		  Assert(m.GetElement(1).Data = "Test Value2")
+		  Assert(m.GetElement(1).Type = libcURL.MIMEPartType.Data)
+		  
+		  Assert(m.GetElement(2).Name = "TestFile1")
+		  Assert(m.GetElement(2).Data = App.ExecutableFile.ShellPath)
+		  #If TargetWin32 Then
+		    Assert(m.GetElement(2).ContentType = "application/x-msdownload")
+		  #endif
+		  Assert(m.GetElement(2).Type = libcURL.MIMEPartType.File)
+		  
+		  Assert(m.GetElement(3).Name = "TestFile2")
+		  Assert(m.GetElement(3).Data = App.ExecutableFile.ShellPath)
+		  Assert(m.GetElement(3).ContentType = "application/sgml")
+		  Assert(m.GetElement(3).Type = libcURL.MIMEPartType.File)
+		  
+		  Assert(m.GetElement(4).Name = "TestStream1")
+		  Assert(m.GetElement(4).Stream Is bs1)
+		  Assert(m.GetElement(4).ContentType = "application/sgml")
+		  Assert(m.GetElement(4).Type = libcURL.MIMEPartType.Callback)
+		  
+		  Assert(m.GetElement(5).Name = "TestStream2")
+		  Assert(m.GetElement(5).Stream Is bs2)
+		  Assert(m.GetElement(5).ContentType = "application/xml")
+		  Assert(m.GetElement(5).Type = libcURL.MIMEPartType.Callback)
+		  
+		  
 		End Sub
 	#tag EndMethod
 

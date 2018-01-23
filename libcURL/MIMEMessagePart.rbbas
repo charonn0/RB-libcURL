@@ -54,8 +54,9 @@ Protected Class MIMEMessagePart
 			  If Me.Type = MIMEPartType.Callback Then Return "" ' callbacks doesn't store the contents
 			  Dim mb As MemoryBlock = Struct.Data
 			  If mb <> Nil Then
-			    If Struct.DataSize > 0 Then
-			      Return mb.StringValue(0, Struct.DataSize)
+			    Dim sz As UInt32 = Struct.DataSize
+			    If sz > 0 Then
+			      Return mb.StringValue(0, sz)
 			    Else
 			      Return mb.CString(0)
 			    End If
