@@ -271,8 +271,8 @@ Implements FormStreamGetter
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Function Owner() As libcURL.EasyHandle
+	#tag Method, Flags = &h0
+		Function Owner() As libcURL.EasyHandle
 		  If mOwner <> Nil And mOwner.Value <> Nil And mOwner.Value IsA EasyHandle Then Return EasyHandle(mOwner.Value)
 		End Function
 	#tag EndMethod
