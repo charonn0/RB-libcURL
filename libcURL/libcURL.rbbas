@@ -143,6 +143,54 @@ Protected Module libcURL
 	#tag EndMethod
 
 	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Function curl_mime_addpart Lib cURLLib (MIME As Integer) As Ptr
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Function curl_mime_data Lib cURLLib (MIMEPart As Ptr, Data As Ptr, DataSize As Integer) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Function curl_mime_data_cb Lib cURLLib (MIMEPart As Ptr, DataSize As Int64, ReadCallback As Ptr, SeekCallback As Ptr, FreeCallback As Ptr, UserData As Ptr) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Function curl_mime_encoder Lib cURLLib (MIMEPart As Ptr, Encoding As Ptr) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Function curl_mime_filedata Lib cURLLib (MIMEPart As Ptr, FilePath As CString) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Function curl_mime_filename Lib cURLLib (MIMEPart As Ptr, FileName As CString) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Sub curl_mime_free Lib cURLLib (MIME As Integer)
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Function curl_mime_headers Lib cURLLib (MIMEPart As Ptr, HeaderList As Integer, TakeOwnership As Integer) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Function curl_mime_init Lib cURLLib (EasyHandle As Integer) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Function curl_mime_name Lib cURLLib (MIMEPart As Ptr, Name As Ptr, NameSize As Integer) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Function curl_mime_subparts Lib cURLLib (MIMEPart As Ptr, SubParts As Integer) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Function curl_mime_type Lib cURLLib (MIMEPart As Ptr, Type As CString) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h21
 		Private Soft Declare Function curl_multi_add_handle Lib cURLLib (MultiHandle As Integer, EasyHandle As Integer) As Integer
 	#tag EndExternalMethod
 
@@ -558,6 +606,14 @@ Protected Module libcURL
 		Whatever=0
 		  V4=1
 		V6=2
+	#tag EndEnum
+
+	#tag Enum, Name = MIMEPartType, Type = Integer, Flags = &h1
+		None
+		  Data
+		  File
+		  Callback
+		Multipart
 	#tag EndEnum
 
 	#tag Enum, Name = ProxyType, Type = Integer, Flags = &h1
