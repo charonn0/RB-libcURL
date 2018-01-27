@@ -158,6 +158,7 @@ Protected Module LiveTests
 
 	#tag Method, Flags = &h21
 		Private Sub TestMIMEPost()
+		  If Not libcURL.Version.IsAtLeast(7, 56, 0) Then Return
 		  Dim form As New libcURL.MIMEMessage(mSession.EasyItem)
 		  Assert(form.AddElement("user", "bob"))
 		  Assert(form.AddElement("password", "seekrit"))

@@ -182,7 +182,7 @@ Protected Module Testing
 		  c.AutoDisconnect = True
 		  c.CA_ListFile = libcURL.Default_CA_File
 		  c.ConnectionTimeout = 304
-		  c.ConnectionType = libcURL.ConnectionType.AttemptSSL
+		  If libcURL.Version.SSL Then c.ConnectionType = libcURL.ConnectionType.AttemptSSL
 		  'c.CookieJar = GetTemporaryFolderItem
 		  c.FailOnServerError = True
 		  c.FollowRedirects = True
