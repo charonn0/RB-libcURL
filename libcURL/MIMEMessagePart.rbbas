@@ -36,7 +36,11 @@ Protected Class MIMEMessagePart
 			  ' See:
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MIMEMessagePart.ContentType
 			  
-			  Dim mb As MemoryBlock = Struct.MIMEType
+			  #If Not Target64Bit Then
+			    Dim mb As MemoryBlock = Struct.MIMEType
+			  #Else
+			    Dim mb As MemoryBlock = Struct64.MIMEType
+			  #endif
 			  If mb <> Nil Then Return mb.CString(0)
 			End Get
 		#tag EndGetter
@@ -51,7 +55,11 @@ Protected Class MIMEMessagePart
 			  ' See:
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MIMEMessagePart.Data
 			  
-			  Dim mb As MemoryBlock = Struct.Data
+			  #If Not Target64Bit Then
+			    Dim mb As MemoryBlock = Struct.Data
+			  #Else
+			    Dim mb As MemoryBlock = Struct64.Data
+			  #endif
 			  If mb <> Nil Then
 			    Select Case Me.Type
 			    Case MIMEPartType.File ' file path
@@ -77,7 +85,11 @@ Protected Class MIMEMessagePart
 			  ' See:
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MIMEMessagePart.DataSize
 			  
-			  Return Struct.DataSize
+			  #If Not Target64Bit Then
+			    Return Struct.DataSize
+			  #Else
+			    Return Struct64.DataSize
+			  #endif
 			End Get
 		#tag EndGetter
 		DataSize As UInt32
@@ -92,7 +104,11 @@ Protected Class MIMEMessagePart
 			  ' See:
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MIMEMessagePart.FileName
 			  
-			  Dim mb As MemoryBlock = Struct.FileName
+			  #If Not Target64Bit Then
+			    Dim mb As MemoryBlock = Struct.FileName
+			  #Else
+			    Dim mb As MemoryBlock = Struct64.FileName
+			  #endif
 			  If mb <> Nil Then Return mb.CString(0)
 			End Get
 		#tag EndGetter
@@ -107,7 +123,11 @@ Protected Class MIMEMessagePart
 			  ' See:
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MIMEMessagePart.Flags
 			  
-			  Return Struct.Flags
+			  #If Not Target64Bit Then
+			    Return Struct.Flags
+			  #Else
+			    Return Struct64.Flags
+			  #endif
 			End Get
 		#tag EndGetter
 		Flags As Integer
@@ -123,7 +143,11 @@ Protected Class MIMEMessagePart
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MIMEMessagePart.Headers
 			  
 			  If mHeaders = Nil Then
-			    Dim p As Ptr = Struct.Headers
+			    #If Not Target64Bit Then
+			      Dim p As Ptr = Struct.Headers
+			    #Else
+			      Dim p As Ptr = Struct64.Headers
+			    #endif
 			    If p <> Nil Then mHeaders = New ListPtr(p, mOwner.Flags)
 			  End If
 			  Return mHeaders
@@ -156,7 +180,11 @@ Protected Class MIMEMessagePart
 			  ' See:
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MIMEMessagePart.Name
 			  
-			  Dim mb As MemoryBlock = Struct.Name
+			  #If Not Target64Bit Then
+			    Dim mb As MemoryBlock = Struct.Name
+			  #Else
+			    Dim mb As MemoryBlock = Struct64.Name
+			  #endif
 			  If mb <> Nil Then
 			    If Struct.NameSize > 0 Then
 			      Return mb.StringValue(0, Struct.NameSize)
@@ -178,7 +206,11 @@ Protected Class MIMEMessagePart
 			  ' See:
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MIMEMessagePart.NextPart
 			  
-			  Dim p As Ptr = Struct.NextPart
+			  #If Not Target64Bit Then
+			    Dim p As Ptr = Struct.NextPart
+			  #Else
+			    Dim p As Ptr = Struct64.NextPart
+			  #endif
 			  If p <> Nil Then Return New MIMEMessagePart(p, mOwner)
 			End Get
 		#tag EndGetter
@@ -195,7 +227,12 @@ Protected Class MIMEMessagePart
 			  ' See:
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MIMEMessagePart.Stream
 			  
-			  If Struct.UserData <> Nil And Me.Type = MIMEPartType.Callback Then Return FormStreamGetter(mOwner).GetStream(Struct.UserData)
+			  #If Not Target64Bit Then
+			    If Struct.UserData <> Nil And Me.Type = MIMEPartType.Callback Then Return FormStreamGetter(mOwner).GetStream(Struct.UserData)
+			  #Else
+			    If Struct64.UserData <> Nil And Me.Type = MIMEPartType.Callback Then Return FormStreamGetter(mOwner).GetStream(Struct64.UserData)
+			  #endif
+			  
 			End Get
 		#tag EndGetter
 		Stream As Readable
@@ -210,6 +247,15 @@ Protected Class MIMEMessagePart
 		Protected Struct As curl_mimepart
 	#tag EndComputedProperty
 
+	#tag ComputedProperty, Flags = &h1
+		#tag Getter
+			Get
+			  If mStruct <> Nil Then Return mStruct.curl_mimepart64
+			End Get
+		#tag EndGetter
+		Protected Struct64 As curl_mimepart64
+	#tag EndComputedProperty
+
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
@@ -220,9 +266,13 @@ Protected Class MIMEMessagePart
 			  ' See:
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MIMEMessagePart.SubPart
 			  
-			  #pragma Warning "Fixme"
 			  If Me.Type <> MIMEPartType.Multipart Then Return Nil
-			  Return New MIMEMessage(Struct.UserData, mOwner)
+			  #If Not Target64Bit Then
+			    Return New MIMEMessage(Struct.UserData, mOwner)
+			  #Else
+			    Return New MIMEMessage(Struct64.UserData, mOwner)
+			  #endif
+			  
 			End Get
 		#tag EndGetter
 		SubPart As libcURL.MIMEMessage
@@ -236,7 +286,12 @@ Protected Class MIMEMessagePart
 			  ' See:
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MIMEMessagePart.Type
 			  
-			  Return MIMEPartType(Struct.Kind)
+			  #If Not Target64Bit Then
+			    Return MIMEPartType(Struct.Kind)
+			  #Else
+			    Return MIMEPartType(Struct64.Kind)
+			  #endif
+			  
 			End Get
 		#tag EndGetter
 		Type As libcURL.MIMEPartType
@@ -252,7 +307,11 @@ Protected Class MIMEMessagePart
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MIMEMessagePart.UserHeaders
 			  
 			  If mUserHeaders = Nil Then
-			    Dim p As Ptr = Struct.UserHeaders
+			    #If Not Target64Bit Then
+			      Dim p As Ptr = Struct.UserHeaders
+			    #Else
+			      Dim p As Ptr = Struct64.UserHeaders
+			    #endif
 			    If p <> Nil Then mUserHeaders = New ListPtr(p, mOwner.Flags)
 			  End If
 			  Return mUserHeaders
@@ -263,6 +322,30 @@ Protected Class MIMEMessagePart
 
 
 	#tag Structure, Name = curl_mimepart, Flags = &h21
+		Easy As Integer
+		  Parent As Ptr
+		  NextPart As Ptr
+		  Kind As Integer
+		  Data As Ptr
+		  ReadFunc As Ptr
+		  SeekFunc As Ptr
+		  FreeFunc As Ptr
+		  UserData As Ptr
+		  FilePtr As Ptr
+		  Headers As Ptr
+		  UserHeaders As Ptr
+		  MIMEType As Ptr
+		  FileName As Ptr
+		  Name As Ptr
+		  NameSize As Integer
+		  DataSize As UInt32
+		  Flags As UInt32
+		  State As Integer
+		  Encoder As Ptr
+		EncoderState As Integer
+	#tag EndStructure
+
+	#tag Structure, Name = curl_mimepart64, Flags = &h21, Attributes = \"StructureAlignment \x3D 8"
 		Easy As Integer
 		  Parent As Ptr
 		  NextPart As Ptr
@@ -298,6 +381,7 @@ Protected Class MIMEMessagePart
 			Name="Data"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="FileName"
