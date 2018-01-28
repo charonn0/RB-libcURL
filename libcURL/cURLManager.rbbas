@@ -2,7 +2,7 @@
 Protected Class cURLManager
 	#tag Method, Flags = &h0
 		Sub Abort()
-		  ' Aborts the current transfer by automatically returning `True` from the Progress event the 
+		  ' Aborts the current transfer by automatically returning True from the Progress event the
 		  ' next time it is raised. If no transfer is in progress or if the Progress event has been disabled
 		  ' then this method has no effect.
 		  '
@@ -15,7 +15,7 @@ Protected Class cURLManager
 
 	#tag Method, Flags = &h0
 		Sub Close()
-		  ' Explicitly closes all libcURL handles associated with the cURLManager instance. 
+		  ' Explicitly frees the EasyHandle associated with the cURLManager instance.
 		  ' Automatically called by the Destructor.
 		  '
 		  ' See:
@@ -326,8 +326,8 @@ Protected Class cURLManager
 
 	#tag Method, Flags = &h0
 		Function SetRequestHeader(Name As String, Value As String) As Boolean
-		  ' Subsequent calls to this method will append the headers to the previously set headers. Headers will persist from transfer
-		  ' to transfer. Pass an empty value to clear the named header. Pass an empty name to clear all headers.
+		  ' Adds, updates, or removes the named request header. Headers will persist until removed or reset.
+		  ' Pass an empty value to remove the named header. Pass an empty name and an empty value to reset.
 		  '
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.SetRequestHeader
@@ -340,7 +340,7 @@ Protected Class cURLManager
 	#tag Method, Flags = &h0
 		Function SetRequestMethod(RequestMethod As String) As Boolean
 		  ' Overrides the request method used by libcurl. The behavior of this feature depends on which protocol
-		  ' is being used, and not all protocols are supported. Pass the empty string to clear custom methods.
+		  ' is being used, and not all protocols are supported. Pass the empty string to reset.
 		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/CURLOPT_CUSTOMREQUEST.html#DESCRIPTION

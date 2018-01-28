@@ -15,45 +15,16 @@ Inherits libcURL.cURLHandle
 		  If libcURL.Version.IsAtLeast(7, 17, 1) Then
 		    If Not Me.SetOption(libcURL.Opts.COPYPOSTFIELDS, Nil) Then Raise New cURLException(Me)
 		  End If
-		  If Not Me.SetOption(libcURL.Opts.HTTPPOST, Nil) Then Raise New cURLException(Me)
+		  If Not Me.SetOption(libcURL.Opts.HTTPPOST, Nil) Then Raise New libcURL.cURLException(Me)
+		  If libcURL.Version.IsAtLeast(7, 56, 0) Then
+		    If Not Me.SetOption(libcURL.Opts.MIMEPOST, Nil) Then Raise New libcURL.cURLException(Me)
+		  End If
 		  mForm = Nil
+		  mMIMEMessage = Nil
 		  mUploadMode = False
 		  If Not Me.SetOption(libcURL.Opts.HTTPGET, True) Then Raise New cURLException(Me)
 		  
 		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Attributes( deprecated = "libcURL.CookieEngine.NewSession" )  Sub ClearSessionCookies()
-		  If Not Me.CookieEngine.NewSession Then Raise New cURLException(Me)
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Shared Function CloseCallback(UserData As Integer, Socket As Integer) As Integer
-		  ' This method is invoked by libcURL. DO NOT CALL THIS METHOD
-		  
-		  #pragma X86CallingConvention CDecl
-		  If Instances = Nil Then Return CURL_SOCKET_BAD
-		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
-		    Return EasyHandle(curl.Value).curlClose(socket)
-		  End If
-		  
-		  Return CURL_SOCKET_BAD
-		  
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function ConnectionCount() As Integer
-		  ' Returns the number of sockets employed by the easy handle which have not yet disconnected.
-		  ' libcURL will attempt to reuse connections, so this may be greater-than zero even after a
-		  ' transfer has completed.
-		  
-		  Return mConnectionCount
-		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -139,34 +110,6 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Function curlClose(Socket As Integer) As Integer
-		  ' This method is the intermediary between CloseCallback and the Disconnected event.
-		  ' DO NOT CALL THIS METHOD
-		  mConnectionCount = mConnectionCount - 1
-		  RaiseEvent Disconnected(Socket)
-		  
-		  #If TargetWin32 Then
-		    Declare Function closesocket Lib "Ws2_32" (SocketHandle As Integer) As Integer
-		    mLastError = closesocket(Socket)
-		  #else
-		    Dim bs As BinaryStream
-		    bs = New BinaryStream(Socket, BinaryStream.HandleTypeFileNumber)
-		    bs.Close
-		    mLastError = bs.LastErrorCode
-		  #endif
-		  Return CURL_SOCKOPT_OK
-		  
-		Exception Err As RuntimeException
-		  If Err IsA ThreadEndException Or Err IsA EndException Then Raise Err
-		  Return CURL_SOCKOPT_ERROR
-		End Function
-	#tag EndMethod
-
-	#tag DelegateDeclaration, Flags = &h21
-		Private Delegate Function cURLCloseCallback(UserData As Integer, cURLSocket As Integer) As Integer
-	#tag EndDelegateDeclaration
-
-	#tag Method, Flags = &h21
 		Private Function curlDebug(info As curl_infotype, data As MemoryBlock, Size As Integer) As Integer
 		  ' This method is the intermediary between DebugCallback and the DebugMessage event.
 		  ' DO NOT CALL THIS METHOD
@@ -211,34 +154,6 @@ Inherits libcURL.cURLHandle
 
 	#tag DelegateDeclaration, Flags = &h21
 		Private Delegate Function cURLIOCallback(char As Ptr, size As Integer, nmemb As Integer, UserData As Integer) As Integer
-	#tag EndDelegateDeclaration
-
-	#tag Method, Flags = &h21
-		Private Function curlOpen(SocketType As Integer, Socket As Integer) As Integer
-		  ' This method is the intermediary between OpenCallback and the CreateSocket event.
-		  ' DO NOT CALL THIS METHOD
-		  
-		  Const CURL_SOCKOPT_BAD = 1
-		  Const CURLSOCKTYPE_IPCXN = 0
-		  Const CURLSOCKTYPE_ACCEPT = 1
-		  
-		  Select Case SocketType
-		  Case CURLSOCKTYPE_IPCXN, CURLSOCKTYPE_ACCEPT
-		    RaiseEvent CreateSocket(Socket)
-		    mConnectionCount = mConnectionCount + 1
-		    Return CURL_SOCKOPT_OK
-		  End Select
-		  
-		  Return CURL_SOCKOPT_BAD
-		  
-		Exception Err As RuntimeException
-		  If Err IsA ThreadEndException Or Err IsA EndException Then Raise Err
-		  Return CURL_SOCKOPT_BAD
-		End Function
-	#tag EndMethod
-
-	#tag DelegateDeclaration, Flags = &h21
-		Private Delegate Function cURLOpenCallback(UserData As Integer, Socket As Integer, SocketType As Integer) As Integer
 	#tag EndDelegateDeclaration
 
 	#tag Method, Flags = &h21
@@ -302,6 +217,10 @@ Inherits libcURL.cURLHandle
 		End Function
 	#tag EndMethod
 
+	#tag DelegateDeclaration, Flags = &h21
+		Private Delegate Function cURLSeekCallback(Userdata As Integer, Offset As Integer, Origin As Integer) As Integer
+	#tag EndDelegateDeclaration
+
 	#tag Method, Flags = &h21
 		Private Function curlWrite(char As MemoryBlock, size As Integer, nmemb As Integer) As Integer
 		  ' This method is the intermediary between WriteCallback and the DataAvailable event.
@@ -348,7 +267,6 @@ Inherits libcURL.cURLHandle
 		    Instances.Remove(mHandle)
 		    mErrorBuffer = Nil
 		  End If
-		  mConnectionCount = 0
 		  mHandle = 0
 		  
 		  If Instances <> Nil And Instances.Count = 0 Then Instances = Nil
@@ -426,7 +344,11 @@ Inherits libcURL.cURLHandle
 		    If Me.GetInfo(InfoType, mb) Then Return mb.DoubleValue(0)
 		    
 		  Case libcURL.Info.SSL_ENGINES, libcURL.Info.COOKIELIST
-		    mb = New MemoryBlock(8)
+		    #If Not Target64Bit Then
+		      mb = New MemoryBlock(4)
+		    #Else
+		      mb = New MemoryBlock(8)
+		    #Endif
 		    If Me.GetInfo(InfoType, mb) And mb.Ptr(0) <> Nil Then Return New ListPtr(mb.Ptr(0), Me.Flags)
 		    
 		  Else
@@ -478,16 +400,6 @@ Inherits libcURL.cURLHandle
 		Protected Sub InitCallbacks()
 		  ' This method sets up the callback functions for the EasyHandle.
 		  
-		  If libcURL.Version.IsAtLeast(7, 16, 0) Then
-		    If Not SetOption(libcURL.Opts.SOCKOPTDATA, mHandle) Then Raise New cURLException(Me)
-		    If Not SetOption(libcURL.Opts.SOCKOPTFUNCTION, AddressOf OpenCallback) Then Raise New cURLException(Me)
-		  End If
-		  
-		  If libcURL.Version.IsAtLeast(7, 21, 7) Then
-		    If Not SetOption(libcURL.Opts.CLOSESOCKETDATA, mHandle) Then Raise New cURLException(Me)
-		    If Not SetOption(libcURL.Opts.CLOSESOCKETFUNCTION, AddressOf CloseCallback) Then Raise New cURLException(Me)
-		  End If
-		  
 		  If libcURL.Version.IsAtLeast(7, 18, 0) Then
 		    If Not SetOption(libcURL.Opts.SEEKDATA, mHandle) Then Raise New cURLException(Me)
 		    If Not SetOption(libcURL.Opts.SEEKFUNCTION, AddressOf SeekCallback) Then Raise New cURLException(Me)
@@ -514,23 +426,6 @@ Inherits libcURL.cURLHandle
 		  If Not SetOption(libcURL.Opts.DEBUGDATA, mHandle) Then Raise New cURLException(Me)
 		  If Not SetOption(libcURL.Opts.DEBUGFUNCTION, AddressOf DebugCallback) Then Raise New cURLException(Me)
 		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Shared Function OpenCallback(UserData As Integer, Socket As Integer, SocketType As Integer) As Integer
-		  ' This method is invoked by libcURL. DO NOT CALL THIS METHOD
-		  
-		  #pragma X86CallingConvention CDecl
-		  If Instances = Nil Then Return 0
-		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
-		    Return EasyHandle(curl.Value).curlOpen(SocketType, Socket)
-		  End If
-		  
-		  Break ' UserData does not refer to a valid instance!
-		  
-		  Return CURL_SOCKET_BAD
-		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -602,7 +497,7 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Read(Count As Integer, encoding As TextEncoding = Nil) As String
+		Attributes( deprecated )  Function Read(Count As Integer, encoding As TextEncoding = Nil) As String
 		  ' Only available after calling SetOption(libcURL.Opts.CONNECT_ONLY, True)
 		  ' Once Perform returns you may Read from the easy_handle by calling this method
 		  ' See:
@@ -731,6 +626,19 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub SetFormData(FormData As libcURL.MIMEMessage)
+		  ' Sets the FormData MIMEMessage object as the HTTP form to POST as multipart/form-data
+		  ' See:
+		  ' https://curl.haxx.se/libcurl/c/CURLOPT_MIMEPOST.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.SetFormData
+		  
+		  Me.ClearFormData
+		  If Not Me.SetOption(libcURL.Opts.MIMEPOST, FormData) Then Raise New libcURL.cURLException(Me)
+		  mMIMEMessage = FormData
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub SetFormData(FormData As libcURL.MultipartForm)
 		  ' Sets the FormData MultipartForm object as the HTTP form to POST as multipart/form-data
 		  ' You may also pass a Dictionary of NAME:VALUE pairs comprising HTML form elements which
@@ -800,7 +708,7 @@ Inherits libcURL.cURLHandle
 		    libcURL.Opts.COOKIEJAR, libcURL.Opts.COOKIEFILE, libcURL.Opts.HTTPPOST, libcURL.Opts.CAINFO, libcURL.Opts.CAPATH, _
 		    libcURL.Opts.NETINTERFACE, libcURL.Opts.ERRORBUFFER, libcURL.Opts.COPYPOSTFIELDS, libcURL.Opts.ACCEPT_ENCODING, _
 		    libcURL.Opts.FNMATCH_FUNCTION, libcURL.Opts.CHUNK_BGN_FUNCTION, libcURL.Opts.CHUNK_END_FUNCTION, libcURL.Opts.CHUNK_DATA, _
-		    libcURL.Opts.SSLCERT)
+		    libcURL.Opts.SSLCERT, libcURL.Opts.MIMEPOST)
 		    ' These option numbers explicitly accept NULL. Refer to the curl documentation on the individual option numbers for details.
 		    If Nilable.IndexOf(OptionNumber) > -1 Then
 		      Return Me.SetOptionPtr(OptionNumber, Nil)
@@ -820,6 +728,11 @@ Inherits libcURL.cURLHandle
 		    
 		  Case Variant.TypePtr, Variant.TypeInteger
 		    Return Me.SetOptionPtr(OptionNumber, NewValue.PtrValue)
+		    
+		    #If Target64Bit Then
+		  Case Variant.TypeInt64
+		    Return Me.SetOptionPtr(OptionNumber, NewValue.PtrValue)
+		    #EndIf
 		    
 		  Case Variant.TypeString
 		    Dim mb As MemoryBlock = NewValue.CStringValue + Chr(0) ' make doubleplus sure it's null terminated
@@ -859,12 +772,8 @@ Inherits libcURL.cURLHandle
 		      Dim p As cURLDebugCallback = NewValue
 		      Return Me.SetOptionPtr(OptionNumber, p)
 		      
-		    Case IsA cURLCloseCallback
-		      Dim p As cURLCloseCallback = NewValue
-		      Return Me.SetOptionPtr(OptionNumber, p)
-		      
-		    Case IsA cURLOpenCallback
-		      Dim p As cURLOpenCallback = NewValue
+		    Case IsA cURLSeekCallback
+		      Dim p As cURLSeekCallback = NewValue
 		      Return Me.SetOptionPtr(OptionNumber, p)
 		      
 		    End Select
@@ -929,7 +838,7 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Write(Text As String) As Integer
+		Attributes( deprecated )  Function Write(Text As String) As Integer
 		  ' Only available after calling SetOption(libcURL.Opts.CONNECT_ONLY, True)
 		  ' Once Perform returns you may Write to the easy_handle by calling this method
 		  ' If the write succeeded this method returns then number of bytes actually written.
@@ -980,10 +889,6 @@ Inherits libcURL.cURLHandle
 
 
 	#tag Hook, Flags = &h0
-		Event CreateSocket(Socket As Integer)
-	#tag EndHook
-
-	#tag Hook, Flags = &h0
 		Event DataAvailable(NewData As MemoryBlock) As Integer
 	#tag EndHook
 
@@ -993,10 +898,6 @@ Inherits libcURL.cURLHandle
 
 	#tag Hook, Flags = &h0
 		Event DebugMessage(MessageType As libcURL.curl_infotype, Data As String)
-	#tag EndHook
-
-	#tag Hook, Flags = &h0
-		Event Disconnected(Socket As Integer)
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
@@ -1089,6 +990,31 @@ Inherits libcURL.cURLHandle
 			End Set
 		#tag EndSetter
 		AutoReferer As Boolean
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  return mBufferSize
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  ' Set preferred receive buffer size (in bytes). The main point of this would be that the DataAvailable event 
+			  ' gets called more often and with smaller chunks. Secondly, for some protocols, there's a benefit of having
+			  ' a larger buffer for performance. This is just treated as a request, not an order. You cannot be guaranteed
+			  ' to actually get the given size.
+			  '
+			  ' See:
+			  ' https://curl.haxx.se/libcurl/c/CURLOPT_BUFFERSIZE.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.BufferSize
+			  
+			  If value < CURL_MIN_READ_SIZE Or value > CURL_MAX_READ_SIZE Then Raise New OutOfBoundsException
+			  If Not Me.SetOption(libcURL.Opts.BUFFERSIZE, value) Then Raise New cURLException(Me)
+			  mBufferSize = value
+			End Set
+		#tag EndSetter
+		BufferSize As Integer
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
@@ -1330,13 +1256,13 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  ' Gets the version of HTTP to be used. Returns HTTP_VERSION_1_0, HTTP_VERSION_1_1, HTTP_VERSION_2_0, or HTTP_VERSION_NONE
+			  ' Gets the version of HTTP to be used. Returns HTTPVersion.HTTP1_0, HTTPVersion.HTTP1_1, HTTPVersion.HTTP2, or HTTPVersion.None
 			  return mHTTPVersion
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
-			  ' Sets the version of HTTP to be used. Pass HTTP_VERSION_1_0, HTTP_VERSION_1_1, HTTP_VERSION_2_0, or HTTP_VERSION_NONE
+			  ' Sets the version of HTTP to be used. Pass HTTPVersion.HTTP1_0, HTTPVersion.HTTP1_1, HTTPVersion.HTTP2, or HTTPVersion.None
 			  '
 			  ' See:
 			  ' http://curl.haxx.se/libcurl/c/CURLOPT_HTTP_VERSION.html
@@ -1403,11 +1329,11 @@ Inherits libcURL.cURLHandle
 	#tag EndComputedProperty
 
 	#tag Property, Flags = &h21
-		Private mCA_ListFile As FolderItem
+		Private mBufferSize As Integer = CURL_DEFAULT_READ_SIZE
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private mConnectionCount As Integer
+		Private mCA_ListFile As FolderItem
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -1460,6 +1386,10 @@ Inherits libcURL.cURLHandle
 
 	#tag Property, Flags = &h21
 		Private mMaxRedirects As Integer = -1
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mMIMEMessage As libcURL.MIMEMessage
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -1861,6 +1791,15 @@ Inherits libcURL.cURLHandle
 	#tag Constant, Name = CURLPAUSE_SEND, Type = Double, Dynamic = False, Default = \"4", Scope = Public
 	#tag EndConstant
 
+	#tag Constant, Name = CURL_DEFAULT_READ_SIZE, Type = Double, Dynamic = False, Default = \"16384", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = CURL_MAX_READ_SIZE, Type = Double, Dynamic = False, Default = \"524288", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = CURL_MIN_READ_SIZE, Type = Double, Dynamic = False, Default = \"1024", Scope = Public
+	#tag EndConstant
+
 	#tag Constant, Name = CURL_SOCKET_BAD, Type = Double, Dynamic = False, Default = \"1", Scope = Protected
 	#tag EndConstant
 
@@ -1868,21 +1807,6 @@ Inherits libcURL.cURLHandle
 	#tag EndConstant
 
 	#tag Constant, Name = CURL_SOCKOPT_OK, Type = Double, Dynamic = False, Default = \"0", Scope = Protected
-	#tag EndConstant
-
-	#tag Constant, Name = GNUTLS_MAX_ALGORITHM_NUM, Type = Double, Dynamic = False, Default = \"16", Scope = Private
-	#tag EndConstant
-
-	#tag Constant, Name = HTTP_VERSION_1_0, Type = Double, Dynamic = False, Default = \"1", Scope = Public
-	#tag EndConstant
-
-	#tag Constant, Name = HTTP_VERSION_1_1, Type = Double, Dynamic = False, Default = \"2", Scope = Public
-	#tag EndConstant
-
-	#tag Constant, Name = HTTP_VERSION_2_0, Type = Double, Dynamic = False, Default = \"3", Scope = Public
-	#tag EndConstant
-
-	#tag Constant, Name = HTTP_VERSION_NONE, Type = Double, Dynamic = False, Default = \"0", Scope = Public
 	#tag EndConstant
 
 	#tag Constant, Name = LOG_DEBUG, Type = Boolean, Dynamic = False, Default = \"True", Scope = Private
