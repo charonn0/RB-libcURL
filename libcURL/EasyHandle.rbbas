@@ -15,8 +15,12 @@ Inherits libcURL.cURLHandle
 		  If libcURL.Version.IsAtLeast(7, 17, 1) Then
 		    If Not Me.SetOption(libcURL.Opts.COPYPOSTFIELDS, Nil) Then Raise New cURLException(Me)
 		  End If
-		  If Not Me.SetOption(libcURL.Opts.HTTPPOST, Nil) Then Raise New cURLException(Me)
+		  If Not Me.SetOption(libcURL.Opts.HTTPPOST, Nil) Then Raise New libcURL.cURLException(Me)
+		  If libcURL.Version.IsAtLeast(7, 56, 0) Then
+		    If Not Me.SetOption(libcURL.Opts.MIMEPOST, Nil) Then Raise New libcURL.cURLException(Me)
+		  End If
 		  mForm = Nil
+		  mMIMEMessage = Nil
 		  mUploadMode = False
 		  If Not Me.SetOption(libcURL.Opts.HTTPGET, True) Then Raise New cURLException(Me)
 		  
@@ -622,6 +626,19 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub SetFormData(FormData As libcURL.MIMEMessage)
+		  ' Sets the FormData MIMEMessage object as the HTTP form to POST as multipart/form-data
+		  ' See:
+		  ' https://curl.haxx.se/libcurl/c/CURLOPT_MIMEPOST.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.SetFormData
+		  
+		  Me.ClearFormData
+		  If Not Me.SetOption(libcURL.Opts.MIMEPOST, FormData) Then Raise New libcURL.cURLException(Me)
+		  mMIMEMessage = FormData
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub SetFormData(FormData As libcURL.MultipartForm)
 		  ' Sets the FormData MultipartForm object as the HTTP form to POST as multipart/form-data
 		  ' You may also pass a Dictionary of NAME:VALUE pairs comprising HTML form elements which
@@ -691,7 +708,7 @@ Inherits libcURL.cURLHandle
 		    libcURL.Opts.COOKIEJAR, libcURL.Opts.COOKIEFILE, libcURL.Opts.HTTPPOST, libcURL.Opts.CAINFO, libcURL.Opts.CAPATH, _
 		    libcURL.Opts.NETINTERFACE, libcURL.Opts.ERRORBUFFER, libcURL.Opts.COPYPOSTFIELDS, libcURL.Opts.ACCEPT_ENCODING, _
 		    libcURL.Opts.FNMATCH_FUNCTION, libcURL.Opts.CHUNK_BGN_FUNCTION, libcURL.Opts.CHUNK_END_FUNCTION, libcURL.Opts.CHUNK_DATA, _
-		    libcURL.Opts.SSLCERT)
+		    libcURL.Opts.SSLCERT, libcURL.Opts.MIMEPOST)
 		    ' These option numbers explicitly accept NULL. Refer to the curl documentation on the individual option numbers for details.
 		    If Nilable.IndexOf(OptionNumber) > -1 Then
 		      Return Me.SetOptionPtr(OptionNumber, Nil)
@@ -1350,6 +1367,10 @@ Inherits libcURL.cURLHandle
 
 	#tag Property, Flags = &h21
 		Private mMaxRedirects As Integer = -1
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mMIMEMessage As libcURL.MIMEMessage
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
