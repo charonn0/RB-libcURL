@@ -213,6 +213,9 @@ Protected Module Opts
 	#tag Constant, Name = MAXREDIRS, Type = Double, Dynamic = False, Default = \"68", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = MIMEPOST, Type = Double, Dynamic = False, Default = \"10269", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = NETINTERFACE, Type = Double, Dynamic = False, Default = \"10062", Scope = Protected
 	#tag EndConstant
 
