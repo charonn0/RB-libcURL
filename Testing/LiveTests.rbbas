@@ -48,6 +48,13 @@ Protected Module LiveTests
 		    Return False
 		  End Try
 		  
+		  Try
+		    TestMIMEPost()
+		  Catch
+		    TestResult = 12
+		    Return False
+		  End Try
+		  
 		  mSession = Nil
 		  
 		  Return True
@@ -146,6 +153,32 @@ Protected Module LiveTests
 		  js = js.Value("headers")
 		  Assert(js.HasName("X-Test-Header"))
 		  Assert(js.Value("X-Test-Header") = "TestValue")
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub TestMIMEPost()
+		  If Not libcURL.Version.IsAtLeast(7, 56, 0) Then Return
+		  Dim form As New libcURL.MIMEMessage(mSession.EasyItem)
+		  Assert(form.AddElement("user", "bob"))
+		  Assert(form.AddElement("password", "seekrit"))
+		  Dim tmp As FolderItem = GetTemporaryFolderItem
+		  Dim bs As BinaryStream = BinaryStream.Open(tmp, True)
+		  bs.Write("Hello, world!")
+		  bs.Close
+		  Assert(form.AddElement("upload", tmp))
+		  bs = BinaryStream.Open(tmp)
+		  Assert(form.AddElement("stream", bs, bs.Length, "stream.txt", ""))
+		  Assert(mSession.Post("https://nghttp2.org/httpbin/post", form))
+		  Dim js As New JSONItem(mSession.GetDownloadedData)
+		  Dim files As JSONItem = js.Value("files")
+		  Assert(files.Count = 2)
+		  Assert(files.Value("upload") = "Hello, world!")
+		  Assert(files.Value("stream") = "Hello, world!")
+		  
+		  files = js.Value("form")
+		  Assert(files.Value("user") = "bob")
+		  Assert(files.Value("password") = "seekrit")
 		End Sub
 	#tag EndMethod
 
