@@ -16,7 +16,7 @@ Inherits libcURL.cURLHandle
 		    If Not Me.SetOption(libcURL.Opts.COPYPOSTFIELDS, Nil) Then Raise New cURLException(Me)
 		  End If
 		  If Not Me.SetOption(libcURL.Opts.HTTPPOST, Nil) Then Raise New libcURL.cURLException(Me)
-		  If System.IsFunctionAvailable("curl_mime_init", "libcurl") Then
+		  If libcURL.Version.IsAtLeast(7, 56, 0) Then
 		    If Not Me.SetOption(libcURL.Opts.MIMEPOST, Nil) Then Raise New libcURL.cURLException(Me)
 		  End If
 		  mForm = Nil

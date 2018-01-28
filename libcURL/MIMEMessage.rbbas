@@ -166,6 +166,23 @@ Implements FormStreamGetter
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function Count() As Integer
+		  ' Returns the number of top-level parts in the message.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MIMEMessage.Count
+		  
+		  Dim e As libcURL.MIMEMessagePart = Me.FirstPart
+		  Dim c As Integer
+		  Do Until e = Nil
+		    c = c + 1
+		    e = e.NextPart
+		  Loop
+		  Return c
+		End Function
+	#tag EndMethod
+
 	#tag DelegateDeclaration, Flags = &h21
 		Private Delegate Sub cURLFreeCallback(UserData As Ptr)
 	#tag EndDelegateDeclaration
