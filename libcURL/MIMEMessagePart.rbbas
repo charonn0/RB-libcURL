@@ -182,18 +182,11 @@ Protected Class MIMEMessagePart
 			  
 			  #If Not Target64Bit Then
 			    Dim mb As MemoryBlock = Struct.Name
-			    Dim sz As Integer = Struct.NameSize
 			  #Else
 			    Dim mb As MemoryBlock = Struct64.Name
-			    Dim sz As Integer = Struct64.NameSize
 			  #endif
-			  If mb <> Nil Then
-			    If sz > 0 Then
-			      Return mb.StringValue(0, sz)
-			    Else
-			      Return mb.CString(0)
-			    End If
-			  End If
+			  If mb <> Nil Then Return mb.CString(0)
+			  
 			End Get
 		#tag EndGetter
 		Name As String
@@ -339,7 +332,6 @@ Protected Class MIMEMessagePart
 		  MIMEType As Ptr
 		  FileName As Ptr
 		  Name As Ptr
-		  NameSize As Integer
 		  DataSize As UInt32
 		  Flags As UInt32
 		  State As Integer
@@ -363,7 +355,6 @@ Protected Class MIMEMessagePart
 		  MIMEType As Ptr
 		  FileName As Ptr
 		  Name As Ptr
-		  NameSize As Integer
 		  DataSize As UInt32
 		  Flags As UInt32
 		  State As Integer
