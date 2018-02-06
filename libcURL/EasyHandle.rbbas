@@ -27,33 +27,6 @@ Inherits libcURL.cURLHandle
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h21
-		Private Shared Function CloseCallback(UserData As Integer, Socket As Integer) As Integer
-		  ' This method is invoked by libcURL. DO NOT CALL THIS METHOD
-		  
-		  #pragma X86CallingConvention CDecl
-		  If Instances = Nil Then Return CURL_SOCKET_BAD
-		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
-		    Return EasyHandle(curl.Value).curlClose(socket)
-		  End If
-		  
-		  Return CURL_SOCKET_BAD
-		  
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function ConnectionCount() As Integer
-		  ' Returns the number of sockets employed by the easy handle which have not yet disconnected.
-		  ' libcURL will attempt to reuse connections, so this may be greater-than zero even after a
-		  ' transfer has completed.
-		  
-		  Return mConnectionCount
-		End Function
-	#tag EndMethod
-
 	#tag Method, Flags = &h0
 		Sub Constructor(GlobalInitFlags As Integer = libcURL.CURL_GLOBAL_DEFAULT, ExistingHandle As Integer = 0)
 		  ' Creates a new curl_easy handle. If creating the handle fails for any reason
