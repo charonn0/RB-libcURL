@@ -75,17 +75,6 @@ Protected Class MultipartFormElement
 			  Return mContentHeaders
 			End Get
 		#tag EndGetter
-		#tag Setter
-			Set
-			  If value <> Nil Then
-			    Dim p As Ptr = Ptr(value.Handle)
-			    Struct.ContentHeader = p
-			  Else
-			    Struct.ContentHeader = Nil
-			  End If
-			  mContentHeaders = value
-			End Set
-		#tag EndSetter
 		ContentHeaders As libcURL.ListPtr
 	#tag EndComputedProperty
 
@@ -117,8 +106,7 @@ Protected Class MultipartFormElement
 			  Dim mb As MemoryBlock = Struct.Contents
 			  If mb <> Nil Then
 			    If Struct.ContentsLen > 0 Then
-			      mb.Size = Struct.ContentsLen
-			      Return mb
+			      Return mb.StringValue(0, Struct.ContentsLen)
 			    Else
 			      Return mb.CString(0)
 			    End If
@@ -177,18 +165,25 @@ Protected Class MultipartFormElement
 		Private mContentHeaders As libcURL.ListPtr
 	#tag EndProperty
 
+	#tag Property, Flags = &h21
+		Private mIsArray As Boolean
+	#tag EndProperty
+
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
 			  ' If the element contains several file parts then this property returns the first extra file. Use the
-			  ' NextElement property of the returned MultipartFormElement to iterate over the file list.
+			  ' NextElement property of the returned MultipartFormElement to iterate over the file list. If the element
+			  ' Type is not FormElementType.FileArray then this will be Nil.
 			  '
 			  ' See:
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartFormElement.MoreFiles
 			  
 			  Dim p As Ptr = Struct.MoreFiles
 			  If p = Nil Then Return Nil
-			  Return New MultipartFormElement(p, mOwner)
+			  Dim m As New MultipartFormElement(p, mOwner)
+			  m.mIsArray = True
+			  Return m
 			End Get
 		#tag EndGetter
 		MoreFiles As libcURL.MultipartFormElement
@@ -212,8 +207,7 @@ Protected Class MultipartFormElement
 			  
 			  Dim mb As MemoryBlock = Struct.Name
 			  If mb = Nil Then Return ""
-			  mb.Size = Struct.NameLen
-			  Return mb
+			  Return mb.StringValue(0, Struct.NameLen)
 			End Get
 		#tag EndGetter
 		Name As String
@@ -275,7 +269,10 @@ Protected Class MultipartFormElement
 			  Case Struct.UserData <> Nil
 			    Return FormElementType.Stream
 			    
-			  Case Struct.ShowFileName <> Nil, Struct.MoreFiles <> Nil
+			  Case Struct.MoreFiles <> Nil, mIsArray
+			    Return FormElementType.FileArray
+			    
+			  Case Struct.ShowFileName <> Nil
 			    Return FormElementType.File
 			    
 			  Else
@@ -311,6 +308,24 @@ Protected Class MultipartFormElement
 
 	#tag Constant, Name = CURL_HTTPPOST_READFILE, Type = Double, Dynamic = False, Default = \"2", Scope = Protected
 	#tag EndConstant
+
+
+	#tag Structure, Name = curl_httppost, Flags = &h21
+		NextItem As Ptr
+		  Name As Ptr
+		  NameLen As Integer
+		  Contents As Ptr
+		  ContentsLen As Integer
+		  Buffer As Ptr
+		  BufferLen As Integer
+		  ContentType As Ptr
+		  ContentHeader As Ptr
+		  MoreFiles As Ptr
+		  Flags As Integer
+		  ShowFileName As Ptr
+		  UserData As Ptr
+		ContentsLenLarge As Int64
+	#tag EndStructure
 
 
 	#tag ViewBehavior

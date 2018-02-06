@@ -347,6 +347,11 @@ Inherits libcURL.cURLHandle
 		  Case Variant.TypePtr, Variant.TypeInteger
 		    MarshalledValue = NewValue.PtrValue
 		    
+		    #If Target64Bit Then
+		  Case Variant.TypeInt64
+		    MarshalledValue = NewValue.PtrValue
+		    #EndIf
+		    
 		  Case Variant.TypeString
 		    MarshalledValue = NewValue.StringValue + Chr(0)
 		    
