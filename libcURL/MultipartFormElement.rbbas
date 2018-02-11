@@ -75,17 +75,6 @@ Protected Class MultipartFormElement
 			  Return mContentHeaders
 			End Get
 		#tag EndGetter
-		#tag Setter
-			Set
-			  If value <> Nil Then
-			    Dim p As Ptr = Ptr(value.Handle)
-			    Struct.ContentHeader = p
-			  Else
-			    Struct.ContentHeader = Nil
-			  End If
-			  mContentHeaders = value
-			End Set
-		#tag EndSetter
 		ContentHeaders As libcURL.ListPtr
 	#tag EndComputedProperty
 
@@ -319,6 +308,24 @@ Protected Class MultipartFormElement
 
 	#tag Constant, Name = CURL_HTTPPOST_READFILE, Type = Double, Dynamic = False, Default = \"2", Scope = Protected
 	#tag EndConstant
+
+
+	#tag Structure, Name = curl_httppost, Flags = &h21
+		NextItem As Ptr
+		  Name As Ptr
+		  NameLen As Integer
+		  Contents As Ptr
+		  ContentsLen As Integer
+		  Buffer As Ptr
+		  BufferLen As Integer
+		  ContentType As Ptr
+		  ContentHeader As Ptr
+		  MoreFiles As Ptr
+		  Flags As Integer
+		  ShowFileName As Ptr
+		  UserData As Ptr
+		ContentsLenLarge As Int64
+	#tag EndStructure
 
 
 	#tag ViewBehavior
