@@ -437,6 +437,7 @@ Implements FormStreamGetter
 
 	#tag Method, Flags = &h21
 		Private Function GetStream(UserData As Ptr) As Readable
+		  // Part of the FormStreamGetter interface.
 		  For Each h As EasyHandle In mStreams
 		    If h.Handle = Integer(UserData) Then Return h.UploadStream
 		  Next
