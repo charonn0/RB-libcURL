@@ -271,6 +271,7 @@ Implements FormStreamGetter
 
 	#tag Method, Flags = &h21
 		Private Function GetStream(UserData As Ptr) As Readable
+		  // Part of the FormStreamGetter interface.
 		  Return PartStreams.Lookup(UserData, Nil)
 		End Function
 	#tag EndMethod
