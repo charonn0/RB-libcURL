@@ -54,7 +54,7 @@ Inherits libcURL.EasyHandle
 	#tag Method, Flags = &h1000
 		Sub Constructor(CopyOpts As libcURL.EasyHandle)
 		  // Calling the overridden superclass constructor.
-		  // Constructor(CopyOpts As libcURL.EasyHandle) -- From EasyHandle
+		  // Constructor(CopyOpts As libcURL.EasyHandle) -- From libcURL.EasyHandle
 		  Super.Constructor(CopyOpts)
 		  If CopyOpts IsA FTPWildCard Then
 		    Me.LocalRoot = FTPWildCard(CopyOpts).LocalRoot
