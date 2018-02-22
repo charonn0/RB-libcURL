@@ -9,7 +9,7 @@ Inherits libcURL.cURLHandle
 		  ' http://curl.haxx.se/libcurl/c/CURLOPT_SHARE.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ShareHandle.AddItem
 		  
-		  If Not SharedHandles.HasKey(Item.Handle) And Item.SetOption(libcURL.Opts.SHARE, Me) Then
+		  If Not Me.HasItem(Item) And Item.SetOption(libcURL.Opts.SHARE, Me) Then
 		    SharedHandles.Value(Item.Handle) = Item
 		    Return True
 		  Else
@@ -70,6 +70,12 @@ Inherits libcURL.cURLHandle
 		  If mHandle <> 0 Then mLastError = curl_share_cleanup(mHandle)
 		  mHandle = 0
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function HasItem(EasyItem As libcURL.EasyHandle) As Boolean
+		  Return SharedHandles.HasKey(EasyItem.Handle)
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
