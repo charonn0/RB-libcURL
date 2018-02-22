@@ -58,6 +58,13 @@ Protected Module Testing
 		    Return False
 		  End Try
 		  
+		  Try
+		    TestShareHandle()
+		  Catch
+		    TestResult = 8
+		    Return False
+		  End Try
+		  
 		  #If RunLiveTests Then
 		    Return Testing.LiveTests.RunTests()
 		  #else
@@ -449,6 +456,39 @@ Protected Module Testing
 		  Assert(c.GetInfo(libcURL.Info.RESPONSE_CODE) = 200)
 		  Assert(data.Size > 0)
 		  Assert(data.Size = c.GetInfo(libcURL.Info.SIZE_DOWNLOAD))
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub TestShareHandle()
+		  Dim s As New libcURL.ShareHandle
+		  Assert(s <> Nil)
+		  
+		  s.ShareCookies = True
+		  s.ShareDNSCache = True
+		  s.ShareSSL = True
+		  If libcURL.Version.IsAtLeast(7, 57, 0) Then
+		    s.ShareConnections = True
+		  End If
+		  
+		  Dim c1 As New libcURL.EasyHandle
+		  c1.URL = "http://www.example.net/"
+		  Dim data1 As New MemoryBlock(0)
+		  Dim downstream1 As New BinaryStream(data1)
+		  c1.DownloadStream = downstream1
+		  If Not s.AddItem(c1) Then Raise New libcURL.cURLException(s)
+		  Assert(s.HasItem(c1))
+		  
+		  Dim c2 As New libcURL.EasyHandle
+		  c2.URL = "http://www.example.net/"
+		  Dim data2 As New MemoryBlock(0)
+		  Dim downstream2 As New BinaryStream(data2)
+		  c2.DownloadStream = downstream2
+		  If Not s.AddItem(c2) Then Raise New libcURL.cURLException(s)
+		  Assert(s.HasItem(c2))
+		  
+		  Assert(Not s.AddItem(c1)) ' already added
+		  
 		End Sub
 	#tag EndMethod
 
