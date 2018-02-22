@@ -136,6 +136,8 @@ Implements FormStreamGetter
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MIMEMessage.Constructor
 		  
+		  // Calling the overridden superclass constructor.
+		  // Constructor(GlobalInitFlags As Integer) -- From libcURL.cURLHandle
 		  Super.Constructor(Owner.Flags)
 		  If Not libcURL.Version.IsAtLeast(7, 56, 0) Then
 		    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
@@ -154,6 +156,8 @@ Implements FormStreamGetter
 	#tag Method, Flags = &h1000
 		Sub Constructor(MessagePtr As Ptr, ParentMessage As libcURL.MIMEMessage)
 		  Dim own As EasyHandle = ParentMessage.Owner
+		  // Calling the overridden superclass constructor.
+		  // Constructor(GlobalInitFlags As Integer) -- From libcURL.cURLHandle
 		  Super.Constructor(own.Flags)
 		  If Not libcURL.Version.IsAtLeast(7, 56, 0) Then
 		    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
