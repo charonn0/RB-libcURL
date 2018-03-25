@@ -1790,7 +1790,7 @@ Inherits libcURL.cURLHandle
 	#tag Constant, Name = CURL_SOCKOPT_OK, Type = Double, Dynamic = False, Default = \"0", Scope = Protected
 	#tag EndConstant
 
-	#tag Constant, Name = LOG_DEBUG, Type = Boolean, Dynamic = False, Default = \"True", Scope = Private
+	#tag Constant, Name = LOG_DEBUG, Type = Boolean, Dynamic = False, Default = \"DebugBuild", Scope = Private
 	#tag EndConstant
 
 
