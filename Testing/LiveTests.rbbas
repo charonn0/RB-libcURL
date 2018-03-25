@@ -185,7 +185,7 @@ Protected Module LiveTests
 	#tag Method, Flags = &h21
 		Private Sub TestRedirect()
 		  mSession.EasyItem.MaxRedirects = 6
-		  If Not mSession.Get("https://nghttp2.org/httpbin/redirect/6") Then Return
+		  Assert(mSession.Get("https://nghttp2.org/httpbin/redirect/6"))
 		  Assert(mSession.EasyItem.URL = "https://nghttp2.org/httpbin/get")
 		  Assert(Not mSession.Get("https://nghttp2.org/httpbin/redirect/7"))
 		  Assert(mSession.LastError = libcURL.Errors.TOO_MANY_REDIRECTS)
