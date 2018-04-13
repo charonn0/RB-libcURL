@@ -41,14 +41,15 @@ Inherits libcURL.cURLHandle
 		  Super.Constructor(GlobalInitFlags)
 		  
 		  mHandle = curl_easy_init()
-		  If mHandle > 0 Then
-		    If Instances = Nil Then Instances = New Dictionary
-		    Instances.Value(mHandle) = New WeakRef(Me)
-		    InitCallbacks()
-		  Else
+		  If mHandle = 0 Then
 		    mLastError = libcURL.Errors.INIT_FAILED
 		    Raise New cURLException(Me)
 		  End If
+		  
+		  If Instances = Nil Then Instances = New Dictionary
+		  Instances.Value(mHandle) = New WeakRef(Me)
+		  InitCallbacks()
+		  
 		  ' by default, only raise the DebugMessage event if we're debugging
 		  #If DebugBuild Then
 		    Me.Verbose = True
