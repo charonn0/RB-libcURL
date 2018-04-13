@@ -41,14 +41,15 @@ Inherits libcURL.cURLHandle
 		  Super.Constructor(GlobalInitFlags)
 		  
 		  mHandle = curl_easy_init()
-		  If mHandle > 0 Then
-		    If Instances = Nil Then Instances = New Dictionary
-		    Instances.Value(mHandle) = New WeakRef(Me)
-		    InitCallbacks()
-		  Else
+		  If mHandle = 0 Then
 		    mLastError = libcURL.Errors.INIT_FAILED
 		    Raise New cURLException(Me)
 		  End If
+		  
+		  If Instances = Nil Then Instances = New Dictionary
+		  Instances.Value(mHandle) = New WeakRef(Me)
+		  InitCallbacks()
+		  
 		  ' by default, only raise the DebugMessage event if we're debugging
 		  #If DebugBuild Then
 		    Me.Verbose = True
@@ -71,41 +72,41 @@ Inherits libcURL.cURLHandle
 		  // Constructor(GlobalInitFlags As Integer) -- From libcURL.cURLHandle
 		  Super.Constructor(CopyOpts.Flags)
 		  mHandle = curl_easy_duphandle(CopyOpts.Handle)
-		  If mHandle > 0 Then
-		    Instances.Value(mHandle) = New WeakRef(Me)
-		    InitCallbacks()
-		    If CopyOpts.mAuthMethods <> Nil Then Call Me.SetAuthMethods(CopyOpts.GetAuthMethods)
-		    mAutoDisconnect = CopyOpts.AutoDisconnect
-		    mAutoReferer = CopyOpts.AutoReferer
-		    If CopyOpts.mCA_ListFile <> Nil Then Me.CA_ListFile = CopyOpts.CA_ListFile
-		    mConnectionTimeout = CopyOpts.ConnectionTimeout
-		    mConnectionType = CopyOpts.ConnectionType
-		    Me.CookieEngine.Enabled = CopyOpts.CookieEngine.Enabled
-		    Me.UseErrorBuffer = CopyOpts.UseErrorBuffer
-		    mFailOnServerError = CopyOpts.FailOnServerError
-		    mFollowRedirects = CopyOpts.FollowRedirects
-		    mHTTPCompression = CopyOpts.HTTPCompression
-		    mHTTPPreserveMethod = CopyOpts.HTTPPreserveMethod
-		    mHTTPVersion = CopyOpts.HTTPVersion
-		    mMaxRedirects = CopyOpts.MaxRedirects
-		    mPassword = CopyOpts.Password
-		    If CopyOpts.mProxyEngine <> Nil Then
-		      Me.ProxyEngine.Address = CopyOpts.ProxyEngine.Address
-		      If CopyOpts.ProxyEngine.Port <> 1080 Then Me.ProxyEngine.Port = CopyOpts.ProxyEngine.Port
-		      If CopyOpts.ProxyEngine.Type <> libcURL.ProxyType.HTTP Then Me.ProxyEngine.Type = CopyOpts.ProxyEngine.Type
-		    End If
-		    mSecure = CopyOpts.Secure
-		    If CopyOpts.SSLVersion <> libcURL.SSLVersion.Default Then mSSLVersion = CopyOpts.SSLVersion
-		    mTimeOut = CopyOpts.TimeOut
-		    mUploadMode = CopyOpts.UploadMode
-		    mUserAgent = CopyOpts.UserAgent
-		    mUsername = CopyOpts.Username
-		    Me.Verbose = CopyOpts.Verbose
-		    mForm = CopyOpts.mForm
-		  Else
+		  If mHandle = 0 Then
 		    mLastError = libcURL.Errors.INIT_FAILED
 		    Raise New cURLException(Me)
 		  End If
+		  
+		  Instances.Value(mHandle) = New WeakRef(Me)
+		  InitCallbacks()
+		  If CopyOpts.mAuthMethods <> Nil Then Call Me.SetAuthMethods(CopyOpts.GetAuthMethods)
+		  mAutoDisconnect = CopyOpts.AutoDisconnect
+		  mAutoReferer = CopyOpts.AutoReferer
+		  If CopyOpts.mCA_ListFile <> Nil Then Me.CA_ListFile = CopyOpts.CA_ListFile
+		  mConnectionTimeout = CopyOpts.ConnectionTimeout
+		  mConnectionType = CopyOpts.ConnectionType
+		  Me.CookieEngine.Enabled = CopyOpts.CookieEngine.Enabled
+		  Me.UseErrorBuffer = CopyOpts.UseErrorBuffer
+		  mFailOnServerError = CopyOpts.FailOnServerError
+		  mFollowRedirects = CopyOpts.FollowRedirects
+		  mHTTPCompression = CopyOpts.HTTPCompression
+		  mHTTPPreserveMethod = CopyOpts.HTTPPreserveMethod
+		  mHTTPVersion = CopyOpts.HTTPVersion
+		  mMaxRedirects = CopyOpts.MaxRedirects
+		  mPassword = CopyOpts.Password
+		  If CopyOpts.mProxyEngine <> Nil Then
+		    Me.ProxyEngine.Address = CopyOpts.ProxyEngine.Address
+		    If CopyOpts.ProxyEngine.Port <> 1080 Then Me.ProxyEngine.Port = CopyOpts.ProxyEngine.Port
+		    If CopyOpts.ProxyEngine.Type <> libcURL.ProxyType.HTTP Then Me.ProxyEngine.Type = CopyOpts.ProxyEngine.Type
+		  End If
+		  mSecure = CopyOpts.Secure
+		  If CopyOpts.SSLVersion <> libcURL.SSLVersion.Default Then mSSLVersion = CopyOpts.SSLVersion
+		  mTimeOut = CopyOpts.TimeOut
+		  mUploadMode = CopyOpts.UploadMode
+		  mUserAgent = CopyOpts.UserAgent
+		  mUsername = CopyOpts.Username
+		  Me.Verbose = CopyOpts.Verbose
+		  mForm = CopyOpts.mForm
 		End Sub
 	#tag EndMethod
 
@@ -171,7 +172,7 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag DelegateDeclaration, Flags = &h21
-		Private Delegate Function cURLProgressCallback(UserData As Integer, dlTotal As Int64, dlNow As Int64, ulTotal As Int64, ulnNow As Int64) As Integer
+		Private Delegate Function cURLProgressCallback(UserData As Integer, dlTotal As Int64, dlNow As Int64, ulTotal As Int64, ulNow As Int64) As Integer
 	#tag EndDelegateDeclaration
 
 	#tag Method, Flags = &h21
