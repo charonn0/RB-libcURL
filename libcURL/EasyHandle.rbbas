@@ -1268,6 +1268,28 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Gets the version of HTTP to be used. Returns HTTPVersion.HTTP1_0, HTTPVersion.HTTP1_1, HTTPVersion.HTTP2, or HTTPVersion.None
+			  return mIPVersion
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  ' Sets the IP version to be used. Pass a member of the libcURL.IPVersion enum
+			  '
+			  ' See:
+			  ' https://curl.haxx.se/libcurl/c/CURLOPT_IPRESOLVE.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.IPVersion
+			  
+			  If Not Me.SetOption(libcURL.Opts.IPRESOLVE, value) Then Raise New cURLException(Me)
+			  mIPVersion = value
+			End Set
+		#tag EndSetter
+		IPVersion As libcURL.IPVersion
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
 			  ' The local port used to make the most recent connection. This is decided upon by libcurl and the OS's network stack
 			  
 			  Return Me.GetInfo(libcURL.Info.LOCAL_PORT)
@@ -1364,6 +1386,10 @@ Inherits libcURL.cURLHandle
 
 	#tag Property, Flags = &h21
 		Private mHTTPVersion As libcURL.HTTPVersion
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mIPVersion As libcURL.IPVersion
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
