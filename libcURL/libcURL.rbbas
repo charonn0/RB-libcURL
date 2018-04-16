@@ -2038,6 +2038,14 @@ Protected Module libcURL
 		TLSv1_2=6
 	#tag EndEnum
 
+	#tag Enum, Name = TransferEncoding, Type = Integer, Flags = &h1
+		Binary
+		  SevenBit
+		  EightBit
+		  Base64
+		QuotedPrintable
+	#tag EndEnum
+
 
 	#tag ViewBehavior
 		#tag ViewProperty

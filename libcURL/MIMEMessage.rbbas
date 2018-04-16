@@ -3,7 +3,7 @@ Protected Class MIMEMessage
 Inherits libcURL.cURLHandle
 Implements FormStreamGetter
 	#tag Method, Flags = &h0
-		Function AddElement(Name As String, Value As FolderItem, ContentType As String = "", AdditionalHeaders As libcURL.ListPtr = Nil, Encoding As libcURL.MIMEMessage.TransferEncoding = libcURL.MIMEMessage.TransferEncoding.Binary) As Boolean
+		Function AddElement(Name As String, Value As FolderItem, ContentType As String = "", AdditionalHeaders As libcURL.ListPtr = Nil, Encoding As libcURL.TransferEncoding = libcURL.TransferEncoding.Binary) As Boolean
 		  ' Adds the passed file to the form using the specified name.
 		  '
 		  ' See:
@@ -57,7 +57,7 @@ Implements FormStreamGetter
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function AddElement(Name As String, ValueStream As Readable, ValueSize As Integer, Filename As String = "", ContentType As String = "", AdditionalHeaders As libcURL.ListPtr = Nil, Encoding As libcURL.MIMEMessage.TransferEncoding = libcURL.MIMEMessage.TransferEncoding.Binary) As Boolean
+		Function AddElement(Name As String, ValueStream As Readable, ValueSize As Integer, Filename As String = "", ContentType As String = "", AdditionalHeaders As libcURL.ListPtr = Nil, Encoding As libcURL.TransferEncoding = libcURL.TransferEncoding.Binary) As Boolean
 		  ' Adds an element using the specified name, with contents which will be read from the passed Readable object.
 		  '
 		  ' See:
@@ -94,7 +94,7 @@ Implements FormStreamGetter
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function AddElement(Name As String, Value As String, AdditionalHeaders As libcURL.ListPtr = Nil, Encoding As libcURL.MIMEMessage.TransferEncoding = libcURL.MIMEMessage.TransferEncoding.Binary) As Boolean
+		Function AddElement(Name As String, Value As String, AdditionalHeaders As libcURL.ListPtr = Nil, Encoding As libcURL.TransferEncoding = libcURL.TransferEncoding.Binary) As Boolean
 		  ' Adds the passed Value to the form using the specified Name.
 		  '
 		  ' See:
@@ -512,15 +512,6 @@ Implements FormStreamGetter
 		  Boundary As Ptr
 		State As Integer
 	#tag EndStructure
-
-
-	#tag Enum, Name = TransferEncoding, Type = Integer, Flags = &h0
-		Binary
-		  SevenBit
-		  EightBit
-		  Base64
-		QuotedPrintable
-	#tag EndEnum
 
 
 	#tag ViewBehavior
