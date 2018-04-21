@@ -1268,7 +1268,8 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  ' Gets the version of HTTP to be used. Returns HTTPVersion.HTTP1_0, HTTPVersion.HTTP1_1, HTTPVersion.HTTP2, or HTTPVersion.None
+			  ' Gets the version of HTTP to be used. Returns IPVersion.V4, IPVersion.V6, or IPVersion.Whatever
+			  
 			  return mIPVersion
 			End Get
 		#tag EndGetter
