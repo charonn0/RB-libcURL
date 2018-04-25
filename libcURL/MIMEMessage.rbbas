@@ -10,10 +10,6 @@ Implements FormStreamGetter
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MIMEMessage.AddElement
 		  
 		  Dim part As Ptr = AddPart()
-		  If part = Nil Then
-		    mLastError = libcURL.Errors.MIME_ADD_FAILED
-		    Return False
-		  End If
 		  If Not SetPartName(part, Name) Then Return False
 		  If Not SetPartFile(part, Value) Then Return False
 		  If ContentType = "" Then ContentType = MIMEType(Value)
@@ -43,10 +39,6 @@ Implements FormStreamGetter
 		  End If
 		  
 		  Dim part As Ptr = AddPart()
-		  If part = Nil Then
-		    mLastError = libcURL.Errors.MIME_ADD_FAILED
-		    Return False
-		  End If
 		  If Not SetPartName(part, Name) Then Return False
 		  If Not SetPartSubparts(part, Value) Then Return False
 		  If AdditionalHeaders <> Nil Then
@@ -64,10 +56,6 @@ Implements FormStreamGetter
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MIMEMessage.AddElement
 		  
 		  Dim part As Ptr = AddPart()
-		  If part = Nil Then
-		    mLastError = libcURL.Errors.MIME_ADD_FAILED
-		    Return False
-		  End If
 		  If Not SetPartName(part, Name) Then Return False
 		  If Filename <> "" Then
 		    If Not SetPartFileName(part, Filename + Chr(0)) Then Return False
@@ -101,10 +89,6 @@ Implements FormStreamGetter
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MIMEMessage.AddElement
 		  
 		  Dim part As Ptr = AddPart()
-		  If part = Nil Then
-		    mLastError = libcURL.Errors.MIME_ADD_FAILED
-		    Return False
-		  End If
 		  If Not SetPartName(part, Name) Then Return False
 		  If Not SetPartData(part, Value) Then Return False
 		  If Encoding <> TransferEncoding.Binary Then
@@ -124,7 +108,12 @@ Implements FormStreamGetter
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_mime_addpart.html
 		  
-		  Return curl_mime_addpart(mHandle)
+		  Dim part As Ptr = curl_mime_addpart(mHandle)
+		  If part = Nil Then
+		    mLastError = libcURL.Errors.MIME_ADD_FAILED
+		    Raise New cURLException(Me)
+		  End If
+		  Return part
 		End Function
 	#tag EndMethod
 
