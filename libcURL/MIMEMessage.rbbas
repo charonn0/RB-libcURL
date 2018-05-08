@@ -144,6 +144,12 @@ Implements FormStreamGetter
 
 	#tag Method, Flags = &h1000
 		Sub Constructor(MessagePtr As Ptr, ParentMessage As libcURL.MIMEMessage)
+		  ' Constructs a non-freeable instance of MIMEMessage which references a sub-part of the
+		  ' ParentMessage. (Used by MIMEMessagePart.SubPart)
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MIMEMessage.Constructor
+		  
 		  Dim own As EasyHandle = ParentMessage.Owner
 		  // Calling the overridden superclass constructor.
 		  // Constructor(GlobalInitFlags As Integer) -- From libcURL.cURLHandle
@@ -212,7 +218,7 @@ Implements FormStreamGetter
 
 	#tag Method, Flags = &h0
 		Function GetElement(Index As Integer) As libcURL.MIMEMessagePart
-		  ' Returns a reference to the MultipartFormElement at the specified index; if the index is out of bounds
+		  ' Returns a reference to the MIMEMessagePart at the specified index; if the index is out of bounds
 		  ' then an OutOfBoundsException will be raised.
 		  '
 		  ' See:
