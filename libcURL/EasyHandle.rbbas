@@ -289,6 +289,24 @@ Inherits libcURL.cURLHandle
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h21
+		Private Shared Function FastWriteCallback(char As Ptr, size As Integer, nmemb As Integer, UserData As Integer) As Integer
+		  ' This method is invoked by libcURL. DO NOT CALL THIS METHOD
+		  // Called when data is available
+		  
+		  #pragma X86CallingConvention CDecl
+		  If Instances = Nil Then Return 0
+		  Dim w As Writeable = Streams.Lookup(UserData, Nil)
+		  If w <> Nil Then 
+		    Dim mb As MemoryBlock = char
+		    w.Write(mb.StringValue(0, size * nmemb))
+		    Return size * nmemb
+		  Else ' try classic callback
+		    Return WriteCallback(char, size, nmemb, UserData)
+		  End If
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Function GetAuthMethods() As libcURL.HTTPAuthMethods
 		  ' Gets an object which represents the available/allowed HTTP authentication methods.
@@ -1144,9 +1162,28 @@ Inherits libcURL.cURLHandle
 		CWDMethod As libcURL.CWDMethod
 	#tag EndComputedProperty
 
-	#tag Property, Flags = &h0
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  return mDownloadStream
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  mDownloadStream = value
+			  If mDownloadStream = Nil Then ' revert classic callback
+			    If Streams <> Nil And Streams.HasKey(mHandle) Then Streams.Remove(mHandle)
+			    If Not SetOption(libcURL.Opts.WRITEFUNCTION, AddressOf WriteCallback) Then Raise New cURLException(Me)
+			    
+			  Else
+			    If Streams = Nil Then Streams = New Dictionary
+			    Streams.Value(mHandle) = value
+			    If Not SetOption(libcURL.Opts.WRITEFUNCTION, AddressOf FastWriteCallback) Then Raise New cURLException(Me)
+			  End If
+			End Set
+		#tag EndSetter
 		DownloadStream As Writeable
-	#tag EndProperty
+	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
@@ -1359,6 +1396,10 @@ Inherits libcURL.cURLHandle
 
 	#tag Property, Flags = &h21
 		Private mCWDMethod As libcURL.CWDMethod = libcURL.CWDMethod.Multi
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mDownloadStream As Writeable
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -1597,6 +1638,10 @@ Inherits libcURL.cURLHandle
 		#tag EndSetter
 		SSLVersion As libcURL.SSLVersion
 	#tag EndComputedProperty
+
+	#tag Property, Flags = &h21
+		Private Shared Streams As Dictionary
+	#tag EndProperty
 
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
