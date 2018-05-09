@@ -150,6 +150,9 @@ Protected Module Errors
 	#tag Constant, Name = MIME_ADD_FAILED, Type = Double, Dynamic = False, Default = \"-10", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = MIME_OWNER_MISSING, Type = Double, Dynamic = False, Default = \"-11", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = NOT_BUILT_IN, Type = Double, Dynamic = False, Default = \"4", Scope = Protected
 	#tag EndConstant
 

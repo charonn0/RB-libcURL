@@ -108,6 +108,11 @@ Implements FormStreamGetter
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_mime_addpart.html
 		  
+		  If Owner = Nil Then
+		    mLastError = libcURL.Errors.MIME_OWNER_MISSING
+		    Raise New cURLException(Me)
+		  End If
+		  
 		  Dim part As Ptr = curl_mime_addpart(mHandle)
 		  If part = Nil Then
 		    mLastError = libcURL.Errors.MIME_ADD_FAILED
