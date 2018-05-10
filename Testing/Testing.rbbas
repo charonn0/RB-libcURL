@@ -361,6 +361,15 @@ Protected Module Testing
 		  Assert(outer.GetElement(0).SubPart.GetElement(5).ContentType = "application/xml")
 		  Assert(outer.GetElement(0).SubPart.GetElement(5).Type = libcURL.MIMEPartType.Callback)
 		  
+		  e = Nil
+		  #pragma BreakOnExceptions Off
+		  Try
+		    Call m.AddElement("This should", "raise an exception")
+		    Assert(False) ' It didn't!
+		  Catch err As libcURL.cURLException
+		    Assert(err.ErrorNumber = libcURL.Errors.MIME_OWNER_MISSING)
+		  End Try
+		  
 		End Sub
 	#tag EndMethod
 
