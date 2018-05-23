@@ -1899,7 +1899,7 @@ Protected Module libcURL
 
 	#tag Note, Name = Copying
 		RB-libcURL (https://github.com/charonn0/RB-libcURL)
-		Copyright (c)2014-17 Andrew Lambert, all rights reserved.
+		Copyright (c)2014-18 Andrew Lambert, all rights reserved.
 		
 		 Permission to use, copy, modify, and distribute this software for any purpose
 		 with or without fee is hereby granted, provided that the above copyright
@@ -2044,6 +2044,14 @@ Protected Module libcURL
 		  TLSv1_0=4
 		  TLSv1_1=5
 		TLSv1_2=6
+	#tag EndEnum
+
+	#tag Enum, Name = TransferEncoding, Type = Integer, Flags = &h1
+		Binary
+		  SevenBit
+		  EightBit
+		  Base64
+		QuotedPrintable
 	#tag EndEnum
 
 

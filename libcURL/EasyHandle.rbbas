@@ -77,41 +77,41 @@ Inherits libcURL.cURLHandle
 		  // Constructor(GlobalInitFlags As Integer) -- From libcURL.cURLHandle
 		  Super.Constructor(CopyOpts.Flags)
 		  mHandle = curl_easy_duphandle(CopyOpts.Handle)
-		  If mHandle > 0 Then
-		    Instances.Value(mHandle) = New WeakRef(Me)
-		    InitCallbacks()
-		    If CopyOpts.mAuthMethods <> Nil Then Call Me.SetAuthMethods(CopyOpts.GetAuthMethods)
-		    mAutoDisconnect = CopyOpts.AutoDisconnect
-		    mAutoReferer = CopyOpts.AutoReferer
-		    If CopyOpts.mCA_ListFile <> Nil Then Me.CA_ListFile = CopyOpts.CA_ListFile
-		    mConnectionTimeout = CopyOpts.ConnectionTimeout
-		    mConnectionType = CopyOpts.ConnectionType
-		    Me.CookieEngine.Enabled = CopyOpts.CookieEngine.Enabled
-		    Me.UseErrorBuffer = CopyOpts.UseErrorBuffer
-		    mFailOnServerError = CopyOpts.FailOnServerError
-		    mFollowRedirects = CopyOpts.FollowRedirects
-		    mHTTPCompression = CopyOpts.HTTPCompression
-		    mHTTPPreserveMethod = CopyOpts.HTTPPreserveMethod
-		    mHTTPVersion = CopyOpts.HTTPVersion
-		    mMaxRedirects = CopyOpts.MaxRedirects
-		    mPassword = CopyOpts.Password
-		    If CopyOpts.mProxyEngine <> Nil Then
-		      Me.ProxyEngine.Address = CopyOpts.ProxyEngine.Address
-		      If CopyOpts.ProxyEngine.Port <> 1080 Then Me.ProxyEngine.Port = CopyOpts.ProxyEngine.Port
-		      If CopyOpts.ProxyEngine.Type <> libcURL.ProxyType.HTTP Then Me.ProxyEngine.Type = CopyOpts.ProxyEngine.Type
-		    End If
-		    mSecure = CopyOpts.Secure
-		    If CopyOpts.SSLVersion <> libcURL.SSLVersion.Default Then mSSLVersion = CopyOpts.SSLVersion
-		    mTimeOut = CopyOpts.TimeOut
-		    mUploadMode = CopyOpts.UploadMode
-		    mUserAgent = CopyOpts.UserAgent
-		    mUsername = CopyOpts.Username
-		    Me.Verbose = CopyOpts.Verbose
-		    mForm = CopyOpts.mForm
-		  Else
+		  If mHandle = 0 Then
 		    mLastError = libcURL.Errors.INIT_FAILED
 		    Raise New cURLException(Me)
 		  End If
+		  
+		  Instances.Value(mHandle) = New WeakRef(Me)
+		  InitCallbacks()
+		  If CopyOpts.mAuthMethods <> Nil Then Call Me.SetAuthMethods(CopyOpts.GetAuthMethods)
+		  mAutoDisconnect = CopyOpts.AutoDisconnect
+		  mAutoReferer = CopyOpts.AutoReferer
+		  If CopyOpts.mCA_ListFile <> Nil Then Me.CA_ListFile = CopyOpts.CA_ListFile
+		  mConnectionTimeout = CopyOpts.ConnectionTimeout
+		  mConnectionType = CopyOpts.ConnectionType
+		  Me.CookieEngine.Enabled = CopyOpts.CookieEngine.Enabled
+		  Me.UseErrorBuffer = CopyOpts.UseErrorBuffer
+		  mFailOnServerError = CopyOpts.FailOnServerError
+		  mFollowRedirects = CopyOpts.FollowRedirects
+		  mHTTPCompression = CopyOpts.HTTPCompression
+		  mHTTPPreserveMethod = CopyOpts.HTTPPreserveMethod
+		  mHTTPVersion = CopyOpts.HTTPVersion
+		  mMaxRedirects = CopyOpts.MaxRedirects
+		  mPassword = CopyOpts.Password
+		  If CopyOpts.mProxyEngine <> Nil Then
+		    Me.ProxyEngine.Address = CopyOpts.ProxyEngine.Address
+		    If CopyOpts.ProxyEngine.Port <> 1080 Then Me.ProxyEngine.Port = CopyOpts.ProxyEngine.Port
+		    If CopyOpts.ProxyEngine.Type <> libcURL.ProxyType.HTTP Then Me.ProxyEngine.Type = CopyOpts.ProxyEngine.Type
+		  End If
+		  mSecure = CopyOpts.Secure
+		  If CopyOpts.SSLVersion <> libcURL.SSLVersion.Default Then mSSLVersion = CopyOpts.SSLVersion
+		  mTimeOut = CopyOpts.TimeOut
+		  mUploadMode = CopyOpts.UploadMode
+		  mUserAgent = CopyOpts.UserAgent
+		  mUsername = CopyOpts.Username
+		  Me.Verbose = CopyOpts.Verbose
+		  mForm = CopyOpts.mForm
 		End Sub
 	#tag EndMethod
 
@@ -177,7 +177,7 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag DelegateDeclaration, Flags = &h21
-		Private Delegate Function cURLProgressCallback(UserData As Integer, dlTotal As Int64, dlNow As Int64, ulTotal As Int64, ulnNow As Int64) As Integer
+		Private Delegate Function cURLProgressCallback(UserData As Integer, dlTotal As Int64, dlNow As Int64, ulTotal As Int64, ulNow As Int64) As Integer
 	#tag EndDelegateDeclaration
 
 	#tag Method, Flags = &h21
@@ -190,7 +190,7 @@ Inherits libcURL.cURLHandle
 		    Return RaiseEvent DataNeeded(char, sz)
 		  Else
 		    Dim mb As MemoryBlock = UploadStream.Read(sz)
-		    If mb.Size > 0 Then char.StringValue(0, mb.Size) = mb.StringValue(0, mb.Size)
+		    If mb.Size > 0 Then char.StringValue(0, mb.Size) = mb
 		    Return mb.Size
 		  End If
 		  
@@ -1273,6 +1273,29 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Gets the version of HTTP to be used. Returns IPVersion.V4, IPVersion.V6, or IPVersion.Whatever
+			  
+			  return mIPVersion
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  ' Sets the IP version to be used. Pass a member of the libcURL.IPVersion enum
+			  '
+			  ' See:
+			  ' https://curl.haxx.se/libcurl/c/CURLOPT_IPRESOLVE.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.IPVersion
+			  
+			  If Not Me.SetOption(libcURL.Opts.IPRESOLVE, value) Then Raise New cURLException(Me)
+			  mIPVersion = value
+			End Set
+		#tag EndSetter
+		IPVersion As libcURL.IPVersion
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
 			  ' The local port used to make the most recent connection. This is decided upon by libcurl and the OS's network stack
 			  
 			  Return Me.GetInfo(libcURL.Info.LOCAL_PORT)
@@ -1369,6 +1392,10 @@ Inherits libcURL.cURLHandle
 
 	#tag Property, Flags = &h21
 		Private mHTTPVersion As libcURL.HTTPVersion
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mIPVersion As libcURL.IPVersion
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -1796,7 +1823,7 @@ Inherits libcURL.cURLHandle
 	#tag Constant, Name = CURL_SOCKOPT_OK, Type = Double, Dynamic = False, Default = \"0", Scope = Protected
 	#tag EndConstant
 
-	#tag Constant, Name = LOG_DEBUG, Type = Boolean, Dynamic = False, Default = \"True", Scope = Private
+	#tag Constant, Name = LOG_DEBUG, Type = Boolean, Dynamic = False, Default = \"DebugBuild", Scope = Private
 	#tag EndConstant
 
 

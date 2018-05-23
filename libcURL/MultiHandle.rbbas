@@ -239,8 +239,8 @@ Inherits libcURL.cURLHandle
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Function ReadNextMsg(ByRef MsgsRemaining As Integer) As CURLMsg
+	#tag Method, Flags = &h21
+		Private Function ReadNextMsg(ByRef MsgsRemaining As Integer) As CURLMsg
 		  Dim p As Ptr = curl_multi_info_read(mHandle, MsgsRemaining)
 		  If p <> Nil Then
 		    Return p.CURLMsg
