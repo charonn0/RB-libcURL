@@ -1406,6 +1406,10 @@ Inherits libcURL.cURLHandle
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
+		Private mPipeWait As Boolean
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
 		Private mProxyEngine As libcURL.ProxyEngine
 	#tag EndProperty
 
@@ -1500,6 +1504,32 @@ Inherits libcURL.cURLHandle
 			End Set
 		#tag EndSetter
 		Password As String
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  return mPipeWait
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  ' Sets whether libcURL will prefer to wait for a pipelined connection.
+			  '
+			  ' See:
+			  ' https://curl.haxx.se/libcurl/c/CURLOPT_PIPEWAIT.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.PipeWait
+			  
+			  If Not libcURL.Version.IsAtLeast(7, 43, 0) Then
+			    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
+			    Return
+			  End If
+			  
+			  If Not Me.SetOption(libcURL.Opts.PIPEWAIT, value) Then Raise New cURLException(Me)
+			  mPipeWait = value
+			End Set
+		#tag EndSetter
+		PipeWait As Boolean
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0

@@ -249,6 +249,9 @@ Protected Module Opts
 	#tag Constant, Name = PIPELINING_SITE_BL, Type = Double, Dynamic = False, Default = \"10011", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = PIPEWAIT, Type = Double, Dynamic = False, Default = \"237", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = PORT, Type = Double, Dynamic = False, Default = \"3", Scope = Protected
 	#tag EndConstant
 

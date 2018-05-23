@@ -21,9 +21,6 @@ Protected Module Multi
 	#tag Constant, Name = PIPELINING, Type = Double, Dynamic = False, Default = \"3", Scope = Protected
 	#tag EndConstant
 
-	#tag Constant, Name = PIPEWAIT, Type = Double, Dynamic = False, Default = \"237", Scope = Protected
-	#tag EndConstant
-
 	#tag Constant, Name = SOCKETDATA, Type = Double, Dynamic = False, Default = \"10002", Scope = Protected
 	#tag EndConstant
 
