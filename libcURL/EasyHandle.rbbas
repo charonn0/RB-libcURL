@@ -1248,11 +1248,18 @@ Inherits libcURL.cURLHandle
 		#tag EndGetter
 		#tag Setter
 			Set
-			  ' Sets the version of HTTP to be used. Pass HTTPVersion.HTTP1_0, HTTPVersion.HTTP1_1, HTTPVersion.HTTP2, or HTTPVersion.None
+			  ' Sets the version of HTTP to be used. Pass a member of the HTTPVersion enumeration.
 			  '
 			  ' See:
 			  ' http://curl.haxx.se/libcurl/c/CURLOPT_HTTP_VERSION.html
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.HTTPVersion
+			  
+			  If (value = libcURL.HTTPVersion.HTTP2 And Not libcURL.Version.IsAtLeast(7, 33, 0)) _
+			    Or (value = libcURL.HTTPVersion.HTTP2TLS And Not libcURL.Version.IsAtLeast(7, 47, 0)) _
+			    Or (value = libcURL.HTTPVersion.HTTP2PriorKnowledge And Not libcURL.Version.IsAtLeast(7, 49, 0)) Then
+			    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
+			    Raise New cURLException(Me)
+			  End If
 			  
 			  If Not Me.SetOption(libcURL.Opts.HTTPVERSION, value) Then Raise New cURLException(Me)
 			  mHTTPVersion = value
