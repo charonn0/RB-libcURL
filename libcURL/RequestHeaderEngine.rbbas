@@ -13,12 +13,22 @@ Protected Class RequestHeaderEngine
 
 	#tag Method, Flags = &h0
 		Function Count() As Integer
+		  ' Returns the number of user-set request headers currently being used.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.RequestHeaderEngine.Count
+		  
 		  If mHeaders <> Nil Then Return mHeaders.Count
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function GetHeader(Name As String) As String
+		  ' Returns the value of the named request header.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.RequestHeaderEngine.GetHeader
+		  
 		  Dim c As Integer = Me.Count
 		  For i As Integer = 0 To c - 1
 		    If Me.Name(i) = Name Then Return Me.Value(i)
@@ -28,12 +38,22 @@ Protected Class RequestHeaderEngine
 
 	#tag Method, Flags = &h0
 		Function HasHeader(Name As String) As Boolean
+		  ' Returns True if the named request header has been set.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.RequestHeaderEngine.HasHeader
+		  
 		  Return Me.GetHeader(Name) <> ""
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function Name(Index As Integer) As String
+		  ' Returns the name of the request header at Index. The first header is at Index=0.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.RequestHeaderEngine.Name
+		  
 		  If mHeaders = Nil Then Return ""
 		  Return NthField(mHeaders.Item(Index), ":", 1)
 		End Function
@@ -52,7 +72,7 @@ Protected Class RequestHeaderEngine
 		  ' Removes the named request header.
 		  '
 		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.RequestHeaderEngine.SetHeader
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.RequestHeaderEngine.RemoveHeader
 		  
 		  If Me.HasHeader(Name) Then Me.SetHeader(Name, "")
 		End Sub
@@ -60,14 +80,18 @@ Protected Class RequestHeaderEngine
 
 	#tag Method, Flags = &h0
 		Sub Reset()
+		  ' Deletes all custom request headers and resets defaults.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.RequestHeaderEngine.Reset
+		  
 		  Me.SetHeader("", "")
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub SetHeader(Name As String, Value As String)
-		  ' Adds, updates, or removes the named request header. Headers will persist until removed or reset.
-		  ' Pass an empty value to remove the named header. Pass an empty name and an empty value to reset.
+		  ' Adds or updates the named request header. Headers will persist until removed or reset.
 		  '
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.RequestHeaderEngine.SetHeader
@@ -78,6 +102,11 @@ Protected Class RequestHeaderEngine
 
 	#tag Method, Flags = &h0
 		Function Value(Index As Integer) As String
+		  ' Returns the value of the request header at Index. The first header is at Index=0.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.RequestHeaderEngine.Value
+		  
 		  If mHeaders = Nil Then Return ""
 		  Dim header As String = mHeaders.Item(Index)
 		  Dim nm As String = Me.Name(Index)
