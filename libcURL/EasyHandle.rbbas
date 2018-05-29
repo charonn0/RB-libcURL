@@ -185,7 +185,7 @@ Inherits libcURL.cURLHandle
 		    Return RaiseEvent DataNeeded(char, sz)
 		  Else
 		    Dim mb As MemoryBlock = UploadStream.Read(sz)
-		    If mb.Size > 0 Then char.StringValue(0, mb.Size) = mb.StringValue(0, mb.Size)
+		    If mb.Size > 0 Then char.StringValue(0, mb.Size) = mb
 		    Return mb.Size
 		  End If
 		  
@@ -1248,11 +1248,18 @@ Inherits libcURL.cURLHandle
 		#tag EndGetter
 		#tag Setter
 			Set
-			  ' Sets the version of HTTP to be used. Pass HTTPVersion.HTTP1_0, HTTPVersion.HTTP1_1, HTTPVersion.HTTP2, or HTTPVersion.None
+			  ' Sets the version of HTTP to be used. Pass a member of the HTTPVersion enumeration.
 			  '
 			  ' See:
 			  ' http://curl.haxx.se/libcurl/c/CURLOPT_HTTP_VERSION.html
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.HTTPVersion
+			  
+			  If (value = libcURL.HTTPVersion.HTTP2 And Not libcURL.Version.IsAtLeast(7, 33, 0)) _
+			    Or (value = libcURL.HTTPVersion.HTTP2TLS And Not libcURL.Version.IsAtLeast(7, 47, 0)) _
+			    Or (value = libcURL.HTTPVersion.HTTP2PriorKnowledge And Not libcURL.Version.IsAtLeast(7, 49, 0)) Then
+			    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
+			    Raise New cURLException(Me)
+			  End If
 			  
 			  If Not Me.SetOption(libcURL.Opts.HTTPVERSION, value) Then Raise New cURLException(Me)
 			  mHTTPVersion = value
@@ -1406,6 +1413,10 @@ Inherits libcURL.cURLHandle
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
+		Private mPipeWait As Boolean
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
 		Private mProxyEngine As libcURL.ProxyEngine
 	#tag EndProperty
 
@@ -1500,6 +1511,32 @@ Inherits libcURL.cURLHandle
 			End Set
 		#tag EndSetter
 		Password As String
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  return mPipeWait
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  ' Sets whether libcURL will prefer to wait for a pipelined connection.
+			  '
+			  ' See:
+			  ' https://curl.haxx.se/libcurl/c/CURLOPT_PIPEWAIT.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.PipeWait
+			  
+			  If Not libcURL.Version.IsAtLeast(7, 43, 0) Then
+			    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
+			    Return
+			  End If
+			  
+			  If Not Me.SetOption(libcURL.Opts.PIPEWAIT, value) Then Raise New cURLException(Me)
+			  mPipeWait = value
+			End Set
+		#tag EndSetter
+		PipeWait As Boolean
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0

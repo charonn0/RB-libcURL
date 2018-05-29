@@ -308,7 +308,7 @@ Implements FormStreamGetter
 		  Dim sz As Integer = NumItems * Size
 		  Dim mb As MemoryBlock = r.Read(sz)
 		  Dim buf As MemoryBlock = Buffer
-		  If mb.Size > 0 Then buf.StringValue(0, mb.Size) = mb.StringValue(0, mb.Size)
+		  If mb.Size > 0 Then buf.StringValue(0, mb.Size) = mb
 		  Return mb.Size
 		  
 		Exception Err As RuntimeException
