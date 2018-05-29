@@ -9,49 +9,49 @@ Protected Module LiveTests
 		  Try
 		    TestCookieGet()
 		  Catch
-		    TestResult = 6
+		    TestResult = 9
 		    Return False
 		  End Try
 		  
 		  Try
 		    TestCookieSet
 		  Catch
-		    TestResult = 7
+		    TestResult = 10
 		    Return False
 		  End Try
 		  
 		  Try
 		    TestHeaderGet()
 		  Catch
-		    TestResult = 8
+		    TestResult = 11
 		    Return False
 		  End Try
 		  
 		  Try
 		    TestHeaderSet()
 		  Catch
-		    TestResult = 9
+		    TestResult = 12
 		    Return False
 		  End Try
 		  
 		  Try
 		    TestRedirect()
 		  Catch
-		    TestResult = 10
+		    TestResult = 13
 		    Return False
 		  End Try
 		  
 		  Try
 		    TestFormPost()
 		  Catch
-		    TestResult = 11
+		    TestResult = 14
 		    Return False
 		  End Try
 		  
 		  Try
 		    TestMIMEPost()
 		  Catch
-		    TestResult = 12
+		    TestResult = 15
 		    Return False
 		  End Try
 		  
@@ -111,6 +111,8 @@ Protected Module LiveTests
 		  Assert(js.HasName("cookies"))
 		  js = js.Value("cookies")
 		  Assert(js.Value("TestCookie") = "TestValue")
+		  
+		  
 		End Sub
 	#tag EndMethod
 
@@ -147,12 +149,29 @@ Protected Module LiveTests
 
 	#tag Method, Flags = &h21
 		Private Sub TestHeaderSet()
-		  Assert(mSession.SetRequestHeader("X-Test-Header", "TestValue"))
+		  mSession.RequestHeaders.SetHeader("X-Test-Header1", "TestValue1")
+		  mSession.RequestHeaders.SetHeader("X-Test-Header2", "TestValue2")
+		  mSession.RequestHeaders.SetHeader("X-Test-Header3", "TestValue3")
+		  mSession.RequestHeaders.SetHeader("X-Test-Header4", "TestValue4")
 		  Assert(mSession.Get("https://nghttp2.org/httpbin/headers"))
 		  Dim js As New JSONItem(mSession.GetDownloadedData)
 		  js = js.Value("headers")
-		  Assert(js.HasName("X-Test-Header"))
-		  Assert(js.Value("X-Test-Header") = "TestValue")
+		  
+		  Assert(js.HasName("X-Test-Header1"))
+		  Assert(js.Value("X-Test-Header1") = "TestValue1")
+		  
+		  Assert(js.HasName("X-Test-Header2"))
+		  Assert(js.Value("X-Test-Header2") = "TestValue2")
+		  
+		  Assert(js.HasName("X-Test-Header3"))
+		  Assert(js.Value("X-Test-Header3") = "TestValue3")
+		  
+		  Assert(js.HasName("X-Test-Header4"))
+		  Assert(js.Value("X-Test-Header4") = "TestValue4")
+		  
+		  
+		  
+		  
 		End Sub
 	#tag EndMethod
 

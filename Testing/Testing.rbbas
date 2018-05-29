@@ -65,6 +65,13 @@ Protected Module Testing
 		    Return False
 		  End Try
 		  
+		  Try
+		    TestRequestHeaderEngine()
+		  Catch
+		    TestResult = 9
+		    Return False
+		  End Try
+		  
 		  #If RunLiveTests Then
 		    Return Testing.LiveTests.RunTests()
 		  #else
@@ -465,6 +472,28 @@ Protected Module Testing
 		  Assert(c.GetInfo(libcURL.Info.RESPONSE_CODE) = 200)
 		  Assert(data.Size > 0)
 		  Assert(data.Size = c.GetInfo(libcURL.Info.SIZE_DOWNLOAD))
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub TestRequestHeaderEngine()
+		  Dim c As New cURLClient
+		  
+		  Assert(c.RequestHeaders.Count = 0)
+		  
+		  c.RequestHeaders.SetHeader("X-Test-Header1", "TestValue1")
+		  Assert(c.RequestHeaders.Count = 1)
+		  Assert(c.RequestHeaders.Name(0) = "X-Test-Header1")
+		  Assert(c.RequestHeaders.Value(0) = "TestValue1")
+		  Assert(c.RequestHeaders.HasHeader("X-Test-Header1"))
+		  Assert(c.RequestHeaders.GetHeader("X-Test-Header1") = "TestValue1")
+		  
+		  c.RequestHeaders.SetHeader("X-Test-Header2", "TestValue2")
+		  Assert(c.RequestHeaders.Count = 2)
+		  Assert(c.RequestHeaders.Name(1) = "X-Test-Header2")
+		  Assert(c.RequestHeaders.Value(1) = "TestValue2")
+		  Assert(c.RequestHeaders.HasHeader("X-Test-Header2"))
+		  Assert(c.RequestHeaders.GetHeader("X-Test-Header2") = "TestValue2")
 		End Sub
 	#tag EndMethod
 
