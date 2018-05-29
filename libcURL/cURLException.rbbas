@@ -13,6 +13,12 @@ Inherits RuntimeException
 		  Case Me.ErrorNumber = libcURL.Errors.INIT_FAILED
 		    Me.Message = "Unknown failure while constructing a libcURL handle."
 		    
+		  Case Me.ErrorNumber = libcURL.Errors.MIME_ADD_FAILED
+		    Me.Message = "Unknown failure while adding a MIME message part."
+		    
+		  Case Me.ErrorNumber = libcURL.Errors.MIME_OWNER_MISSING
+		    Me.Message = "MIME messages must be owned by an instance of EasyHandle, but this message has outlived its owner."
+		    
 		  Case Me.ErrorNumber = libcURL.Errors.FEATURE_UNAVAILABLE
 		    Me.Message = "A required feature is not available in the installed version of libcURL."
 		    
