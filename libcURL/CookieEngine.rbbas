@@ -128,8 +128,8 @@ Protected Class CookieEngine
 		      If d = "" And CookieDomain = "" Then Return i
 		      If Strict Then
 		        If CompareDomains(CookieDomain, d, Owner) Then Return i
-		      Else
-		        If CookieDomain = "" Or CookieDomain = d Or "." + CookieDomain = d Or (Not Strict And InStr(d, CookieDomain) > 0) Then Return i
+		      ElseIf InStr(d, CookieDomain) > 0 Then
+		        Return i
 		      End If
 		    End If
 		  Next

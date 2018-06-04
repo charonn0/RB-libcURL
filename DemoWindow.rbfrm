@@ -3397,6 +3397,9 @@ End
 	#tag Event
 		Sub Error(cURLCode As Integer)
 		  #pragma Unused cURLCode
+		  Dim w As Writeable = Me.EasyItem.DownloadStream
+		  If w <> Nil And w IsA BinaryStream Then BinaryStream(w).Close
+		  ThreadStream = Nil
 		  GUITimer.Mode = Timer.ModeSingle
 		End Sub
 	#tag EndEvent
@@ -3405,7 +3408,8 @@ End
 		  #pragma Unused BytesRead
 		  #pragma Unused BytesWritten
 		  GUITimer.Mode = Timer.ModeSingle
-		  If ThreadStream <> Nil Then ThreadStream.Close
+		  Dim w As Writeable = Me.EasyItem.DownloadStream
+		  If w <> Nil And w IsA BinaryStream Then BinaryStream(w).Close
 		  ThreadStream = Nil
 		End Sub
 	#tag EndEvent
