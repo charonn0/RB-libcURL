@@ -54,7 +54,7 @@ Inherits libcURL.EasyHandle
 	#tag Method, Flags = &h1000
 		Sub Constructor(CopyOpts As libcURL.EasyHandle)
 		  // Calling the overridden superclass constructor.
-		  // Constructor(CopyOpts As libcURL.EasyHandle) -- From EasyHandle
+		  // Constructor(CopyOpts As libcURL.EasyHandle) -- From libcURL.EasyHandle
 		  Super.Constructor(CopyOpts)
 		  If CopyOpts IsA FTPWildCard Then
 		    Me.LocalRoot = FTPWildCard(CopyOpts).LocalRoot
@@ -70,25 +70,26 @@ Inherits libcURL.EasyHandle
 		  
 		  mRemaining = Remaining
 		  Dim mb As MemoryBlock = Info.FileName
-		  mLastFileName = mb.CString(0)
-		  If mLastFileName = "." Or mLastFileName = ".." Then Return CURL_CHUNK_BGN_FUNC_SKIP ' skip parent and self references
-		  If mLastFile = Nil And LocalRoot <> Nil Then mLastFile = LocalRoot.Child(mLastFileName)
+		  Dim filename As String = mb.CString(0)
+		  If filename = "." Or filename = ".." Then Return CURL_CHUNK_BGN_FUNC_SKIP ' skip parent and self references
+		  Dim file As FolderItem 
+		  If LocalRoot <> Nil Then file = LocalRoot.Child(filename)
 		  
 		  Dim p As New Permissions(Info.Perm)
 		  Me.DownloadStream = Nil
-		  If RaiseEvent QueueFile(mLastFileName, mLastFile, Info.FileType, p) Then Return CURL_CHUNK_BGN_FUNC_SKIP
-		  If mLastFile = Nil Then Return CURL_CHUNK_BGN_FUNC_OK ' the dataavailable event will be raised
+		  If RaiseEvent QueueFile(filename, file, Info.FileType, p) Then Return CURL_CHUNK_BGN_FUNC_SKIP
+		  If file = Nil Then Return CURL_CHUNK_BGN_FUNC_OK ' the dataavailable event will be raised
 		  
 		  Select Case Info.FileType
 		  Case FILETYPE_FILE
 		    Try
-		      Me.DownloadStream = BinaryStream.Create(mLastFile, OverwriteLocalFiles)
+		      Me.DownloadStream = BinaryStream.Create(file, OverwriteLocalFiles)
 		    Catch Err As IOException
 		      Return CURL_CHUNK_BGN_FUNC_FAIL
 		    End Try
 		  Case FILETYPE_DIR
-		    If Not mLastFile.Exists Then mLastFile.CreateAsFolder
-		    If Not mLastFile.Directory Then Return CURL_CHUNK_BGN_FUNC_FAIL
+		    If Not file.Exists Then file.CreateAsFolder
+		    If Not file.Directory Then Return CURL_CHUNK_BGN_FUNC_FAIL
 		  Else
 		    Break ' other type; the dataavailable event will be raised
 		  End Select
@@ -106,8 +107,6 @@ Inherits libcURL.EasyHandle
 		Private Function curlChunkEnd() As Integer
 		  ' The LIST entry is ended
 		  
-		  mLastFileName = ""
-		  mLastFile = Nil
 		  If Me.DownloadStream <> Nil And Me.DownloadStream IsA BinaryStream Then BinaryStream(Me.DownloadStream).Close
 		  Me.DownloadStream = Nil
 		  Return CURL_CHUNK_END_FUNC_OK
@@ -184,8 +183,6 @@ Inherits libcURL.EasyHandle
 		  
 		  Super.Reset
 		  CustomMatch = mCustomMatch
-		  mLastFile = Nil
-		  mLastFileName = ""
 		  mLastError = 0
 		  mRemaining = 0
 		  
@@ -298,14 +295,6 @@ Inherits libcURL.EasyHandle
 
 	#tag Property, Flags = &h21
 		Private mCustomMatch As Boolean
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private mLastFile As FolderItem
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private mLastFileName As String
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
