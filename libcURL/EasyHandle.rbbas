@@ -324,12 +324,23 @@ Inherits libcURL.cURLHandle
 		      If mb <> Nil Then Return mb.CString(0)
 		    End If
 		    
-		  Case libcURL.Info.RESPONSE_CODE, libcURL.Info.HTTP_CONNECTCODE, libcURL.Info.FILETIME, libcURL.Info.REDIRECT_COUNT, libcURL.Info.HEADER_SIZE, _
+		  Case libcURL.Info.RESPONSE_CODE, libcURL.Info.HTTP_CONNECTCODE, libcURL.Info.REDIRECT_COUNT, libcURL.Info.HEADER_SIZE, _
 		    libcURL.Info.REQUEST_SIZE, libcURL.Info.SSL_VERIFYRESULT, libcURL.Info.OS_ERRNO, _
 		    libcURL.Info.NUM_CONNECTS, libcURL.Info.PRIMARY_PORT, libcURL.Info.LOCAL_PORT, libcURL.Info.LASTSOCKET, libcURL.Info.CONDITION_UNMET, _
 		    libcURL.Info.RTSP_CLIENT_CSEQ, libcURL.Info.RTSP_SERVER_CSEQ, libcURL.Info.RTSP_CSEQ_RECV
 		    mb = New MemoryBlock(4)
 		    If Me.GetInfo(InfoType, mb) Then Return mb.Int32Value(0)
+		    
+		  Case libcURL.Info.FILETIME
+		    mb = New MemoryBlock(4)
+		    If Me.GetInfo(InfoType, mb) Then
+		      Dim t As Int32 = mb.Int32Value(0)
+		      If t >= 0 Then
+		        Dim d As New Date(1970, 1, 1, 0, 0, 0, 0.0) 'UNIX epoch
+		        d.TotalSeconds = d.TotalSeconds + t
+		        Return d
+		      End If
+		    End If
 		    
 		  Case libcurl.Info.PROXYAUTH_AVAIL, libcURL.Info.HTTPAUTH_AVAIL
 		    mb = New MemoryBlock(4)
