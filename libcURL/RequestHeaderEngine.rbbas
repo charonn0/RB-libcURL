@@ -13,6 +13,11 @@ Protected Class RequestHeaderEngine
 
 	#tag Method, Flags = &h0
 		Sub CopyFrom(OtherHeaders As libcURL.RequestHeaderEngine)
+		  ' Copies the specified request headers.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.RequestHeaderEngine.CopyFrom
+		  
 		  Dim s() As String = OtherHeaders.mHeaders
 		  mHeaders = s
 		  If Not Owner.SetOption(libcURL.Opts.HTTPHEADER, mHeaders) Then Raise New cURLException(Owner)
