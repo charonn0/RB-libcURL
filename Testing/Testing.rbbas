@@ -494,6 +494,21 @@ Protected Module Testing
 		  Assert(c.RequestHeaders.Value(1) = "TestValue2")
 		  Assert(c.RequestHeaders.HasHeader("X-Test-Header2"))
 		  Assert(c.RequestHeaders.GetHeader("X-Test-Header2") = "TestValue2")
+		  
+		  Dim c2 As New cURLClient
+		  c2.RequestHeaders.CopyFrom(c.RequestHeaders)
+		  
+		  Assert(c2.RequestHeaders.Count = 2)
+		  
+		  Assert(c2.RequestHeaders.Name(0) = "X-Test-Header1")
+		  Assert(c2.RequestHeaders.Value(0) = "TestValue1")
+		  Assert(c2.RequestHeaders.HasHeader("X-Test-Header1"))
+		  Assert(c2.RequestHeaders.GetHeader("X-Test-Header1") = "TestValue1")
+		  
+		  Assert(c2.RequestHeaders.Name(1) = "X-Test-Header2")
+		  Assert(c2.RequestHeaders.Value(1) = "TestValue2")
+		  Assert(c2.RequestHeaders.HasHeader("X-Test-Header2"))
+		  Assert(c2.RequestHeaders.GetHeader("X-Test-Header2") = "TestValue2")
 		End Sub
 	#tag EndMethod
 
