@@ -15,9 +15,9 @@ Inherits libcURL.cURLHandle
 		  If libcURL.Version.IsAtLeast(7, 17, 1) Then
 		    If Not Me.SetOption(libcURL.Opts.COPYPOSTFIELDS, Nil) Then Raise New cURLException(Me)
 		  End If
-		  If Not Me.SetOption(libcURL.Opts.HTTPPOST, Nil) Then Raise New libcURL.cURLException(Me)
+		  If Not Me.SetOption(libcURL.Opts.HTTPPOST, Nil) Then Raise New cURLException(Me)
 		  If libcURL.Version.IsAtLeast(7, 56, 0) Then
-		    If Not Me.SetOption(libcURL.Opts.MIMEPOST, Nil) Then Raise New libcURL.cURLException(Me)
+		    If Not Me.SetOption(libcURL.Opts.MIMEPOST, Nil) Then Raise New cURLException(Me)
 		  End If
 		  mForm = Nil
 		  mMIMEMessage = Nil
