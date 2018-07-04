@@ -419,8 +419,8 @@ Inherits libcURL.cURLHandle
 		  
 		  If mUseProgressEvent Then UseProgressEvent = True
 		  If libcURL.Version.IsAtLeast(7, 32, 0) Then
-		    If Not SetOption(libcURL.Opts.XFERINFOFUNCTION, AddressOf ProgressCallback) Then Raise New cURLException(Me)
 		    If Not SetOption(libcURL.Opts.XFERINFODATA, mHandle) Then Raise New cURLException(Me)
+		    If Not SetOption(libcURL.Opts.XFERINFOFUNCTION, AddressOf ProgressCallback) Then Raise New cURLException(Me)
 		  Else ' old versions
 		    If Not SetOption(libcURL.Opts.PROGRESSDATA, mHandle) Then Raise New cURLException(Me)
 		    If Not SetOption(libcURL.Opts.PROGRESSFUNCTION, AddressOf ProgressCallback) Then Raise New cURLException(Me)
