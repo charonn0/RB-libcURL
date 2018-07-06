@@ -286,6 +286,10 @@ Protected Module libcURL
 	#tag Method, Flags = &h1
 		Protected Function EnumSSLBackends() As libcURL.SSLBackEnd()
 		  ' Returns an array of available SSL backends.
+		  '
+		  ' See:
+		  ' https://curl.haxx.se/libcurl/c/curl_global_sslset.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EnumSSLBackends
 		  
 		  Dim ret() As SSLBackEnd
 		  If Not System.IsFunctionAvailable("curl_global_sslset", cURLLib) Then Return ret
@@ -1855,6 +1859,10 @@ Protected Module libcURL
 		Protected Sub SetSSLBackend(BackEnd As libcURL.SSLBackEnd)
 		  ' Sets the SSL backend. This is a global setting that can only be set once and must be set before using any other part
 		  ' of the library.
+		  '
+		  ' See:
+		  ' https://curl.haxx.se/libcurl/c/curl_global_sslset.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.SetSSLBackEnd
 		  
 		  If Not System.IsFunctionAvailable("curl_global_sslset", cURLLib) Then
 		    Dim e As New cURLException(Nil)
