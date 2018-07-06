@@ -291,7 +291,8 @@ Protected Module libcURL
 		  If Not System.IsFunctionAvailable("curl_global_sslset", cURLLib) Then Return ret
 		  
 		  Dim p As Ptr
-		  Call curl_global_sslset(SSLBackEnd.None, Nil, p)
+		  Call curl_global_sslset(SSLBackEnd.Ignore, Nil, p)
+		  If p = Nil Then Return ret
 		  Dim mb As MemoryBlock = p.CString(0)
 		  For i As Integer = 0 To mb.Size - 1
 		    Dim j As Integer = mb.Int8Value(i)
