@@ -288,7 +288,7 @@ Protected Module libcURL
 		  ' Returns an array of available SSL backends.
 		  
 		  Dim ret() As SSLBackEnd
-		  If Not libcURL.Version.IsAtLeast(7, 56, 0) Then Return ret
+		  If Not System.IsFunctionAvailable("curl_global_sslset", cURLLib) Then Return ret
 		  
 		  Dim p As Ptr
 		  Call curl_global_sslset(SSLBackEnd.None, Nil, p)
@@ -1855,7 +1855,7 @@ Protected Module libcURL
 		  ' Sets the SSL backend. This is a global setting that can only be set once and must be set before using any other part
 		  ' of the library.
 		  
-		  If Not libcURL.Version.IsAtLeast(7, 56, 0) Then
+		  If Not System.IsFunctionAvailable("curl_global_sslset", cURLLib) Then
 		    Dim e As New cURLException(Nil)
 		    e.ErrorNumber = libcURL.Errors.FEATURE_UNAVAILABLE
 		    Raise e
