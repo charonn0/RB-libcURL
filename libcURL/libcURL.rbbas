@@ -2106,7 +2106,8 @@ Protected Module libcURL
 		  SChannel=8
 		  DarwinSSL=9
 		  AXTLS=10
-		MBEDTLS=11
+		  MBEDTLS=11
+		Ignore=-1
 	#tag EndEnum
 
 	#tag Enum, Name = SSLVersion, Type = Integer, Flags = &h1
