@@ -292,7 +292,7 @@ Protected Module Testing
 		  Assert(m.AddElement("TestString", "Test Value1"))
 		  Assert(m.AddElement("TestString", "Test Value2"))
 		  Assert(m.AddElement("TestFile1", App.ExecutableFile))
-		  Assert(m.AddElement("TestFile2", App.ExecutableFile, "application/sgml"))
+		  Assert(m.AddElement("TestFile2", App.ExecutableFile, "file.name", "application/sgml"))
 		  Dim test As MemoryBlock = "This is a test string!"
 		  Dim bs1 As New BinaryStream(test)
 		  Dim bs2 As New BinaryStream(test)
@@ -316,6 +316,7 @@ Protected Module Testing
 		  
 		  Assert(m.GetElement(3).Name = "TestFile2")
 		  Assert(m.GetElement(3).Data = App.ExecutableFile.AbsolutePath)
+		  Assert(m.GetElement(3).FileName = "file.name")
 		  Assert(m.GetElement(3).ContentType = "application/sgml")
 		  Assert(m.GetElement(3).Type = libcURL.MIMEPartType.File)
 		  
