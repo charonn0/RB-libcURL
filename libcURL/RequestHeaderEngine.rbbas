@@ -19,8 +19,9 @@ Protected Class RequestHeaderEngine
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.RequestHeaderEngine.CopyFrom
 		  
 		  Dim s() As String = OtherHeaders.mHeaders
-		  mHeaders = s
-		  If Not Owner.SetOption(libcURL.Opts.HTTPHEADER, mHeaders) Then Raise New cURLException(Owner)
+		  Dim l As ListPtr = s
+		  If Not Owner.SetOption(libcURL.Opts.HTTPHEADER, l) Then Raise New cURLException(Owner)
+		  mHeaders = l
 		End Sub
 	#tag EndMethod
 

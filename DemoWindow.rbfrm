@@ -3300,6 +3300,11 @@ End
 		  
 		End Sub
 	#tag EndEvent
+	#tag Event
+		Sub Open()
+		  Me.Enabled = libcURL.Version.SSL
+		End Sub
+	#tag EndEvent
 #tag EndEvents
 #tag Events HTTPVer
 	#tag Event

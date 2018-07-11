@@ -15,9 +15,9 @@ Inherits libcURL.cURLHandle
 		  If libcURL.Version.IsAtLeast(7, 17, 1) Then
 		    If Not Me.SetOption(libcURL.Opts.COPYPOSTFIELDS, Nil) Then Raise New cURLException(Me)
 		  End If
-		  If Not Me.SetOption(libcURL.Opts.HTTPPOST, Nil) Then Raise New libcURL.cURLException(Me)
+		  If Not Me.SetOption(libcURL.Opts.HTTPPOST, Nil) Then Raise New cURLException(Me)
 		  If libcURL.Version.IsAtLeast(7, 56, 0) Then
-		    If Not Me.SetOption(libcURL.Opts.MIMEPOST, Nil) Then Raise New libcURL.cURLException(Me)
+		    If Not Me.SetOption(libcURL.Opts.MIMEPOST, Nil) Then Raise New cURLException(Me)
 		  End If
 		  mForm = Nil
 		  mMIMEMessage = Nil
@@ -419,8 +419,8 @@ Inherits libcURL.cURLHandle
 		  
 		  If mUseProgressEvent Then UseProgressEvent = True
 		  If libcURL.Version.IsAtLeast(7, 32, 0) Then
-		    If Not SetOption(libcURL.Opts.XFERINFOFUNCTION, AddressOf ProgressCallback) Then Raise New cURLException(Me)
 		    If Not SetOption(libcURL.Opts.XFERINFODATA, mHandle) Then Raise New cURLException(Me)
+		    If Not SetOption(libcURL.Opts.XFERINFOFUNCTION, AddressOf ProgressCallback) Then Raise New cURLException(Me)
 		  Else ' old versions
 		    If Not SetOption(libcURL.Opts.PROGRESSDATA, mHandle) Then Raise New cURLException(Me)
 		    If Not SetOption(libcURL.Opts.PROGRESSFUNCTION, AddressOf ProgressCallback) Then Raise New cURLException(Me)
@@ -589,7 +589,7 @@ Inherits libcURL.cURLHandle
 		  mTimeOut = 0
 		  mUploadMode = False
 		  mUserAgent = ""
-		  UseProgressEvent = True
+		  mUseProgressEvent = True
 		  mUsername = ""
 		  Verbose = mVerbose
 		  InitCallbacks()
