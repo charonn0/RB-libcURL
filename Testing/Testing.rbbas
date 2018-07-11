@@ -271,10 +271,6 @@ Protected Module Testing
 		  Assert(l.Item(1) = "World")
 		  Assert(l.Item(2) = "!!")
 		  
-		  l.Free
-		  Assert(l.Count = 0)
-		  Assert(l.Handle = 0)
-		  
 		  l = Split("This is a test string", " ")
 		  Assert(l.Handle <> 0)
 		  Assert(l.Item(0) = "This")
