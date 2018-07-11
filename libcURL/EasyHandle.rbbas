@@ -653,7 +653,7 @@ Inherits libcURL.cURLHandle
 	#tag Method, Flags = &h0
 		Sub SetFormData(FormData As libcURL.MultipartForm)
 		  ' Sets the FormData MultipartForm object as the HTTP form to POST as multipart/form-data
-		  ' You may also pass a Dictionary of NAME:VALUE pairs comprising HTML form elements which
+		  ' You may also pass a Dictionary of NAME:VALUE pairs comprising HTTP form elements which
 		  ' will be automatically converted to a MultipartForm
 		  '
 		  ' See:
