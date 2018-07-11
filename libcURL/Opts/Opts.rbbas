@@ -81,6 +81,9 @@ Protected Module Opts
 	#tag Constant, Name = DIRLISTONLY, Type = Double, Dynamic = False, Default = \"48", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = DISALLOW_USERNAME_IN_URL, Type = Double, Dynamic = False, Default = \"278", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = DNS_CACHE_TIMEOUT, Type = Double, Dynamic = False, Default = \"92", Scope = Protected
 	#tag EndConstant
 
