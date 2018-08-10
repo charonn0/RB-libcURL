@@ -65,16 +65,6 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Attributes( deprecated = "libcURL.ListPtr.Destructor" )  Sub Free()
-		  ' Frees the list.
-		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ListPtr.Free
-		  
-		  Me.Destructor
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Function Item(Index As Integer) As String
 		  ' Reads the string located at Index. The first item is at Index=0
 		  ' If the list does not contain a string at Index then an OutOfBoundsException will be raised.
@@ -92,7 +82,12 @@ Inherits libcURL.cURLHandle
 		  Dim nxt As Ptr = List
 		  Dim i As Integer
 		  Do
-		    If i < Index Then
+		    If i = Index Then
+		      Dim txt As MemoryBlock = nxt.Ptr(0)
+		      If txt = Nil Then Return ""
+		      Return txt.CString(0)
+		      
+		    ElseIf i < Index Then
 		      #If Not Target64Bit Then
 		        nxt = nxt.Ptr(4)
 		      #Else
@@ -103,11 +98,6 @@ Inherits libcURL.cURLHandle
 		        err.Message = "The list does not contain an entry at that index."
 		        Raise err
 		      End If
-		      
-		    ElseIf i = Index Then
-		      Dim txt As MemoryBlock = nxt.Ptr(0)
-		      If txt = Nil Then Return ""
-		      Return txt.CString(0)
 		      
 		    Else
 		      Dim err As New OutOfBoundsException

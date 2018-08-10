@@ -15,9 +15,9 @@ Inherits libcURL.cURLHandle
 		  If libcURL.Version.IsAtLeast(7, 17, 1) Then
 		    If Not Me.SetOption(libcURL.Opts.COPYPOSTFIELDS, Nil) Then Raise New cURLException(Me)
 		  End If
-		  If Not Me.SetOption(libcURL.Opts.HTTPPOST, Nil) Then Raise New libcURL.cURLException(Me)
+		  If Not Me.SetOption(libcURL.Opts.HTTPPOST, Nil) Then Raise New cURLException(Me)
 		  If libcURL.Version.IsAtLeast(7, 56, 0) Then
-		    If Not Me.SetOption(libcURL.Opts.MIMEPOST, Nil) Then Raise New libcURL.cURLException(Me)
+		    If Not Me.SetOption(libcURL.Opts.MIMEPOST, Nil) Then Raise New cURLException(Me)
 		  End If
 		  mForm = Nil
 		  mMIMEMessage = Nil
@@ -41,15 +41,15 @@ Inherits libcURL.cURLHandle
 		  Super.Constructor(GlobalInitFlags)
 		  
 		  mHandle = curl_easy_init()
-		  If mHandle > 0 Then
-		    If Instances = Nil Then Instances = New Dictionary
-		    mOptions = New Dictionary
-		    Instances.Value(mHandle) = New WeakRef(Me)
-		    InitCallbacks()
-		  Else
+		  If mHandle = 0 Then
 		    mLastError = libcURL.Errors.INIT_FAILED
 		    Raise New cURLException(Me)
 		  End If
+		  
+		  If Instances = Nil Then Instances = New Dictionary
+		  Instances.Value(mHandle) = New WeakRef(Me)
+		  InitCallbacks()
+		  
 		  ' by default, only raise the DebugMessage event if we're debugging
 		  #If DebugBuild Then
 		    Me.Verbose = True
@@ -72,45 +72,45 @@ Inherits libcURL.cURLHandle
 		  // Constructor(GlobalInitFlags As Integer) -- From libcURL.cURLHandle
 		  Super.Constructor(CopyOpts.Flags)
 		  mHandle = curl_easy_duphandle(CopyOpts.Handle)
-		  If mHandle > 0 Then
-		    mOptions = New Dictionary
-		    For Each key As Integer In CopyOpts.mOptions.Keys
-		      If Not Me.SetOption(key, CopyOpts.mOptions.Value(key)) Then Raise New cURLException(Me)
-		    Next
-		    Instances.Value(mHandle) = New WeakRef(Me)
-		    InitCallbacks()
-		    'If CopyOpts.mAuthMethods <> Nil Then Call Me.SetAuthMethods(CopyOpts.GetAuthMethods)
-		    'mAutoDisconnect = CopyOpts.AutoDisconnect
-		    'mAutoReferer = CopyOpts.AutoReferer
-		    'If CopyOpts.mCA_ListFile <> Nil Then Me.CA_ListFile = CopyOpts.CA_ListFile
-		    'mConnectionTimeout = CopyOpts.ConnectionTimeout
-		    'mConnectionType = CopyOpts.ConnectionType
-		    'Me.CookieEngine.Enabled = CopyOpts.CookieEngine.Enabled
-		    'Me.UseErrorBuffer = CopyOpts.UseErrorBuffer
-		    'mFailOnServerError = CopyOpts.FailOnServerError
-		    'mFollowRedirects = CopyOpts.FollowRedirects
-		    'mHTTPCompression = CopyOpts.HTTPCompression
-		    'mHTTPPreserveMethod = CopyOpts.HTTPPreserveMethod
-		    'mHTTPVersion = CopyOpts.HTTPVersion
-		    'mMaxRedirects = CopyOpts.MaxRedirects
-		    'mPassword = CopyOpts.Password
-		    'If CopyOpts.mProxyEngine <> Nil Then
-		    'Me.ProxyEngine.Address = CopyOpts.ProxyEngine.Address
-		    'If CopyOpts.ProxyEngine.Port <> 1080 Then Me.ProxyEngine.Port = CopyOpts.ProxyEngine.Port
-		    'If CopyOpts.ProxyEngine.Type <> libcURL.ProxyType.HTTP Then Me.ProxyEngine.Type = CopyOpts.ProxyEngine.Type
-		    'End If
-		    'mSecure = CopyOpts.Secure
-		    'If CopyOpts.SSLVersion <> libcURL.SSLVersion.Default Then mSSLVersion = CopyOpts.SSLVersion
-		    'mTimeOut = CopyOpts.TimeOut
-		    'mUploadMode = CopyOpts.UploadMode
-		    'mUserAgent = CopyOpts.UserAgent
-		    'mUsername = CopyOpts.Username
-		    'Me.Verbose = CopyOpts.Verbose
-		    'mForm = CopyOpts.mForm
-		  Else
+		  If mHandle = 0 Then
 		    mLastError = libcURL.Errors.INIT_FAILED
 		    Raise New cURLException(Me)
-		  End If
+		  End If		  
+		  
+		  mOptions = New Dictionary
+		  For Each key As Integer In CopyOpts.mOptions.Keys
+		    If Not Me.SetOption(key, CopyOpts.mOptions.Value(key)) Then Raise New cURLException(Me)
+		  Next
+		  Instances.Value(mHandle) = New WeakRef(Me)
+		  InitCallbacks()
+		  'If CopyOpts.mAuthMethods <> Nil Then Call Me.SetAuthMethods(CopyOpts.GetAuthMethods)
+		  'mAutoDisconnect = CopyOpts.AutoDisconnect
+		  'mAutoReferer = CopyOpts.AutoReferer
+		  'If CopyOpts.mCA_ListFile <> Nil Then Me.CA_ListFile = CopyOpts.CA_ListFile
+		  'mConnectionTimeout = CopyOpts.ConnectionTimeout
+		  'mConnectionType = CopyOpts.ConnectionType
+		  'Me.CookieEngine.Enabled = CopyOpts.CookieEngine.Enabled
+		  'Me.UseErrorBuffer = CopyOpts.UseErrorBuffer
+		  'mFailOnServerError = CopyOpts.FailOnServerError
+		  'mFollowRedirects = CopyOpts.FollowRedirects
+		  'mHTTPCompression = CopyOpts.HTTPCompression
+		  'mHTTPPreserveMethod = CopyOpts.HTTPPreserveMethod
+		  'mHTTPVersion = CopyOpts.HTTPVersion
+		  'mMaxRedirects = CopyOpts.MaxRedirects
+		  'mPassword = CopyOpts.Password
+		  'If CopyOpts.mProxyEngine <> Nil Then
+		  'Me.ProxyEngine.Address = CopyOpts.ProxyEngine.Address
+		  'If CopyOpts.ProxyEngine.Port <> 1080 Then Me.ProxyEngine.Port = CopyOpts.ProxyEngine.Port
+		  'If CopyOpts.ProxyEngine.Type <> libcURL.ProxyType.HTTP Then Me.ProxyEngine.Type = CopyOpts.ProxyEngine.Type
+		  'End If
+		  'mSecure = CopyOpts.Secure
+		  'If CopyOpts.SSLVersion <> libcURL.SSLVersion.Default Then mSSLVersion = CopyOpts.SSLVersion
+		  'mTimeOut = CopyOpts.TimeOut
+		  'mUploadMode = CopyOpts.UploadMode
+		  'mUserAgent = CopyOpts.UserAgent
+		  'mUsername = CopyOpts.Username
+		  'Me.Verbose = CopyOpts.Verbose
+		  'mForm = CopyOpts.mForm
 		End Sub
 	#tag EndMethod
 
@@ -176,7 +176,7 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag DelegateDeclaration, Flags = &h21
-		Private Delegate Function cURLProgressCallback(UserData As Integer, dlTotal As Int64, dlNow As Int64, ulTotal As Int64, ulnNow As Int64) As Integer
+		Private Delegate Function cURLProgressCallback(UserData As Integer, dlTotal As Int64, dlNow As Int64, ulTotal As Int64, ulNow As Int64) As Integer
 	#tag EndDelegateDeclaration
 
 	#tag Method, Flags = &h21
@@ -189,7 +189,7 @@ Inherits libcURL.cURLHandle
 		    Return RaiseEvent DataNeeded(char, sz)
 		  Else
 		    Dim mb As MemoryBlock = UploadStream.Read(sz)
-		    If mb.Size > 0 Then char.StringValue(0, mb.Size) = mb.StringValue(0, mb.Size)
+		    If mb.Size > 0 Then char.StringValue(0, mb.Size) = mb
 		    Return mb.Size
 		  End If
 		  
@@ -328,12 +328,23 @@ Inherits libcURL.cURLHandle
 		      If mb <> Nil Then Return mb.CString(0)
 		    End If
 		    
-		  Case libcURL.Info.RESPONSE_CODE, libcURL.Info.HTTP_CONNECTCODE, libcURL.Info.FILETIME, libcURL.Info.REDIRECT_COUNT, libcURL.Info.HEADER_SIZE, _
+		  Case libcURL.Info.RESPONSE_CODE, libcURL.Info.HTTP_CONNECTCODE, libcURL.Info.REDIRECT_COUNT, libcURL.Info.HEADER_SIZE, _
 		    libcURL.Info.REQUEST_SIZE, libcURL.Info.SSL_VERIFYRESULT, libcURL.Info.OS_ERRNO, _
 		    libcURL.Info.NUM_CONNECTS, libcURL.Info.PRIMARY_PORT, libcURL.Info.LOCAL_PORT, libcURL.Info.LASTSOCKET, libcURL.Info.CONDITION_UNMET, _
 		    libcURL.Info.RTSP_CLIENT_CSEQ, libcURL.Info.RTSP_SERVER_CSEQ, libcURL.Info.RTSP_CSEQ_RECV
 		    mb = New MemoryBlock(4)
 		    If Me.GetInfo(InfoType, mb) Then Return mb.Int32Value(0)
+		    
+		  Case libcURL.Info.FILETIME
+		    mb = New MemoryBlock(4)
+		    If Me.GetInfo(InfoType, mb) Then
+		      Dim t As Int32 = mb.Int32Value(0)
+		      If t >= 0 Then
+		        Dim d As New Date(1970, 1, 1, 0, 0, 0, 0.0) 'UNIX epoch
+		        d.TotalSeconds = d.TotalSeconds + t
+		        Return d
+		      End If
+		    End If
 		    
 		  Case libcurl.Info.PROXYAUTH_AVAIL, libcURL.Info.HTTPAUTH_AVAIL
 		    mb = New MemoryBlock(4)
@@ -420,8 +431,8 @@ Inherits libcURL.cURLHandle
 		  
 		  If mUseProgressEvent Then UseProgressEvent = True
 		  If libcURL.Version.IsAtLeast(7, 32, 0) Then
-		    If Not SetOption(libcURL.Opts.XFERINFOFUNCTION, AddressOf ProgressCallback) Then Raise New cURLException(Me)
 		    If Not SetOption(libcURL.Opts.XFERINFODATA, mHandle) Then Raise New cURLException(Me)
+		    If Not SetOption(libcURL.Opts.XFERINFOFUNCTION, AddressOf ProgressCallback) Then Raise New cURLException(Me)
 		  Else ' old versions
 		    If Not SetOption(libcURL.Opts.PROGRESSDATA, mHandle) Then Raise New cURLException(Me)
 		    If Not SetOption(libcURL.Opts.PROGRESSFUNCTION, AddressOf ProgressCallback) Then Raise New cURLException(Me)
@@ -591,7 +602,7 @@ Inherits libcURL.cURLHandle
 		  mTimeOut = 0
 		  mUploadMode = False
 		  mUserAgent = ""
-		  UseProgressEvent = True
+		  mUseProgressEvent = True
 		  mUsername = ""
 		  Verbose = mVerbose
 		  InitCallbacks()
@@ -655,7 +666,7 @@ Inherits libcURL.cURLHandle
 	#tag Method, Flags = &h0
 		Sub SetFormData(FormData As libcURL.MultipartForm)
 		  ' Sets the FormData MultipartForm object as the HTTP form to POST as multipart/form-data
-		  ' You may also pass a Dictionary of NAME:VALUE pairs comprising HTML form elements which
+		  ' You may also pass a Dictionary of NAME:VALUE pairs comprising HTTP form elements which
 		  ' will be automatically converted to a MultipartForm
 		  '
 		  ' See:
@@ -1271,11 +1282,18 @@ Inherits libcURL.cURLHandle
 		#tag EndGetter
 		#tag Setter
 			Set
-			  ' Sets the version of HTTP to be used. Pass HTTPVersion.HTTP1_0, HTTPVersion.HTTP1_1, HTTPVersion.HTTP2, or HTTPVersion.None
+			  ' Sets the version of HTTP to be used. Pass a member of the HTTPVersion enumeration.
 			  '
 			  ' See:
 			  ' http://curl.haxx.se/libcurl/c/CURLOPT_HTTP_VERSION.html
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.HTTPVersion
+			  
+			  If (value = libcURL.HTTPVersion.HTTP2 And Not libcURL.Version.IsAtLeast(7, 33, 0)) _
+			    Or (value = libcURL.HTTPVersion.HTTP2TLS And Not libcURL.Version.IsAtLeast(7, 47, 0)) _
+			    Or (value = libcURL.HTTPVersion.HTTP2PriorKnowledge And Not libcURL.Version.IsAtLeast(7, 49, 0)) Then
+			    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
+			    Raise New cURLException(Me)
+			  End If
 			  
 			  If Not Me.SetOption(libcURL.Opts.HTTPVERSION, value) Then Raise New cURLException(Me)
 			  mHTTPVersion = value
@@ -1287,6 +1305,29 @@ Inherits libcURL.cURLHandle
 	#tag Property, Flags = &h1
 		Protected Shared Instances As Dictionary
 	#tag EndProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  ' Gets the version of HTTP to be used. Returns IPVersion.V4, IPVersion.V6, or IPVersion.Whatever
+			  
+			  return mIPVersion
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  ' Sets the IP version to be used. Pass a member of the libcURL.IPVersion enum
+			  '
+			  ' See:
+			  ' https://curl.haxx.se/libcurl/c/CURLOPT_IPRESOLVE.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.IPVersion
+			  
+			  If Not Me.SetOption(libcURL.Opts.IPRESOLVE, value) Then Raise New cURLException(Me)
+			  mIPVersion = value
+			End Set
+		#tag EndSetter
+		IPVersion As libcURL.IPVersion
+	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
@@ -1390,6 +1431,10 @@ Inherits libcURL.cURLHandle
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
+		Private mIPVersion As libcURL.IPVersion
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
 		Private mMaxRedirects As Integer = -1
 	#tag EndProperty
 
@@ -1403,6 +1448,10 @@ Inherits libcURL.cURLHandle
 
 	#tag Property, Flags = &h21
 		Private mPassword As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mPipeWait As Boolean
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -1500,6 +1549,32 @@ Inherits libcURL.cURLHandle
 			End Set
 		#tag EndSetter
 		Password As String
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  return mPipeWait
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  ' Sets whether libcURL will prefer to wait for a pipelined connection.
+			  '
+			  ' See:
+			  ' https://curl.haxx.se/libcurl/c/CURLOPT_PIPEWAIT.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.PipeWait
+			  
+			  If Not libcURL.Version.IsAtLeast(7, 43, 0) Then
+			    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
+			    Return
+			  End If
+			  
+			  If Not Me.SetOption(libcURL.Opts.PIPEWAIT, value) Then Raise New cURLException(Me)
+			  mPipeWait = value
+			End Set
+		#tag EndSetter
+		PipeWait As Boolean
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0

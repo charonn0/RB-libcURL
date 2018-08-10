@@ -81,6 +81,12 @@ Protected Module Opts
 	#tag Constant, Name = DIRLISTONLY, Type = Double, Dynamic = False, Default = \"48", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = DISALLOW_USERNAME_IN_URL, Type = Double, Dynamic = False, Default = \"278", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = DNS_CACHE_TIMEOUT, Type = Double, Dynamic = False, Default = \"92", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = DNS_INTERFACE, Type = Double, Dynamic = False, Default = \"10221", Scope = Protected
 	#tag EndConstant
 
@@ -91,6 +97,9 @@ Protected Module Opts
 	#tag EndConstant
 
 	#tag Constant, Name = DNS_SERVERS, Type = Double, Dynamic = False, Default = \"10211", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = DNS_SHUFFLE_ADDRESSES, Type = Double, Dynamic = False, Default = \"275", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = EGDSOCKET, Type = Double, Dynamic = False, Default = \"10077", Scope = Protected
@@ -136,6 +145,9 @@ Protected Module Opts
 	#tag EndConstant
 
 	#tag Constant, Name = FTP_FILEMETHOD, Type = Double, Dynamic = False, Default = \"138", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = HAPROXYPROTOCOL, Type = Double, Dynamic = False, Default = \"274", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = HEADER, Type = Double, Dynamic = False, Default = \"42", Scope = Protected
@@ -247,6 +259,9 @@ Protected Module Opts
 	#tag EndConstant
 
 	#tag Constant, Name = PIPELINING_SITE_BL, Type = Double, Dynamic = False, Default = \"10011", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = PIPEWAIT, Type = Double, Dynamic = False, Default = \"237", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = PORT, Type = Double, Dynamic = False, Default = \"3", Scope = Protected

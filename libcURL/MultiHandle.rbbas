@@ -161,6 +161,7 @@ Inherits libcURL.cURLHandle
 		Private Sub PerformTimerHandler(Sender As Timer)
 		  ' This method handles the PerformTimer.Action event. It calls PerformOnce on the main thread until PerformOnce returns False.
 		  
+		  ' this loop calls PerformOnce 3 times and then updates the Timer's period.
 		  For i As Integer = 0 To 4
 		    If Not Me.PerformOnce() Then
 		      Sender.Mode = Timer.ModeOff
@@ -203,8 +204,8 @@ Inherits libcURL.cURLHandle
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Function ReadNextMsg(ByRef MsgsRemaining As Integer) As CURLMsg
+	#tag Method, Flags = &h21
+		Private Function ReadNextMsg(ByRef MsgsRemaining As Integer) As CURLMsg
 		  Dim p As Ptr = curl_multi_info_read(mHandle, MsgsRemaining)
 		  If p <> Nil Then
 		    Return p.CURLMsg

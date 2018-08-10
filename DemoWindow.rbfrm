@@ -2441,11 +2441,9 @@ End
 		  CurlInfo.AddFolder("Content")
 		  CurlInfo.AddFolder("Sizes")
 		  
-		  If Client.GetInfo(libcURL.Info.FILETIME).Int32Value <> -1 Then
-		    Dim d As New Date(1970, 1, 1, 0, 0, 0, 0.0) 'UNIX epoch
-		    d.TotalSeconds = d.TotalSeconds + Client.GetInfo(libcURL.Info.FILETIME).Int32Value
-		    CurlInfo.AddRow("FILETIME", libcURL.ParseDate(d))
-		  End If
+		  Dim d As Date = Client.GetInfo(libcURL.Info.FILETIME)
+		  If d <> Nil Then CurlInfo.AddRow("FILETIME", libcURL.ParseDate(d))
+		  
 		  Dim h As InternetHeaders = Client.GetResponseHeaders
 		  If h <> Nil Then
 		    For i As Integer = 0 To h.Count - 1
@@ -3302,6 +3300,11 @@ End
 		  
 		End Sub
 	#tag EndEvent
+	#tag Event
+		Sub Open()
+		  Me.Enabled = libcURL.Version.SSL
+		End Sub
+	#tag EndEvent
 #tag EndEvents
 #tag Events HTTPVer
 	#tag Event
@@ -3397,6 +3400,9 @@ End
 	#tag Event
 		Sub Error(cURLCode As Integer)
 		  #pragma Unused cURLCode
+		  Dim w As Writeable = Me.EasyItem.DownloadStream
+		  If w <> Nil And w IsA BinaryStream Then BinaryStream(w).Close
+		  ThreadStream = Nil
 		  GUITimer.Mode = Timer.ModeSingle
 		End Sub
 	#tag EndEvent
@@ -3405,7 +3411,8 @@ End
 		  #pragma Unused BytesRead
 		  #pragma Unused BytesWritten
 		  GUITimer.Mode = Timer.ModeSingle
-		  If ThreadStream <> Nil Then ThreadStream.Close
+		  Dim w As Writeable = Me.EasyItem.DownloadStream
+		  If w <> Nil And w IsA BinaryStream Then BinaryStream(w).Close
 		  ThreadStream = Nil
 		End Sub
 	#tag EndEvent
