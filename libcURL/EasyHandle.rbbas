@@ -15,9 +15,9 @@ Inherits libcURL.cURLHandle
 		  If libcURL.Version.IsAtLeast(7, 17, 1) Then
 		    If Not Me.SetOption(libcURL.Opts.COPYPOSTFIELDS, Nil) Then Raise New cURLException(Me)
 		  End If
-		  If Not Me.SetOption(libcURL.Opts.HTTPPOST, Nil) Then Raise New libcURL.cURLException(Me)
+		  If Not Me.SetOption(libcURL.Opts.HTTPPOST, Nil) Then Raise New cURLException(Me)
 		  If libcURL.Version.IsAtLeast(7, 56, 0) Then
-		    If Not Me.SetOption(libcURL.Opts.MIMEPOST, Nil) Then Raise New libcURL.cURLException(Me)
+		    If Not Me.SetOption(libcURL.Opts.MIMEPOST, Nil) Then Raise New cURLException(Me)
 		  End If
 		  mForm = Nil
 		  mMIMEMessage = Nil
@@ -329,12 +329,23 @@ Inherits libcURL.cURLHandle
 		      If mb <> Nil Then Return mb.CString(0)
 		    End If
 		    
-		  Case libcURL.Info.RESPONSE_CODE, libcURL.Info.HTTP_CONNECTCODE, libcURL.Info.FILETIME, libcURL.Info.REDIRECT_COUNT, libcURL.Info.HEADER_SIZE, _
+		  Case libcURL.Info.RESPONSE_CODE, libcURL.Info.HTTP_CONNECTCODE, libcURL.Info.REDIRECT_COUNT, libcURL.Info.HEADER_SIZE, _
 		    libcURL.Info.REQUEST_SIZE, libcURL.Info.SSL_VERIFYRESULT, libcURL.Info.OS_ERRNO, _
 		    libcURL.Info.NUM_CONNECTS, libcURL.Info.PRIMARY_PORT, libcURL.Info.LOCAL_PORT, libcURL.Info.LASTSOCKET, libcURL.Info.CONDITION_UNMET, _
 		    libcURL.Info.RTSP_CLIENT_CSEQ, libcURL.Info.RTSP_SERVER_CSEQ, libcURL.Info.RTSP_CSEQ_RECV
 		    mb = New MemoryBlock(4)
 		    If Me.GetInfo(InfoType, mb) Then Return mb.Int32Value(0)
+		    
+		  Case libcURL.Info.FILETIME
+		    mb = New MemoryBlock(4)
+		    If Me.GetInfo(InfoType, mb) Then
+		      Dim t As Int32 = mb.Int32Value(0)
+		      If t >= 0 Then
+		        Dim d As New Date(1970, 1, 1, 0, 0, 0, 0.0) 'UNIX epoch
+		        d.TotalSeconds = d.TotalSeconds + t
+		        Return d
+		      End If
+		    End If
 		    
 		  Case libcurl.Info.PROXYAUTH_AVAIL, libcURL.Info.HTTPAUTH_AVAIL
 		    mb = New MemoryBlock(4)
@@ -413,8 +424,8 @@ Inherits libcURL.cURLHandle
 		  
 		  If mUseProgressEvent Then UseProgressEvent = True
 		  If libcURL.Version.IsAtLeast(7, 32, 0) Then
-		    If Not SetOption(libcURL.Opts.XFERINFOFUNCTION, AddressOf ProgressCallback) Then Raise New cURLException(Me)
 		    If Not SetOption(libcURL.Opts.XFERINFODATA, mHandle) Then Raise New cURLException(Me)
+		    If Not SetOption(libcURL.Opts.XFERINFOFUNCTION, AddressOf ProgressCallback) Then Raise New cURLException(Me)
 		  Else ' old versions
 		    If Not SetOption(libcURL.Opts.PROGRESSDATA, mHandle) Then Raise New cURLException(Me)
 		    If Not SetOption(libcURL.Opts.PROGRESSFUNCTION, AddressOf ProgressCallback) Then Raise New cURLException(Me)
@@ -583,7 +594,7 @@ Inherits libcURL.cURLHandle
 		  mTimeOut = 0
 		  mUploadMode = False
 		  mUserAgent = ""
-		  UseProgressEvent = True
+		  mUseProgressEvent = True
 		  mUsername = ""
 		  Verbose = mVerbose
 		  InitCallbacks()
@@ -647,7 +658,7 @@ Inherits libcURL.cURLHandle
 	#tag Method, Flags = &h0
 		Sub SetFormData(FormData As libcURL.MultipartForm)
 		  ' Sets the FormData MultipartForm object as the HTTP form to POST as multipart/form-data
-		  ' You may also pass a Dictionary of NAME:VALUE pairs comprising HTML form elements which
+		  ' You may also pass a Dictionary of NAME:VALUE pairs comprising HTTP form elements which
 		  ' will be automatically converted to a MultipartForm
 		  '
 		  ' See:
@@ -1253,11 +1264,18 @@ Inherits libcURL.cURLHandle
 		#tag EndGetter
 		#tag Setter
 			Set
-			  ' Sets the version of HTTP to be used. Pass HTTPVersion.HTTP1_0, HTTPVersion.HTTP1_1, HTTPVersion.HTTP2, or HTTPVersion.None
+			  ' Sets the version of HTTP to be used. Pass a member of the HTTPVersion enumeration.
 			  '
 			  ' See:
 			  ' http://curl.haxx.se/libcurl/c/CURLOPT_HTTP_VERSION.html
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.HTTPVersion
+			  
+			  If (value = libcURL.HTTPVersion.HTTP2 And Not libcURL.Version.IsAtLeast(7, 33, 0)) _
+			    Or (value = libcURL.HTTPVersion.HTTP2TLS And Not libcURL.Version.IsAtLeast(7, 47, 0)) _
+			    Or (value = libcURL.HTTPVersion.HTTP2PriorKnowledge And Not libcURL.Version.IsAtLeast(7, 49, 0)) Then
+			    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
+			    Raise New cURLException(Me)
+			  End If
 			  
 			  If Not Me.SetOption(libcURL.Opts.HTTPVERSION, value) Then Raise New cURLException(Me)
 			  mHTTPVersion = value
@@ -1411,6 +1429,10 @@ Inherits libcURL.cURLHandle
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
+		Private mPipeWait As Boolean
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
 		Private mProxyEngine As libcURL.ProxyEngine
 	#tag EndProperty
 
@@ -1505,6 +1527,32 @@ Inherits libcURL.cURLHandle
 			End Set
 		#tag EndSetter
 		Password As String
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  return mPipeWait
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  ' Sets whether libcURL will prefer to wait for a pipelined connection.
+			  '
+			  ' See:
+			  ' https://curl.haxx.se/libcurl/c/CURLOPT_PIPEWAIT.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.PipeWait
+			  
+			  If Not libcURL.Version.IsAtLeast(7, 43, 0) Then
+			    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
+			    Return
+			  End If
+			  
+			  If Not Me.SetOption(libcURL.Opts.PIPEWAIT, value) Then Raise New cURLException(Me)
+			  mPipeWait = value
+			End Set
+		#tag EndSetter
+		PipeWait As Boolean
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
