@@ -46,6 +46,7 @@ Inherits libcURL.cURLHandle
 		    Raise New cURLException(Me)
 		  End If
 		  
+		  mOptions = New Dictionary
 		  If Instances = Nil Then Instances = New Dictionary
 		  Instances.Value(mHandle) = New WeakRef(Me)
 		  InitCallbacks()
@@ -75,7 +76,7 @@ Inherits libcURL.cURLHandle
 		  If mHandle = 0 Then
 		    mLastError = libcURL.Errors.INIT_FAILED
 		    Raise New cURLException(Me)
-		  End If		  
+		  End If
 		  
 		  mOptions = New Dictionary
 		  For Each key As Integer In CopyOpts.mOptions.Keys
@@ -381,10 +382,10 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Function GetInfo(InfoType As Integer, Buffer As MemoryBlock) As Boolean
-		  ' Calls curl_easy_getinfo. If the operation succeeded then this function returns True 
-		  ' and the requested information is copied into the Buffer. Otherwise this function 
-		  ' returns False and the error code is stored in LastError. This method returns various 
-		  ' data about the most recently completed connection (successful or not.) As such, it 
+		  ' Calls curl_easy_getinfo. If the operation succeeded then this function returns True
+		  ' and the requested information is copied into the Buffer. Otherwise this function
+		  ' returns False and the error code is stored in LastError. This method returns various
+		  ' data about the most recently completed connection (successful or not.) As such, it
 		  ' is not useful to call this method before the first connection attempt.
 		  '
 		  ' See:
@@ -454,7 +455,7 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Function Operator_Compare(OtherEasy As libcURL.EasyHandle) As Integer
-		  ' This method overloads the comparison operator(=), permitting direct 
+		  ' This method overloads the comparison operator(=), permitting direct
 		  ' comparisons between instances of EasyHandle.
 		  '
 		  ' See:
@@ -707,12 +708,12 @@ Inherits libcURL.cURLHandle
 		  ' and a value that is acceptable for that option. SetOption does not check that a value is valid for
 		  ' a particular option (except Nil,) however it will raise an exception if an unsupported type is passed.
 		  
-		  ' NewValue may be a Boolean, Integer, Ptr, String, MemoryBlock, FolderItem, libcURL.MultipartForm, 
+		  ' NewValue may be a Boolean, Integer, Ptr, String, MemoryBlock, FolderItem, libcURL.MultipartForm,
 		  ' libcURL.ListPtr, libcuRL.HTTPAuthMethods; or, a Delegate matching cURLIOCallback, cURLCloseCallback,
-		  ' cURLDebugCallback, cURLOpenCallback, or cURLProgressCallback. Passing Nil will raise an exception 
+		  ' cURLDebugCallback, cURLOpenCallback, or cURLProgressCallback. Passing Nil will raise an exception
 		  ' unless the option explicitly accepts NULL.
 		  
-		  ' If the option was set then this method returns True. If it returns False then the option was not set 
+		  ' If the option was set then this method returns True. If it returns False then the option was not set
 		  ' and the curl error number is stored in EasyHandle.LastError.
 		  
 		  ' See:
@@ -1035,7 +1036,7 @@ Inherits libcURL.cURLHandle
 		#tag EndGetter
 		#tag Setter
 			Set
-			  ' Set preferred receive buffer size (in bytes). The main point of this would be that the DataAvailable event 
+			  ' Set preferred receive buffer size (in bytes). The main point of this would be that the DataAvailable event
 			  ' gets called more often and with smaller chunks. Secondly, for some protocols, there's a benefit of having
 			  ' a larger buffer for performance. This is just treated as a request, not an order. You cannot be guaranteed
 			  ' to actually get the given size.
@@ -1438,12 +1439,12 @@ Inherits libcURL.cURLHandle
 		Private mMaxRedirects As Integer = -1
 	#tag EndProperty
 
-	#tag Property, Flags = &h1
-		Protected mOptions As Dictionary
-	#tag EndProperty
-
 	#tag Property, Flags = &h21
 		Private mMIMEMessage As libcURL.MIMEMessage
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected mOptions As Dictionary
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -1909,6 +1910,11 @@ Inherits libcURL.cURLHandle
 			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
+			Name="BufferSize"
+			Group="Behavior"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="ConnectionTimeout"
 			Group="Behavior"
 			Type="Integer"
@@ -1932,11 +1938,6 @@ Inherits libcURL.cURLHandle
 			Name="HTTPPreserveMethod"
 			Group="Behavior"
 			Type="Boolean"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="HTTPVersion"
-			Group="Behavior"
-			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
@@ -1974,6 +1975,11 @@ Inherits libcURL.cURLHandle
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="PipeWait"
+			Group="Behavior"
+			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Port"
