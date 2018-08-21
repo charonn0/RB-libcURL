@@ -49,9 +49,8 @@ Protected Class HTTPAuthMethods
 		    Basic = True
 		    
 		  Case CURLAUTH.BEARER
-		    If Not libcURL.Version.IsAtLeast(7, 61, 0) 
-		      Bearer = True
-		      
+		    Bearer = True
+		    
 		  Case CURLAUTH.DIGEST
 		    Digest = True
 		    
