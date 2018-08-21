@@ -308,6 +308,7 @@ Protected Class cURLManager
 
 	#tag Method, Flags = &h0
 		Attributes( deprecated = "cURLManager.RequestHeaders" )  Function SetRequestHeader(Name As String, Value As String) As Boolean
+		  ' This method has been deprecated: use cURLManager.RequestHeaders to manage request headers.
 		  ' Adds, updates, or removes the named request header. Headers will persist until removed or reset.
 		  ' Pass an empty value to remove the named header. Pass an empty name and an empty value to reset.
 		  '
