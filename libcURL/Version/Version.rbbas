@@ -37,12 +37,6 @@ Protected Module Version
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Attributes( deprecated = "libcurl.Version.UserAgent" ) Protected Function Name() As String
-		  Return UserAgent()
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
 		Protected Function Platform() As String
 		  #If Not Target64Bit Then
 		    Dim data As MemoryBlock = Struct.HostString
