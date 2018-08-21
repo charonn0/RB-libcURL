@@ -2042,6 +2042,7 @@ Protected Module libcURL
 		  NEGOTIATE=4
 		  NTLM=8
 		  NTLM_WB=32
+		  BEARER=64
 		ANY=&hFFFFFFFF
 	#tag EndEnum
 
