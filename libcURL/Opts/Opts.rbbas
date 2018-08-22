@@ -384,6 +384,9 @@ Protected Module Opts
 	#tag Constant, Name = SOCKS5_GSSAPI_SERVICE, Type = Double, Dynamic = False, Default = \"10179", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = SSH_AUTH_TYPES, Type = Double, Dynamic = False, Default = \"151", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = SSH_COMPRESSION, Type = Double, Dynamic = False, Default = \"268", Scope = Protected
 	#tag EndConstant
 
