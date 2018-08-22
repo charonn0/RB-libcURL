@@ -2171,7 +2171,7 @@ Begin Window DemoWindow
       TextFont        =   "System"
       TextSize        =   0
       TextUnit        =   0
-      Top             =   59
+      Top             =   73
       Underline       =   ""
       UseFocusRing    =   True
       Visible         =   False
@@ -2306,6 +2306,40 @@ Begin Window DemoWindow
       Visible         =   True
       Width           =   80
    End
+   Begin Label ETALabel
+      AutoDeactivate  =   True
+      Bold            =   ""
+      DataField       =   ""
+      DataSource      =   ""
+      Enabled         =   True
+      Height          =   20
+      HelpTag         =   ""
+      Index           =   -2147483648
+      InitialParent   =   ""
+      Italic          =   ""
+      Left            =   268
+      LockBottom      =   ""
+      LockedInPosition=   False
+      LockLeft        =   True
+      LockRight       =   ""
+      LockTop         =   True
+      Multiline       =   ""
+      Scope           =   0
+      Selectable      =   False
+      TabIndex        =   18
+      TabPanelIndex   =   0
+      Text            =   ""
+      TextAlign       =   1
+      TextColor       =   &h000000
+      TextFont        =   "System"
+      TextSize        =   0
+      TextUnit        =   0
+      Top             =   53
+      Transparent     =   True
+      Underline       =   ""
+      Visible         =   True
+      Width           =   312
+   End
 End
 #tag EndWindow
 
@@ -2322,7 +2356,17 @@ End
 		Private Sub DoProgress()
 		  ProgressDownload.Value = mdlnow * 100 / mdlTotal
 		  ProgressUpload.Value = mulnow * 100 / mulTotal
-		  
+		  If PauseButton.Caption = "Pause" Then
+		    If multotal > 0 Then
+		      Dim speed As Double = Client.GetInfo(libcURL.Info.SPEED_UPLOAD).DoubleValue
+		      ETALabel.Text = "Time remaining: " + ETA(multotal, mulnow, speed) + " (" + FormatBytes(speed) + "/sec" + ")"
+		    ElseIf mdltotal > 0 Then
+		      Dim speed As Double = Client.GetInfo(libcURL.Info.SPEED_DOWNLOAD).DoubleValue
+		      ETALabel.Text = "Time remaining: " + ETA(mdltotal, mdlnow, speed) + " (" + FormatBytes(speed) + "/sec" + ")"
+		    Else
+		      ETALabel.Text = ""
+		    End If
+		  End If
 		  Do Until UBound(dbgmsgs) = -1
 		    Dim p As Pair = dbgmsgs.Pop
 		    Dim MessageType As libcURL.curl_infotype = p.Left
@@ -2343,6 +2387,26 @@ End
 		  ShowErrorBuffer()
 		  
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Function ETA(Total As UInt64, Current As UInt64, BPS As Double) As String
+		  Dim remaining As UInt64 = Total - Current
+		  Dim secs As Double = remaining / BPS
+		  
+		  'Dim hours As Integer = secs \ 3600
+		  'Dim minutes As Integer = (secs Mod 3600) \ 60
+		  'Dim seconds As Integer =  (secs Mod 3600) Mod 60
+		  'Dim out As String
+		  'If hours > 0 Then
+		  'out = Str(hours) + ":" + Format(minutes, "00") + ":"
+		  'Else
+		  'out = out + Format(minutes, "#0") + ":"
+		  'End If
+		  'out = out + Format(seconds, "00")
+		  'Return out
+		  Return FormatTime(secs * 1000, True)
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
@@ -2394,6 +2458,30 @@ End
 		  If precisionZeros.Trim <> "" Then precisionZeros = "." + precisionZeros
 		  
 		  Return Format(strBytes, "#,###0" + precisionZeros) + suffix
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Function FormatTime(Milliseconds As Int64, FractionalSeconds As Boolean = False) As String
+		  ' Formats the period of time denoted by Milliseconds as HH:MM:SS. If FractionalSeconds is true then fractions of a second are included.
+		  
+		  Dim hours As Integer = (Milliseconds / (1000 * 60 * 60))
+		  Dim minutes As Integer = (Milliseconds / (1000 * 60)) Mod 60
+		  Dim seconds As Integer = (Milliseconds / 1000) Mod 60
+		  Dim frac As Integer  = Milliseconds Mod 1000
+		  Dim out As String
+		  If hours > 0 Then
+		    out = Str(hours) + ":" + Format(minutes, "00") + ":"
+		  Else
+		    out = out + Format(minutes, "#0") + ":"
+		  End If
+		  If FractionalSeconds Then
+		    out = out + Format(seconds + (frac / 1000), "00.00")
+		  Else
+		    out = out + Format(seconds, "00")
+		  End If
+		  Return out
 		  
 		End Function
 	#tag EndMethod
@@ -3410,6 +3498,8 @@ End
 		Sub TransferComplete(BytesRead As Integer, BytesWritten As Integer)
 		  #pragma Unused BytesRead
 		  #pragma Unused BytesWritten
+		  multotal = 0
+		  mdltotal = 0
 		  GUITimer.Mode = Timer.ModeSingle
 		  Dim w As Writeable = Me.EasyItem.DownloadStream
 		  If w <> Nil And w IsA BinaryStream Then BinaryStream(w).Close
@@ -3433,9 +3523,8 @@ End
 #tag Events GetThread
 	#tag Event
 		Sub Run()
-		  If Not Client.Get(mURL, ThreadStream) Then
-		    Break
-		  End If
+		  If Not Client.Get(mURL, ThreadStream) Then System.DebugLog("Failed")
+		  
 		End Sub
 	#tag EndEvent
 #tag EndEvents
@@ -3619,9 +3708,10 @@ End
 		Sub Action()
 		  If Me.Caption = "Pause" Then
 		    If Client.EasyItem.Pause Then Me.Caption = "Resume"
-		    
+		    ProgressTimer.Mode = Timer.ModeSingle
 		  Else
 		    If Client.EasyItem.Resume Then Me.Caption = "Pause"
+		    ProgressTimer.Mode = Timer.ModeOff
 		  End If
 		End Sub
 	#tag EndEvent
