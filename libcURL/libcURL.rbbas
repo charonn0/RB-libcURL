@@ -2042,6 +2042,7 @@ Protected Module libcURL
 		  NEGOTIATE=4
 		  NTLM=8
 		  NTLM_WB=32
+		  BEARER=64
 		ANY=&hFFFFFFFF
 	#tag EndEnum
 
@@ -2101,6 +2102,15 @@ Protected Module libcURL
 		  SOCKS4A=6
 		  SOCKS5=5
 		SOCKS5_HOSTNAME=7
+	#tag EndEnum
+
+	#tag Enum, Name = SSHAUTH, Type = Integer, Flags = &h1
+		PublicKey=1
+		  Password=2
+		  Host=4
+		  Keyboard=8
+		  Agent=16
+		Any=&hFFFFFFFF
 	#tag EndEnum
 
 	#tag Enum, Name = SSLBackEnd, Type = Integer, Flags = &h1

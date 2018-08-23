@@ -508,43 +508,6 @@ Inherits libcURL.cURLHandle
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Attributes( deprecated )  Function Read(Count As Integer, encoding As TextEncoding = Nil) As String
-		  ' Only available after calling SetOption(libcURL.Opts.CONNECT_ONLY, True)
-		  ' Once Perform returns you may Read from the easy_handle by calling this method
-		  ' See:
-		  ' http://curl.haxx.se/libcurl/c/curl_easy_recv.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Read
-		  
-		  Static IsAvailable As Boolean
-		  If Not IsAvailable Then IsAvailable = libcURL.Version.IsAtLeast(7, 18, 2)
-		  If Not IsAvailable Then
-		    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
-		    Raise New cURLException(Me)
-		  End If
-		  
-		  Dim mb As New MemoryBlock(Count)
-		  Dim i As Integer
-		  mLastError = curl_easy_recv(mHandle, mb, mb.Size, i)
-		  If mLastError = 0 Then
-		    Dim s As String
-		    If encoding <> Nil Then
-		      s = DefineEncoding(mb.StringValue(0, i), encoding)
-		    Else
-		      s = mb.StringValue(0, i)
-		    End If
-		    Return s
-		  ElseIf mLastError = libcURL.Errors.UNSUPPORTED_PROTOCOL Then ' no readable connection
-		    Return ""
-		  Else
-		    Dim err As New IOException
-		    err.ErrorNumber = Me.LastError
-		    err.Message = libcURL.FormatError(Me.LastError)
-		    Raise err
-		  End If
-		End Function
-	#tag EndMethod
-
 	#tag Method, Flags = &h21
 		Private Shared Function ReadCallback(char As Ptr, size As Integer, nmemb As Integer, UserData As Integer) As Integer
 		  ' This method is invoked by libcURL. DO NOT CALL THIS METHOD
@@ -653,7 +616,7 @@ Inherits libcURL.cURLHandle
 	#tag Method, Flags = &h0
 		Sub SetFormData(FormData As libcURL.MultipartForm)
 		  ' Sets the FormData MultipartForm object as the HTTP form to POST as multipart/form-data
-		  ' You may also pass a Dictionary of NAME:VALUE pairs comprising HTML form elements which
+		  ' You may also pass a Dictionary of NAME:VALUE pairs comprising HTTP form elements which
 		  ' will be automatically converted to a MultipartForm
 		  '
 		  ' See:
@@ -846,40 +809,6 @@ Inherits libcURL.cURLHandle
 		  
 		  If Not Me.SetOption(libcURL.Opts.HTTPHEADER, List) Then Raise New cURLException(Me)
 		  Return List
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Attributes( deprecated )  Function Write(Text As String) As Integer
-		  ' Only available after calling SetOption(libcURL.Opts.CONNECT_ONLY, True)
-		  ' Once Perform returns you may Write to the easy_handle by calling this method
-		  ' If the write succeeded this method returns then number of bytes actually written.
-		  ' If the write failed an IOException will be raised.
-		  ' See:
-		  ' http://curl.haxx.se/libcurl/c/curl_easy_send.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Write
-		  
-		  Static IsAvailable As Boolean
-		  If Not IsAvailable Then IsAvailable = libcURL.Version.IsAtLeast(7, 18, 2)
-		  If Not IsAvailable Then
-		    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
-		    Raise New cURLException(Me)
-		  End If
-		  
-		  Dim byteswritten As Integer
-		  Dim mb As MemoryBlock = Text
-		  mLastError = curl_easy_send(mHandle, mb, mb.Size, byteswritten)
-		  If mLastError = 0 Then
-		    Return byteswritten
-		  ElseIf mLastError = libcURL.Errors.UNSUPPORTED_PROTOCOL Then ' no writeable connection
-		    Return 0
-		  Else
-		    Dim err As New IOException
-		    err.ErrorNumber = Me.LastError
-		    err.Message = libcURL.FormatError(Me.LastError)
-		    Raise err
-		  End If
-		  
 		End Function
 	#tag EndMethod
 

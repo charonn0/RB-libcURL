@@ -63,26 +63,6 @@ Protected Class cURLManager
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Attributes( deprecated )  Sub Constructor(CopyOpts As libcURL.cURLManager)
-		  ' This method is deprecated. To duplicate an instance of cURLManager, duplicate its EasyItem
-		  ' and pass the duplicate to cURLManager.Constructor(EasyHandle) instead.
-		  '
-		  ' Creates a new instance of cURLManager by cloning the passed cURLManager
-		  '
-		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.Constructor
-		  
-		  Select Case CopyOpts.EasyItem
-		  Case IsA libcURL.Protocols.FTPWildCard
-		    mEasyItem = New libcURL.Protocols.FTPWildCard(CopyOpts.EasyItem)
-		  Else
-		    mEasyItem = New libcURL.EasyHandle(CopyOpts.EasyItem)
-		  End Select
-		  Me.Constructor()
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Sub Constructor(ExistingEasy As libcURL.EasyHandle)
 		  ' Creates a new instance of cURLManager by taking ownership of the passed EasyHandle
 		  '
@@ -328,6 +308,7 @@ Protected Class cURLManager
 
 	#tag Method, Flags = &h0
 		Attributes( deprecated = "cURLManager.RequestHeaders" )  Function SetRequestHeader(Name As String, Value As String) As Boolean
+		  ' This method has been deprecated: use cURLManager.RequestHeaders to manage request headers.
 		  ' Adds, updates, or removes the named request header. Headers will persist until removed or reset.
 		  ' Pass an empty value to remove the named header. Pass an empty name and an empty value to reset.
 		  '

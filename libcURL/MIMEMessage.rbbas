@@ -3,7 +3,7 @@ Protected Class MIMEMessage
 Inherits libcURL.cURLHandle
 Implements FormStreamGetter
 	#tag Method, Flags = &h0
-		Function AddElement(Name As String, Value As FolderItem, FileName As String ="", ContentType As String = "", AdditionalHeaders As libcURL.ListPtr = Nil, Encoding As libcURL.TransferEncoding = libcURL.TransferEncoding.Binary) As Boolean
+		Function AddElement(Name As String, Value As FolderItem, FileName As String = "", ContentType As String = "", AdditionalHeaders As libcURL.ListPtr = Nil, Encoding As libcURL.TransferEncoding = libcURL.TransferEncoding.Binary) As Boolean
 		  ' Adds the passed file to the form using the specified name.
 		  '
 		  ' See:
