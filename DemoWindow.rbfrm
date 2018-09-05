@@ -1668,7 +1668,6 @@ Begin Window DemoWindow
       TabPanelIndex   =   0
       Top             =   437
       Width           =   32
-      Yield           =   True
    End
    Begin TextField TextField1
       AcceptTabs      =   ""
@@ -1796,7 +1795,7 @@ Begin Window DemoWindow
       TextUnit        =   0
       Top             =   0
       Underline       =   ""
-      Value           =   0
+      Value           =   3
       Visible         =   True
       Width           =   246
       Begin PushButton PushButton1
@@ -3545,12 +3544,22 @@ End
 	#tag Event
 		Sub Run()
 		  If FormValue <> Nil Then
-		    If FormValue.Right = 0 Then ' URLEncoded
+		    If FormValue.Right = FormGenerator.TYPE_URLENCODED Then ' URLEncoded
 		      Dim frm() As String = FormValue.Left
-		      If Not Client.Post(mURL, frm) Then Break
-		    ElseIf FormValue.Right = 1 Then ' Multipart
+		      If Not Client.Post(mURL, frm)Then
+		        //meh
+		      End If
+		    ElseIf FormValue.Right = FormGenerator.TYPE_MULTIPART Then ' Multipart
 		      Dim frm As Dictionary = FormValue.Left
-		      If Not Client.Post(mURL, frm) Then Break
+		      If Not Client.Post(mURL, frm)Then
+		        //meh
+		      End If
+		    ElseIf FormValue.Right = FormGenerator.TYPE_MIME Then ' MIME
+		      Dim frm As Dictionary = FormValue.Left
+		      Dim mime As New libcURL.MIMEMessage(Client.EasyItem, frm)
+		      If Not Client.Post(mURL, mime) Then 
+		        //meh
+		      End If
 		    Else
 		      Break
 		    End If
@@ -3619,15 +3628,24 @@ End
 		    PauseButton.Enabled = True
 		    ResetButton.Enabled = False
 		    AbortButton.Enabled = True
-		    If FormValue.Right = 0 Then ' URLEncoded
+		    Select Case FormValue.Right
+		    Case FormGenerator.TYPE_URLENCODED
 		      Dim frm() As String = FormValue.Left
 		      Client.Post(TextField1.Text, frm)
-		    ElseIf FormValue.Right = 1 Then ' Multipart
+		      
+		    Case FormGenerator.TYPE_MULTIPART
 		      Dim frm As Dictionary = FormValue.Left
 		      Client.Post(TextField1.Text, frm)
+		      
+		    Case FormGenerator.TYPE_MIME
+		      Dim frm As Dictionary = FormValue.Left
+		      Dim mime As New libcURL.MIMEMessage(Client.EasyItem, frm)
+		      Client.Post(TextField1.Text, mime)
+		      
 		    Else
 		      Break
-		    End If
+		    End Select
+		    
 		  Else
 		    Call MsgBox("Please specify an HTTP form to be POSTed", 16, "Missing form")
 		  End If
