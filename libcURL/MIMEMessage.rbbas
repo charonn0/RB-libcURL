@@ -306,6 +306,14 @@ Implements FormStreamGetter
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		 Shared Function IsAvailable() As Boolean
+		  ' Returns True if the MIME API is available (if not then use the MultipartForm class instead.)
+		  
+		  Return libcURL.Version.IsAtLeast(7, 56, 0)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function Operator_Compare(OtherMessage As libcURL.MIMEMessage) As Integer
 		  ' Overloads the comparison operator(=), permitting direct comparisons between instances of MIMEMessage.
 		  '
