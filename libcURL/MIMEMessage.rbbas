@@ -149,6 +149,30 @@ Implements FormStreamGetter
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
+		Sub Constructor(Owner As libcURL.EasyHandle, FromDict As Dictionary)
+		  ' Constructs a new MIME message from a dictionary. You must specify an EasyHandle to be the owner of the
+		  ' MIMEMessage.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MIMEMessage.Constructor
+		  
+		  Me.Constructor(Owner)
+		  For Each k As String In FromDict.Keys
+		    Dim v As Variant = FromDict.Value(k)
+		    If v IsA FolderItem Then
+		      Dim f As FolderItem = v
+		      Call Me.AddElement(k, f)
+		    ElseIf v.Type = Variant.TypeString Then
+		      Call Me.AddElement(k, v.StringValue)
+		    Else
+		      mLastError = libcURL.Errors.MIME_MANUAL_ONLY
+		      Raise New cURLException(Me)
+		    End If
+		  Next
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1000
 		Sub Constructor(MessagePtr As Ptr, ParentMessage As libcURL.MIMEMessage)
 		  ' Constructs a non-freeable instance of MIMEMessage which references a sub-part of the
 		  ' ParentMessage. (Used by MIMEMessagePart.SubPart)
@@ -278,6 +302,14 @@ Implements FormStreamGetter
 		Private Function GetStream(UserData As Ptr) As Readable
 		  // Part of the FormStreamGetter interface.
 		  Return PartStreams.Lookup(UserData, Nil)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function IsAvailable() As Boolean
+		  ' Returns True if the MIME API is available (if not then use the MultipartForm class instead.)
+		  
+		  Return libcURL.Version.IsAtLeast(7, 56, 0)
 		End Function
 	#tag EndMethod
 
