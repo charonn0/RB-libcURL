@@ -34,6 +34,7 @@ Module=LibZ;libcURL/Version/LibZ.rbbas;&h1E9EA7FF;&h44617FFF;false
 Class=cURLManager;libcURL/cURLManager.rbbas;&h531D2FFF;&h1B9FF7FF;false
 FileTypeSet=cURLTypes;cURLTypes.rbbas;&h614D8FFF;&h0;false
 Class=MIMEMessage;libcURL/MIMEMessage.rbbas;&h45D957FF;&h1B9FF7FF;false
+Class=URL;libcURL/URL.rbbas;&h50097FFF;&h1B9FF7FF;false
 DefaultWindow=DemoWindow
 MajorVersion=1
 MinorVersion=0
