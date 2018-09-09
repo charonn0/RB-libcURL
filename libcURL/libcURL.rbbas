@@ -255,6 +255,26 @@ Protected Module libcURL
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Function curl_url Lib cURLLib () As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Sub curl_url_cleanup Lib cURLLib (URL As Integer)
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Function curl_url_dup Lib cURLLib (URL As Integer) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Function curl_url_get Lib cURLLib (URL As Integer, Part As URLPart, ByRef Content As Ptr, Flags As UInt32) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Function curl_url_set Lib cURLLib (URL As Integer, Part As URLPart, Content As Ptr, Flags As UInt32) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h21
 		Private Soft Declare Function curl_version Lib cURLLib () As Ptr
 	#tag EndExternalMethod
 
@@ -2144,6 +2164,19 @@ Protected Module libcURL
 		  EightBit
 		  Base64
 		QuotedPrintable
+	#tag EndEnum
+
+	#tag Enum, Name = URLPart, Type = Integer, Flags = &h1
+		All=0
+		  Scheme
+		  User
+		  Password
+		  Options
+		  Host
+		  Port
+		  Path
+		  Query
+		Fragment
 	#tag EndEnum
 
 
