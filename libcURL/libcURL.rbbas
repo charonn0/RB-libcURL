@@ -384,6 +384,64 @@ Protected Module libcURL
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
+		Protected Function FormatURLError(cURLURLError As Integer, Encoding As TextEncoding = Nil) As String
+		  ' Translates libcurl URL API error numbers to messages
+		  
+		  Dim msg As String
+		  Select Case cURLURLError
+		  Case URL.CURLUE_OK
+		    msg = "No error"
+		  Case URL.CURLUE_BAD_HANDLE
+		    msg = "Bad URL handle"
+		  Case URL.CURLUE_BAD_PARTPOINTER
+		    msg = "Bad URL part pointer"
+		  Case URL.CURLUE_MALFORMED_INPUT
+		    msg = "The URL is malformed."
+		  Case URL.CURLUE_BAD_PORT_NUMBER
+		    msg = "The port number is invalid."
+		  Case URL.CURLUE_UNSUPPORTED_SCHEME
+		    msg = "The URL scheme does not correspond to a supported protocol."
+		  Case URL.CURLUE_URLDECODE
+		    msg = "Unable to decode URL part."
+		  Case URL.CURLUE_RELATIVE
+		    msg = "Relative?"
+		  Case URL.CURLUE_USER_NOT_ALLOWED
+		    msg = "The URL contains a username field, but this is disallowed."
+		  Case URL.CURLUE_UNKNOWN_PART
+		    msg = "Unknown URL part"
+		  Case URL.CURLUE_NO_SCHEME
+		    msg = "This URL does not have a scheme part."
+		  Case URL.CURLUE_NO_USER
+		    msg = "This URL does not have a username part."
+		  Case URL.CURLUE_NO_PASSWORD
+		    msg = "This URL does not have a password part."
+		  Case URL.CURLUE_NO_OPTIONS
+		    msg = "This URL does not have an options part."
+		  Case URL.CURLUE_NO_HOST
+		    msg = "This URL does not have a hostname part."
+		  Case URL.CURLUE_NO_PORT
+		    msg = "This URL does not have a port part."
+		  Case URL.CURLUE_NO_PATH
+		    msg = "This URL does not have a path part."
+		  Case URL.CURLUE_NO_QUERY
+		    msg = "This URL does not have an arguments part."
+		  Case URL.CURLUE_NO_FRAGMENT
+		    msg = "This URL does not have a fragment part."
+		  Case URL.CURLUE_OUT_OF_MEMORY
+		    msg = "Out of memory"
+		  Else
+		    msg = "Unknown error while parsing a URL"
+		  End Select
+		  If Encoding <> Nil Then
+		    Return ConvertEncoding(msg, Encoding)
+		  Else
+		    Return DefineEncoding(msg, Encodings.ASCII)
+		  End If
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
 		Protected Function IsAvailable() As Boolean
 		  ' Returns True if libcURL is available and at least version 7.15.2. Prior versions require that curl_global_init and
 		  ' curl_global_cleanup be called only once each, which we aren't doing.

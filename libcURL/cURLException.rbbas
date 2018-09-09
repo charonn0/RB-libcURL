@@ -48,6 +48,9 @@ Inherits RuntimeException
 		  Case ErrantItem IsA libcURL.MultiHandle
 		    Me.Message = libcURL.FormatMultiError(Me.ErrorNumber)
 		    
+		  Case ErrantItem IsA libcURL.URL
+		    Me.Message = libcURL.FormatURLError(Me.ErrorNumber)
+		    
 		  Else
 		    Me.Message = libcURL.FormatError(Me.ErrorNumber) + " (" + libcURL.Errors.Name(Me.ErrorNumber) + ")"
 		    
