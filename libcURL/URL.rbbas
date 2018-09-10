@@ -3,10 +3,8 @@ Protected Class URL
 Inherits libcURL.cURLHandle
 	#tag Method, Flags = &h0
 		Sub AppendArgument(Name As String, Value As String)
-		  Dim data As MemoryBlock = Name
-		  If Value <> "" Then data = data + "=" + Value
-		  data = data + Chr(0)
-		  mLastError = curl_url_set(mHandle, URLPart.Query, data, CURLU_APPENDQUERY Or CURLU_URLENCODE)
+		  If Value <> "" Then Name = Name + "=" + Value
+		  Call Me.SetPartContent(URLPart.Query, Name, CURLU_APPENDQUERY Or CURLU_URLENCODE)
 		End Sub
 	#tag EndMethod
 
