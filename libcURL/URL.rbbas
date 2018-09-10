@@ -59,7 +59,7 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function GetPartContent(Part As libcURL.URLPart, Flags As Integer) As String
+		Protected Function GetPartContent(Part As URLPart, Flags As Integer) As String
 		  Dim contents As Ptr
 		  Dim ret As String
 		  mLastError = curl_url_get(mHandle, Part, contents, Flags)
@@ -90,6 +90,7 @@ Inherits libcURL.cURLHandle
 		Protected Function SetPartContent(Part As libcURL.URLPart, Contents As String, Flags As Integer) As Boolean
 		  Dim data As MemoryBlock = Contents + Chr(0)
 		  mLastError = curl_url_set(mHandle, Part, data, Flags)
+		Protected Function SetPartContent(Part As URLPart, Contents As String, Flags As Integer) As Boolean
 		  Return mLastError = 0
 		End Function
 	#tag EndMethod
