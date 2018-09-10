@@ -25,6 +25,11 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Sub Constructor(InitialURL As String = "", GlobalInitFlags As Integer = libcURL.CURL_GLOBAL_DEFAULT)
+		  ' Constructs a URL, optionally initializing it to the InitialURL parameter.
+		  '
+		  ' See:
+		  ' 
+		  
 		  // Calling the overridden superclass constructor.
 		  // Constructor(GlobalInitFlags As Integer) -- From libcURL.cURLHandle
 		  Super.Constructor(GlobalInitFlags)
@@ -40,12 +45,7 @@ Inherits libcURL.cURLHandle
 		    Raise New cURLException(Me)
 		  End If
 		  
-		  If InitialURL <> "" Then
-		    Dim flag As Integer
-		    If AnyScheme Then flag = CURLU_NON_SUPPORT_SCHEME
-		    If InStr(InitialURL, "://") = 0 Then InitialURL = "http://" + InitialURL ' assume HTTP
-		    If Not Me.SetPartContent(URLPart.All, InitialURL, flag) Then Raise New cURLException(Me)
-		  End If
+		  If InitialURL <> "" Then Me.StringValue = InitialURL
 		End Sub
 	#tag EndMethod
 
@@ -109,7 +109,10 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Sub StringValue(Assigns FromString As String)
-		  If Not Me.SetPartContent(URLPart.All, FromString, 0) Then Raise New cURLException(Me)
+		  Dim flag As Integer
+		  If AnyScheme Then flag = CURLU_NON_SUPPORT_SCHEME
+		  If InStr(FromString, "://") = 0 Then FromString = "http://" + FromString ' assume HTTP
+		  Call Me.SetPartContent(URLPart.All, FromString, flag)
 		End Sub
 	#tag EndMethod
 
