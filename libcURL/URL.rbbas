@@ -76,6 +76,12 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		 Shared Function IsAvailable() As Boolean
+		  Return libcURL.Version.IsAtLeast(7, 62, 0)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function Operator_Compare(OtherURL As libcURL.URL) As Integer
 		  ' Overloads the comparison operator(=), permitting direct comparisons between references to URLs
 		  
