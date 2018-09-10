@@ -191,7 +191,7 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  Return Val(Me.GetPartContent(URLPart.Host, CURLU_DEFAULT_PORT))
+			  Return Val(Me.GetPartContent(URLPart.Port, CURLU_NO_DEFAULT_PORT))
 			End Get
 		#tag EndGetter
 		#tag Setter
