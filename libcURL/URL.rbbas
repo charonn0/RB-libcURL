@@ -69,7 +69,6 @@ Inherits libcURL.cURLHandle
 		      ret = mb.CString(0)
 		    Finally
 		      curl_free(contents)
-		      contents = Nil
 		    End Try
 		  End If
 		  Return ret
