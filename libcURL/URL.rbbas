@@ -45,7 +45,7 @@ Inherits libcURL.cURLHandle
 		    If AnyScheme Then flag = CURLU_NON_SUPPORT_SCHEME
 		    If InStr(InitialURL, "://") = 0 Then InitialURL = "http://" + InitialURL ' assume HTTP
 		    If Not Me.SetPartContent(URLPart.All, InitialURL, flag) Then Raise New cURLException(Me)
-		  End If 
+		  End If
 		End Sub
 	#tag EndMethod
 
@@ -90,10 +90,13 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function SetPartContent(Part As libcURL.URLPart, Contents As String, Flags As Integer) As Boolean
-		  Dim data As MemoryBlock = Contents + Chr(0)
-		  mLastError = curl_url_set(mHandle, Part, data, Flags)
 		Protected Function SetPartContent(Part As URLPart, Contents As String, Flags As Integer) As Boolean
+		  If Contents <> "" Then
+		    Dim data As MemoryBlock = Contents + Chr(0)
+		    mLastError = curl_url_set(mHandle, Part, data, Flags)
+		  Else
+		    mLastError = curl_url_set(mHandle, Part, Nil, Flags)
+		  End If
 		  Return mLastError = 0
 		End Function
 	#tag EndMethod
