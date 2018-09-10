@@ -2224,7 +2224,7 @@ Protected Module libcURL
 		QuotedPrintable
 	#tag EndEnum
 
-	#tag Enum, Name = URLPart, Type = Integer, Flags = &h1
+	#tag Enum, Name = URLPart, Type = Integer, Flags = &h21
 		All=0
 		  Scheme
 		  User
