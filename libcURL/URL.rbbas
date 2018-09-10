@@ -196,7 +196,11 @@ Inherits libcURL.cURLHandle
 		#tag EndGetter
 		#tag Setter
 			Set
-			  If Not Me.SetPartContent(URLPart.Host, Str(value, "####0"), 0) Then Raise New cURLException(Me)
+			  If value = 0 Then ' clear/reset to default
+			    If Not Me.SetPartContent(URLPart.Port, "", 0) Then Raise New cURLException(Me)
+			  Else
+			    If Not Me.SetPartContent(URLPart.Port, Str(value, "####0"), 0) Then Raise New cURLException(Me)
+			  End If
 			End Set
 		#tag EndSetter
 		Port As Integer
