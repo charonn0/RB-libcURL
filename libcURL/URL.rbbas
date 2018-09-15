@@ -3,6 +3,12 @@ Protected Class URL
 Inherits libcURL.cURLHandle
 	#tag Method, Flags = &h0
 		Sub AppendArgument(Name As String, Value As String)
+		  ' Appends an argument to the list of arguments
+		  '
+		  ' See:
+		  ' https://curl.haxx.se/libcurl/c/curl_url_set.html#CURLUPARTQUERY
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URL.AppendArgument
+		  
 		  If Value <> "" Then Name = Name + "=" + Value
 		  Call Me.SetPartContent(URLPart.Query, Name, CURLU_APPENDQUERY Or CURLU_URLENCODE)
 		End Sub
@@ -10,6 +16,12 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h1000
 		Sub Constructor(CopyURL As libcURL.URL)
+		  ' Constructs a URL by duplicating the CopyURL.
+		  '
+		  ' See:
+		  ' https://curl.haxx.se/libcurl/c/curl_url_dup.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URL.Constructor
+		  
 		  // Calling the overridden superclass constructor.
 		  // Constructor(GlobalInitFlags As Integer) -- From libcURL.cURLHandle
 		  Super.Constructor(CopyURL.Flags)
@@ -28,7 +40,8 @@ Inherits libcURL.cURLHandle
 		  ' Constructs a URL, optionally initializing it to the InitialURL parameter.
 		  '
 		  ' See:
-		  ' 
+		  ' https://curl.haxx.se/libcurl/c/curl_url.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URL.Constructor
 		  
 		  // Calling the overridden superclass constructor.
 		  // Constructor(GlobalInitFlags As Integer) -- From libcURL.cURLHandle
@@ -82,6 +95,9 @@ Inherits libcURL.cURLHandle
 	#tag Method, Flags = &h0
 		Function Operator_Compare(OtherURL As libcURL.URL) As Integer
 		  ' Overloads the comparison operator(=), permitting direct comparisons between references to URLs
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URL.Operator_Compare
 		  
 		  Dim i As Integer = Super.Operator_Compare(OtherURL)
 		  If i = 0 Then i = Sign(mHandle - OtherURL.Handle)
@@ -103,12 +119,24 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Function StringValue() As String
+		  ' Returns the full URL string.
+		  '
+		  ' See:
+		  ' https://curl.haxx.se/libcurl/c/curl_url_get.html#CURLUPARTURL
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URL.StringValue
+		  
 		  Return Me.GetPartContent(URLPart.All, 0)
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub StringValue(Assigns FromString As String)
+		  ' Set the full URL from a string.
+		  '
+		  ' See:
+		  ' https://curl.haxx.se/libcurl/c/curl_url_set.html#CURLUPARTURL
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URL.StringValue
+		  
 		  Dim flag As Integer
 		  If AnyScheme Then flag = CURLU_NON_SUPPORT_SCHEME
 		  If InStr(FromString, "://") = 0 Then FromString = "http://" + FromString ' assume HTTP
@@ -124,11 +152,23 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Get the arguments as a string.
+			  '
+			  ' See:
+			  ' https://curl.haxx.se/libcurl/c/curl_url_get.html#CURLUPARTQUERY
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URL.Arguments
+			  
 			  Return Me.GetPartContent(URLPart.Query, CURLU_URLDECODE)
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
+			  ' Set the arguments from a string.
+			  '
+			  ' See:
+			  ' https://curl.haxx.se/libcurl/c/curl_url_set.html#CURLUPARTQUERY
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URL.Arguments
+			  
 			  If Not Me.SetPartContent(URLPart.Query, value, 0) Then Raise New cURLException(Me)
 			End Set
 		#tag EndSetter
@@ -138,11 +178,23 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Get the fragment as a string.
+			  '
+			  ' See:
+			  ' https://curl.haxx.se/libcurl/c/curl_url_get.html#CURLUPARTFRAGMENT
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URL.Fragment
+			  
 			  Return Me.GetPartContent(URLPart.Fragment, CURLU_URLDECODE)
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
+			  ' Set the fragment from a string.
+			  '
+			  ' See:
+			  ' https://curl.haxx.se/libcurl/c/curl_url_set.html#CURLUPARTFRAGMENT
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URL.Fragment
+			  
 			  If Not Me.SetPartContent(URLPart.Fragment, value, CURLU_URLENCODE) Then Raise New cURLException(Me)
 			End Set
 		#tag EndSetter
@@ -152,11 +204,23 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Get the hostname or IP address as a string.
+			  '
+			  ' See:
+			  ' https://curl.haxx.se/libcurl/c/curl_url_get.html#CURLUPARTHOST
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URL.Hostname
+			  
 			  Return Me.GetPartContent(URLPart.Host, CURLU_URLDECODE)
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
+			  ' Set the hostname or IP address from a string.
+			  '
+			  ' See:
+			  ' https://curl.haxx.se/libcurl/c/curl_url_set.html#CURLUPARTHOST
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URL.Hostname
+			  
 			  If Not Me.SetPartContent(URLPart.Host, value, CURLU_URLENCODE) Then Raise New cURLException(Me)
 			End Set
 		#tag EndSetter
@@ -166,11 +230,23 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Get the password as a string.
+			  '
+			  ' See:
+			  ' https://curl.haxx.se/libcurl/c/curl_url_get.html#CURLUPARTPASSWORD
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URL.Password
+			  
 			  Return Me.GetPartContent(URLPart.Password, CURLU_URLDECODE)
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
+			  ' Set the password from a string.
+			  '
+			  ' See:
+			  ' https://curl.haxx.se/libcurl/c/curl_url_set.html#CURLUPARTPASSWORD
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URL.Password
+			  
 			  If Not Me.SetPartContent(URLPart.Password, value, CURLU_URLENCODE) Then Raise New cURLException(Me)
 			End Set
 		#tag EndSetter
@@ -180,11 +256,23 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Get the path as a string.
+			  '
+			  ' See:
+			  ' https://curl.haxx.se/libcurl/c/curl_url_get.html#CURLUPARTPATH
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URL.Path
+			  
 			  Return Me.GetPartContent(URLPart.Path, CURLU_URLDECODE)
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
+			  ' Set the path from a string.
+			  '
+			  ' See:
+			  ' https://curl.haxx.se/libcurl/c/curl_url_set.html#CURLUPARTPATH
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URL.Path
+			  
 			  If Not Me.SetPartContent(URLPart.Path, value, 0) Then Raise New cURLException(Me)
 			End Set
 		#tag EndSetter
@@ -194,11 +282,24 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Get the port. Returns zero if not specified.
+			  '
+			  ' See:
+			  ' https://curl.haxx.se/libcurl/c/curl_url_get.html#CURLUPARTPORT
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URL.Port
+			  
 			  Return Val(Me.GetPartContent(URLPart.Port, CURLU_NO_DEFAULT_PORT))
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
+			  ' Set the port. Pass zero to clear/reset the default.
+			  '
+			  ' See:
+			  ' https://curl.haxx.se/libcurl/c/curl_url_set.html#CURLUPARTPORT
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URL.Port
+			  
+			  
 			  If value = 0 Then ' clear/reset to default
 			    If Not Me.SetPartContent(URLPart.Port, "", 0) Then Raise New cURLException(Me)
 			  Else
@@ -212,11 +313,23 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Get the scheme as a string.
+			  '
+			  ' See:
+			  ' https://curl.haxx.se/libcurl/c/curl_url_get.html#CURLUPARTSCHEME
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URL.Scheme
+			  
 			  Return Me.GetPartContent(URLPart.Scheme, CURLU_DEFAULT_SCHEME)
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
+			  ' Set the scheme from a string.
+			  '
+			  ' See:
+			  ' https://curl.haxx.se/libcurl/c/curl_url_set.html#CURLUPARTSCHEME
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URL.Scheme
+			  
 			  Dim flag As Integer
 			  If AnyScheme Then flag = CURLU_NON_SUPPORT_SCHEME 
 			  If Not Me.SetPartContent(URLPart.Scheme, value, flag) Then Raise New cURLException(Me)
@@ -228,11 +341,23 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Get the username as a string.
+			  '
+			  ' See:
+			  ' https://curl.haxx.se/libcurl/c/curl_url_get.html#CURLUPARTUSER
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URL.Username
+			  
 			  Return Me.GetPartContent(URLPart.User, CURLU_URLDECODE)
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
+			  ' Set the username from a string.
+			  '
+			  ' See:
+			  ' https://curl.haxx.se/libcurl/c/curl_url_set.html#CURLUPARTUSER
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URL.Username
+			  
 			  If Not Me.SetPartContent(URLPart.User, value, CURLU_URLENCODE) Then Raise New cURLException(Me)
 			End Set
 		#tag EndSetter
