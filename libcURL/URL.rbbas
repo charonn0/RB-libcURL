@@ -79,43 +79,6 @@ Inherits libcURL.cURLHandle
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h21
-		Private Shared Function IsEncodable(Data As MemoryBlock) As Boolean
-		  ' Returns True if the Data needs to be URL-encoded.
-		  
-		  Dim bs As New BinaryStream(Data)
-		  Do Until bs.EOF
-		    Select Case Asc(bs.Read(1))
-		    Case 48 To 57, 65 To 90, 97 To 122, 45, 46, 95
-		      Continue
-		    Else
-		      Return True
-		    End Select
-		  Loop
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Shared Function IsEncoded(Data As MemoryBlock) As Boolean
-		  ' Returns True if the Data appears to be URL-encoded.
-		  
-		  Dim bs As New BinaryStream(Data)
-		  Do Until bs.EOF
-		    Dim s As String = bs.Read(1)
-		    If s = "%" Then ' possible encoded character
-		      Dim h1 As Integer = Asc(bs.Read(1))
-		      Dim h2 As Integer = Asc(bs.Read(1))
-		      If h1 >= 65 And h1 <= 70 And h2 >= 65 And h2 <= 70 Then Return True ' upper case hex digits
-		      If h1 >= 48 And h1 <= 57 And h2 >= 48 And h2 <= 57 Then Return True ' 0-9
-		      If h1 >= 97 And h1 <= 102 And h2 >= 97 And h2 <= 102 Then Return True  ' lower case hex digits
-		      Return False ' unencoded '%'
-		    End If
-		  Loop
-		  
-		End Function
-	#tag EndMethod
-
 	#tag Method, Flags = &h0
 		Function Operator_Compare(OtherURL As libcURL.URL) As Integer
 		  ' Overloads the comparison operator(=), permitting direct comparisons between references to URLs
