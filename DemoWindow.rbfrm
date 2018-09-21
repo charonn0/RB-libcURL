@@ -2486,6 +2486,27 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
+		Private Shared Function ParseContentType(Raw As String) As TextEncoding
+		  Dim fields() As String = Split(raw, ";")
+		  Dim fcount As Integer = Ubound(fields)
+		  For i As Integer = 0 To fcount
+		    Dim entry As String = fields(i)
+		    If InStr(entry, "/") = 0 Then
+		      Dim parm, value As String
+		      parm = NthField(entry, "=", 1).Trim
+		      value = NthField(entry, "=", 2).Trim
+		      If parm = "charset" Then
+		        For e As Integer = 0 To Encodings.Count
+		          Dim enc As TextEncoding = Encodings.Item(e)
+		          If enc.internetName = value Then Return enc
+		        Next
+		      End If
+		    End If
+		  Next
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
 		Private Sub Populate()
 		  mLockUI = True
 		  PauseButton.Enabled = False
@@ -2494,7 +2515,10 @@ End
 		  AbortButton.Enabled = False
 		  Dim cURLCode As Integer = Client.LastError
 		  If Not CheckBox1.Value Then
-		    DownloadOutput.Text = Client.GetDownloadedData()
+		    Dim data As String = Client.GetDownloadedData()
+		    Dim enc As TextEncoding = ParseContentType(Client.GetResponseHeaders.CommaSeparatedValues("Content-Type"))
+		    If enc <> Nil Then data = DefineEncoding(data, enc)
+		    DownloadOutput.Text = data
 		  Else
 		    DownloadOutput.Text = ""
 		  End If
