@@ -389,45 +389,45 @@ Protected Module libcURL
 		  
 		  Dim msg As String
 		  Select Case cURLURLError
-		  Case URL.CURLUE_OK
+		  Case URLParser.CURLUE_OK
 		    msg = "No error"
-		  Case URL.CURLUE_BAD_HANDLE
+		  Case URLParser.CURLUE_BAD_HANDLE
 		    msg = "Bad URL handle"
-		  Case URL.CURLUE_BAD_PARTPOINTER
+		  Case URLParser.CURLUE_BAD_PARTPOINTER
 		    msg = "Bad URL part pointer"
-		  Case URL.CURLUE_MALFORMED_INPUT
+		  Case URLParser.CURLUE_MALFORMED_INPUT
 		    msg = "The URL is malformed."
-		  Case URL.CURLUE_BAD_PORT_NUMBER
+		  Case URLParser.CURLUE_BAD_PORT_NUMBER
 		    msg = "The port number is invalid."
-		  Case URL.CURLUE_UNSUPPORTED_SCHEME
+		  Case URLParser.CURLUE_UNSUPPORTED_SCHEME
 		    msg = "The URL scheme does not correspond to a supported protocol."
-		  Case URL.CURLUE_URLDECODE
+		  Case URLParser.CURLUE_URLDECODE
 		    msg = "Unable to decode URL part."
-		  Case URL.CURLUE_RELATIVE
+		  Case URLParser.CURLUE_RELATIVE
 		    msg = "Relative?"
-		  Case URL.CURLUE_USER_NOT_ALLOWED
+		  Case URLParser.CURLUE_USER_NOT_ALLOWED
 		    msg = "The URL contains a username field, but this is disallowed."
-		  Case URL.CURLUE_UNKNOWN_PART
+		  Case URLParser.CURLUE_UNKNOWN_PART
 		    msg = "Unknown URL part"
-		  Case URL.CURLUE_NO_SCHEME
+		  Case URLParser.CURLUE_NO_SCHEME
 		    msg = "This URL does not have a scheme part."
-		  Case URL.CURLUE_NO_USER
+		  Case URLParser.CURLUE_NO_USER
 		    msg = "This URL does not have a username part."
-		  Case URL.CURLUE_NO_PASSWORD
+		  Case URLParser.CURLUE_NO_PASSWORD
 		    msg = "This URL does not have a password part."
-		  Case URL.CURLUE_NO_OPTIONS
+		  Case URLParser.CURLUE_NO_OPTIONS
 		    msg = "This URL does not have an options part."
-		  Case URL.CURLUE_NO_HOST
+		  Case URLParser.CURLUE_NO_HOST
 		    msg = "This URL does not have a hostname part."
-		  Case URL.CURLUE_NO_PORT
+		  Case URLParser.CURLUE_NO_PORT
 		    msg = "This URL does not have a port part."
-		  Case URL.CURLUE_NO_PATH
+		  Case URLParser.CURLUE_NO_PATH
 		    msg = "This URL does not have a path part."
-		  Case URL.CURLUE_NO_QUERY
+		  Case URLParser.CURLUE_NO_QUERY
 		    msg = "This URL does not have an arguments part."
-		  Case URL.CURLUE_NO_FRAGMENT
+		  Case URLParser.CURLUE_NO_FRAGMENT
 		    msg = "This URL does not have a fragment part."
-		  Case URL.CURLUE_OUT_OF_MEMORY
+		  Case URLParser.CURLUE_OUT_OF_MEMORY
 		    msg = "Out of memory"
 		  Else
 		    msg = "Unknown error while parsing a URL"
@@ -2224,7 +2224,7 @@ Protected Module libcURL
 		QuotedPrintable
 	#tag EndEnum
 
-	#tag Enum, Name = URLPart, Type = Integer, Flags = &h21
+	#tag Enum, Name = URLPart, Type = Integer, Flags = &h1
 		All=0
 		  Scheme
 		  User

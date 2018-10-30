@@ -1,5 +1,5 @@
 #tag Class
-Protected Class URL
+Protected Class URLParser
 Inherits libcURL.cURLHandle
 	#tag Method, Flags = &h0
 		Sub AppendArgument(Name As String, Value As String)
@@ -15,7 +15,7 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		Sub Constructor(CopyURL As libcURL.URL)
+		Sub Constructor(CopyURL As libcURL.URLParser)
 		  ' Constructs a URL by duplicating the CopyURL.
 		  '
 		  ' See:
@@ -70,7 +70,7 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function GetPartContent(Part As URLPart, Flags As Integer) As String
+		Function GetPartContent(Part As libcURL.URLPart, Flags As Integer) As String
 		  Dim contents As Ptr
 		  Dim ret As String
 		  mLastError = curl_url_get(mHandle, Part, contents, Flags)
@@ -88,12 +88,14 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		 Shared Function IsAvailable() As Boolean
-		  Return libcURL.Version.IsAtLeast(7, 62, 0)
+		  Static avail As Boolean
+		  If Not avail Then avail = libcURL.Version.IsAtLeast(7, 62, 0)
+		  Return avail
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Operator_Compare(OtherURL As libcURL.URL) As Integer
+		Function Operator_Compare(OtherURL As libcURL.URLParser) As Integer
 		  ' Overloads the comparison operator(=), permitting direct comparisons between references to URLs
 		  '
 		  ' See:
@@ -106,7 +108,7 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function SetPartContent(Part As URLPart, Contents As String, Flags As Integer) As Boolean
+		Function SetPartContent(Part As libcURL.URLPart, Contents As String, Flags As Integer) As Boolean
 		  If Contents <> "" Then
 		    Dim data As MemoryBlock = Contents + Chr(0)
 		    mLastError = curl_url_set(mHandle, Part, data, Flags)
@@ -331,7 +333,7 @@ Inherits libcURL.cURLHandle
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URL.Scheme
 			  
 			  Dim flag As Integer
-			  If AnyScheme Then flag = CURLU_NON_SUPPORT_SCHEME 
+			  If AnyScheme Then flag = CURLU_NON_SUPPORT_SCHEME
 			  If Not Me.SetPartContent(URLPart.Scheme, value, flag) Then Raise New cURLException(Me)
 			End Set
 		#tag EndSetter
@@ -455,6 +457,27 @@ Inherits libcURL.cURLHandle
 
 	#tag ViewBehavior
 		#tag ViewProperty
+			Name="AnyScheme"
+			Group="Behavior"
+			InitialValue="True"
+			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Arguments"
+			Group="Behavior"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Fragment"
+			Group="Behavior"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Hostname"
+			Group="Behavior"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
@@ -475,6 +498,26 @@ Inherits libcURL.cURLHandle
 			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
+			Name="Password"
+			Group="Behavior"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Path"
+			Group="Behavior"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Port"
+			Group="Behavior"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Scheme"
+			Group="Behavior"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
@@ -486,6 +529,11 @@ Inherits libcURL.cURLHandle
 			Group="Position"
 			InitialValue="0"
 			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Username"
+			Group="Behavior"
+			Type="String"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

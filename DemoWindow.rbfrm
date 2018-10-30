@@ -3597,8 +3597,8 @@ End
 		  Dim bs As BinaryStream
 		  If CheckBox1.Value Then
 		    Dim name As String
-		    If libcURL.URL.IsAvailable Then ' URL parsing API is available
-		      Dim u As New libcURL.URL(TextField1.Text)
+		    If libcURL.URLParser.IsAvailable Then ' URL parsing API is available
+		      Dim u As New libcURL.URLParser(TextField1.Text)
 		      name = NthField(u.Path, "/", CountFields(u.Path, "/"))
 		    End If
 		    Dim f As FolderItem = GetSaveFolderItem("", name)
@@ -3617,8 +3617,8 @@ End
 		  mURL = TextField1.Text
 		  If CheckBox1.Value Then
 		    Dim name As String
-		    If libcURL.URL.IsAvailable Then ' URL parsing API is available
-		      Dim u As New libcURL.URL(TextField1.Text)
+		    If libcURL.URLParser.IsAvailable Then ' URL parsing API is available
+		      Dim u As New libcURL.URLParser(TextField1.Text)
 		      name = NthField(u.Path, "/", CountFields(u.Path, "/"))
 		    End If
 		    Dim f As FolderItem = GetSaveFolderItem("", name)
