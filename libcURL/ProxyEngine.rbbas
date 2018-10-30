@@ -24,6 +24,11 @@ Protected Class ProxyEngine
 		  ' http://curl.haxx.se/libcurl/c/CURLOPT_NOPROXY.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ProxyEngine.ExcludeHost
 		  
+		  If URLParser.IsAvailable Then
+		    Dim u As New URLParser(Hostname)
+		    Hostname = u.HostName
+		  End If
+		  
 		  For i As Integer = 0 To UBound(mExclusions)
 		    If CompareDomains(mExclusions(i), Hostname) Then Return True
 		  Next
@@ -54,6 +59,11 @@ Protected Class ProxyEngine
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/CURLOPT_NOPROXY.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ProxyEngine.IncludeHost
+		  
+		  If URLParser.IsAvailable Then
+		    Dim u As New URLParser(Hostname)
+		    Hostname = u.HostName
+		  End If
 		  
 		  For i As Integer = UBound(mExclusions) DownTo 0
 		    If CompareDomains(mExclusions(i), Hostname) Then mExclusions.Remove(i)
