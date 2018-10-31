@@ -450,6 +450,9 @@ Protected Module Opts
 	#tag Constant, Name = UPLOAD, Type = Double, Dynamic = False, Default = \"46", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = UPLOAD_BUFFERSIZE , Type = Double, Dynamic = False, Default = \"280", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = URL, Type = Double, Dynamic = False, Default = \"10002", Scope = Protected
 	#tag EndConstant
 
