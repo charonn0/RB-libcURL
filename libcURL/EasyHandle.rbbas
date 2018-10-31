@@ -441,6 +441,22 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub KeepAlive()
+		  ' Sends a protocol-specific "keep-alive" message.
+		  '
+		  ' See:
+		  ' https://curl.haxx.se/libcurl/c/curl_easy_upkeep.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.KeepAlive
+		  
+		  If libcURL.Version.IsAtLeast(7, 62, 0) Then
+		    mLastError = curl_easy_upkeep(mHandle)
+		  Else
+		    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
+		  End If
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function Operator_Compare(OtherEasy As libcURL.EasyHandle) As Integer
 		  ' This method overloads the comparison operator(=), permitting direct 
 		  ' comparisons between instances of EasyHandle.
