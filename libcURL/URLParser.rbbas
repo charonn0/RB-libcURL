@@ -7,7 +7,7 @@ Inherits libcURL.cURLHandle
 		  '
 		  ' See:
 		  ' https://curl.haxx.se/libcurl/c/curl_url_set.html#CURLUPARTQUERY
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URL.AppendArgument
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLParser.AppendArgument
 		  
 		  If Value <> "" Then Name = Name + "=" + Value
 		  Call Me.SetPartContent(URLPart.Query, Name, CURLU_APPENDQUERY Or CURLU_URLENCODE)
@@ -20,7 +20,7 @@ Inherits libcURL.cURLHandle
 		  '
 		  ' See:
 		  ' https://curl.haxx.se/libcurl/c/curl_url_dup.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URL.Constructor
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLParser.Constructor
 		  
 		  // Calling the overridden superclass constructor.
 		  // Constructor(GlobalInitFlags As Integer) -- From libcURL.cURLHandle
@@ -41,7 +41,7 @@ Inherits libcURL.cURLHandle
 		  '
 		  ' See:
 		  ' https://curl.haxx.se/libcurl/c/curl_url.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URL.Constructor
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLParser.Constructor
 		  
 		  // Calling the overridden superclass constructor.
 		  // Constructor(GlobalInitFlags As Integer) -- From libcURL.cURLHandle
@@ -99,7 +99,7 @@ Inherits libcURL.cURLHandle
 		  ' Overloads the comparison operator(=), permitting direct comparisons between references to URLs
 		  '
 		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URL.Operator_Compare
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLParser.Operator_Compare
 		  
 		  Dim i As Integer = Super.Operator_Compare(OtherURL)
 		  If i = 0 Then i = Sign(mHandle - OtherURL.Handle)
@@ -125,7 +125,7 @@ Inherits libcURL.cURLHandle
 		  '
 		  ' See:
 		  ' https://curl.haxx.se/libcurl/c/curl_url_get.html#CURLUPARTURL
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URL.StringValue
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLParser.StringValue
 		  
 		  Return Me.GetPartContent(URLPart.All, 0)
 		End Function
@@ -137,7 +137,7 @@ Inherits libcURL.cURLHandle
 		  '
 		  ' See:
 		  ' https://curl.haxx.se/libcurl/c/curl_url_set.html#CURLUPARTURL
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URL.StringValue
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLParser.StringValue
 		  
 		  Dim flag As Integer
 		  If AnyScheme Then flag = CURLU_NON_SUPPORT_SCHEME
@@ -158,7 +158,7 @@ Inherits libcURL.cURLHandle
 			  '
 			  ' See:
 			  ' https://curl.haxx.se/libcurl/c/curl_url_get.html#CURLUPARTQUERY
-			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URL.Arguments
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLParser.Arguments
 			  
 			  Return Me.GetPartContent(URLPart.Query, CURLU_URLDECODE)
 			End Get
@@ -169,7 +169,7 @@ Inherits libcURL.cURLHandle
 			  '
 			  ' See:
 			  ' https://curl.haxx.se/libcurl/c/curl_url_set.html#CURLUPARTQUERY
-			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URL.Arguments
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLParser.Arguments
 			  
 			  If Not Me.SetPartContent(URLPart.Query, value, 0) Then Raise New cURLException(Me)
 			End Set
@@ -184,7 +184,7 @@ Inherits libcURL.cURLHandle
 			  '
 			  ' See:
 			  ' https://curl.haxx.se/libcurl/c/curl_url_get.html#CURLUPARTFRAGMENT
-			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URL.Fragment
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLParser.Fragment
 			  
 			  Return Me.GetPartContent(URLPart.Fragment, CURLU_URLDECODE)
 			End Get
@@ -195,7 +195,7 @@ Inherits libcURL.cURLHandle
 			  '
 			  ' See:
 			  ' https://curl.haxx.se/libcurl/c/curl_url_set.html#CURLUPARTFRAGMENT
-			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URL.Fragment
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLParser.Fragment
 			  
 			  If Not Me.SetPartContent(URLPart.Fragment, value, CURLU_URLENCODE) Then Raise New cURLException(Me)
 			End Set
@@ -210,7 +210,7 @@ Inherits libcURL.cURLHandle
 			  '
 			  ' See:
 			  ' https://curl.haxx.se/libcurl/c/curl_url_get.html#CURLUPARTHOST
-			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URL.Hostname
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLParser.Hostname
 			  
 			  Return Me.GetPartContent(URLPart.Host, CURLU_URLDECODE)
 			End Get
@@ -221,7 +221,7 @@ Inherits libcURL.cURLHandle
 			  '
 			  ' See:
 			  ' https://curl.haxx.se/libcurl/c/curl_url_set.html#CURLUPARTHOST
-			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URL.Hostname
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLParser.Hostname
 			  
 			  If Not Me.SetPartContent(URLPart.Host, value, CURLU_URLENCODE) Then Raise New cURLException(Me)
 			End Set
@@ -236,7 +236,7 @@ Inherits libcURL.cURLHandle
 			  '
 			  ' See:
 			  ' https://curl.haxx.se/libcurl/c/curl_url_get.html#CURLUPARTPASSWORD
-			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URL.Password
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLParser.Password
 			  
 			  Return Me.GetPartContent(URLPart.Password, CURLU_URLDECODE)
 			End Get
@@ -247,7 +247,7 @@ Inherits libcURL.cURLHandle
 			  '
 			  ' See:
 			  ' https://curl.haxx.se/libcurl/c/curl_url_set.html#CURLUPARTPASSWORD
-			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URL.Password
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLParser.Password
 			  
 			  If Not Me.SetPartContent(URLPart.Password, value, CURLU_URLENCODE) Then Raise New cURLException(Me)
 			End Set
@@ -262,7 +262,7 @@ Inherits libcURL.cURLHandle
 			  '
 			  ' See:
 			  ' https://curl.haxx.se/libcurl/c/curl_url_get.html#CURLUPARTPATH
-			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URL.Path
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLParser.Path
 			  
 			  Return Me.GetPartContent(URLPart.Path, CURLU_URLDECODE)
 			End Get
@@ -273,7 +273,7 @@ Inherits libcURL.cURLHandle
 			  '
 			  ' See:
 			  ' https://curl.haxx.se/libcurl/c/curl_url_set.html#CURLUPARTPATH
-			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URL.Path
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLParser.Path
 			  
 			  If Not Me.SetPartContent(URLPart.Path, value, 0) Then Raise New cURLException(Me)
 			End Set
@@ -288,7 +288,7 @@ Inherits libcURL.cURLHandle
 			  '
 			  ' See:
 			  ' https://curl.haxx.se/libcurl/c/curl_url_get.html#CURLUPARTPORT
-			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URL.Port
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLParser.Port
 			  
 			  Return Val(Me.GetPartContent(URLPart.Port, CURLU_NO_DEFAULT_PORT))
 			End Get
@@ -299,7 +299,7 @@ Inherits libcURL.cURLHandle
 			  '
 			  ' See:
 			  ' https://curl.haxx.se/libcurl/c/curl_url_set.html#CURLUPARTPORT
-			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URL.Port
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLParser.Port
 			  
 			  
 			  If value = 0 Then ' clear/reset to default
@@ -319,7 +319,7 @@ Inherits libcURL.cURLHandle
 			  '
 			  ' See:
 			  ' https://curl.haxx.se/libcurl/c/curl_url_get.html#CURLUPARTSCHEME
-			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URL.Scheme
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLParser.Scheme
 			  
 			  Return Me.GetPartContent(URLPart.Scheme, CURLU_DEFAULT_SCHEME)
 			End Get
@@ -330,7 +330,7 @@ Inherits libcURL.cURLHandle
 			  '
 			  ' See:
 			  ' https://curl.haxx.se/libcurl/c/curl_url_set.html#CURLUPARTSCHEME
-			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URL.Scheme
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLParser.Scheme
 			  
 			  Dim flag As Integer
 			  If AnyScheme Then flag = CURLU_NON_SUPPORT_SCHEME
@@ -347,7 +347,7 @@ Inherits libcURL.cURLHandle
 			  '
 			  ' See:
 			  ' https://curl.haxx.se/libcurl/c/curl_url_get.html#CURLUPARTUSER
-			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URL.Username
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLParser.Username
 			  
 			  Return Me.GetPartContent(URLPart.User, CURLU_URLDECODE)
 			End Get
@@ -358,7 +358,7 @@ Inherits libcURL.cURLHandle
 			  '
 			  ' See:
 			  ' https://curl.haxx.se/libcurl/c/curl_url_set.html#CURLUPARTUSER
-			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URL.Username
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLParser.Username
 			  
 			  If Not Me.SetPartContent(URLPart.User, value, CURLU_URLENCODE) Then Raise New cURLException(Me)
 			End Set
@@ -466,16 +466,19 @@ Inherits libcURL.cURLHandle
 			Name="Arguments"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Fragment"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Hostname"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
@@ -501,11 +504,13 @@ Inherits libcURL.cURLHandle
 			Name="Password"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Path"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Port"
@@ -516,6 +521,7 @@ Inherits libcURL.cURLHandle
 			Name="Scheme"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
@@ -534,6 +540,7 @@ Inherits libcURL.cURLHandle
 			Name="Username"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class
