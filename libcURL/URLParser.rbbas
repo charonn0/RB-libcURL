@@ -16,7 +16,7 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h1000
 		Sub Constructor(CopyURL As libcURL.URLParser)
-		  ' Constructs a URL by duplicating the CopyURL.
+		  ' Constructs a URLParser by duplicating the CopyURL.
 		  '
 		  ' See:
 		  ' https://curl.haxx.se/libcurl/c/curl_url_dup.html
@@ -37,7 +37,7 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Sub Constructor(InitialURL As String = "", GlobalInitFlags As Integer = libcURL.CURL_GLOBAL_DEFAULT)
-		  ' Constructs a URL, optionally initializing it to the InitialURL parameter.
+		  ' Constructs a URLParser, optionally initializing it to the InitialURL parameter.
 		  '
 		  ' See:
 		  ' https://curl.haxx.se/libcurl/c/curl_url.html
@@ -47,7 +47,7 @@ Inherits libcURL.cURLHandle
 		  // Constructor(GlobalInitFlags As Integer) -- From libcURL.cURLHandle
 		  Super.Constructor(GlobalInitFlags)
 		  
-		  If Not libcURL.Version.IsAtLeast(7, 62, 0) Then
+		  If Not URLParser.IsAvailable
 		    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
 		    Raise New cURLException(Me)
 		  End If
