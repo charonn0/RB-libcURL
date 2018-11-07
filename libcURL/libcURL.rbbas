@@ -295,6 +295,8 @@ Protected Module libcURL
 		  ' To generate an updated CA file use one of these two scripts:
 		  '    VBScript: https://github.com/bagder/curl/blob/master/lib/mk-ca-bundle.vbs
 		  '        perl: https://github.com/bagder/curl/blob/master/lib/mk-ca-bundle.pl
+		  '
+		  ' Or download daily-generated list files from the curl project here: https://curl.haxx.se/docs/caextract.html
 		  
 		  Static CA_File As FolderItem
 		  If CA_File = Nil Then
