@@ -47,7 +47,7 @@ Inherits libcURL.cURLHandle
 		  // Constructor(GlobalInitFlags As Integer) -- From libcURL.cURLHandle
 		  Super.Constructor(GlobalInitFlags)
 		  
-		  If Not URLParser.IsAvailable
+		  If Not URLParser.IsAvailable Then
 		    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
 		    Raise New cURLException(Me)
 		  End If
