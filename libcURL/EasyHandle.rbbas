@@ -67,10 +67,11 @@ Inherits libcURL.cURLHandle
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_duphandle.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Constructor
 		  
-		  If CopyOpts = Nil Or CopyOpts.Handle = 0 Then Raise New NilObjectException
 		  // Calling the overridden superclass constructor.
 		  // Constructor(GlobalInitFlags As Integer) -- From libcURL.cURLHandle
 		  Super.Constructor(CopyOpts.Flags)
+		  
+		  If CopyOpts.Handle = 0 Then Raise New NilObjectException
 		  mHandle = curl_easy_duphandle(CopyOpts.Handle)
 		  If mHandle = 0 Then
 		    mLastError = libcURL.Errors.INIT_FAILED
