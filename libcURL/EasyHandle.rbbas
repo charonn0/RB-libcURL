@@ -319,7 +319,11 @@ Inherits libcURL.cURLHandle
 		  Select Case InfoType
 		  Case libcURL.Info.EFFECTIVE_URL, libcURL.Info.REDIRECT_URL, libcURL.Info.CONTENT_TYPE, libcURL.Info.PRIVATE_, libcURL.Info.PRIMARY_IP, _
 		    libcURL.Info.LOCAL_IP, libcURL.Info.FTP_ENTRY_PATH, libcURL.Info.RTSP_SESSION_ID
-		    mb = New MemoryBlock(4)
+		    #If Target32Bit Then
+		      mb = New MemoryBlock(4)
+		    #Else
+		      mb = New MemoryBlock(8)
+		    #Endif
 		    If Me.GetInfo(InfoType, mb) Then
 		      mb = mb.Ptr(0)
 		      If mb <> Nil Then Return mb.CString(0)
@@ -357,7 +361,7 @@ Inherits libcURL.cURLHandle
 		    If Me.GetInfo(InfoType, mb) Then Return mb.DoubleValue(0)
 		    
 		  Case libcURL.Info.SSL_ENGINES, libcURL.Info.COOKIELIST
-		    #If Not Target64Bit Then
+		    #If Target32Bit Then
 		      mb = New MemoryBlock(4)
 		    #Else
 		      mb = New MemoryBlock(8)
