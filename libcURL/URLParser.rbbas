@@ -71,6 +71,14 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Function GetPartContent(Part As libcURL.URLPart, Flags As Integer) As String
+		  ' Returns the specified URL part. Flags may be zero or more of the following constants:
+		  ' CURLU_DEFAULT_PORT, CURLU_DEFAULT_SCHEME, CURLU_NO_DEFAULT_PORT, CURLU_URLDECODE
+		  ' Refer to the libcurl documentation linked below for a description of these flags.
+		  '
+		  ' See:
+		  ' https://curl.haxx.se/libcurl/c/curl_url_get.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLParser.GetPartContent
+		  
 		  Dim contents As Ptr
 		  Dim ret As String
 		  mLastError = curl_url_get(mHandle, Part, contents, Flags)
@@ -109,6 +117,15 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Function SetPartContent(Part As libcURL.URLPart, Contents As String, Flags As Integer) As Boolean
+		  ' Sets the specified URL part. Flags may be zero or more of the following constants:
+		  ' CURLU_NON_SUPPORT_SCHEME, CURLU_URLENCODE, CURLU_DEFAULT_SCHEME, CURLU_GUESS_SCHEME
+		  ' Refer to the libcurl documentation linked below for a description of these flags.
+		  '
+		  ' See:
+		  ' https://curl.haxx.se/libcurl/c/curl_url_set.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLParser.SetPartContent
+		  
+		  
 		  If Contents <> "" Then
 		    Dim data As MemoryBlock = Contents + Chr(0)
 		    mLastError = curl_url_set(mHandle, Part, data, Flags)
