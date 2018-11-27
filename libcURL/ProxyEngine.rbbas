@@ -83,6 +83,11 @@ Protected Class ProxyEngine
 		  
 		  If mAddress = "" Then Return False
 		  
+		  If URLParser.IsAvailable Then
+		    Dim u As New URLParser(Hostname)
+		    Hostname = u.HostName
+		  End If
+		  
 		  For Each host As String In mExclusions
 		    If CompareDomains(Hostname, host, Owner) Then Return False
 		  Next
