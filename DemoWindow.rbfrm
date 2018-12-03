@@ -2077,7 +2077,7 @@ Begin Window DemoWindow
          Visible         =   True
          Width           =   100
       End
-      Begin CheckBox CheckBox1
+      Begin CheckBox SaveToFileChkBx
          AutoDeactivate  =   True
          Bold            =   ""
          Caption         =   "Download to file"
@@ -2514,7 +2514,7 @@ End
 		  PauseButton.Caption = "Pause"
 		  AbortButton.Enabled = False
 		  Dim cURLCode As Integer = Client.LastError
-		  If Not CheckBox1.Value Then
+		  If Not SaveToFileChkBx.Value And cURLCode = 0 Then
 		    Dim data As String = Client.GetDownloadedData()
 		    Dim enc As TextEncoding = ParseContentType(Client.GetResponseHeaders.CommaSeparatedValues("Content-Type"))
 		    If enc <> Nil Then data = DefineEncoding(data, enc)
@@ -3595,8 +3595,13 @@ End
 	#tag Event
 		Sub Action()
 		  Dim bs As BinaryStream
-		  If CheckBox1.Value Then
-		    Dim f As FolderItem = GetSaveFolderItem("", "")
+		  If SaveToFileChkBx.Value Then
+		    Dim name As String
+		    If libcURL.URLParser.IsAvailable Then ' URL parsing API is available
+		      Dim u As New libcURL.URLParser(TextField1.Text)
+		      name = NthField(u.Path, "/", CountFields(u.Path, "/"))
+		    End If
+		    Dim f As FolderItem = GetSaveFolderItem("", name)
 		    bs = BinaryStream.Create(f, True)
 		  End If
 		  PauseButton.Enabled = True
@@ -3610,8 +3615,13 @@ End
 	#tag Event
 		Sub Action()
 		  mURL = TextField1.Text
-		  If CheckBox1.Value Then
-		    Dim f As FolderItem = GetSaveFolderItem("", "")
+		  If SaveToFileChkBx.Value Then
+		    Dim name As String
+		    If libcURL.URLParser.IsAvailable Then ' URL parsing API is available
+		      Dim u As New libcURL.URLParser(TextField1.Text)
+		      name = NthField(u.Path, "/", CountFields(u.Path, "/"))
+		    End If
+		    Dim f As FolderItem = GetSaveFolderItem("", name)
 		    ThreadStream = BinaryStream.Create(f, True)
 		  End If
 		  PauseButton.Enabled = True

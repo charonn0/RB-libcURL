@@ -119,6 +119,11 @@ Protected Class CookieEngine
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine.Lookup
 		  
+		  If URLParser.IsAvailable Then
+		    Dim u As New URLParser(CookieDomain)
+		    CookieDomain = u.HostName
+		  End If
+		  
 		  Dim c As Integer = Me.Count
 		  For i As Integer = StartWith To c - 1
 		    Dim n, d As String

@@ -67,10 +67,11 @@ Inherits libcURL.cURLHandle
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_duphandle.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Constructor
 		  
-		  If CopyOpts = Nil Or CopyOpts.Handle = 0 Then Raise New NilObjectException
 		  // Calling the overridden superclass constructor.
 		  // Constructor(GlobalInitFlags As Integer) -- From libcURL.cURLHandle
 		  Super.Constructor(CopyOpts.Flags)
+		  
+		  If CopyOpts.Handle = 0 Then Raise New NilObjectException
 		  mHandle = curl_easy_duphandle(CopyOpts.Handle)
 		  If mHandle = 0 Then
 		    mLastError = libcURL.Errors.INIT_FAILED
@@ -318,7 +319,11 @@ Inherits libcURL.cURLHandle
 		  Select Case InfoType
 		  Case libcURL.Info.EFFECTIVE_URL, libcURL.Info.REDIRECT_URL, libcURL.Info.CONTENT_TYPE, libcURL.Info.PRIVATE_, libcURL.Info.PRIMARY_IP, _
 		    libcURL.Info.LOCAL_IP, libcURL.Info.FTP_ENTRY_PATH, libcURL.Info.RTSP_SESSION_ID
-		    mb = New MemoryBlock(4)
+		    #If Target32Bit Then
+		      mb = New MemoryBlock(4)
+		    #Else
+		      mb = New MemoryBlock(8)
+		    #Endif
 		    If Me.GetInfo(InfoType, mb) Then
 		      mb = mb.Ptr(0)
 		      If mb <> Nil Then Return mb.CString(0)
@@ -356,7 +361,7 @@ Inherits libcURL.cURLHandle
 		    If Me.GetInfo(InfoType, mb) Then Return mb.DoubleValue(0)
 		    
 		  Case libcURL.Info.SSL_ENGINES, libcURL.Info.COOKIELIST
-		    #If Not Target64Bit Then
+		    #If Target32Bit Then
 		      mb = New MemoryBlock(4)
 		    #Else
 		      mb = New MemoryBlock(8)
@@ -437,6 +442,22 @@ Inherits libcURL.cURLHandle
 		  
 		  If Not SetOption(libcURL.Opts.DEBUGDATA, mHandle) Then Raise New cURLException(Me)
 		  If Not SetOption(libcURL.Opts.DEBUGFUNCTION, AddressOf DebugCallback) Then Raise New cURLException(Me)
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub KeepAlive()
+		  ' Sends a protocol-specific "keep-alive" message.
+		  '
+		  ' See:
+		  ' https://curl.haxx.se/libcurl/c/curl_easy_upkeep.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.KeepAlive
+		  
+		  If libcURL.Version.IsAtLeast(7, 62, 0) Then
+		    mLastError = curl_easy_upkeep(mHandle)
+		  Else
+		    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
+		  End If
 		End Sub
 	#tag EndMethod
 
@@ -961,6 +982,33 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  return mBufferSizeUpload
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  ' Set preferred send buffer size (in bytes). 
+			  '
+			  ' See:
+			  ' https://curl.haxx.se/libcurl/c/CURLOPT_UPLOAD_BUFFERSIZE.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.BufferSizeUpload
+			  
+			  If Not libcURL.Version.IsAtLeast(7, 62, 0) Then
+			    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
+			    Return
+			  End If
+			  
+			  If value < CURL_MIN_WRITE_SIZE Or value > CURL_MAX_WRITE_SIZE Then Raise New OutOfBoundsException
+			  If Not Me.SetOption(libcURL.Opts.UPLOAD_BUFFERSIZE , value) Then Raise New cURLException(Me)
+			  mBufferSizeUpload = value
+			End Set
+		#tag EndSetter
+		BufferSizeUpload As Integer
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
 			  ' Gets the PEM file (or a directory of PEM files) containing one or more certificate authorities libcURL
 			  ' will trust to verify the peer with. If no file/folder is specified (default) then returns Nil.
 			  
@@ -1286,6 +1334,10 @@ Inherits libcURL.cURLHandle
 
 	#tag Property, Flags = &h21
 		Private mBufferSize As Integer = CURL_DEFAULT_READ_SIZE
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mBufferSizeUpload As Integer = CURL_DEFAULT_WRITE_SIZE
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -1780,10 +1832,19 @@ Inherits libcURL.cURLHandle
 	#tag Constant, Name = CURL_DEFAULT_READ_SIZE, Type = Double, Dynamic = False, Default = \"16384", Scope = Public
 	#tag EndConstant
 
+	#tag Constant, Name = CURL_DEFAULT_WRITE_SIZE, Type = Double, Dynamic = False, Default = \"65536", Scope = Public
+	#tag EndConstant
+
 	#tag Constant, Name = CURL_MAX_READ_SIZE, Type = Double, Dynamic = False, Default = \"524288", Scope = Public
 	#tag EndConstant
 
+	#tag Constant, Name = CURL_MAX_WRITE_SIZE, Type = Double, Dynamic = False, Default = \"2097152", Scope = Public
+	#tag EndConstant
+
 	#tag Constant, Name = CURL_MIN_READ_SIZE, Type = Double, Dynamic = False, Default = \"1024", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = CURL_MIN_WRITE_SIZE, Type = Double, Dynamic = False, Default = \"16384", Scope = Public
 	#tag EndConstant
 
 	#tag Constant, Name = CURL_SOCKET_BAD, Type = Double, Dynamic = False, Default = \"1", Scope = Protected

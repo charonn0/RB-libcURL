@@ -444,7 +444,13 @@ Protected Module Opts
 	#tag Constant, Name = TIMEOUT, Type = Double, Dynamic = False, Default = \"13", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = UPKEEP_INTERVAL_MS, Type = Double, Dynamic = False, Default = \"281", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = UPLOAD, Type = Double, Dynamic = False, Default = \"46", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = UPLOAD_BUFFERSIZE , Type = Double, Dynamic = False, Default = \"280", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = URL, Type = Double, Dynamic = False, Default = \"10002", Scope = Protected
