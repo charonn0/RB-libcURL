@@ -61,6 +61,9 @@ Protected Module Errors
 		    
 		  Case MIME_OWNER_MISSING
 		    Return "MIME_OWNER_MISSING"
+		    
+		  Case MIME_MANUAL_ONLY
+		    Return "MIME_MANUAL_ONLY"
 		  End Select
 		End Function
 	#tag EndMethod
@@ -184,6 +187,9 @@ Protected Module Errors
 	#tag EndConstant
 
 	#tag Constant, Name = MIME_ADD_FAILED, Type = Double, Dynamic = False, Default = \"-10", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = MIME_MANUAL_ONLY, Type = Double, Dynamic = False, Default = \"-12", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = MIME_OWNER_MISSING, Type = Double, Dynamic = False, Default = \"-11", Scope = Protected

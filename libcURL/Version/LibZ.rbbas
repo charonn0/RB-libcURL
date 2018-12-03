@@ -31,7 +31,7 @@ Protected Module LibZ
 
 	#tag Method, Flags = &h1
 		Attributes( deprecated ) Protected Function Name() As String
-		  #If Not Target64Bit Then
+		  #If Target32Bit Then
 		    Dim data As MemoryBlock = Struct.libzVersion
 		  #Else
 		    Dim data As MemoryBlock = Struct64.libzVersion

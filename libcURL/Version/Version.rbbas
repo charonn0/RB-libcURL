@@ -37,14 +37,8 @@ Protected Module Version
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Attributes( deprecated = "libcurl.Version.UserAgent" ) Protected Function Name() As String
-		  Return UserAgent()
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
 		Protected Function Platform() As String
-		  #If Not Target64Bit Then
+		  #If Target32Bit Then
 		    Dim data As MemoryBlock = Struct.HostString
 		  #Else
 		    Dim data As MemoryBlock = Struct64.HostString
@@ -58,7 +52,7 @@ Protected Module Version
 		  ' Returns an array of available protocols.
 		  
 		  Dim prots() As String
-		  #If Not Target64Bit Then
+		  #If Target32Bit Then
 		    Dim lst As Ptr = Struct.Protocols
 		  #Else
 		    Dim lst As Ptr = Struct64.Protocols
@@ -72,7 +66,7 @@ Protected Module Version
 		    Dim mb As MemoryBlock = item
 		    prots.Append(mb.CString(0))
 		    i = i + 1
-		    #If Not Target64Bit Then
+		    #If Target32Bit Then
 		      item = lst.Ptr(i * 4)
 		    #Else
 		      item = lst.Ptr(i * 8)
@@ -86,7 +80,7 @@ Protected Module Version
 
 	#tag Method, Flags = &h1
 		Protected Function SSHProviderName() As String
-		  #If Not Target64Bit Then
+		  #If Target32Bit Then
 		    Dim data As MemoryBlock = Struct.libSSHVersion
 		  #Else
 		    Dim data As MemoryBlock = Struct64.libSSHVersion
@@ -98,7 +92,7 @@ Protected Module Version
 
 	#tag Method, Flags = &h1
 		Protected Function SSLProviderName() As String
-		  #If Not Target64Bit Then
+		  #If Target32Bit Then
 		    Dim data As MemoryBlock = Struct.SSLVersionString
 		  #Else
 		    Dim data As MemoryBlock = Struct64.SSLVersionString
@@ -161,7 +155,7 @@ Protected Module Version
 	#tag ComputedProperty, Flags = &h21
 		#tag Getter
 			Get
-			  #If Not Target64Bit Then
+			  #If Target32Bit Then
 			    Return Struct.Features
 			  #Else
 			    Return Struct64.Features

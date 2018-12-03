@@ -42,7 +42,7 @@ Inherits libcURL.cURLHandle
 		  Dim i As Integer
 		  Do Until nxt = Nil
 		    i = i + 1
-		    #If Not Target64Bit Then
+		    #If Target32Bit Then
 		      nxt = nxt.Ptr(4)
 		    #Else
 		      nxt = nxt.Ptr(8)
@@ -88,7 +88,7 @@ Inherits libcURL.cURLHandle
 		      Return txt.CString(0)
 		      
 		    ElseIf i < Index Then
-		      #If Not Target64Bit Then
+		      #If Target32Bit Then
 		        nxt = nxt.Ptr(4)
 		      #Else
 		        nxt = nxt.Ptr(8)
@@ -136,7 +136,7 @@ Inherits libcURL.cURLHandle
 		  Dim nxt As Ptr = List
 		  Do Until nxt = Nil
 		    Dim txt As MemoryBlock = nxt.Ptr(0)
-		    #If Not Target64Bit Then
+		    #If Target32Bit Then
 		      nxt = nxt.Ptr(4)
 		    #Else
 		      nxt = nxt.Ptr(8)

@@ -19,6 +19,9 @@ Inherits RuntimeException
 		  Case Me.ErrorNumber = libcURL.Errors.MIME_OWNER_MISSING
 		    Me.Message = "MIME messages must be owned by an instance of EasyHandle, but this message has outlived its owner."
 		    
+		  Case Me.ErrorNumber = libcURL.Errors.MIME_MANUAL_ONLY
+		    Me.Message = "The specified dictionary cannot automatically be converted into a MIME message."
+		    
 		  Case Me.ErrorNumber = libcURL.Errors.FEATURE_UNAVAILABLE
 		    Me.Message = "A required feature is not available in the installed version of libcURL."
 		    
@@ -44,6 +47,9 @@ Inherits RuntimeException
 		    
 		  Case ErrantItem IsA libcURL.MultiHandle
 		    Me.Message = libcURL.FormatMultiError(Me.ErrorNumber)
+		    
+		  Case ErrantItem IsA libcURL.URLParser
+		    Me.Message = libcURL.FormatURLError(Me.ErrorNumber)
 		    
 		  Else
 		    Me.Message = libcURL.FormatError(Me.ErrorNumber) + " (" + libcURL.Errors.Name(Me.ErrorNumber) + ")"
