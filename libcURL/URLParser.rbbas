@@ -104,7 +104,7 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Function Operator_Compare(OtherURL As libcURL.URLParser) As Integer
-		  ' Overloads the comparison operator(=), permitting direct comparisons between references to URLs
+		  ' Overloads the comparison operator(=), permitting direct comparisons between references to URLParser.
 		  '
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLParser.Operator_Compare
@@ -117,7 +117,7 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Function Operator_Compare(URL As String) As Integer
-		  ' Overloads the comparison operator(=), permitting direct comparisons between references to URLs
+		  ' Overloads the comparison operator(=), permitting comparisons between a URLParser and a String
 		  '
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLParser.Operator_Compare
