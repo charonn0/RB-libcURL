@@ -116,6 +116,18 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function Operator_Compare(URL As String) As Integer
+		  ' Overloads the comparison operator(=), permitting direct comparisons between references to URLs
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLParser.Operator_Compare
+		  
+		  Dim s As String = Me.StringValue()
+		  Return StrComp(s, URL, 0)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function SetPartContent(Part As libcURL.URLPart, Contents As String, Flags As Integer) As Boolean
 		  ' Sets the specified URL part. Flags may be zero or more of the following constants:
 		  ' CURLU_NON_SUPPORT_SCHEME, CURLU_URLENCODE, CURLU_DEFAULT_SCHEME, CURLU_GUESS_SCHEME
