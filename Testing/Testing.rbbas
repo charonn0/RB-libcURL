@@ -72,6 +72,13 @@ Protected Module Testing
 		    Return False
 		  End Try
 		  
+		  Try
+		    TestURLParser()
+		  Catch
+		    TestResult = 10
+		    Return False
+		  End Try
+		  
 		  #If RunLiveTests Then
 		    Return Testing.LiveTests.RunTests()
 		  #else
@@ -539,6 +546,34 @@ Protected Module Testing
 		  
 		  Assert(Not s.AddItem(c1)) ' already added
 		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub TestURLParser()
+		  If Not libcURL.URLParser.IsAvailable Then Return
+		  Dim u As New libcURL.URLParser("http://user:pass@www.example.com:2525/bin/file.txt?a=b&c=d#top")
+		  Assert(u.Arguments = "a=b&c=d")
+		  Assert(u.Fragment = "top")
+		  Assert(u.Hostname = "www.example.com")
+		  Assert(u.Password = "pass")
+		  Assert(u.Path = "/bin/file.txt")
+		  Assert(u.Port = 2525)
+		  Assert(u.Scheme = "http")
+		  Assert(u.Username = "user")
+		  
+		  u.AppendArgument("e", "f")
+		  Assert(u.Arguments = "a=b&c=d&e=f")
+		  
+		  u.Fragment = "bottom"
+		  u.Hostname = "www.example.net"
+		  u.Password = ""
+		  u.Username = ""
+		  u.Scheme = "https"
+		  u.Path = "/"
+		  u.Port = 0
+		  
+		  Assert(u.StringValue = "https://www.example.net/?a=b&c=d&e=f#bottom")
 		End Sub
 	#tag EndMethod
 
