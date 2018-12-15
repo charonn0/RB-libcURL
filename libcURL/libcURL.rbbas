@@ -87,6 +87,10 @@ Protected Module libcURL
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Function curl_easy_upkeep Lib cURLLib (EasyHandle As Integer) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h21
 		Private Soft Declare Function curl_formadd Lib cURLLib (ByRef FirstItem As Integer, ByRef LastItem As Ptr, Option As Integer, Value As Ptr, Option1 As Integer, Value1 As Ptr, Option2 As Integer, Value2 As Ptr, Option3 As Integer, Value3 As Ptr, Option4 As Integer, Value4 As Ptr, Option5 As Integer, Value5 As Ptr, Option6 As Integer, Value6 As Ptr, Option7 As Integer, Value7 As Ptr, Option8 As Integer, Value8 As Ptr, Option9 As Integer, Value9 As Ptr, Option10 As Integer, Value10 As Ptr, FinalOption As Integer) As Integer
 	#tag EndExternalMethod
 
@@ -112,6 +116,10 @@ Protected Module libcURL
 
 	#tag ExternalMethod, Flags = &h21
 		Private Soft Declare Function curl_global_init Lib cURLLib (flags As Integer) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Function curl_global_sslset Lib cURLLib (ID As SSLBackEnd, Name As CString, ByRef Avail As Ptr) As Integer
 	#tag EndExternalMethod
 
 	#tag Method, Flags = &h1
@@ -251,6 +259,26 @@ Protected Module libcURL
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Function curl_url Lib cURLLib () As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Sub curl_url_cleanup Lib cURLLib (URL As Integer)
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Function curl_url_dup Lib cURLLib (URL As Integer) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Function curl_url_get Lib cURLLib (URL As Integer, Part As URLPart, ByRef Content As Ptr, Flags As UInt32) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Function curl_url_set Lib cURLLib (URL As Integer, Part As URLPart, Content As Ptr, Flags As UInt32) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h21
 		Private Soft Declare Function curl_version Lib cURLLib () As Ptr
 	#tag EndExternalMethod
 
@@ -267,6 +295,8 @@ Protected Module libcURL
 		  ' To generate an updated CA file use one of these two scripts:
 		  '    VBScript: https://github.com/bagder/curl/blob/master/lib/mk-ca-bundle.vbs
 		  '        perl: https://github.com/bagder/curl/blob/master/lib/mk-ca-bundle.pl
+		  '
+		  ' Or download daily-generated list files from the curl project here: https://curl.haxx.se/docs/caextract.html
 		  
 		  Static CA_File As FolderItem
 		  If CA_File = Nil Then
@@ -276,6 +306,31 @@ Protected Module libcURL
 		    bs.Close
 		  End If
 		  Return CA_File
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function EnumSSLBackends() As libcURL.SSLBackEnd()
+		  ' Returns an array of available SSL backends.
+		  '
+		  ' See:
+		  ' https://curl.haxx.se/libcurl/c/curl_global_sslset.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EnumSSLBackends
+		  
+		  Dim ret() As SSLBackEnd
+		  If Not System.IsFunctionAvailable("curl_global_sslset", cURLLib) Then Return ret
+		  
+		  Dim p As Ptr
+		  Call curl_global_sslset(SSLBackEnd.Ignore, Nil, p)
+		  If p = Nil Then Return ret
+		  Dim mb As MemoryBlock = p.CString(0)
+		  For i As Integer = 0 To mb.Size - 1
+		    Dim j As Integer = mb.Int8Value(i)
+		    Dim v As SSLBackEnd = SSLBackEnd(j)
+		    ret.Append(v)
+		  Next
+		  Return ret
+		  
 		End Function
 	#tag EndMethod
 
@@ -325,6 +380,64 @@ Protected Module libcURL
 		  
 		  If Not libcURL.IsAvailable Then Return "libcURL is not available or is an unsupported version."
 		  Dim msg As String = curl_share_strerror(cURLShareError)
+		  If Encoding <> Nil Then
+		    Return ConvertEncoding(msg, Encoding)
+		  Else
+		    Return DefineEncoding(msg, Encodings.ASCII)
+		  End If
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function FormatURLError(cURLURLError As Integer, Encoding As TextEncoding = Nil) As String
+		  ' Translates libcurl URL API error numbers to messages
+		  
+		  Dim msg As String
+		  Select Case cURLURLError
+		  Case URLParser.CURLUE_OK
+		    msg = "No error"
+		  Case URLParser.CURLUE_BAD_HANDLE
+		    msg = "Bad URL handle"
+		  Case URLParser.CURLUE_BAD_PARTPOINTER
+		    msg = "Bad URL part pointer"
+		  Case URLParser.CURLUE_MALFORMED_INPUT
+		    msg = "The URL is malformed."
+		  Case URLParser.CURLUE_BAD_PORT_NUMBER
+		    msg = "The port number is invalid."
+		  Case URLParser.CURLUE_UNSUPPORTED_SCHEME
+		    msg = "The URL scheme does not correspond to a supported protocol."
+		  Case URLParser.CURLUE_URLDECODE
+		    msg = "Unable to decode URL part."
+		  Case URLParser.CURLUE_RELATIVE
+		    msg = "Relative?"
+		  Case URLParser.CURLUE_USER_NOT_ALLOWED
+		    msg = "The URL contains a username field, but this is disallowed."
+		  Case URLParser.CURLUE_UNKNOWN_PART
+		    msg = "Unknown URL part"
+		  Case URLParser.CURLUE_NO_SCHEME
+		    msg = "This URL does not have a scheme part."
+		  Case URLParser.CURLUE_NO_USER
+		    msg = "This URL does not have a username part."
+		  Case URLParser.CURLUE_NO_PASSWORD
+		    msg = "This URL does not have a password part."
+		  Case URLParser.CURLUE_NO_OPTIONS
+		    msg = "This URL does not have an options part."
+		  Case URLParser.CURLUE_NO_HOST
+		    msg = "This URL does not have a hostname part."
+		  Case URLParser.CURLUE_NO_PORT
+		    msg = "This URL does not have a port part."
+		  Case URLParser.CURLUE_NO_PATH
+		    msg = "This URL does not have a path part."
+		  Case URLParser.CURLUE_NO_QUERY
+		    msg = "This URL does not have an arguments part."
+		  Case URLParser.CURLUE_NO_FRAGMENT
+		    msg = "This URL does not have a fragment part."
+		  Case URLParser.CURLUE_OUT_OF_MEMORY
+		    msg = "Out of memory"
+		  Else
+		    msg = "Unknown error while parsing a URL"
+		  End Select
 		  If Encoding <> Nil Then
 		    Return ConvertEncoding(msg, Encoding)
 		  Else
@@ -1827,6 +1940,41 @@ Protected Module libcURL
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
+		Protected Sub SetSSLBackend(BackEnd As libcURL.SSLBackEnd)
+		  ' Sets the SSL backend. This is a global setting that can only be set once and must be set before using any other part
+		  ' of the library.
+		  '
+		  ' See:
+		  ' https://curl.haxx.se/libcurl/c/curl_global_sslset.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.SetSSLBackEnd
+		  
+		  If Not System.IsFunctionAvailable("curl_global_sslset", cURLLib) Then
+		    Dim e As New cURLException(Nil)
+		    e.ErrorNumber = libcURL.Errors.FEATURE_UNAVAILABLE
+		    Raise e
+		  End If
+		  
+		  Dim p As Ptr
+		  Dim err As Integer = curl_global_sslset(BackEnd, Nil, p)
+		  If err = 0 Then Return ' ok
+		  
+		  Dim ex As New cURLException(Nil)
+		  ex.ErrorNumber = err
+		  Select Case err
+		  Case CURLSSLSET_UNKNOWN_BACKEND
+		    ex.Message = "That SSL backend is not available."
+		  Case CURLSSLSET_TOO_LATE
+		    ex.Message = "The SSL backend has already been initialized and cannot be changed."
+		  Case CURLSSLSET_NO_BACKENDS
+		    ex.Message = "The installed version of libcurl was built without SSL support."
+		  Else
+		    ex.Message = "Unknown error while setting the SSL backend."
+		  End Select
+		  Raise ex
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
 		Protected Function URLDecode(Data As String, Optional EasyItem As libcURL.EasyHandle) As String
 		  ' Returns the decoded Data using percent encoding as defined in rfc2396
 		  ' curl_easy_unescape needs a curl_easy handle to decode data. If EasyItem 
@@ -1924,6 +2072,15 @@ Protected Module libcURL
 		#Tag Instance, Platform = Linux, Language = Default, Definition  = \"libcurl"
 	#tag EndConstant
 
+	#tag Constant, Name = CURLSSLSET_NO_BACKENDS, Type = Double, Dynamic = False, Default = \"3", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = CURLSSLSET_TOO_LATE, Type = Double, Dynamic = False, Default = \"2", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = CURLSSLSET_UNKNOWN_BACKEND, Type = Double, Dynamic = False, Default = \"1", Scope = Private
+	#tag EndConstant
+
 	#tag Constant, Name = CURL_GLOBAL_ALL, Type = Double, Dynamic = False, Default = \"3", Scope = Protected
 	#tag EndConstant
 
@@ -1969,6 +2126,7 @@ Protected Module libcURL
 		  NEGOTIATE=4
 		  NTLM=8
 		  NTLM_WB=32
+		  BEARER=64
 		ANY=&hFFFFFFFF
 	#tag EndEnum
 
@@ -2030,6 +2188,30 @@ Protected Module libcURL
 		SOCKS5_HOSTNAME=7
 	#tag EndEnum
 
+	#tag Enum, Name = SSHAUTH, Type = Integer, Flags = &h1
+		PublicKey=1
+		  Password=2
+		  Host=4
+		  Keyboard=8
+		  Agent=16
+		Any=&hFFFFFFFF
+	#tag EndEnum
+
+	#tag Enum, Name = SSLBackEnd, Type = Integer, Flags = &h1
+		None=0
+		  OpenSSL=1
+		  GNUTLS=2
+		  NSS=3
+		  GSKit=5
+		  PolarSSL=6
+		  WolfSSL=7
+		  SChannel=8
+		  DarwinSSL=9
+		  AXTLS=10
+		  MBEDTLS=11
+		Ignore=-1
+	#tag EndEnum
+
 	#tag Enum, Name = SSLVersion, Type = Integer, Flags = &h1
 		Default=0
 		  TLSv1=1
@@ -2046,6 +2228,19 @@ Protected Module libcURL
 		  EightBit
 		  Base64
 		QuotedPrintable
+	#tag EndEnum
+
+	#tag Enum, Name = URLPart, Type = Integer, Flags = &h1
+		All=0
+		  Scheme
+		  User
+		  Password
+		  Options
+		  Host
+		  Port
+		  Path
+		  Query
+		Fragment
 	#tag EndEnum
 
 

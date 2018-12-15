@@ -35,6 +35,7 @@ Class=cURLManager;libcURL/cURLManager.rbbas;&h531D2FFF;&h1B9FF7FF;false
 FileTypeSet=cURLTypes;cURLTypes.rbbas;&h614D8FFF;&h0;false
 Class=DNSEngine;libcURL/DNSEngine.rbbas;&h7D712FFF;&h1B9FF7FF;false
 Class=MIMEMessage;libcURL/MIMEMessage.rbbas;&h45D957FF;&h1B9FF7FF;false
+Class=URLParser;libcURL/URLParser.rbbas;&h50097FFF;&h1B9FF7FF;false
 DefaultWindow=DemoWindow
 MajorVersion=1
 MinorVersion=0

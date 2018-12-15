@@ -56,7 +56,8 @@ libcURL uses several different handle types or equivalents:
 |[`curl_share`](http://curl.haxx.se/libcurl/c/libcurl-share.html)|[`ShareHandle`](https://github.com/charonn0/RB-libcURL/wiki/libcURL.ShareHandle)|A set of one or more `curl_easy` handles that will share SSL session data, DNS caches, and/or HTTP cookies.|
 |[`slist`](http://curl.haxx.se/libcurl/c/curl_slist_append.html)|[`ListPtr`](https://github.com/charonn0/RB-libcURL/wiki/libcURL.ListPtr)|A linked list of string values.|
 |[`form`](http://curl.haxx.se/libcurl/c/curl_formadd.html)|[`MultipartForm`](https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm)|An HTTP form which libcURL will encode as `multipart/form-data`.|
-|[`mime`](https://curl.haxx.se/libcurl/c/curl_mime_init.html)|[`MIMEMessage`](https://github.com/charonn0/RB-libcURL/wiki/libcURL.MIMEMessage)|MIME message (HTTP form, email message, etc.) (libcURL 7.56.0 or later)|
+|[`mime`](https://curl.haxx.se/libcurl/c/curl_mime_init.html)|[`MIMEMessage`](https://github.com/charonn0/RB-libcURL/wiki/libcURL.MIMEMessage)|A MIME message (HTTP form, email message, etc.) (libcURL 7.56.0 or later)|
+|[`url`](https://curl.haxx.se/libcurl/c/curl_url.html)|[`URLParser`](https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLParser)|An interface to libcurl's URL parser (libcURL 7.62.0 or later)|
 
 Every transfer is associated with an `EasyHandle`. After creating a new `EasyHandle` instance, you can set various options for the handle by calling the [`SetOption`](https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.SetOption) method with the desired [cURL option number](http://curl.haxx.se/libcurl/c/curl_easy_setopt.html) and its new value. Options will persist until they are overwritten or reset.
 
