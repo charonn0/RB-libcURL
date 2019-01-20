@@ -3622,6 +3622,7 @@ End
 		      name = NthField(u.Path, "/", CountFields(u.Path, "/"))
 		    End If
 		    Dim f As FolderItem = GetSaveFolderItem("", name)
+		    If f = Nil Then Return
 		    ThreadStream = BinaryStream.Create(f, True)
 		  End If
 		  PauseButton.Enabled = True

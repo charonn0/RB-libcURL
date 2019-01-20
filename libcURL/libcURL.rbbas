@@ -1859,6 +1859,12 @@ Protected Module libcURL
 		    Return "video/x-sgi-movie"
 		  Case "ice"
 		    Return "x-conference/x-cooltalk"
+		  Case "gz"
+		    Return "application/gzip"
+		  Case "pcap"
+		    Return "application/vnd.tcpdump.pcap"
+		  Case "url"
+		    Return "application/internet-shortcut"
 		  End Select
 		End Function
 	#tag EndMethod
@@ -2039,7 +2045,7 @@ Protected Module libcURL
 
 	#tag Note, Name = Copying
 		RB-libcURL (https://github.com/charonn0/RB-libcURL)
-		Copyright (c)2014-18 Andrew Lambert, all rights reserved.
+		Copyright (c)2014-19 Andrew Lambert, all rights reserved.
 		
 		 Permission to use, copy, modify, and distribute this software for any purpose
 		 with or without fee is hereby granted, provided that the above copyright
