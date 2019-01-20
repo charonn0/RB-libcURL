@@ -1859,6 +1859,12 @@ Protected Module libcURL
 		    Return "video/x-sgi-movie"
 		  Case "ice"
 		    Return "x-conference/x-cooltalk"
+		  Case "gz"
+		    Return "application/gzip"
+		  Case "pcap"
+		    Return "application/vnd.tcpdump.pcap"
+		  Case "url"
+		    Return "application/internet-shortcut"
 		  End Select
 		End Function
 	#tag EndMethod
