@@ -260,7 +260,13 @@ Protected Class CookieEngine
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine.SetCookie
 		  
 		  Dim c As String = "Set-Cookie: " + Name + "=" + Value
-		  If Domain <> "" Then c = c + "; Domain=" + Domain
+		  If Domain <> "" Then
+		    If URLParser.IsAvailable Then
+		      Dim u As New URLParser(Domain)
+		      Domain = u.HostName
+		    End If
+		     c = c + "; Domain=" + Domain
+		  End If
 		  If Path <> "" Then c = c + "; path=" + Path
 		  If Expires <> Nil Then c = c + "; Expires=" + libcURL.ParseDate(Expires)
 		  If HTTPOnly Then c = c + "; httpOnly"

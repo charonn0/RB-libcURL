@@ -1,6 +1,6 @@
 #tag Window
 Begin Window FormGenerator
-   BackColor       =   -256
+   BackColor       =   "&cFFFFFF"
    Backdrop        =   0
    CloseButton     =   True
    Composite       =   False

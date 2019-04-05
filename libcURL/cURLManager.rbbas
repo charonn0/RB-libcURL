@@ -313,20 +313,6 @@ Protected Class cURLManager
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Attributes( deprecated = "cURLManager.RequestHeaders" )  Function SetRequestHeader(Name As String, Value As String) As Boolean
-		  ' This method has been deprecated: use cURLManager.RequestHeaders to manage request headers.
-		  ' Adds, updates, or removes the named request header. Headers will persist until removed or reset.
-		  ' Pass an empty value to remove the named header. Pass an empty name and an empty value to reset.
-		  '
-		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.SetRequestHeader
-		  
-		  mRequestHeaders = mEasyItem.SetRequestHeader(mRequestHeaders, Name, Value)
-		  Return (mRequestHeaders <> Nil Or Name = "")
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Function SetRequestMethod(RequestMethod As String) As Boolean
 		  ' Overrides the request method used by libcurl. The behavior of this feature depends on which protocol
 		  ' is being used, and not all protocols are supported. Pass the empty string to reset.
@@ -575,10 +561,6 @@ Protected Class cURLManager
 
 	#tag Property, Flags = &h21
 		Private mRequestHeaderEngine As libcURL.RequestHeaderEngine
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private mRequestHeaders As libcURL.ListPtr
 	#tag EndProperty
 
 	#tag Property, Flags = &h21

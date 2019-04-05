@@ -104,7 +104,7 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Function Operator_Compare(OtherURL As libcURL.URLParser) As Integer
-		  ' Overloads the comparison operator(=), permitting direct comparisons between references to URLs
+		  ' Overloads the comparison operator(=), permitting direct comparisons between references to URLParser.
 		  '
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLParser.Operator_Compare
@@ -112,6 +112,18 @@ Inherits libcURL.cURLHandle
 		  Dim i As Integer = Super.Operator_Compare(OtherURL)
 		  If i = 0 Then i = Sign(mHandle - OtherURL.Handle)
 		  Return i
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Operator_Compare(OtherURL As String) As Integer
+		  ' Overloads the comparison operator(=), permitting comparisons between a URLParser and a String
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLParser.Operator_Compare
+		  
+		  Dim s As String = Me.StringValue()
+		  Return StrComp(s, OtherURL, 0)
 		End Function
 	#tag EndMethod
 

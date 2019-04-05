@@ -891,7 +891,7 @@ Begin Window DemoWindow
          Index           =   -2147483648
          InitialParent   =   "TabPanel2"
          Italic          =   ""
-         Left            =   480
+         Left            =   356
          LockBottom      =   ""
          LockedInPosition=   False
          LockLeft        =   True
@@ -905,7 +905,7 @@ Begin Window DemoWindow
          TextFont        =   "System"
          TextSize        =   0
          TextUnit        =   0
-         Top             =   149
+         Top             =   230
          Underline       =   ""
          Value           =   False
          Visible         =   True
@@ -3624,6 +3624,7 @@ End
 		      name = NthField(u.Path, "/", CountFields(u.Path, "/"))
 		    End If
 		    Dim f As FolderItem = GetSaveFolderItem("", name)
+		    If f = Nil Then Return
 		    ThreadStream = BinaryStream.Create(f, True)
 		  End If
 		  PauseButton.Enabled = True
