@@ -285,6 +285,9 @@ Protected Module Opts
 	#tag Constant, Name = PREQUOTE, Type = Double, Dynamic = False, Default = \"10093", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = PRIVATE_, Type = Double, Dynamic = False, Default = \"10103", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = PROGRESSDATA, Type = Double, Dynamic = False, Default = \"10057", Scope = Protected
 	#tag EndConstant
 
