@@ -41,7 +41,6 @@ Inherits libcURL.cURLHandle
 		  Super.Constructor(GlobalInitFlags)
 		  If ExistingHandle <> 0 Then
 		    mHandle = ExistingHandle
-		    mReleaseable = False
 		  Else
 		    mHandle = curl_easy_init()
 		  End If
@@ -270,7 +269,7 @@ Inherits libcURL.cURLHandle
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Destructor
 		  
 		  If mHandle <> 0 Then
-		    If mReleaseable Then curl_easy_cleanup(mHandle)
+		    curl_easy_cleanup(mHandle)
 		    Instances.Remove(mHandle)
 		    mErrorBuffer = Nil
 		  End If

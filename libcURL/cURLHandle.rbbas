@@ -58,7 +58,7 @@ Implements ErrorSetter
 		  Try
 		    InitFlags.Value(mFlags) = InitFlags.Value(mFlags) - 1
 		    If InitFlags.Value(mFlags) <= 0 Then
-		      If mReleaseable And libcURL.IsAvailable Then curl_global_cleanup()
+		      If libcURL.IsAvailable Then curl_global_cleanup()
 		      InitFlags.Remove(mFlags)
 		    End If
 		    If InitFlags.Count = 0 Then InitFlags = Nil
@@ -131,10 +131,6 @@ Implements ErrorSetter
 
 	#tag Property, Flags = &h1
 		Protected mLastError As Integer = libcURL.Errors.NOT_INITIALIZED
-	#tag EndProperty
-
-	#tag Property, Flags = &h1
-		Protected mReleaseable As Boolean = True
 	#tag EndProperty
 
 

@@ -84,39 +84,9 @@ Inherits libcURL.cURLHandle
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Function GetPushChildren(ParentItem As libcURL.EasyHandle) As libcURL.EasyHandle()
-		  Dim ret() As libcURL.EasyHandle
-		  If mPushers = Nil Then Return ret
-		  ret = mPushers.Value(ParentItem)
-		  Return ret
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Function GetPushParent(ChildItem As libcURL.EasyHandle) As libcURL.EasyHandle
-		  If mPushers = Nil Then Return Nil
-		  For Each parent As libcURL.EasyHandle In mPushers.Keys
-		    Dim e() As libcURL.EasyHandle = mPushers.Value(parent)
-		    Dim c As Integer = e.IndexOf(ChildItem)
-		    If c > -1 Then Return parent
-		  Next
-		  
-		End Function
-	#tag EndMethod
-
 	#tag Method, Flags = &h0
 		Function HasItem(EasyItem As libcURL.EasyHandle) As Boolean
 		  Return EasyHandles.HasKey(EasyItem.Handle)
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Function IsPushParent(ParentItem As libcURL.EasyHandle, ChildItem As libcURL.EasyHandle) As Boolean
-		  If mPushers = Nil Then Return False
-		  If Not mPushers.HasKey(ParentItem) Then Return False
-		  Dim e() As libcURL.EasyHandle = mPushers.Value(ParentItem)
-		  Return e.IndexOf(ChildItem) > -1
 		End Function
 	#tag EndMethod
 
@@ -177,9 +147,7 @@ Inherits libcURL.cURLHandle
 		        Dim msg As CURLMsg = ReadNextMsg(c) ' on exit, 'c' will contain the number of messages remaining
 		        If c > -1 Then
 		          Dim curl As EasyHandle = EasyHandles.Value(msg.easy_handle)
-		          Dim p As libcURL.EasyHandle = GetPushParent(curl)
-		          If p <> Nil Then ReleasePushParent(p, curl)
-		          If p = Nil Or Not mPushers.HasKey(p) Then Call Me.RemoveItem(curl)
+		          Call Me.RemoveItem(curl)
 		          ErrorSetter(curl).LastError = Integer(msg.Data) ' msg.Data is the last error code for the easy handle
 		          RaiseEvent TransferComplete(curl)
 		          
@@ -251,23 +219,6 @@ Inherits libcURL.cURLHandle
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Sub ReleasePushParent(ParentItem As libcURL.EasyHandle, ChildItem As libcURL.EasyHandle)
-		  If mPushers = Nil Then Return
-		  Dim e() As libcURL.EasyHandle
-		  If mPushers.HasKey(ParentItem) Then e = mPushers.Value(ParentItem)
-		  Dim i As Integer = e.IndexOf(ChildItem)
-		  If i <= -1 Then Return
-		  e.Remove(i)
-		  If UBound(e) > -1 Then
-		    mPushers.Value(ParentItem) = e
-		  Else
-		    Call Me.RemoveItem(ParentItem)
-		    mPushers.Remove(ParentItem)
-		  End If
-		End Sub
-	#tag EndMethod
-
 	#tag Method, Flags = &h0
 		Function RemoveItem(Item As libcURL.EasyHandle) As Boolean
 		  ' Removes the passed EasyHandle from the multistack. If there no more EasyHandles then turns off the PerformTimer.
@@ -276,7 +227,7 @@ Inherits libcURL.cURLHandle
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_remove_handle.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.RemoveItem
 		  
-		  If Item.mReleaseable Then mLastError = curl_multi_remove_handle(mHandle, Item.Handle)
+		  mLastError = curl_multi_remove_handle(mHandle, Item.Handle)
 		  If EasyHandles.HasKey(Item.Handle) Then EasyHandles.Remove(Item.Handle)
 		  If EasyHandles.Count = 0 And PerformTimer <> Nil Then PerformTimer.Mode = Timer.ModeOff
 		  Return mLastError = 0
@@ -394,16 +345,6 @@ Inherits libcURL.cURLHandle
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Sub SetPushParent(ParentItem As libcURL.EasyHandle, ChildItem As libcURL.EasyHandle)
-		  If mPushers = Nil Then mPushers = New Dictionary
-		  Dim e() As libcURL.EasyHandle
-		  If mPushers.HasKey(ParentItem) Then e = mPushers.Value(ParentItem)
-		  e.Append(ChildItem)
-		  mPushers.Value(ParentItem) = e
-		End Sub
-	#tag EndMethod
-
 	#tag Method, Flags = &h21
 		Private Function _curlPush(ParentConnection As Integer, NewConnection As Integer, NumHeaders As Integer, PushHeaders As Ptr) As Integer
 		  Dim parent As EasyHandle = EasyHandles.Lookup(ParentConnection, Nil)
@@ -429,7 +370,6 @@ Inherits libcURL.cURLHandle
 		  If Not RaiseEvent ServerPush(parent, child, pheaders) Then Return CURL_PUSH_DENY
 		  
 		  EasyHandles.Value(child.Handle) = child
-		  SetPushParent(parent, child)
 		  Return CURL_PUSH_OK
 		  
 		End Function
@@ -581,10 +521,6 @@ Inherits libcURL.cURLHandle
 
 	#tag Property, Flags = &h21
 		Private mHTTPPipelining As Boolean
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private mPushers As Dictionary
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
