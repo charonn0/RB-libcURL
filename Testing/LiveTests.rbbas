@@ -9,49 +9,49 @@ Protected Module LiveTests
 		  Try
 		    TestCookieGet()
 		  Catch
-		    TestResult = 9
+		    TestResult = 11
 		    Return False
 		  End Try
 		  
 		  Try
 		    TestCookieSet
 		  Catch
-		    TestResult = 10
+		    TestResult = 12
 		    Return False
 		  End Try
 		  
 		  Try
 		    TestHeaderGet()
 		  Catch
-		    TestResult = 11
+		    TestResult = 13
 		    Return False
 		  End Try
 		  
 		  Try
 		    TestHeaderSet()
 		  Catch
-		    TestResult = 12
+		    TestResult = 14
 		    Return False
 		  End Try
 		  
 		  Try
 		    TestRedirect()
 		  Catch
-		    TestResult = 13
+		    TestResult = 15
 		    Return False
 		  End Try
 		  
 		  Try
 		    TestFormPost()
 		  Catch
-		    TestResult = 14
+		    TestResult = 16
 		    Return False
 		  End Try
 		  
 		  Try
 		    TestMIMEPost()
 		  Catch
-		    TestResult = 15
+		    TestResult = 17
 		    Return False
 		  End Try
 		  
