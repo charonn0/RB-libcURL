@@ -2238,15 +2238,16 @@ Protected Module libcURL
 
 	#tag Enum, Name = URLPart, Type = Integer, Flags = &h1
 		All=0
-		  Scheme
-		  User
-		  Password
-		  Options
-		  Host
-		  Port
-		  Path
-		  Query
-		Fragment
+		  Scheme=1
+		  User=2
+		  Password=3
+		  Options=4
+		  Host=5
+		  Port=6
+		  Path=7
+		  Query=8
+		  Fragment=9
+		ZoneID=10
 	#tag EndEnum
 
 
