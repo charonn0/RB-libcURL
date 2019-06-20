@@ -891,7 +891,7 @@ Begin Window DemoWindow
          Index           =   -2147483648
          InitialParent   =   "TabPanel2"
          Italic          =   ""
-         Left            =   480
+         Left            =   356
          LockBottom      =   ""
          LockedInPosition=   False
          LockLeft        =   True
@@ -905,7 +905,7 @@ Begin Window DemoWindow
          TextFont        =   "System"
          TextSize        =   0
          TextUnit        =   0
-         Top             =   149
+         Top             =   230
          Underline       =   ""
          Value           =   False
          Visible         =   True
@@ -1668,7 +1668,6 @@ Begin Window DemoWindow
       TabPanelIndex   =   0
       Top             =   437
       Width           =   32
-      Yield           =   True
    End
    Begin TextField TextField1
       AcceptTabs      =   ""
@@ -1796,7 +1795,7 @@ Begin Window DemoWindow
       TextUnit        =   0
       Top             =   0
       Underline       =   ""
-      Value           =   0
+      Value           =   3
       Visible         =   True
       Width           =   246
       Begin PushButton PushButton1
@@ -2078,7 +2077,7 @@ Begin Window DemoWindow
          Visible         =   True
          Width           =   100
       End
-      Begin CheckBox CheckBox1
+      Begin CheckBox SaveToFileChkBx
          AutoDeactivate  =   True
          Bold            =   ""
          Caption         =   "Download to file"
@@ -2171,7 +2170,7 @@ Begin Window DemoWindow
       TextFont        =   "System"
       TextSize        =   0
       TextUnit        =   0
-      Top             =   59
+      Top             =   73
       Underline       =   ""
       UseFocusRing    =   True
       Visible         =   False
@@ -2306,6 +2305,40 @@ Begin Window DemoWindow
       Visible         =   True
       Width           =   80
    End
+   Begin Label ETALabel
+      AutoDeactivate  =   True
+      Bold            =   ""
+      DataField       =   ""
+      DataSource      =   ""
+      Enabled         =   True
+      Height          =   20
+      HelpTag         =   ""
+      Index           =   -2147483648
+      InitialParent   =   ""
+      Italic          =   ""
+      Left            =   268
+      LockBottom      =   ""
+      LockedInPosition=   False
+      LockLeft        =   True
+      LockRight       =   ""
+      LockTop         =   True
+      Multiline       =   ""
+      Scope           =   0
+      Selectable      =   False
+      TabIndex        =   18
+      TabPanelIndex   =   0
+      Text            =   ""
+      TextAlign       =   1
+      TextColor       =   &h000000
+      TextFont        =   "System"
+      TextSize        =   0
+      TextUnit        =   0
+      Top             =   53
+      Transparent     =   True
+      Underline       =   ""
+      Visible         =   True
+      Width           =   312
+   End
 End
 #tag EndWindow
 
@@ -2322,7 +2355,17 @@ End
 		Private Sub DoProgress()
 		  ProgressDownload.Value = mdlnow * 100 / mdlTotal
 		  ProgressUpload.Value = mulnow * 100 / mulTotal
-		  
+		  If PauseButton.Caption = "Pause" Then
+		    If multotal > 0 Then
+		      Dim speed As Double = Client.GetInfo(libcURL.Info.SPEED_UPLOAD).DoubleValue
+		      ETALabel.Text = "Time remaining: " + ETA(multotal, mulnow, speed) + " (" + FormatBytes(speed) + "/sec" + ")"
+		    ElseIf mdltotal > 0 Then
+		      Dim speed As Double = Client.GetInfo(libcURL.Info.SPEED_DOWNLOAD).DoubleValue
+		      ETALabel.Text = "Time remaining: " + ETA(mdltotal, mdlnow, speed) + " (" + FormatBytes(speed) + "/sec" + ")"
+		    Else
+		      ETALabel.Text = ""
+		    End If
+		  End If
 		  Do Until UBound(dbgmsgs) = -1
 		    Dim p As Pair = dbgmsgs.Pop
 		    Dim MessageType As libcURL.curl_infotype = p.Left
@@ -2343,6 +2386,26 @@ End
 		  ShowErrorBuffer()
 		  
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Function ETA(Total As UInt64, Current As UInt64, BPS As Double) As String
+		  Dim remaining As UInt64 = Total - Current
+		  Dim secs As Double = remaining / BPS
+		  
+		  'Dim hours As Integer = secs \ 3600
+		  'Dim minutes As Integer = (secs Mod 3600) \ 60
+		  'Dim seconds As Integer =  (secs Mod 3600) Mod 60
+		  'Dim out As String
+		  'If hours > 0 Then
+		  'out = Str(hours) + ":" + Format(minutes, "00") + ":"
+		  'Else
+		  'out = out + Format(minutes, "#0") + ":"
+		  'End If
+		  'out = out + Format(seconds, "00")
+		  'Return out
+		  Return FormatTime(secs * 1000, True)
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
@@ -2399,6 +2462,51 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
+		Private Function FormatTime(Milliseconds As Int64, FractionalSeconds As Boolean = False) As String
+		  ' Formats the period of time denoted by Milliseconds as HH:MM:SS. If FractionalSeconds is true then fractions of a second are included.
+		  
+		  Dim hours As Integer = (Milliseconds / (1000 * 60 * 60))
+		  Dim minutes As Integer = (Milliseconds / (1000 * 60)) Mod 60
+		  Dim seconds As Integer = (Milliseconds / 1000) Mod 60
+		  Dim frac As Integer  = Milliseconds Mod 1000
+		  Dim out As String
+		  If hours > 0 Then
+		    out = Str(hours) + ":" + Format(minutes, "00") + ":"
+		  Else
+		    out = out + Format(minutes, "#0") + ":"
+		  End If
+		  If FractionalSeconds Then
+		    out = out + Format(seconds + (frac / 1000), "00.00")
+		  Else
+		    out = out + Format(seconds, "00")
+		  End If
+		  Return out
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Shared Function ParseContentType(Raw As String) As TextEncoding
+		  Dim fields() As String = Split(raw, ";")
+		  Dim fcount As Integer = Ubound(fields)
+		  For i As Integer = 0 To fcount
+		    Dim entry As String = fields(i)
+		    If InStr(entry, "/") = 0 Then
+		      Dim parm, value As String
+		      parm = NthField(entry, "=", 1).Trim
+		      value = NthField(entry, "=", 2).Trim
+		      If parm = "charset" Then
+		        For e As Integer = 0 To Encodings.Count
+		          Dim enc As TextEncoding = Encodings.Item(e)
+		          If enc.internetName = value Then Return enc
+		        Next
+		      End If
+		    End If
+		  Next
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
 		Private Sub Populate()
 		  mLockUI = True
 		  PauseButton.Enabled = False
@@ -2406,8 +2514,11 @@ End
 		  PauseButton.Caption = "Pause"
 		  AbortButton.Enabled = False
 		  Dim cURLCode As Integer = Client.LastError
-		  If Not CheckBox1.Value Then
-		    DownloadOutput.Text = Client.GetDownloadedData()
+		  If Not SaveToFileChkBx.Value And cURLCode = 0 Then
+		    Dim data As String = Client.GetDownloadedData()
+		    Dim enc As TextEncoding = ParseContentType(Client.GetResponseHeaders.CommaSeparatedValues("Content-Type"))
+		    If enc <> Nil Then data = DefineEncoding(data, enc)
+		    DownloadOutput.Text = data
 		  Else
 		    DownloadOutput.Text = ""
 		  End If
@@ -3410,6 +3521,8 @@ End
 		Sub TransferComplete(BytesRead As Integer, BytesWritten As Integer)
 		  #pragma Unused BytesRead
 		  #pragma Unused BytesWritten
+		  multotal = 0
+		  mdltotal = 0
 		  GUITimer.Mode = Timer.ModeSingle
 		  Dim w As Writeable = Me.EasyItem.DownloadStream
 		  If w <> Nil And w IsA BinaryStream Then BinaryStream(w).Close
@@ -3433,9 +3546,8 @@ End
 #tag Events GetThread
 	#tag Event
 		Sub Run()
-		  If Not Client.Get(mURL, ThreadStream) Then
-		    Break
-		  End If
+		  If Not Client.Get(mURL, ThreadStream) Then System.DebugLog("Failed")
+		  
 		End Sub
 	#tag EndEvent
 #tag EndEvents
@@ -3456,12 +3568,22 @@ End
 	#tag Event
 		Sub Run()
 		  If FormValue <> Nil Then
-		    If FormValue.Right = 0 Then ' URLEncoded
+		    If FormValue.Right = FormGenerator.TYPE_URLENCODED Then ' URLEncoded
 		      Dim frm() As String = FormValue.Left
-		      If Not Client.Post(mURL, frm) Then Break
-		    ElseIf FormValue.Right = 1 Then ' Multipart
+		      If Not Client.Post(mURL, frm)Then
+		        //meh
+		      End If
+		    ElseIf FormValue.Right = FormGenerator.TYPE_MULTIPART Then ' Multipart
 		      Dim frm As Dictionary = FormValue.Left
-		      If Not Client.Post(mURL, frm) Then Break
+		      If Not Client.Post(mURL, frm)Then
+		        //meh
+		      End If
+		    ElseIf FormValue.Right = FormGenerator.TYPE_MIME Then ' MIME
+		      Dim frm As Dictionary = FormValue.Left
+		      Dim mime As New libcURL.MIMEMessage(Client.EasyItem, frm)
+		      If Not Client.Post(mURL, mime) Then 
+		        //meh
+		      End If
 		    Else
 		      Break
 		    End If
@@ -3473,8 +3595,13 @@ End
 	#tag Event
 		Sub Action()
 		  Dim bs As BinaryStream
-		  If CheckBox1.Value Then
-		    Dim f As FolderItem = GetSaveFolderItem("", "")
+		  If SaveToFileChkBx.Value Then
+		    Dim name As String
+		    If libcURL.URLParser.IsAvailable Then ' URL parsing API is available
+		      Dim u As New libcURL.URLParser(TextField1.Text)
+		      name = NthField(u.Path, "/", CountFields(u.Path, "/"))
+		    End If
+		    Dim f As FolderItem = GetSaveFolderItem("", name)
 		    bs = BinaryStream.Create(f, True)
 		  End If
 		  PauseButton.Enabled = True
@@ -3488,8 +3615,14 @@ End
 	#tag Event
 		Sub Action()
 		  mURL = TextField1.Text
-		  If CheckBox1.Value Then
-		    Dim f As FolderItem = GetSaveFolderItem("", "")
+		  If SaveToFileChkBx.Value Then
+		    Dim name As String
+		    If libcURL.URLParser.IsAvailable Then ' URL parsing API is available
+		      Dim u As New libcURL.URLParser(TextField1.Text)
+		      name = NthField(u.Path, "/", CountFields(u.Path, "/"))
+		    End If
+		    Dim f As FolderItem = GetSaveFolderItem("", name)
+		    If f = Nil Then Return
 		    ThreadStream = BinaryStream.Create(f, True)
 		  End If
 		  PauseButton.Enabled = True
@@ -3530,15 +3663,24 @@ End
 		    PauseButton.Enabled = True
 		    ResetButton.Enabled = False
 		    AbortButton.Enabled = True
-		    If FormValue.Right = 0 Then ' URLEncoded
+		    Select Case FormValue.Right
+		    Case FormGenerator.TYPE_URLENCODED
 		      Dim frm() As String = FormValue.Left
 		      Client.Post(TextField1.Text, frm)
-		    ElseIf FormValue.Right = 1 Then ' Multipart
+		      
+		    Case FormGenerator.TYPE_MULTIPART
 		      Dim frm As Dictionary = FormValue.Left
 		      Client.Post(TextField1.Text, frm)
+		      
+		    Case FormGenerator.TYPE_MIME
+		      Dim frm As Dictionary = FormValue.Left
+		      Dim mime As New libcURL.MIMEMessage(Client.EasyItem, frm)
+		      Client.Post(TextField1.Text, mime)
+		      
 		    Else
 		      Break
-		    End If
+		    End Select
+		    
 		  Else
 		    Call MsgBox("Please specify an HTTP form to be POSTed", 16, "Missing form")
 		  End If
@@ -3619,9 +3761,10 @@ End
 		Sub Action()
 		  If Me.Caption = "Pause" Then
 		    If Client.EasyItem.Pause Then Me.Caption = "Resume"
-		    
+		    ProgressTimer.Mode = Timer.ModeSingle
 		  Else
 		    If Client.EasyItem.Resume Then Me.Caption = "Pause"
+		    ProgressTimer.Mode = Timer.ModeOff
 		  End If
 		End Sub
 	#tag EndEvent

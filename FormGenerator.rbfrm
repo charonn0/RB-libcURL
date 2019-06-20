@@ -1,13 +1,13 @@
 #tag Window
 Begin Window FormGenerator
-   BackColor       =   -256
+   BackColor       =   "&cFFFFFF"
    Backdrop        =   0
    CloseButton     =   True
    Composite       =   False
    Frame           =   1
    FullScreen      =   False
    HasBackColor    =   False
-   Height          =   270
+   Height          =   2.84e+2
    ImplicitInstance=   True
    LiveResize      =   True
    MacProcID       =   0
@@ -23,7 +23,7 @@ Begin Window FormGenerator
    Resizeable      =   False
    Title           =   "Edit HTTP Form"
    Visible         =   True
-   Width           =   561
+   Width           =   5.61e+2
    Begin PushButton PushButton2
       AutoDeactivate  =   True
       Bold            =   False
@@ -228,7 +228,7 @@ Begin Window FormGenerator
       Visible         =   True
       Width           =   36
    End
-   Begin RadioButton FormType
+   Begin RadioButton MultiEncoded
       AutoDeactivate  =   True
       Bold            =   ""
       Caption         =   "multipart/form-data"
@@ -251,13 +251,13 @@ Begin Window FormGenerator
       TextFont        =   "System"
       TextSize        =   0
       TextUnit        =   0
-      Top             =   251
+      Top             =   247
       Underline       =   ""
       Value           =   ""
       Visible         =   True
       Width           =   232
    End
-   Begin RadioButton FormType1
+   Begin RadioButton URLEncoded
       AutoDeactivate  =   True
       Bold            =   ""
       Caption         =   "application/x-www-form-urlencoded"
@@ -286,6 +286,35 @@ Begin Window FormGenerator
       Visible         =   True
       Width           =   232
    End
+   Begin RadioButton MIMEEncoded
+      AutoDeactivate  =   True
+      Bold            =   ""
+      Caption         =   "MIME"
+      Enabled         =   True
+      Height          =   20
+      HelpTag         =   ""
+      Index           =   -2147483648
+      InitialParent   =   ""
+      Italic          =   ""
+      Left            =   94
+      LockBottom      =   ""
+      LockedInPosition=   False
+      LockLeft        =   True
+      LockRight       =   ""
+      LockTop         =   True
+      Scope           =   0
+      TabIndex        =   11
+      TabPanelIndex   =   0
+      TabStop         =   True
+      TextFont        =   "System"
+      TextSize        =   0
+      TextUnit        =   0
+      Top             =   266
+      Underline       =   ""
+      Value           =   ""
+      Visible         =   True
+      Width           =   232
+   End
 End
 #tag EndWindow
 
@@ -304,16 +333,21 @@ End
 		  Form = New Dictionary
 		  HTTPForm.DeleteAllRows
 		  Self.ShowModal()
-		  If mFormType = TYPE_URLENCODED Then ' urlencoded
+		  Select Case mFormType
+		  Case TYPE_URLENCODED ' urlencoded
 		    Dim s() As String
 		    For Each key As String In Form.Keys
 		      s.Append(libcURL.URLEncode(key) + "=" + libcURL.URLEncode(Form.Value(key)))
 		    Next
 		    Return s:TYPE_URLENCODED
 		    
-		  Else ' multipart
+		  Case TYPE_MULTIPART ' multipart
 		    Return Form:TYPE_MULTIPART
-		  End If
+		    
+		  Case TYPE_MIME ' MIME message
+		    Return Form:TYPE_MIME
+		    
+		  End Select
 		  
 		End Function
 	#tag EndMethod
@@ -327,6 +361,9 @@ End
 		Private mFormType As Integer
 	#tag EndProperty
 
+
+	#tag Constant, Name = TYPE_MIME, Type = Double, Dynamic = False, Default = \"2", Scope = Public
+	#tag EndConstant
 
 	#tag Constant, Name = TYPE_MULTIPART, Type = Double, Dynamic = False, Default = \"1", Scope = Public
 	#tag EndConstant
@@ -366,11 +403,17 @@ End
 		      Form.Value(HTTPForm.Cell(i, 0)) = HTTPForm.Cell(i, 1)
 		    End If
 		  Next
-		  If FormType.Value Then ' multipart
+		  
+		  Select Case True
+		  Case MultiEncoded.Value ' multipart
 		    mFormType = TYPE_MULTIPART
+		    
+		  Case MIMEEncoded.Value ' MIME Message
+		    mFormType = TYPE_MIME
+		    
 		  Else
 		    mFormType = TYPE_URLENCODED
-		  End If
+		  End Select
 		  Self.Close
 		End Sub
 	#tag EndEvent
@@ -395,9 +438,9 @@ End
 #tag Events FileAdd
 	#tag Event
 		Sub Action()
-		  If FormType1.Value Then
+		  If URLEncoded.Value Then
 		    If MsgBox("Change form encoding to 'multipart/form-data'?", 4 + 48, "Current encoding does not support files") = 6 Then
-		      FormType.Value = True
+		      MultiEncoded.Value = True
 		    Else
 		      Return
 		    End If
@@ -407,6 +450,13 @@ End
 		    HTTPForm.AddRow(f.Name, f.AbsolutePath, "")
 		    HTTPForm.RowTag(HTTPForm.LastIndex) = f
 		  End If
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events MIMEEncoded
+	#tag Event
+		Sub Open()
+		  Me.Enabled = libcURL.MIMEMessage.IsAvailable()
 		End Sub
 	#tag EndEvent
 #tag EndEvents

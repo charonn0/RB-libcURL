@@ -68,10 +68,11 @@ Inherits libcURL.cURLHandle
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_duphandle.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Constructor
 		  
-		  If CopyOpts = Nil Or CopyOpts.Handle = 0 Then Raise New NilObjectException
 		  // Calling the overridden superclass constructor.
 		  // Constructor(GlobalInitFlags As Integer) -- From libcURL.cURLHandle
 		  Super.Constructor(CopyOpts.Flags)
+		  
+		  If CopyOpts.Handle = 0 Then Raise New NilObjectException
 		  mHandle = curl_easy_duphandle(CopyOpts.Handle)
 		  If mHandle = 0 Then
 		    mLastError = libcURL.Errors.INIT_FAILED
@@ -322,8 +323,12 @@ Inherits libcURL.cURLHandle
 		  
 		  Select Case InfoType
 		  Case libcURL.Info.EFFECTIVE_URL, libcURL.Info.REDIRECT_URL, libcURL.Info.CONTENT_TYPE, libcURL.Info.PRIVATE_, libcURL.Info.PRIMARY_IP, _
-		    libcURL.Info.LOCAL_IP, libcURL.Info.FTP_ENTRY_PATH, libcURL.Info.RTSP_SESSION_ID
-		    mb = New MemoryBlock(4)
+		    libcURL.Info.LOCAL_IP, libcURL.Info.FTP_ENTRY_PATH, libcURL.Info.RTSP_SESSION_ID, libcURL.Info.SCHEME
+		    #If Target32Bit Then
+		      mb = New MemoryBlock(4)
+		    #Else
+		      mb = New MemoryBlock(8)
+		    #Endif
 		    If Me.GetInfo(InfoType, mb) Then
 		      mb = mb.Ptr(0)
 		      If mb <> Nil Then Return mb.CString(0)
@@ -332,7 +337,8 @@ Inherits libcURL.cURLHandle
 		  Case libcURL.Info.RESPONSE_CODE, libcURL.Info.HTTP_CONNECTCODE, libcURL.Info.REDIRECT_COUNT, libcURL.Info.HEADER_SIZE, _
 		    libcURL.Info.REQUEST_SIZE, libcURL.Info.SSL_VERIFYRESULT, libcURL.Info.OS_ERRNO, _
 		    libcURL.Info.NUM_CONNECTS, libcURL.Info.PRIMARY_PORT, libcURL.Info.LOCAL_PORT, libcURL.Info.LASTSOCKET, libcURL.Info.CONDITION_UNMET, _
-		    libcURL.Info.RTSP_CLIENT_CSEQ, libcURL.Info.RTSP_SERVER_CSEQ, libcURL.Info.RTSP_CSEQ_RECV
+		    libcURL.Info.RTSP_CLIENT_CSEQ, libcURL.Info.RTSP_SERVER_CSEQ, libcURL.Info.RTSP_CSEQ_RECV, libcURL.Info.HTTP_VERSION, libcURL.Info.PROTOCOL, _
+		    libcURL.Info.PROXY_SSL_VERIFYRESULT
 		    mb = New MemoryBlock(4)
 		    If Me.GetInfo(InfoType, mb) Then Return mb.Int32Value(0)
 		    
@@ -361,7 +367,7 @@ Inherits libcURL.cURLHandle
 		    If Me.GetInfo(InfoType, mb) Then Return mb.DoubleValue(0)
 		    
 		  Case libcURL.Info.SSL_ENGINES, libcURL.Info.COOKIELIST
-		    #If Not Target64Bit Then
+		    #If Target32Bit Then
 		      mb = New MemoryBlock(4)
 		    #Else
 		      mb = New MemoryBlock(8)
@@ -454,6 +460,22 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub KeepAlive()
+		  ' Sends a protocol-specific "keep-alive" message.
+		  '
+		  ' See:
+		  ' https://curl.haxx.se/libcurl/c/curl_easy_upkeep.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.KeepAlive
+		  
+		  If libcURL.Version.IsAtLeast(7, 62, 0) Then
+		    mLastError = curl_easy_upkeep(mHandle)
+		  Else
+		    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
+		  End If
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function Operator_Compare(OtherEasy As libcURL.EasyHandle) As Integer
 		  ' This method overloads the comparison operator(=), permitting direct
 		  ' comparisons between instances of EasyHandle.
@@ -518,43 +540,6 @@ Inherits libcURL.cURLHandle
 		  End If
 		  
 		  Break ' UserData does not refer to a valid instance!
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Attributes( deprecated )  Function Read(Count As Integer, encoding As TextEncoding = Nil) As String
-		  ' Only available after calling SetOption(libcURL.Opts.CONNECT_ONLY, True)
-		  ' Once Perform returns you may Read from the easy_handle by calling this method
-		  ' See:
-		  ' http://curl.haxx.se/libcurl/c/curl_easy_recv.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Read
-		  
-		  Static IsAvailable As Boolean
-		  If Not IsAvailable Then IsAvailable = libcURL.Version.IsAtLeast(7, 18, 2)
-		  If Not IsAvailable Then
-		    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
-		    Raise New cURLException(Me)
-		  End If
-		  
-		  Dim mb As New MemoryBlock(Count)
-		  Dim i As Integer
-		  mLastError = curl_easy_recv(mHandle, mb, mb.Size, i)
-		  If mLastError = 0 Then
-		    Dim s As String
-		    If encoding <> Nil Then
-		      s = DefineEncoding(mb.StringValue(0, i), encoding)
-		    Else
-		      s = mb.StringValue(0, i)
-		    End If
-		    Return s
-		  ElseIf mLastError = libcURL.Errors.UNSUPPORTED_PROTOCOL Then ' no readable connection
-		    Return ""
-		  Else
-		    Dim err As New IOException
-		    err.ErrorNumber = Me.LastError
-		    err.Message = libcURL.FormatError(Me.LastError)
-		    Raise err
-		  End If
 		End Function
 	#tag EndMethod
 
@@ -788,6 +773,7 @@ Inherits libcURL.cURLHandle
 		      Return Me.SetOption(OptionNumber, auth.Mask)
 		      
 		    Case IsA libcURL.cURLHandle
+		      If NewValue IsA URLParser Then Return SetOption(OptionNumber, URLParser(NewValue).StringValue)
 		      Dim cURL As libcURL.cURLHandle = NewValue
 		      If Not Me.SetOption(OptionNumber, cURL.Handle) Then Return False
 		      mOptions.Value(OptionNumber) = New WeakRef(cURL)
@@ -870,40 +856,6 @@ Inherits libcURL.cURLHandle
 		  
 		  If Not Me.SetOption(libcURL.Opts.HTTPHEADER, List) Then Raise New cURLException(Me)
 		  Return List
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Attributes( deprecated )  Function Write(Text As String) As Integer
-		  ' Only available after calling SetOption(libcURL.Opts.CONNECT_ONLY, True)
-		  ' Once Perform returns you may Write to the easy_handle by calling this method
-		  ' If the write succeeded this method returns then number of bytes actually written.
-		  ' If the write failed an IOException will be raised.
-		  ' See:
-		  ' http://curl.haxx.se/libcurl/c/curl_easy_send.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Write
-		  
-		  Static IsAvailable As Boolean
-		  If Not IsAvailable Then IsAvailable = libcURL.Version.IsAtLeast(7, 18, 2)
-		  If Not IsAvailable Then
-		    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
-		    Raise New cURLException(Me)
-		  End If
-		  
-		  Dim byteswritten As Integer
-		  Dim mb As MemoryBlock = Text
-		  mLastError = curl_easy_send(mHandle, mb, mb.Size, byteswritten)
-		  If mLastError = 0 Then
-		    Return byteswritten
-		  ElseIf mLastError = libcURL.Errors.UNSUPPORTED_PROTOCOL Then ' no writeable connection
-		    Return 0
-		  Else
-		    Dim err As New IOException
-		    err.ErrorNumber = Me.LastError
-		    err.Message = libcURL.FormatError(Me.LastError)
-		    Raise err
-		  End If
-		  
 		End Function
 	#tag EndMethod
 
@@ -1051,6 +1003,33 @@ Inherits libcURL.cURLHandle
 			End Set
 		#tag EndSetter
 		BufferSize As Integer
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  return mBufferSizeUpload
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  ' Set preferred send buffer size (in bytes). 
+			  '
+			  ' See:
+			  ' https://curl.haxx.se/libcurl/c/CURLOPT_UPLOAD_BUFFERSIZE.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.BufferSizeUpload
+			  
+			  If Not libcURL.Version.IsAtLeast(7, 62, 0) Then
+			    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
+			    Return
+			  End If
+			  
+			  If value < CURL_MIN_WRITE_SIZE Or value > CURL_MAX_WRITE_SIZE Then Raise New OutOfBoundsException
+			  If Not Me.SetOption(libcURL.Opts.UPLOAD_BUFFERSIZE , value) Then Raise New cURLException(Me)
+			  mBufferSizeUpload = value
+			End Set
+		#tag EndSetter
+		BufferSizeUpload As Integer
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
@@ -1381,6 +1360,10 @@ Inherits libcURL.cURLHandle
 
 	#tag Property, Flags = &h21
 		Private mBufferSize As Integer = CURL_DEFAULT_READ_SIZE
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mBufferSizeUpload As Integer = CURL_DEFAULT_WRITE_SIZE
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -1879,10 +1862,19 @@ Inherits libcURL.cURLHandle
 	#tag Constant, Name = CURL_DEFAULT_READ_SIZE, Type = Double, Dynamic = False, Default = \"16384", Scope = Public
 	#tag EndConstant
 
+	#tag Constant, Name = CURL_DEFAULT_WRITE_SIZE, Type = Double, Dynamic = False, Default = \"65536", Scope = Public
+	#tag EndConstant
+
 	#tag Constant, Name = CURL_MAX_READ_SIZE, Type = Double, Dynamic = False, Default = \"524288", Scope = Public
 	#tag EndConstant
 
+	#tag Constant, Name = CURL_MAX_WRITE_SIZE, Type = Double, Dynamic = False, Default = \"2097152", Scope = Public
+	#tag EndConstant
+
 	#tag Constant, Name = CURL_MIN_READ_SIZE, Type = Double, Dynamic = False, Default = \"1024", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = CURL_MIN_WRITE_SIZE, Type = Double, Dynamic = False, Default = \"16384", Scope = Public
 	#tag EndConstant
 
 	#tag Constant, Name = CURL_SOCKET_BAD, Type = Double, Dynamic = False, Default = \"1", Scope = Protected
