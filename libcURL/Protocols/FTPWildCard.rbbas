@@ -13,7 +13,7 @@ Inherits libcURL.EasyHandle
 		  
 		  If Instances = Nil Then Return CURL_CHUNK_BGN_FUNC_FAIL
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA FTPWildCard And TransferInfo <> Nil Then
+		  If curl <> Nil And curl.Value IsA FTPWildCard And TransferInfo <> Nil Then
 		    Return FTPWildCard(curl.Value).curlChunkBegin(TransferInfo.FileInfo, Remaining)
 		  End If
 		  
@@ -37,7 +37,7 @@ Inherits libcURL.EasyHandle
 		  #pragma X86CallingConvention CDecl
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA FTPWildCard Then
+		  If curl <> Nil And curl.Value IsA FTPWildCard Then
 		    Return FTPWildCard(curl.Value).curlChunkEnd()
 		  End If
 		  
@@ -142,7 +142,7 @@ Inherits libcURL.EasyHandle
 		  
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA FTPWildCard Then
+		  If curl <> Nil And curl.Value IsA FTPWildCard Then
 		    Return FTPWildCard(curl.Value).curlFNMatch(Pattern, FileName)
 		  End If
 		  
