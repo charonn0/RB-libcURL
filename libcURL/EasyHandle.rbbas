@@ -249,7 +249,7 @@ Inherits libcURL.cURLHandle
 		  #pragma Unused Handle ' handle is the cURL handle of the instance, which we stored in UserData already
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
+		  If curl <> Nil And curl.Value IsA EasyHandle Then
 		    Return EasyHandle(curl.Value).curlDebug(info, data, size)
 		  End If
 		  
@@ -406,7 +406,7 @@ Inherits libcURL.cURLHandle
 		  #pragma X86CallingConvention CDecl
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
+		  If curl <> Nil And curl.Value IsA EasyHandle Then
 		    Return EasyHandle(curl.Value).curlHeader(char, size, nmemb)
 		  End If
 		  
@@ -522,7 +522,7 @@ Inherits libcURL.cURLHandle
 		  #pragma X86CallingConvention CDecl
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
+		  If curl <> Nil And curl.Value IsA EasyHandle Then
 		    Return EasyHandle(curl.Value).curlProgress(dlTotal, dlnow, ultotal, ulnow)
 		  End If
 		  
@@ -538,7 +538,7 @@ Inherits libcURL.cURLHandle
 		  #pragma X86CallingConvention CDecl
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
+		  If curl <> Nil And curl.Value IsA EasyHandle Then
 		    Return EasyHandle(curl.Value).curlRead(char, size, nmemb)
 		  End If
 		  
@@ -600,7 +600,7 @@ Inherits libcURL.cURLHandle
 		  #pragma X86CallingConvention CDecl
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
+		  If curl <> Nil And curl.Value IsA EasyHandle Then
 		    Return EasyHandle(curl.Value).curlSeek(Offset, Origin)
 		  End If
 		  
@@ -843,7 +843,7 @@ Inherits libcURL.cURLHandle
 		  #pragma X86CallingConvention CDecl
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
+		  If curl <> Nil And curl.Value IsA EasyHandle Then
 		    Return EasyHandle(curl.Value).curlWrite(char, size, nmemb)
 		  End If
 		  
