@@ -473,6 +473,9 @@ Inherits libcURL.cURLHandle
 	#tag Constant, Name = CURLU_NON_SUPPORT_SCHEME, Type = Double, Dynamic = False, Default = \"8", Scope = Public
 	#tag EndConstant
 
+	#tag Constant, Name = CURLU_NO_AUTHORITY, Type = Double, Dynamic = False, Default = \"1024", Scope = Public
+	#tag EndConstant
+
 	#tag Constant, Name = CURLU_NO_DEFAULT_PORT, Type = Double, Dynamic = False, Default = \"2", Scope = Public
 	#tag EndConstant
 
