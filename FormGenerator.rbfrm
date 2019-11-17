@@ -333,6 +333,7 @@ End
 		  Form = New Dictionary
 		  HTTPForm.DeleteAllRows
 		  Self.ShowModal()
+		  If Form = Nil Then Return Nil
 		  Select Case mFormType
 		  Case TYPE_URLENCODED ' urlencoded
 		    Dim s() As String
