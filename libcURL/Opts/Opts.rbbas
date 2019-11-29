@@ -195,6 +195,9 @@ Protected Module Opts
 	#tag Constant, Name = IGNORE_CONTENT_LENGTH, Type = Double, Dynamic = False, Default = \"136", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = INFILESIZE, Type = Double, Dynamic = False, Default = \"14", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = IPRESOLVE, Type = Double, Dynamic = False, Default = \"113", Scope = Protected
 	#tag EndConstant
 
@@ -352,6 +355,9 @@ Protected Module Opts
 	#tag EndConstant
 
 	#tag Constant, Name = RESUME_FROM, Type = Double, Dynamic = False, Default = \"21", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = RESUME_FROM_LARGE, Type = Double, Dynamic = False, Default = \"30116", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = RTSP_SESSION_ID, Type = Double, Dynamic = False, Default = \"10190", Scope = Protected
