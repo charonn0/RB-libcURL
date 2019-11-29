@@ -169,8 +169,10 @@ Inherits libcURL.cURLHandle
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLParser.StringValue
 		  
 		  Dim flag As Integer
-		  If AnyScheme Then flag = CURLU_NON_SUPPORT_SCHEME
-		  If InStr(FromString, "://") = 0 Then FromString = "http://" + FromString ' assume HTTP
+		  If AnyScheme Then
+		    flag = CURLU_NON_SUPPORT_SCHEME
+		    If InStr(FromString, "://") = 0 Then FromString = "http://" + FromString ' assume HTTP
+		  End If
 		  Call Me.SetPartContent(URLPart.All, FromString, flag)
 		End Sub
 	#tag EndMethod
@@ -469,6 +471,9 @@ Inherits libcURL.cURLHandle
 	#tag EndConstant
 
 	#tag Constant, Name = CURLU_NON_SUPPORT_SCHEME, Type = Double, Dynamic = False, Default = \"8", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = CURLU_NO_AUTHORITY, Type = Double, Dynamic = False, Default = \"1024", Scope = Public
 	#tag EndConstant
 
 	#tag Constant, Name = CURLU_NO_DEFAULT_PORT, Type = Double, Dynamic = False, Default = \"2", Scope = Public

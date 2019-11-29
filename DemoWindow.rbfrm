@@ -2516,7 +2516,11 @@ End
 		  Dim cURLCode As Integer = Client.LastError
 		  If Not SaveToFileChkBx.Value And cURLCode = 0 Then
 		    Dim data As String = Client.GetDownloadedData()
-		    Dim enc As TextEncoding = ParseContentType(Client.GetResponseHeaders.CommaSeparatedValues("Content-Type"))
+		    Dim enc As TextEncoding
+		    Dim headers As InternetHeaders = Client.GetResponseHeaders()
+		    If headers <> Nil And headers.NameCount("Content-Type") > 0 Then
+		      enc = ParseContentType(Client.GetResponseHeaders.CommaSeparatedValues("Content-Type"))
+		    End If
 		    If enc <> Nil Then data = DefineEncoding(data, enc)
 		    DownloadOutput.Text = data
 		  Else
@@ -3602,6 +3606,7 @@ End
 		      name = NthField(u.Path, "/", CountFields(u.Path, "/"))
 		    End If
 		    Dim f As FolderItem = GetSaveFolderItem("", name)
+		    If f = Nil Then Return
 		    bs = BinaryStream.Create(f, True)
 		  End If
 		  PauseButton.Enabled = True
@@ -3622,6 +3627,7 @@ End
 		      name = NthField(u.Path, "/", CountFields(u.Path, "/"))
 		    End If
 		    Dim f As FolderItem = GetSaveFolderItem("", name)
+		    If f = Nil Then Return
 		    ThreadStream = BinaryStream.Create(f, True)
 		  End If
 		  PauseButton.Enabled = True

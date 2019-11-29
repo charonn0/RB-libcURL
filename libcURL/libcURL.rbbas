@@ -321,7 +321,20 @@ Protected Module libcURL
 		  If Not System.IsFunctionAvailable("curl_global_sslset", cURLLib) Then Return ret
 		  
 		  Dim p As Ptr
-		  Call curl_global_sslset(SSLBackEnd.Ignore, Nil, p)
+		  Dim err As Integer = curl_global_sslset(SSLBackEnd.Ignore, Nil, p)
+		  If err <> CURLSSLSET_UNKNOWN_BACKEND Then
+		    Dim ex As New cURLException(Nil)
+		    ex.ErrorNumber = err
+		    Select Case err
+		    Case CURLSSLSET_TOO_LATE
+		      ex.Message = "The SSL backend has already been initialized and cannot be changed."
+		    Case CURLSSLSET_NO_BACKENDS
+		      ex.Message = "The installed version of libcurl was built without SSL support."
+		    Else
+		      ex.Message = "Unknown error while enumerating SSL backends."
+		    End Select
+		    Raise ex
+		  End If
 		  If p = Nil Then Return ret
 		  Dim mb As MemoryBlock = p.CString(0)
 		  For i As Integer = 0 To mb.Size - 1
@@ -1859,6 +1872,12 @@ Protected Module libcURL
 		    Return "video/x-sgi-movie"
 		  Case "ice"
 		    Return "x-conference/x-cooltalk"
+		  Case "gz"
+		    Return "application/gzip"
+		  Case "pcap"
+		    Return "application/vnd.tcpdump.pcap"
+		  Case "url"
+		    Return "application/internet-shortcut"
 		  End Select
 		End Function
 	#tag EndMethod
@@ -2039,7 +2058,7 @@ Protected Module libcURL
 
 	#tag Note, Name = Copying
 		RB-libcURL (https://github.com/charonn0/RB-libcURL)
-		Copyright (c)2014-18 Andrew Lambert, all rights reserved.
+		Copyright (c)2014-19 Andrew Lambert, all rights reserved.
 		
 		 Permission to use, copy, modify, and distribute this software for any purpose
 		 with or without fee is hereby granted, provided that the above copyright
@@ -2232,15 +2251,16 @@ Protected Module libcURL
 
 	#tag Enum, Name = URLPart, Type = Integer, Flags = &h1
 		All=0
-		  Scheme
-		  User
-		  Password
-		  Options
-		  Host
-		  Port
-		  Path
-		  Query
-		Fragment
+		  Scheme=1
+		  User=2
+		  Password=3
+		  Options=4
+		  Host=5
+		  Port=6
+		  Path=7
+		  Query=8
+		  Fragment=9
+		ZoneID=10
 	#tag EndEnum
 
 

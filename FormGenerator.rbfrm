@@ -1,6 +1,6 @@
 #tag Window
 Begin Window FormGenerator
-   BackColor       =   -256
+   BackColor       =   "&cFFFFFF"
    Backdrop        =   0
    CloseButton     =   True
    Composite       =   False
@@ -333,6 +333,7 @@ End
 		  Form = New Dictionary
 		  HTTPForm.DeleteAllRows
 		  Self.ShowModal()
+		  If Form = Nil Then Return Nil
 		  Select Case mFormType
 		  Case TYPE_URLENCODED ' urlencoded
 		    Dim s() As String

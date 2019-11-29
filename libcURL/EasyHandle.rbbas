@@ -249,7 +249,7 @@ Inherits libcURL.cURLHandle
 		  #pragma Unused Handle ' handle is the cURL handle of the instance, which we stored in UserData already
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
+		  If curl <> Nil And curl.Value IsA EasyHandle Then
 		    Return EasyHandle(curl.Value).curlDebug(info, data, size)
 		  End If
 		  
@@ -318,7 +318,7 @@ Inherits libcURL.cURLHandle
 		  
 		  Select Case InfoType
 		  Case libcURL.Info.EFFECTIVE_URL, libcURL.Info.REDIRECT_URL, libcURL.Info.CONTENT_TYPE, libcURL.Info.PRIVATE_, libcURL.Info.PRIMARY_IP, _
-		    libcURL.Info.LOCAL_IP, libcURL.Info.FTP_ENTRY_PATH, libcURL.Info.RTSP_SESSION_ID
+		    libcURL.Info.LOCAL_IP, libcURL.Info.FTP_ENTRY_PATH, libcURL.Info.RTSP_SESSION_ID, libcURL.Info.SCHEME
 		    #If Target32Bit Then
 		      mb = New MemoryBlock(4)
 		    #Else
@@ -332,7 +332,8 @@ Inherits libcURL.cURLHandle
 		  Case libcURL.Info.RESPONSE_CODE, libcURL.Info.HTTP_CONNECTCODE, libcURL.Info.REDIRECT_COUNT, libcURL.Info.HEADER_SIZE, _
 		    libcURL.Info.REQUEST_SIZE, libcURL.Info.SSL_VERIFYRESULT, libcURL.Info.OS_ERRNO, _
 		    libcURL.Info.NUM_CONNECTS, libcURL.Info.PRIMARY_PORT, libcURL.Info.LOCAL_PORT, libcURL.Info.LASTSOCKET, libcURL.Info.CONDITION_UNMET, _
-		    libcURL.Info.RTSP_CLIENT_CSEQ, libcURL.Info.RTSP_SERVER_CSEQ, libcURL.Info.RTSP_CSEQ_RECV
+		    libcURL.Info.RTSP_CLIENT_CSEQ, libcURL.Info.RTSP_SERVER_CSEQ, libcURL.Info.RTSP_CSEQ_RECV, libcURL.Info.HTTP_VERSION, libcURL.Info.PROTOCOL, _
+		    libcURL.Info.PROXY_SSL_VERIFYRESULT
 		    mb = New MemoryBlock(4)
 		    If Me.GetInfo(InfoType, mb) Then Return mb.Int32Value(0)
 		    
@@ -405,7 +406,7 @@ Inherits libcURL.cURLHandle
 		  #pragma X86CallingConvention CDecl
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
+		  If curl <> Nil And curl.Value IsA EasyHandle Then
 		    Return EasyHandle(curl.Value).curlHeader(char, size, nmemb)
 		  End If
 		  
@@ -521,7 +522,7 @@ Inherits libcURL.cURLHandle
 		  #pragma X86CallingConvention CDecl
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
+		  If curl <> Nil And curl.Value IsA EasyHandle Then
 		    Return EasyHandle(curl.Value).curlProgress(dlTotal, dlnow, ultotal, ulnow)
 		  End If
 		  
@@ -537,7 +538,7 @@ Inherits libcURL.cURLHandle
 		  #pragma X86CallingConvention CDecl
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
+		  If curl <> Nil And curl.Value IsA EasyHandle Then
 		    Return EasyHandle(curl.Value).curlRead(char, size, nmemb)
 		  End If
 		  
@@ -599,7 +600,7 @@ Inherits libcURL.cURLHandle
 		  #pragma X86CallingConvention CDecl
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
+		  If curl <> Nil And curl.Value IsA EasyHandle Then
 		    Return EasyHandle(curl.Value).curlSeek(Offset, Origin)
 		  End If
 		  
@@ -753,6 +754,7 @@ Inherits libcURL.cURLHandle
 		      Return Me.SetOption(OptionNumber, auth.Mask)
 		      
 		    Case IsA libcURL.cURLHandle
+		      If NewValue IsA URLParser Then Return SetOption(OptionNumber, URLParser(NewValue).StringValue)
 		      Dim cURL As libcURL.cURLHandle = NewValue
 		      Return Me.SetOption(OptionNumber, cURL.Handle)
 		      
@@ -841,7 +843,7 @@ Inherits libcURL.cURLHandle
 		  #pragma X86CallingConvention CDecl
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
+		  If curl <> Nil And curl.Value IsA EasyHandle Then
 		    Return EasyHandle(curl.Value).curlWrite(char, size, nmemb)
 		  End If
 		  

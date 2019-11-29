@@ -88,7 +88,7 @@ Protected Class RequestHeaderEngine
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.RequestHeaderEngine.RemoveHeader
 		  
-		  If Me.HasHeader(Name) Then Me.SetHeader(Name, "")
+		  Me.SetHeader(Name, "")
 		End Sub
 	#tag EndMethod
 
