@@ -742,7 +742,7 @@ Inherits libcURL.cURLHandle
 		      Return Me.SetOptionPtr(OptionNumber, NewValue.PtrValue)
 		      
 		    Case IsA FolderItem
-		      Return Me.SetOption(OptionNumber, FolderItem(NewValue).AbsolutePath)
+		      Return Me.SetOption(OptionNumber, FolderItem(NewValue).AbsolutePath_)
 		      
 		    Case IsA Dictionary ' assume a multipart form
 		      Dim form As Dictionary = NewValue

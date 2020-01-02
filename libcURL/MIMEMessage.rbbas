@@ -424,7 +424,7 @@ Implements FormStreamGetter
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_mime_filedata.html
 		  
-		  Dim mb As MemoryBlock = File.AbsolutePath + Chr(0)
+		  Dim mb As MemoryBlock = File.AbsolutePath_ + Chr(0)
 		  mLastError = curl_mime_filedata(Part, mb)
 		  Return mLastError = 0
 		End Function
