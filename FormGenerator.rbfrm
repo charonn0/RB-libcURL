@@ -333,6 +333,7 @@ End
 		  Form = New Dictionary
 		  HTTPForm.DeleteAllRows
 		  Self.ShowModal()
+		  If Form = Nil Then Return Nil
 		  Select Case mFormType
 		  Case TYPE_URLENCODED ' urlencoded
 		    Dim s() As String
@@ -447,7 +448,12 @@ End
 		  End If
 		  Dim f As FolderItem = GetOpenFolderItem("")
 		  If f <> Nil Then
-		    HTTPForm.AddRow(f.Name, f.AbsolutePath, "")
+		    #If RBVersion > 2019 Then
+		      HTTPForm.AddRow(f.Name, f.NativePath, "")
+		    #Else
+		      HTTPForm.AddRow(f.Name, f.AbsolutePath, "")
+		    #endif
+		    
 		    HTTPForm.RowTag(HTTPForm.LastIndex) = f
 		  End If
 		End Sub

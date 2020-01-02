@@ -321,7 +321,7 @@ Implements FormStreamGetter
 		    Case Variant.TypeObject
 		      Select Case v(i)
 		      Case IsA FolderItem
-		        Dim mb As MemoryBlock = FolderItem(v(i)).AbsolutePath + Chr(0) ' make doubleplus sure it's null terminated
+		        Dim mb As MemoryBlock = FolderItem(v(i)).AbsolutePath_ + Chr(0) ' make doubleplus sure it's null terminated
 		        m.Append(mb)
 		      Case IsA cURLHandle
 		        m.Append(Ptr(cURLHandle(v(i)).Handle))
