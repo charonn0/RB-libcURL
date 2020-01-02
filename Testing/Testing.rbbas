@@ -1,6 +1,16 @@
 #tag Module
 Protected Module Testing
 	#tag Method, Flags = &h21
+		Private Function AbsolutePath_(Extends f As FolderItem) As String
+		  #If RBVersion > 2019 Then
+		    Return f.NativePath
+		  #Else
+		    Return f.AbsolutePath
+		  #endif
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
 		Private Sub Assert(b As Boolean)
 		  If Not b Then Raise New RuntimeException
 		End Sub
@@ -315,14 +325,14 @@ Protected Module Testing
 		  Assert(m.GetElement(1).Type = libcURL.MIMEPartType.Data)
 		  
 		  Assert(m.GetElement(2).Name = "TestFile1")
-		  Assert(m.GetElement(2).Data = App.ExecutableFile.AbsolutePath)
+		  Assert(m.GetElement(2).Data = App.ExecutableFile.AbsolutePath_)
 		  #If TargetWin32 Then
 		    Assert(m.GetElement(2).ContentType = "application/x-msdownload")
 		  #endif
 		  Assert(m.GetElement(2).Type = libcURL.MIMEPartType.File)
 		  
 		  Assert(m.GetElement(3).Name = "TestFile2")
-		  Assert(m.GetElement(3).Data = App.ExecutableFile.AbsolutePath)
+		  Assert(m.GetElement(3).Data = App.ExecutableFile.AbsolutePath_)
 		  Assert(m.GetElement(3).FileName = "file.name")
 		  Assert(m.GetElement(3).ContentType = "application/sgml")
 		  Assert(m.GetElement(3).Type = libcURL.MIMEPartType.File)
@@ -351,14 +361,14 @@ Protected Module Testing
 		  Assert(outer.GetElement(0).SubPart.GetElement(1).Type = libcURL.MIMEPartType.Data)
 		  
 		  Assert(outer.GetElement(0).SubPart.GetElement(2).Name = "TestFile1")
-		  Assert(outer.GetElement(0).SubPart.GetElement(2).Data = App.ExecutableFile.AbsolutePath)
+		  Assert(outer.GetElement(0).SubPart.GetElement(2).Data = App.ExecutableFile.AbsolutePath_)
 		  #If TargetWin32 Then
 		    Assert(outer.GetElement(0).SubPart.GetElement(2).ContentType = "application/x-msdownload")
 		  #endif
 		  Assert(outer.GetElement(0).SubPart.GetElement(2).Type = libcURL.MIMEPartType.File)
 		  
 		  Assert(outer.GetElement(0).SubPart.GetElement(3).Name = "TestFile2")
-		  Assert(outer.GetElement(0).SubPart.GetElement(3).Data = App.ExecutableFile.AbsolutePath)
+		  Assert(outer.GetElement(0).SubPart.GetElement(3).Data = App.ExecutableFile.AbsolutePath_)
 		  Assert(outer.GetElement(0).SubPart.GetElement(3).ContentType = "application/sgml")
 		  Assert(outer.GetElement(0).SubPart.GetElement(3).Type = libcURL.MIMEPartType.File)
 		  
