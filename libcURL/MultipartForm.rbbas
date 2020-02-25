@@ -163,8 +163,9 @@ Implements FormStreamGetter
 	#tag Method, Flags = &h0
 		Sub Constructor(GlobalInitFlags As Integer = libcURL.CURL_GLOBAL_DEFAULT)
 		  // Calling the overridden superclass constructor.
-		  // Constructor(GlobalInitFlags As Integer) -- From libcURL.cURLHandle
-		  Super.Constructor(GlobalInitFlags)
+		  // Constructor() -- From libcURL.cURLHandle
+		  #pragma Unused GlobalInitFlags
+		  Super.Constructor()
 		End Sub
 	#tag EndMethod
 
