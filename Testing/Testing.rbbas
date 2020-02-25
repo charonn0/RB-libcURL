@@ -276,8 +276,8 @@ Protected Module Testing
 		  Assert(l.Count = 0)
 		  Dim l2 As New libcURL.ListPtr
 		  Assert(l = l2)
-		  l2 = New libcURL.ListPtr(Nil, libcURL.CURL_GLOBAL_WIN32)
-		  Assert(l <> l2)
+		  //l2 = New libcURL.ListPtr(Nil, libcURL.CURL_GLOBAL_WIN32) ' this constructor is deprecated
+		  //Assert(l <> l2)
 		  If Not l.Append("Hello") Then Raise New libcURL.cURLException(l)
 		  If Not l.Append("World") Then Raise New libcURL.cURLException(l)
 		  If Not l.Append("!!") Then Raise New libcURL.cURLException(l)
