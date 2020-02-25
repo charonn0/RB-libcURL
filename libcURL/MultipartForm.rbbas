@@ -109,7 +109,7 @@ Implements FormStreamGetter
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm.AddElement
 		  
 		  ' this dummy EasyHandle handles the ReadCallback by reading from ValueStream
-		  Dim dummy As New libcURL.EasyHandle(Me.Flags)
+		  Dim dummy As New libcURL.EasyHandle()
 		  dummy.UploadStream = ValueStream
 		  mStreams.Append(dummy)
 		  

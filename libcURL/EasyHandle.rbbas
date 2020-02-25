@@ -368,7 +368,7 @@ Inherits libcURL.cURLHandle
 		    #Else
 		      mb = New MemoryBlock(8)
 		    #Endif
-		    If Me.GetInfo(InfoType, mb) And mb.Ptr(0) <> Nil Then Return New ListPtr(mb.Ptr(0), Me.Flags)
+		    If Me.GetInfo(InfoType, mb) And mb.Ptr(0) <> Nil Then Return New ListPtr(mb.Ptr(0))
 		    
 		  Else
 		    Dim err As New TypeMismatchException
