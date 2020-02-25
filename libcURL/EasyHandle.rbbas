@@ -37,8 +37,9 @@ Inherits libcURL.cURLHandle
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Constructor
 		  
 		  // Calling the overridden superclass constructor.
-		  // Constructor(GlobalInitFlags As Integer) -- From libcURL.cURLHandle
-		  Super.Constructor(GlobalInitFlags)
+		  // Constructor() -- From libcURL.cURLHandle
+		  #pragma Unused GlobalInitFlags
+		  Super.Constructor()
 		  
 		  mHandle = curl_easy_init()
 		  If mHandle = 0 Then
@@ -68,8 +69,8 @@ Inherits libcURL.cURLHandle
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Constructor
 		  
 		  // Calling the overridden superclass constructor.
-		  // Constructor(GlobalInitFlags As Integer) -- From libcURL.cURLHandle
-		  Super.Constructor(CopyOpts.Flags)
+		  // Constructor() -- From libcURL.cURLHandle
+		  Super.Constructor()
 		  
 		  If CopyOpts.Handle = 0 Then Raise New NilObjectException
 		  mHandle = curl_easy_duphandle(CopyOpts.Handle)
