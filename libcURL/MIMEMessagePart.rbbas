@@ -148,7 +148,7 @@ Protected Class MIMEMessagePart
 			    #Else
 			      Dim p As Ptr = Struct64.Headers
 			    #endif
-			    If p <> Nil Then mHeaders = New ListPtr(p, mOwner.Flags)
+			    If p <> Nil Then mHeaders = New ListPtr(p)
 			  End If
 			  Return mHeaders
 			End Get
@@ -307,7 +307,7 @@ Protected Class MIMEMessagePart
 			    #Else
 			      Dim p As Ptr = Struct64.UserHeaders
 			    #endif
-			    If p <> Nil Then mUserHeaders = New ListPtr(p, mOwner.Flags)
+			    If p <> Nil Then mUserHeaders = New ListPtr(p)
 			  End If
 			  Return mUserHeaders
 			End Get

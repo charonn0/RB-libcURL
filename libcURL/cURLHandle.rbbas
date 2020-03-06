@@ -95,7 +95,7 @@ Implements ErrorSetter
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Flags() As Integer
+		Attributes( deprecated )  Function Flags() As Integer
 		  ' The global initialization flags that were passed to the instance Constructor
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLHandle.Flags
@@ -133,7 +133,7 @@ Implements ErrorSetter
 	#tag Method, Flags = &h1
 		Protected Function Operator_Compare(OtherHandle As libcURL.cURLHandle) As Integer
 		  If OtherHandle Is Nil Then Return 1
-		  Return Sign(Me.Flags - OtherHandle.Flags)
+		  Return Sign(mFlags - OtherHandle.mFlags)
 		End Function
 	#tag EndMethod
 
