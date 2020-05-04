@@ -1832,6 +1832,18 @@ Inherits libcURL.cURLHandle
 	#tag Constant, Name = CURLPAUSE_SEND, Type = Double, Dynamic = False, Default = \"4", Scope = Public
 	#tag EndConstant
 
+	#tag Constant, Name = CURLSSLOPT_ALLOW_BEAST, Type = Double, Dynamic = False, Default = \"1", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = CURLSSLOPT_NO_PARTIALCHAIN, Type = Double, Dynamic = False, Default = \"4", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = CURLSSLOPT_NO_REVOKE, Type = Double, Dynamic = False, Default = \"2", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = CURLSSLOPT_REVOKE_BEST_EFFORT, Type = Double, Dynamic = False, Default = \"8", Scope = Public
+	#tag EndConstant
+
 	#tag Constant, Name = CURL_DEFAULT_READ_SIZE, Type = Double, Dynamic = False, Default = \"16384", Scope = Public
 	#tag EndConstant
 

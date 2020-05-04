@@ -447,6 +447,9 @@ Protected Module Opts
 	#tag Constant, Name = SSL_ENABLE_NPN, Type = Double, Dynamic = False, Default = \"225", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = SSL_OPTIONS, Type = Double, Dynamic = False, Default = \"216", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = SSL_VERIFYHOST, Type = Double, Dynamic = False, Default = \"81", Scope = Protected
 	#tag EndConstant
 
