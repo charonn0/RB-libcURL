@@ -23,8 +23,8 @@ Inherits libcURL.cURLHandle
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLParser.Constructor
 		  
 		  // Calling the overridden superclass constructor.
-		  // Constructor(GlobalInitFlags As Integer) -- From libcURL.cURLHandle
-		  Super.Constructor(CopyURL.Flags)
+		  // Constructor() -- From libcURL.cURLHandle
+		  Super.Constructor()
 		  Me.AnyScheme = CopyURL.AnyScheme
 		  
 		  mHandle = curl_url_dup(CopyURL.Handle)
@@ -44,8 +44,9 @@ Inherits libcURL.cURLHandle
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLParser.Constructor
 		  
 		  // Calling the overridden superclass constructor.
-		  // Constructor(GlobalInitFlags As Integer) -- From libcURL.cURLHandle
-		  Super.Constructor(GlobalInitFlags)
+		  // Constructor() -- From libcURL.cURLHandle
+		  #pragma Unused GlobalInitFlags
+		  Super.Constructor()
 		  
 		  If Not URLParser.IsAvailable Then
 		    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE

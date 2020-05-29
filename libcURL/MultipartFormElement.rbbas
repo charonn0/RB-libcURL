@@ -70,7 +70,7 @@ Protected Class MultipartFormElement
 			  
 			  If mContentHeaders = Nil Then
 			    Dim p As Ptr = Struct.ContentHeader
-			    If p <> Nil Then mContentHeaders = New ListPtr(p, mOwner.Flags)
+			    If p <> Nil Then mContentHeaders = New ListPtr(p)
 			  End If
 			  Return mContentHeaders
 			End Get

@@ -50,17 +50,6 @@ Protected Module Version
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function Platform() As String
-		  #If Target32Bit Then
-		    Dim data As MemoryBlock = Struct.HostString
-		  #Else
-		    Dim data As MemoryBlock = Struct64.HostString
-		  #EndIf
-		  If data <> Nil Then Return data.CString(0)
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
 		Protected Function Protocols() As String()
 		  ' Returns an array of available protocols.
 		  
@@ -88,41 +77,6 @@ Protected Module Version
 		  Loop
 		  
 		  Return prots
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Function SSHProviderName() As String
-		  #If Target32Bit Then
-		    Dim data As MemoryBlock = Struct.libSSHVersion
-		  #Else
-		    Dim data As MemoryBlock = Struct64.libSSHVersion
-		  #EndIf
-		  
-		  If data <> Nil Then Return data.CString(0)
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Function SSLProviderName() As String
-		  #If Target32Bit Then
-		    Dim data As MemoryBlock = Struct.SSLVersionString
-		  #Else
-		    Dim data As MemoryBlock = Struct64.SSLVersionString
-		  #EndIf
-		  
-		  If data <> Nil Then Return data.CString(0)
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Function UserAgent() As String
-		  If Not System.IsFunctionAvailable("curl_version", cURLLib) Then Return ""
-		  Static p As MemoryBlock
-		  If p = Nil Then
-		    p = curl_version()
-		  End If
-		  Return p.CString(0)
 		End Function
 	#tag EndMethod
 
@@ -154,6 +108,27 @@ Protected Module Version
 			End Get
 		#tag EndGetter
 		Protected CURLDEBUG As Boolean
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h21
+		#tag Getter
+			Get
+			  Select Case True
+			  Case IsAtLeast(7, 70, 0)
+			    Return CURLVERSION_SEVENTH
+			  Case IsAtLeast(7, 66, 1)
+			    Return CURLVERSION_SIXTH
+			  Case IsAtLeast(7, 57, 1)
+			    Return CURLVERSION_FIFTH
+			  Case IsAtLeast(7, 16, 1)
+			    Return CURLVERSION_FOURTH
+			  Else
+			    Return CURLVERSION_THIRD
+			  End Select
+			  
+			End Get
+		#tag EndGetter
+		Private CURLVERSION_NOW As UInt32
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h1
@@ -266,6 +241,20 @@ Protected Module Version
 	#tag ComputedProperty, Flags = &h1
 		#tag Getter
 			Get
+			  #If Target32Bit Then
+			    Dim data As MemoryBlock = Struct.HostString
+			  #Else
+			    Dim data As MemoryBlock = Struct64.HostString
+			  #EndIf
+			  If data <> Nil Then Return data.CString(0)
+			End Get
+		#tag EndGetter
+		Protected Platform As String
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h1
+		#tag Getter
+			Get
 			  Return BitAnd(Features, FEATURE_SPNEGO) = FEATURE_SPNEGO // SPNEGO auth
 			End Get
 		#tag EndGetter
@@ -275,10 +264,40 @@ Protected Module Version
 	#tag ComputedProperty, Flags = &h1
 		#tag Getter
 			Get
+			  #If Target32Bit Then
+			    Dim data As MemoryBlock = Struct.libSSHVersion
+			  #Else
+			    Dim data As MemoryBlock = Struct64.libSSHVersion
+			  #EndIf
+			  
+			  If data <> Nil Then Return data.CString(0)
+			End Get
+		#tag EndGetter
+		Protected SSHProviderName As String
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h1
+		#tag Getter
+			Get
 			  Return BitAnd(Features, FEATURE_SSL) = FEATURE_SSL // SSL options are present
 			End Get
 		#tag EndGetter
 		Protected SSL As Boolean
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h1
+		#tag Getter
+			Get
+			  #If Target32Bit Then
+			    Dim data As MemoryBlock = Struct.SSLVersionString
+			  #Else
+			    Dim data As MemoryBlock = Struct64.SSLVersionString
+			  #EndIf
+			  
+			  If data <> Nil Then Return data.CString(0)
+			End Get
+		#tag EndGetter
+		Protected SSLProviderName As String
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h1
@@ -300,7 +319,7 @@ Protected Module Version
 			    Dim error As Integer = curl_global_init(CURL_GLOBAL_DEFAULT) ' do not try to replace with cURLHandle, which performs version checks
 			    If error = 0 Then
 			      init = True
-			      Dim ve As Ptr = curl_version_info(CURLVERSION_FOURTH)
+			      Dim ve As Ptr = curl_version_info(CURLVERSION_NOW)
 			      Try
 			        mStruct = ve.CURLVersion
 			      Catch err
@@ -331,7 +350,7 @@ Protected Module Version
 			    Dim error As Integer = curl_global_init(CURL_GLOBAL_DEFAULT) ' do not try to replace with cURLHandle, which performs version checks
 			    If error = 0 Then
 			      init = True
-			      Dim ve As Ptr = curl_version_info(CURLVERSION_FOURTH)
+			      Dim ve As Ptr = curl_version_info(CURLVERSION_NOW)
 			      Try
 			        mStruct = ve.CURLVersion64
 			      Catch err
@@ -362,8 +381,34 @@ Protected Module Version
 		Protected TLS_SRP As Boolean
 	#tag EndComputedProperty
 
+	#tag ComputedProperty, Flags = &h1
+		#tag Getter
+			Get
+			  If Not System.IsFunctionAvailable("curl_version", cURLLib) Then Return ""
+			  Static p As MemoryBlock
+			  If p = Nil Then
+			    p = curl_version()
+			  End If
+			  Return p.CString(0)
+			End Get
+		#tag EndGetter
+		Protected UserAgent As String
+	#tag EndComputedProperty
+
+
+	#tag Constant, Name = CURLVERSION_FIFTH, Type = Double, Dynamic = False, Default = \"4", Scope = Private
+	#tag EndConstant
 
 	#tag Constant, Name = CURLVERSION_FOURTH, Type = Double, Dynamic = False, Default = \"3", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = CURLVERSION_SEVENTH, Type = Double, Dynamic = False, Default = \"6", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = CURLVERSION_SIXTH, Type = Double, Dynamic = False, Default = \"5", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = CURLVERSION_THIRD, Type = Double, Dynamic = False, Default = \"2", Scope = Private
 	#tag EndConstant
 
 	#tag Constant, Name = FEATURE_ASYNCHDNS, Type = Double, Dynamic = False, Default = \"128", Scope = Private
@@ -426,7 +471,14 @@ Protected Module Version
 		  aresnum As Integer
 		  libidn As Ptr
 		  iconvVersion as Integer
-		libSSHVersion As Ptr
+		  libSSHVersion As Ptr
+		  brotli_ver_num As UInt32
+		  brotli_version As Ptr
+		  nghttp2_ver_num As UInt32
+		  nghttp2_version As Ptr
+		  quic_version As Ptr
+		  cainfo As Ptr
+		capath As Ptr
 	#tag EndStructure
 
 	#tag Structure, Name = CURLVersion64, Flags = &h21, Attributes = \"StructureAlignment \x3D 8"
@@ -443,7 +495,14 @@ Protected Module Version
 		  aresnum As Integer
 		  libidn As Ptr
 		  iconvVersion as Integer
-		libSSHVersion As Ptr
+		  libSSHVersion As Ptr
+		  brotli_ver_num As UInt32
+		  brotli_version As Ptr
+		  nghttp2_ver_num As UInt32
+		  nghttp2_version As Ptr
+		  quic_version As Ptr
+		  cainfo As Ptr
+		capath As Ptr
 	#tag EndStructure
 
 

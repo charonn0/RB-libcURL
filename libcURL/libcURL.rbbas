@@ -1,5 +1,15 @@
 #tag Module
 Protected Module libcURL
+	#tag Method, Flags = &h21
+		Private Function AbsolutePath_(Extends f As FolderItem) As String
+		  #If RBVersion > 2019 Then
+		    Return f.NativePath
+		  #Else
+		    Return f.AbsolutePath
+		  #endif
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h1
 		Protected Function CompareDomains(Hostname1 As String, Hostname2 As String, Optional EasyItem As libcURL.EasyHandle) As Boolean
 		  ' Compares Hostname1 and Hostname2 to determine whether they belong to the same subdomain.
