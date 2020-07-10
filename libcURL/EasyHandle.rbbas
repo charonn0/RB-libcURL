@@ -36,6 +36,7 @@ Inherits libcURL.cURLHandle
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_init.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Constructor
 		  
+		  #pragma Unused GlobalInitFlags
 		  // Calling the overridden superclass constructor.
 		  Super.Constructor()
 		  If ExistingHandle <> 0 Then
