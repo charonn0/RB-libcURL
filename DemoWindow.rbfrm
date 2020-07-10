@@ -23,8 +23,8 @@ Begin Window DemoWindow
    Resizeable      =   True
    Title           =   "cURLClient Demo"
    Visible         =   True
-   Width           =   600
-   Begin TabPanel TabPanel2
+   Width           =   640
+   Begin TabPanel OptionsPanel
       AutoDeactivate  =   True
       Bold            =   ""
       Enabled         =   True
@@ -51,9 +51,9 @@ Begin Window DemoWindow
       TextUnit        =   0
       Top             =   119
       Underline       =   ""
-      Value           =   3
+      Value           =   1
       Visible         =   True
-      Width           =   596
+      Width           =   636
       Begin Listbox Headers
          AutoDeactivate  =   True
          AutoHideScrollbars=   True
@@ -76,7 +76,7 @@ Begin Window DemoWindow
          HelpTag         =   ""
          Hierarchical    =   ""
          Index           =   -2147483648
-         InitialParent   =   "TabPanel2"
+         InitialParent   =   "OptionsPanel"
          InitialValue    =   "Header name	Header value"
          Italic          =   ""
          Left            =   13
@@ -100,7 +100,7 @@ Begin Window DemoWindow
          Underline       =   ""
          UseFocusRing    =   True
          Visible         =   True
-         Width           =   578
+         Width           =   618
          _ScrollWidth    =   -1
       End
       Begin Listbox CurlInfo
@@ -125,7 +125,7 @@ Begin Window DemoWindow
          HelpTag         =   ""
          Hierarchical    =   True
          Index           =   -2147483648
-         InitialParent   =   "TabPanel2"
+         InitialParent   =   "OptionsPanel"
          InitialValue    =   "Info Name	Last request Value"
          Italic          =   ""
          Left            =   13
@@ -149,7 +149,7 @@ Begin Window DemoWindow
          Underline       =   ""
          UseFocusRing    =   True
          Visible         =   True
-         Width           =   578
+         Width           =   618
          _ScrollWidth    =   -1
       End
       Begin Label Label1
@@ -161,7 +161,7 @@ Begin Window DemoWindow
          Height          =   20
          HelpTag         =   ""
          Index           =   -2147483648
-         InitialParent   =   "TabPanel2"
+         InitialParent   =   "OptionsPanel"
          Italic          =   ""
          Left            =   11
          LockBottom      =   True
@@ -195,7 +195,7 @@ Begin Window DemoWindow
          Height          =   20
          HelpTag         =   ""
          Index           =   -2147483648
-         InitialParent   =   "TabPanel2"
+         InitialParent   =   "OptionsPanel"
          Italic          =   ""
          Left            =   11
          LockBottom      =   True
@@ -229,7 +229,7 @@ Begin Window DemoWindow
          Height          =   20
          HelpTag         =   ""
          Index           =   -2147483648
-         InitialParent   =   "TabPanel2"
+         InitialParent   =   "OptionsPanel"
          Italic          =   ""
          Left            =   110
          LockBottom      =   True
@@ -252,7 +252,7 @@ Begin Window DemoWindow
          Transparent     =   True
          Underline       =   ""
          Visible         =   True
-         Width           =   411
+         Width           =   451
       End
       Begin PushButton CASet
          AutoDeactivate  =   True
@@ -265,9 +265,9 @@ Begin Window DemoWindow
          Height          =   22
          HelpTag         =   ""
          Index           =   -2147483648
-         InitialParent   =   "TabPanel2"
+         InitialParent   =   "OptionsPanel"
          Italic          =   ""
-         Left            =   525
+         Left            =   565
          LockBottom      =   True
          LockedInPosition=   False
          LockLeft        =   False
@@ -296,9 +296,9 @@ Begin Window DemoWindow
          Height          =   22
          HelpTag         =   ""
          Index           =   -2147483648
-         InitialParent   =   "TabPanel2"
+         InitialParent   =   "OptionsPanel"
          Italic          =   ""
-         Left            =   558
+         Left            =   598
          LockBottom      =   True
          LockedInPosition=   False
          LockLeft        =   False
@@ -325,7 +325,7 @@ Begin Window DemoWindow
          Height          =   20
          HelpTag         =   ""
          Index           =   -2147483648
-         InitialParent   =   "TabPanel2"
+         InitialParent   =   "OptionsPanel"
          Italic          =   ""
          Left            =   110
          LockBottom      =   True
@@ -348,7 +348,7 @@ Begin Window DemoWindow
          Transparent     =   True
          Underline       =   ""
          Visible         =   True
-         Width           =   411
+         Width           =   451
       End
       Begin PushButton ClientCertSet
          AutoDeactivate  =   True
@@ -361,9 +361,9 @@ Begin Window DemoWindow
          Height          =   22
          HelpTag         =   ""
          Index           =   -2147483648
-         InitialParent   =   "TabPanel2"
+         InitialParent   =   "OptionsPanel"
          Italic          =   ""
-         Left            =   525
+         Left            =   565
          LockBottom      =   True
          LockedInPosition=   False
          LockLeft        =   False
@@ -392,9 +392,9 @@ Begin Window DemoWindow
          Height          =   22
          HelpTag         =   ""
          Index           =   -2147483648
-         InitialParent   =   "TabPanel2"
+         InitialParent   =   "OptionsPanel"
          Italic          =   ""
-         Left            =   558
+         Left            =   598
          LockBottom      =   True
          LockedInPosition=   False
          LockLeft        =   False
@@ -421,7 +421,7 @@ Begin Window DemoWindow
          Height          =   20
          HelpTag         =   ""
          Index           =   -2147483648
-         InitialParent   =   "TabPanel2"
+         InitialParent   =   "OptionsPanel"
          Italic          =   ""
          Left            =   224
          LockBottom      =   ""
@@ -456,7 +456,7 @@ Begin Window DemoWindow
          Height          =   20
          HelpTag         =   ""
          Index           =   -2147483648
-         InitialParent   =   "TabPanel2"
+         InitialParent   =   "OptionsPanel"
          InitialValue    =   ""
          Italic          =   False
          Left            =   302
@@ -489,7 +489,7 @@ Begin Window DemoWindow
          Height          =   20
          HelpTag         =   ""
          Index           =   -2147483648
-         InitialParent   =   "TabPanel2"
+         InitialParent   =   "OptionsPanel"
          Italic          =   ""
          Left            =   356
          LockBottom      =   ""
@@ -521,7 +521,7 @@ Begin Window DemoWindow
          Height          =   20
          HelpTag         =   ""
          Index           =   -2147483648
-         InitialParent   =   "TabPanel2"
+         InitialParent   =   "OptionsPanel"
          Italic          =   ""
          Left            =   356
          LockBottom      =   ""
@@ -553,7 +553,7 @@ Begin Window DemoWindow
          Height          =   20
          HelpTag         =   ""
          Index           =   -2147483648
-         InitialParent   =   "TabPanel2"
+         InitialParent   =   "OptionsPanel"
          Italic          =   ""
          Left            =   356
          LockBottom      =   ""
@@ -585,7 +585,7 @@ Begin Window DemoWindow
          Height          =   20
          HelpTag         =   ""
          Index           =   -2147483648
-         InitialParent   =   "TabPanel2"
+         InitialParent   =   "OptionsPanel"
          Italic          =   ""
          Left            =   356
          LockBottom      =   ""
@@ -617,7 +617,7 @@ Begin Window DemoWindow
          Height          =   20
          HelpTag         =   ""
          Index           =   -2147483648
-         InitialParent   =   "TabPanel2"
+         InitialParent   =   "OptionsPanel"
          Italic          =   ""
          Left            =   224
          LockBottom      =   ""
@@ -649,7 +649,7 @@ Begin Window DemoWindow
          Height          =   20
          HelpTag         =   ""
          Index           =   -2147483648
-         InitialParent   =   "TabPanel2"
+         InitialParent   =   "OptionsPanel"
          Italic          =   ""
          Left            =   224
          LockBottom      =   ""
@@ -681,7 +681,7 @@ Begin Window DemoWindow
          Height          =   20
          HelpTag         =   ""
          Index           =   -2147483648
-         InitialParent   =   "TabPanel2"
+         InitialParent   =   "OptionsPanel"
          Italic          =   ""
          Left            =   224
          LockBottom      =   ""
@@ -713,7 +713,7 @@ Begin Window DemoWindow
          Height          =   20
          HelpTag         =   ""
          Index           =   -2147483648
-         InitialParent   =   "TabPanel2"
+         InitialParent   =   "OptionsPanel"
          Italic          =   ""
          Left            =   224
          LockBottom      =   ""
@@ -744,7 +744,7 @@ Begin Window DemoWindow
          Height          =   20
          HelpTag         =   ""
          Index           =   -2147483648
-         InitialParent   =   "TabPanel2"
+         InitialParent   =   "OptionsPanel"
          Italic          =   ""
          Left            =   224
          LockBottom      =   ""
@@ -785,7 +785,7 @@ Begin Window DemoWindow
          Height          =   22
          HelpTag         =   ""
          Index           =   -2147483648
-         InitialParent   =   "TabPanel2"
+         InitialParent   =   "OptionsPanel"
          Italic          =   ""
          Left            =   302
          LimitText       =   0
@@ -821,7 +821,7 @@ Begin Window DemoWindow
          Height          =   20
          HelpTag         =   ""
          Index           =   -2147483648
-         InitialParent   =   "TabPanel2"
+         InitialParent   =   "OptionsPanel"
          Italic          =   ""
          Left            =   224
          LockBottom      =   ""
@@ -856,7 +856,7 @@ Begin Window DemoWindow
          Height          =   20
          HelpTag         =   ""
          Index           =   -2147483648
-         InitialParent   =   "TabPanel2"
+         InitialParent   =   "OptionsPanel"
          InitialValue    =   "Socks 4\r\nSocks 4A\r\nSocks 5\r\nSocks 5A\r\nHTTP\r\nHTTP 1.0"
          Italic          =   False
          Left            =   302
@@ -889,7 +889,7 @@ Begin Window DemoWindow
          Height          =   20
          HelpTag         =   ""
          Index           =   -2147483648
-         InitialParent   =   "TabPanel2"
+         InitialParent   =   "OptionsPanel"
          Italic          =   ""
          Left            =   356
          LockBottom      =   ""
@@ -911,33 +911,6 @@ Begin Window DemoWindow
          Visible         =   True
          Width           =   111
       End
-      Begin Canvas Canvas1
-         AcceptFocus     =   ""
-         AcceptTabs      =   ""
-         AutoDeactivate  =   True
-         Backdrop        =   ""
-         DoubleBuffer    =   False
-         Enabled         =   True
-         EraseBackground =   True
-         Height          =   5
-         HelpTag         =   ""
-         Index           =   -2147483648
-         InitialParent   =   "TabPanel2"
-         Left            =   137
-         LockBottom      =   False
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   True
-         LockTop         =   True
-         Scope           =   0
-         TabIndex        =   3
-         TabPanelIndex   =   2
-         TabStop         =   True
-         Top             =   281
-         UseFocusRing    =   True
-         Visible         =   True
-         Width           =   330
-      End
       Begin TextArea DownloadOutput
          AcceptTabs      =   ""
          Alignment       =   0
@@ -954,7 +927,7 @@ Begin Window DemoWindow
          HelpTag         =   ""
          HideSelection   =   True
          Index           =   -2147483648
-         InitialParent   =   "TabPanel2"
+         InitialParent   =   "OptionsPanel"
          Italic          =   ""
          Left            =   13
          LimitText       =   0
@@ -982,7 +955,7 @@ Begin Window DemoWindow
          Underline       =   ""
          UseFocusRing    =   True
          Visible         =   True
-         Width           =   578
+         Width           =   618
       End
       Begin Listbox Debug
          AutoDeactivate  =   True
@@ -1006,7 +979,7 @@ Begin Window DemoWindow
          HelpTag         =   ""
          Hierarchical    =   ""
          Index           =   -2147483648
-         InitialParent   =   "TabPanel2"
+         InitialParent   =   "OptionsPanel"
          InitialValue    =   "Type	Message"
          Italic          =   ""
          Left            =   13
@@ -1030,10 +1003,10 @@ Begin Window DemoWindow
          Underline       =   ""
          UseFocusRing    =   True
          Visible         =   True
-         Width           =   578
+         Width           =   618
          _ScrollWidth    =   -1
       End
-      Begin Canvas Canvas2
+      Begin Canvas HSplitter1
          AcceptFocus     =   ""
          AcceptTabs      =   ""
          AutoDeactivate  =   True
@@ -1044,7 +1017,7 @@ Begin Window DemoWindow
          Height          =   5
          HelpTag         =   ""
          Index           =   -2147483648
-         InitialParent   =   "TabPanel2"
+         InitialParent   =   "OptionsPanel"
          Left            =   137
          LockBottom      =   ""
          LockedInPosition=   False
@@ -1058,7 +1031,7 @@ Begin Window DemoWindow
          Top             =   304
          UseFocusRing    =   True
          Visible         =   True
-         Width           =   330
+         Width           =   370
       End
       Begin GroupBox CookieControl
          AutoDeactivate  =   True
@@ -1068,7 +1041,7 @@ Begin Window DemoWindow
          Height          =   228
          HelpTag         =   ""
          Index           =   -2147483648
-         InitialParent   =   "TabPanel2"
+         InitialParent   =   "OptionsPanel"
          Italic          =   ""
          Left            =   8
          LockBottom      =   True
@@ -1085,7 +1058,7 @@ Begin Window DemoWindow
          Top             =   168
          Underline       =   ""
          Visible         =   True
-         Width           =   585
+         Width           =   625
          Begin Listbox CookieList
             AutoDeactivate  =   True
             AutoHideScrollbars=   True
@@ -1132,7 +1105,7 @@ Begin Window DemoWindow
             Underline       =   ""
             UseFocusRing    =   True
             Visible         =   True
-            Width           =   564
+            Width           =   604
             _ScrollWidth    =   -1
          End
          Begin TextField CookieSearchName
@@ -1191,7 +1164,7 @@ Begin Window DemoWindow
             Index           =   -2147483648
             InitialParent   =   "CookieControl"
             Italic          =   ""
-            Left            =   437
+            Left            =   477
             LockBottom      =   True
             LockedInPosition=   False
             LockLeft        =   False
@@ -1250,7 +1223,7 @@ Begin Window DemoWindow
             Underline       =   ""
             UseFocusRing    =   True
             Visible         =   True
-            Width           =   205
+            Width           =   245
          End
          Begin CheckBox StrictLookup
             AutoDeactivate  =   True
@@ -1264,7 +1237,7 @@ Begin Window DemoWindow
             Index           =   -2147483648
             InitialParent   =   "CookieControl"
             Italic          =   ""
-            Left            =   512
+            Left            =   552
             LockBottom      =   True
             LockedInPosition=   False
             LockLeft        =   False
@@ -1365,7 +1338,7 @@ Begin Window DemoWindow
             Index           =   -2147483648
             InitialParent   =   "CookieControl"
             Italic          =   ""
-            Left            =   350
+            Left            =   390
             LockBottom      =   True
             LockedInPosition=   False
             LockLeft        =   False
@@ -1396,7 +1369,7 @@ Begin Window DemoWindow
             Index           =   -2147483648
             InitialParent   =   "CookieControl"
             Italic          =   ""
-            Left            =   465
+            Left            =   505
             LockBottom      =   True
             LockedInPosition=   False
             LockLeft        =   False
@@ -1427,7 +1400,7 @@ Begin Window DemoWindow
             Index           =   -2147483648
             InitialParent   =   "CookieControl"
             Italic          =   ""
-            Left            =   234
+            Left            =   274
             LockBottom      =   True
             LockedInPosition=   False
             LockLeft        =   False
@@ -1456,7 +1429,7 @@ Begin Window DemoWindow
          Height          =   20
          HelpTag         =   ""
          Index           =   -2147483648
-         InitialParent   =   "TabPanel2"
+         InitialParent   =   "OptionsPanel"
          Italic          =   ""
          Left            =   14
          LockBottom      =   ""
@@ -1488,7 +1461,7 @@ Begin Window DemoWindow
          Height          =   20
          HelpTag         =   ""
          Index           =   -2147483648
-         InitialParent   =   "TabPanel2"
+         InitialParent   =   "OptionsPanel"
          InitialValue    =   "Default SSL/TLS\r\nSSLv2\r\nSSLv3\r\nTLSv1.X\r\nTLSv1.0\r\nTLSv1.1\r\nTLSv1.2"
          Italic          =   False
          Left            =   480
@@ -1521,7 +1494,7 @@ Begin Window DemoWindow
          Height          =   20
          HelpTag         =   ""
          Index           =   -2147483648
-         InitialParent   =   "TabPanel2"
+         InitialParent   =   "OptionsPanel"
          InitialValue    =   "HTTP/1.1\r\nHTTP/1.0\r\nHTTP/2"
          Italic          =   False
          Left            =   480
@@ -1566,7 +1539,7 @@ Begin Window DemoWindow
          HelpTag         =   ""
          Hierarchical    =   True
          Index           =   -2147483648
-         InitialParent   =   "TabPanel2"
+         InitialParent   =   "OptionsPanel"
          InitialValue    =   "Available Features"
          Italic          =   ""
          Left            =   11
@@ -1603,7 +1576,7 @@ Begin Window DemoWindow
          Height          =   20
          HelpTag         =   ""
          Index           =   -2147483648
-         InitialParent   =   "TabPanel2"
+         InitialParent   =   "OptionsPanel"
          Italic          =   ""
          Left            =   20
          LockBottom      =   True
@@ -1635,7 +1608,7 @@ Begin Window DemoWindow
          Height          =   20
          HelpTag         =   ""
          Index           =   -2147483648
-         InitialParent   =   "TabPanel2"
+         InitialParent   =   "OptionsPanel"
          Italic          =   ""
          Left            =   224
          LockBottom      =   ""
@@ -1657,6 +1630,33 @@ Begin Window DemoWindow
          Visible         =   True
          Width           =   120
       End
+      Begin Canvas HSplitter2
+         AcceptFocus     =   ""
+         AcceptTabs      =   ""
+         AutoDeactivate  =   True
+         Backdrop        =   ""
+         DoubleBuffer    =   False
+         Enabled         =   True
+         EraseBackground =   True
+         Height          =   5
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "OptionsPanel"
+         Left            =   137
+         LockBottom      =   False
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   True
+         LockTop         =   True
+         Scope           =   0
+         TabIndex        =   3
+         TabPanelIndex   =   2
+         TabStop         =   True
+         Top             =   281
+         UseFocusRing    =   True
+         Visible         =   True
+         Width           =   370
+      End
    End
    Begin cURLClient Client
       Height          =   32
@@ -1670,7 +1670,7 @@ Begin Window DemoWindow
       Top             =   437
       Width           =   32
    End
-   Begin TextField TextField1
+   Begin TextField URLField
       AcceptTabs      =   ""
       Alignment       =   0
       AutoDeactivate  =   True
@@ -1710,43 +1710,7 @@ Begin Window DemoWindow
       Underline       =   ""
       UseFocusRing    =   True
       Visible         =   True
-      Width           =   313
-   End
-   Begin Thread GetThread
-      Height          =   32
-      Index           =   -2147483648
-      Left            =   43
-      LockedInPosition=   False
-      Priority        =   5
-      Scope           =   0
-      StackSize       =   0
-      TabPanelIndex   =   0
-      Top             =   437
-      Width           =   32
-   End
-   Begin Thread PutThread
-      Height          =   32
-      Index           =   -2147483648
-      Left            =   80
-      LockedInPosition=   False
-      Priority        =   5
-      Scope           =   0
-      StackSize       =   0
-      TabPanelIndex   =   0
-      Top             =   437
-      Width           =   32
-   End
-   Begin Thread PostThread
-      Height          =   32
-      Index           =   -2147483648
-      Left            =   117
-      LockedInPosition=   False
-      Priority        =   5
-      Scope           =   0
-      StackSize       =   0
-      TabPanelIndex   =   0
-      Top             =   437
-      Width           =   32
+      Width           =   353
    End
    Begin ProgressBar ProgressUpload
       AutoDeactivate  =   True
@@ -1767,9 +1731,9 @@ Begin Window DemoWindow
       Top             =   35
       Value           =   0
       Visible         =   True
-      Width           =   335
+      Width           =   375
    End
-   Begin TabPanel TabPanel1
+   Begin TabPanel ActionPanel
       AutoDeactivate  =   True
       Bold            =   ""
       Enabled         =   True
@@ -1799,7 +1763,7 @@ Begin Window DemoWindow
       Value           =   3
       Visible         =   True
       Width           =   246
-      Begin PushButton PushButton1
+      Begin PushButton GetBtn
          AutoDeactivate  =   True
          Bold            =   ""
          ButtonStyle     =   0
@@ -1810,7 +1774,7 @@ Begin Window DemoWindow
          Height          =   22
          HelpTag         =   ""
          Index           =   -2147483648
-         InitialParent   =   "TabPanel1"
+         InitialParent   =   "ActionPanel"
          Italic          =   ""
          Left            =   11
          LockBottom      =   ""
@@ -1830,7 +1794,7 @@ Begin Window DemoWindow
          Visible         =   True
          Width           =   100
       End
-      Begin PushButton PushButton2
+      Begin PushButton GetThreadBtn
          AutoDeactivate  =   True
          Bold            =   ""
          ButtonStyle     =   0
@@ -1841,7 +1805,7 @@ Begin Window DemoWindow
          Height          =   22
          HelpTag         =   ""
          Index           =   -2147483648
-         InitialParent   =   "TabPanel1"
+         InitialParent   =   "ActionPanel"
          Italic          =   ""
          Left            =   117
          LockBottom      =   ""
@@ -1861,7 +1825,7 @@ Begin Window DemoWindow
          Visible         =   True
          Width           =   100
       End
-      Begin PushButton PushButton3
+      Begin PushButton PutBtn
          AutoDeactivate  =   True
          Bold            =   ""
          ButtonStyle     =   0
@@ -1872,7 +1836,7 @@ Begin Window DemoWindow
          Height          =   22
          HelpTag         =   ""
          Index           =   -2147483648
-         InitialParent   =   "TabPanel1"
+         InitialParent   =   "ActionPanel"
          Italic          =   ""
          Left            =   11
          LockBottom      =   ""
@@ -1892,7 +1856,7 @@ Begin Window DemoWindow
          Visible         =   True
          Width           =   100
       End
-      Begin PushButton PushButton4
+      Begin PushButton PutThreadBtn
          AutoDeactivate  =   True
          Bold            =   ""
          ButtonStyle     =   0
@@ -1903,7 +1867,7 @@ Begin Window DemoWindow
          Height          =   22
          HelpTag         =   ""
          Index           =   -2147483648
-         InitialParent   =   "TabPanel1"
+         InitialParent   =   "ActionPanel"
          Italic          =   ""
          Left            =   117
          LockBottom      =   ""
@@ -1923,7 +1887,7 @@ Begin Window DemoWindow
          Visible         =   True
          Width           =   100
       End
-      Begin PushButton PushButton5
+      Begin PushButton PostBtn
          AutoDeactivate  =   True
          Bold            =   ""
          ButtonStyle     =   0
@@ -1934,7 +1898,7 @@ Begin Window DemoWindow
          Height          =   22
          HelpTag         =   ""
          Index           =   -2147483648
-         InitialParent   =   "TabPanel1"
+         InitialParent   =   "ActionPanel"
          Italic          =   ""
          Left            =   11
          LockBottom      =   ""
@@ -1954,7 +1918,7 @@ Begin Window DemoWindow
          Visible         =   True
          Width           =   100
       End
-      Begin PushButton PushButton6
+      Begin PushButton PostThreadBtn
          AutoDeactivate  =   True
          Bold            =   ""
          ButtonStyle     =   0
@@ -1965,7 +1929,7 @@ Begin Window DemoWindow
          Height          =   22
          HelpTag         =   ""
          Index           =   -2147483648
-         InitialParent   =   "TabPanel1"
+         InitialParent   =   "ActionPanel"
          Italic          =   ""
          Left            =   117
          LockBottom      =   ""
@@ -1985,7 +1949,7 @@ Begin Window DemoWindow
          Visible         =   True
          Width           =   100
       End
-      Begin PushButton PushButton7
+      Begin PushButton SetFormBtn
          AutoDeactivate  =   True
          Bold            =   ""
          ButtonStyle     =   0
@@ -1996,7 +1960,7 @@ Begin Window DemoWindow
          Height          =   22
          HelpTag         =   ""
          Index           =   -2147483648
-         InitialParent   =   "TabPanel1"
+         InitialParent   =   "ActionPanel"
          Italic          =   ""
          Left            =   11
          LockBottom      =   True
@@ -2016,7 +1980,7 @@ Begin Window DemoWindow
          Visible         =   True
          Width           =   100
       End
-      Begin PushButton PushButton8
+      Begin PushButton HeadThreadBtn
          AutoDeactivate  =   True
          Bold            =   ""
          ButtonStyle     =   0
@@ -2027,7 +1991,7 @@ Begin Window DemoWindow
          Height          =   22
          HelpTag         =   ""
          Index           =   -2147483648
-         InitialParent   =   "TabPanel1"
+         InitialParent   =   "ActionPanel"
          Italic          =   ""
          Left            =   117
          LockBottom      =   ""
@@ -2047,7 +2011,7 @@ Begin Window DemoWindow
          Visible         =   True
          Width           =   100
       End
-      Begin PushButton PushButton9
+      Begin PushButton HeadBtn
          AutoDeactivate  =   True
          Bold            =   ""
          ButtonStyle     =   0
@@ -2058,7 +2022,7 @@ Begin Window DemoWindow
          Height          =   22
          HelpTag         =   ""
          Index           =   -2147483648
-         InitialParent   =   "TabPanel1"
+         InitialParent   =   "ActionPanel"
          Italic          =   ""
          Left            =   11
          LockBottom      =   ""
@@ -2088,7 +2052,7 @@ Begin Window DemoWindow
          Height          =   20
          HelpTag         =   ""
          Index           =   -2147483648
-         InitialParent   =   "TabPanel1"
+         InitialParent   =   "ActionPanel"
          Italic          =   ""
          Left            =   11
          LockBottom      =   ""
@@ -2130,7 +2094,7 @@ Begin Window DemoWindow
       Top             =   47
       Value           =   0
       Visible         =   True
-      Width           =   335
+      Width           =   375
    End
    Begin TextArea ErrorBuffer
       AcceptTabs      =   ""
@@ -2175,12 +2139,12 @@ Begin Window DemoWindow
       Underline       =   ""
       UseFocusRing    =   True
       Visible         =   False
-      Width           =   332
+      Width           =   372
    End
    Begin Timer GUITimer
       Height          =   32
       Index           =   -2147483648
-      Left            =   190
+      Left            =   45
       LockedInPosition=   False
       Mode            =   0
       Period          =   1
@@ -2192,23 +2156,11 @@ Begin Window DemoWindow
    Begin Timer ProgressTimer
       Height          =   32
       Index           =   -2147483648
-      Left            =   224
+      Left            =   79
       LockedInPosition=   False
       Mode            =   1
       Period          =   10
       Scope           =   0
-      TabPanelIndex   =   0
-      Top             =   437
-      Width           =   32
-   End
-   Begin Thread HeadThread
-      Height          =   32
-      Index           =   -2147483648
-      Left            =   155
-      LockedInPosition=   False
-      Priority        =   5
-      Scope           =   0
-      StackSize       =   0
       TabPanelIndex   =   0
       Top             =   437
       Width           =   32
@@ -2257,7 +2209,7 @@ Begin Window DemoWindow
       Index           =   -2147483648
       InitialParent   =   ""
       Italic          =   ""
-      Left            =   571
+      Left            =   611
       LockBottom      =   ""
       LockedInPosition=   False
       LockLeft        =   False
@@ -2390,7 +2342,7 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Function ETA(Total As UInt64, Current As UInt64, BPS As Double) As String
+		Private Shared Function ETA(Total As UInt64, Current As UInt64, BPS As Double) As String
 		  Dim remaining As UInt64 = Total - Current
 		  Dim secs As Double = remaining / BPS
 		  
@@ -2410,7 +2362,7 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Function FormatBytes(bytes As UInt64, precision As Integer = 2) As String
+		Private Shared Function FormatBytes(bytes As UInt64, precision As Integer = 2) As String
 		  'Converts raw byte counts into SI formatted strings. 1KB = 1024 bytes.
 		  'Optionally pass an integer representing the number of decimal places to return. The default is two decimal places. You may specify
 		  'between 0 and 16 decimal places. Specifying more than 16 will append extra zeros to make up the length. Passing 0
@@ -2463,7 +2415,7 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Function FormatTime(Milliseconds As Int64, FractionalSeconds As Boolean = False) As String
+		Private Shared Function FormatTime(Milliseconds As Int64, FractionalSeconds As Boolean = False) As String
 		  ' Formats the period of time denoted by Milliseconds as HH:MM:SS. If FractionalSeconds is true then fractions of a second are included.
 		  
 		  Dim hours As Integer = (Milliseconds / (1000 * 60 * 60))
@@ -2661,7 +2613,7 @@ End
 		      SSLVer.ListIndex = 6
 		    End Select
 		    
-		    If Client.EasyItem.URL <> "" Then TextField1.Text = Client.EasyItem.URL
+		    If Client.EasyItem.URL <> "" Then URLField.Text = Client.EasyItem.URL
 		    
 		    nic.ListIndex = -1
 		    If Client.EasyItem.NetworkInterface <> Nil Then
@@ -2675,7 +2627,11 @@ End
 		    
 		    
 		    If Client.EasyItem.CA_ListFile <> Nil Then
-		      CAListFile.Text = Client.EasyItem.CA_ListFile.AbsolutePath
+		      #If RBVersion > 2019 Then
+		        CAListFile.Text = Client.EasyItem.CA_ListFile.NativePath
+		      #Else
+		        CAListFile.Text = Client.EasyItem.CA_ListFile.AbsolutePath
+		      #endif
 		    Else
 		      CAListFile.Text = "Not specified"
 		    End If
@@ -2686,8 +2642,64 @@ End
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Sub ShowErrorBuffer()
+	#tag Method, Flags = &h21
+		Private Sub RunGet(Sender As Thread)
+		  #pragma Unused Sender
+		  If Not Client.Get(mURL, ThreadStream) Then System.DebugLog("Failed")
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub RunHead(Sender As Thread)
+		  #pragma Unused Sender
+		  If Not Client.Head(mURL) Then
+		    Break
+		  End If
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub RunPost(Sender As Thread)
+		  #pragma Unused Sender
+		  If FormValue <> Nil Then
+		    If FormValue.Right = FormGenerator.TYPE_URLENCODED Then ' URLEncoded
+		      Dim frm() As String = FormValue.Left
+		      If Not Client.Post(mURL, frm)Then
+		        //meh
+		      End If
+		    ElseIf FormValue.Right = FormGenerator.TYPE_MULTIPART Then ' Multipart
+		      Dim frm As Dictionary = FormValue.Left
+		      If Not Client.Post(mURL, frm)Then
+		        //meh
+		      End If
+		    ElseIf FormValue.Right = FormGenerator.TYPE_MIME Then ' MIME
+		      Dim frm As Dictionary = FormValue.Left
+		      Dim mime As New libcURL.MIMEMessage(Client.EasyItem, frm)
+		      If Not Client.Post(mURL, mime) Then
+		        //meh
+		      End If
+		    Else
+		      Break
+		    End If
+		  End If
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub RunPut(Sender As Thread)
+		  #pragma Unused Sender
+		  If mPutTarget <> Nil Then
+		    Dim bs As BinaryStream = BinaryStream.Open(mPutTarget)
+		    If Not Client.Put(mURL, bs) Then
+		      Break
+		    End If
+		    bs.Close
+		  End If
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub ShowErrorBuffer()
 		  If Client.EasyItem.ErrorBuffer <> "" Then
 		    ErrorBuffer.Text = Client.EasyItem.ErrorBuffer
 		    ErrorBuffer.Visible = True
@@ -2765,6 +2777,10 @@ End
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
+		Private mWorker As Thread
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
 		Private ThreadStream As BinaryStream
 	#tag EndProperty
 
@@ -2835,7 +2851,11 @@ End
 #tag Events CAListFile
 	#tag Event
 		Sub Open()
-		  If Client.EasyItem.CA_ListFile <> Nil Then Me.Text = Client.EasyItem.CA_ListFile.AbsolutePath
+		  #If RBVersion > 2019 Then
+		    If Client.EasyItem.CA_ListFile <> Nil Then Me.Text = Client.EasyItem.CA_ListFile.NativePath
+		  #Else
+		    If Client.EasyItem.CA_ListFile <> Nil Then Me.Text = Client.EasyItem.CA_ListFile.AbsolutePath
+		  #endif
 		End Sub
 	#tag EndEvent
 	#tag Event
@@ -2862,7 +2882,12 @@ End
 		  If f <> Nil Then
 		    Client.EasyItem.CA_ListFile = f
 		    Client.EasyItem.Secure = False
-		    CAListFile.Text = Client.EasyItem.CA_ListFile.AbsolutePath
+		    #If RBVersion > 2019 Then
+		      CAListFile.Text = Client.EasyItem.CA_ListFile.NativePath
+		    #Else
+		      CAListFile.Text = Client.EasyItem.CA_ListFile.AbsolutePath
+		    #endif
+		    
 		  End If
 		End Sub
 	#tag EndEvent
@@ -2900,7 +2925,11 @@ End
 		  Dim f As FolderItem = GetOpenFolderItem(cURLTypes.SecurityCertificate)
 		  If f <> Nil Then
 		    If Client.EasyItem.SetOption(libcURL.Opts.SSLCERT, f) Then
-		      ClientCert.Text = f.AbsolutePath
+		      #If RBVersion > 2019 Then
+		        ClientCert.Text = f.NativePath
+		      #Else
+		        ClientCert.Text = f.AbsolutePath
+		      #endif
 		      ClientCertItem = f
 		    Else
 		      MsgBox("Unable to set client certificate!")
@@ -3114,56 +3143,6 @@ End
 		End Sub
 	#tag EndEvent
 #tag EndEvents
-#tag Events Canvas1
-	#tag Event
-		Sub MouseEnter()
-		  Me.MouseCursor = System.Cursors.SplitterNorthSouth
-		End Sub
-	#tag EndEvent
-	#tag Event
-		Sub MouseExit()
-		  Me.MouseCursor = System.Cursors.StandardPointer
-		End Sub
-	#tag EndEvent
-	#tag Event
-		Function MouseDown(X As Integer, Y As Integer) As Boolean
-		  #pragma Unused X
-		  #pragma Unused Y
-		  Return True
-		End Function
-	#tag EndEvent
-	#tag Event
-		Sub MouseDrag(X As Integer, Y As Integer)
-		  #pragma Unused X
-		  #pragma Unused Y
-		  If Me.Width > Me.Height Then 'horizontal
-		    Me.Top = Me.Window.MouseY
-		  Else
-		    Me.Left = Me.Window.MouseX
-		  End If
-		End Sub
-	#tag EndEvent
-	#tag Event
-		Sub MouseUp(X As Integer, Y As Integer)
-		  #pragma Unused X
-		  #pragma Unused Y
-		  
-		  Headers.Height = Me.Top - Headers.Top - 1
-		  DownloadOutput.Top = Me.Top + Me.Height + 1
-		  DownloadOutput.Height = Me.Window.Height - DownloadOutput.Top - 5
-		End Sub
-	#tag EndEvent
-	#tag Event
-		Sub Paint(g As Graphics)
-		  g.ForeColor = &cC0C0C000
-		  g.DrawRect(0, 0, g.Width, g.Height)
-		  
-		  g.ForeColor = &c80808000
-		  g.DrawLine(0.25 * g.Width, 0.25 * g.Height, 0.75 * g.Width, 0.25 * g.Height)
-		  g.DrawLine(0.25 * g.Width, 0.75 * g.Height, 0.75 * g.Width, 0.75 * g.Height)
-		End Sub
-	#tag EndEvent
-#tag EndEvents
 #tag Events Debug
 	#tag Event
 		Function ConstructContextualMenu(base as MenuItem, x as Integer, y as Integer) As Boolean
@@ -3183,7 +3162,7 @@ End
 		End Function
 	#tag EndEvent
 #tag EndEvents
-#tag Events Canvas2
+#tag Events HSplitter1
 	#tag Event
 		Sub MouseEnter()
 		  Me.MouseCursor = System.Cursors.SplitterNorthSouth
@@ -3499,6 +3478,56 @@ End
 		End Sub
 	#tag EndEvent
 #tag EndEvents
+#tag Events HSplitter2
+	#tag Event
+		Sub MouseEnter()
+		  Me.MouseCursor = System.Cursors.SplitterNorthSouth
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Sub MouseExit()
+		  Me.MouseCursor = System.Cursors.StandardPointer
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Function MouseDown(X As Integer, Y As Integer) As Boolean
+		  #pragma Unused X
+		  #pragma Unused Y
+		  Return True
+		End Function
+	#tag EndEvent
+	#tag Event
+		Sub MouseDrag(X As Integer, Y As Integer)
+		  #pragma Unused X
+		  #pragma Unused Y
+		  If Me.Width > Me.Height Then 'horizontal
+		    Me.Top = Me.Window.MouseY
+		  Else
+		    Me.Left = Me.Window.MouseX
+		  End If
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Sub MouseUp(X As Integer, Y As Integer)
+		  #pragma Unused X
+		  #pragma Unused Y
+		  
+		  Headers.Height = Me.Top - Headers.Top - 1
+		  DownloadOutput.Top = Me.Top + Me.Height + 1
+		  DownloadOutput.Height = Me.Window.Height - DownloadOutput.Top - 5
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Sub Paint(g As Graphics)
+		  g.ForeColor = &cC0C0C000
+		  g.DrawRect(0, 0, g.Width, g.Height)
+		  
+		  g.ForeColor = &c80808000
+		  g.DrawLine(0.25 * g.Width, 0.25 * g.Height, 0.75 * g.Width, 0.25 * g.Height)
+		  g.DrawLine(0.25 * g.Width, 0.75 * g.Height, 0.75 * g.Width, 0.75 * g.Height)
+		End Sub
+	#tag EndEvent
+#tag EndEvents
 #tag Events Client
 	#tag Event
 		Function Progress(dlTotal As Int64, dlNow As Int64, ulTotal As Int64, ulNow As Int64) As Boolean
@@ -3549,82 +3578,35 @@ End
 		End Sub
 	#tag EndEvent
 #tag EndEvents
-#tag Events GetThread
-	#tag Event
-		Sub Run()
-		  If Not Client.Get(mURL, ThreadStream) Then System.DebugLog("Failed")
-		  
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events PutThread
-	#tag Event
-		Sub Run()
-		  If mPutTarget <> Nil Then
-		    Dim bs As BinaryStream = BinaryStream.Open(mPutTarget)
-		    If Not Client.Put(mURL, bs) Then
-		      Break
-		    End If
-		    bs.Close
-		  End If
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events PostThread
-	#tag Event
-		Sub Run()
-		  If FormValue <> Nil Then
-		    If FormValue.Right = FormGenerator.TYPE_URLENCODED Then ' URLEncoded
-		      Dim frm() As String = FormValue.Left
-		      If Not Client.Post(mURL, frm)Then
-		        //meh
-		      End If
-		    ElseIf FormValue.Right = FormGenerator.TYPE_MULTIPART Then ' Multipart
-		      Dim frm As Dictionary = FormValue.Left
-		      If Not Client.Post(mURL, frm)Then
-		        //meh
-		      End If
-		    ElseIf FormValue.Right = FormGenerator.TYPE_MIME Then ' MIME
-		      Dim frm As Dictionary = FormValue.Left
-		      Dim mime As New libcURL.MIMEMessage(Client.EasyItem, frm)
-		      If Not Client.Post(mURL, mime) Then 
-		        //meh
-		      End If
-		    Else
-		      Break
-		    End If
-		  End If
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events PushButton1
+#tag Events GetBtn
 	#tag Event
 		Sub Action()
 		  Dim bs As BinaryStream
 		  If SaveToFileChkBx.Value Then
 		    Dim name As String
 		    If libcURL.URLParser.IsAvailable Then ' URL parsing API is available
-		      Dim u As New libcURL.URLParser(TextField1.Text)
+		      Dim u As New libcURL.URLParser(URLField.Text)
 		      name = NthField(u.Path, "/", CountFields(u.Path, "/"))
 		    End If
 		    Dim f As FolderItem = GetSaveFolderItem("", name)
+		    If f = Nil Then Return
 		    bs = BinaryStream.Create(f, True)
 		  End If
 		  PauseButton.Enabled = True
 		  ResetButton.Enabled = False
 		  AbortButton.Enabled = True
-		  Client.Get(TextField1.Text, bs)
+		  Client.Get(URLField.Text, bs)
 		End Sub
 	#tag EndEvent
 #tag EndEvents
-#tag Events PushButton2
+#tag Events GetThreadBtn
 	#tag Event
 		Sub Action()
-		  mURL = TextField1.Text
+		  mURL = URLField.Text
 		  If SaveToFileChkBx.Value Then
 		    Dim name As String
 		    If libcURL.URLParser.IsAvailable Then ' URL parsing API is available
-		      Dim u As New libcURL.URLParser(TextField1.Text)
+		      Dim u As New libcURL.URLParser(URLField.Text)
 		      name = NthField(u.Path, "/", CountFields(u.Path, "/"))
 		    End If
 		    Dim f As FolderItem = GetSaveFolderItem("", name)
@@ -3634,11 +3616,13 @@ End
 		  PauseButton.Enabled = True
 		  ResetButton.Enabled = False
 		  AbortButton.Enabled = True
-		  GetThread.Run
+		  mWorker = New Thread
+		  AddHandler mWorker.Run, WeakAddressOf RunGet
+		  mWorker.Run
 		End Sub
 	#tag EndEvent
 #tag EndEvents
-#tag Events PushButton3
+#tag Events PutBtn
 	#tag Event
 		Sub Action()
 		  PauseButton.Enabled = True
@@ -3646,23 +3630,26 @@ End
 		  AbortButton.Enabled = True
 		  Dim f As FolderItem = GetOpenFolderItem("")
 		  Dim bs As BinaryStream = BinaryStream.Open(f)
-		  Client.Put(TextField1.Text, bs)
+		  Client.Put(URLField.Text, bs)
 		End Sub
 	#tag EndEvent
 #tag EndEvents
-#tag Events PushButton4
+#tag Events PutThreadBtn
 	#tag Event
 		Sub Action()
 		  PauseButton.Enabled = True
 		  ResetButton.Enabled = False
 		  AbortButton.Enabled = True
 		  mPutTarget = GetOpenFolderItem("")
-		  mURL = TextField1.Text
-		  PutThread.Run
+		  mURL = URLField.Text
+		  mWorker = New Thread
+		  AddHandler mWorker.Run, WeakAddressOf RunPut
+		  mWorker.Run
+		  
 		End Sub
 	#tag EndEvent
 #tag EndEvents
-#tag Events PushButton5
+#tag Events PostBtn
 	#tag Event
 		Sub Action()
 		  If FormValue <> Nil Then
@@ -3672,16 +3659,16 @@ End
 		    Select Case FormValue.Right
 		    Case FormGenerator.TYPE_URLENCODED
 		      Dim frm() As String = FormValue.Left
-		      Client.Post(TextField1.Text, frm)
+		      Client.Post(URLField.Text, frm)
 		      
 		    Case FormGenerator.TYPE_MULTIPART
 		      Dim frm As Dictionary = FormValue.Left
-		      Client.Post(TextField1.Text, frm)
+		      Client.Post(URLField.Text, frm)
 		      
 		    Case FormGenerator.TYPE_MIME
 		      Dim frm As Dictionary = FormValue.Left
 		      Dim mime As New libcURL.MIMEMessage(Client.EasyItem, frm)
-		      Client.Post(TextField1.Text, mime)
+		      Client.Post(URLField.Text, mime)
 		      
 		    Else
 		      Break
@@ -3693,22 +3680,24 @@ End
 		End Sub
 	#tag EndEvent
 #tag EndEvents
-#tag Events PushButton6
+#tag Events PostThreadBtn
 	#tag Event
 		Sub Action()
 		  If FormValue <> Nil Then
 		    PauseButton.Enabled = True
 		    ResetButton.Enabled = False
 		    AbortButton.Enabled = True
-		    mURL = TextField1.Text
-		    PostThread.Run
+		    mURL = URLField.Text
+		    mWorker = New Thread
+		    AddHandler mWorker.Run, WeakAddressOf RunPost
+		    mWorker.Run
 		  Else
 		    Call MsgBox("Please specify an HTTP form to be POSTed", 16, "Missing form")
 		  End If
 		End Sub
 	#tag EndEvent
 #tag EndEvents
-#tag Events PushButton7
+#tag Events SetFormBtn
 	#tag Event
 		Sub Action()
 		  Dim f As Pair = FormGenerator.CreateForm
@@ -3718,24 +3707,26 @@ End
 		End Sub
 	#tag EndEvent
 #tag EndEvents
-#tag Events PushButton8
+#tag Events HeadThreadBtn
 	#tag Event
 		Sub Action()
 		  PauseButton.Enabled = True
 		  ResetButton.Enabled = False
 		  AbortButton.Enabled = True
-		  mURL = TextField1.Text
-		  HeadThread.Run
+		  mURL = URLField.Text
+		  mWorker = New Thread
+		  AddHandler mWorker.Run, WeakAddressOf RunHead
+		  mWorker.Run
 		End Sub
 	#tag EndEvent
 #tag EndEvents
-#tag Events PushButton9
+#tag Events HeadBtn
 	#tag Event
 		Sub Action()
 		  PauseButton.Enabled = True
 		  ResetButton.Enabled = False
 		  AbortButton.Enabled = True
-		  Client.Head(TextField1.Text)
+		  Client.Head(URLField.Text)
 		End Sub
 	#tag EndEvent
 #tag EndEvents
@@ -3750,15 +3741,6 @@ End
 	#tag Event
 		Sub Action()
 		  DoProgress()
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events HeadThread
-	#tag Event
-		Sub Run()
-		  If Not Client.Head(mURL) Then
-		    Break
-		  End If
 		End Sub
 	#tag EndEvent
 #tag EndEvents

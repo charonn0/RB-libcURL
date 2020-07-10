@@ -1,5 +1,15 @@
 #tag Module
 Protected Module libcURL
+	#tag Method, Flags = &h21
+		Private Function AbsolutePath_(Extends f As FolderItem) As String
+		  #If RBVersion > 2019 Then
+		    Return f.NativePath
+		  #Else
+		    Return f.AbsolutePath
+		  #endif
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h1
 		Protected Function CompareDomains(Hostname1 As String, Hostname2 As String, Optional EasyItem As libcURL.EasyHandle) As Boolean
 		  ' Compares Hostname1 and Hostname2 to determine whether they belong to the same subdomain.
@@ -329,7 +339,20 @@ Protected Module libcURL
 		  If Not System.IsFunctionAvailable("curl_global_sslset", cURLLib) Then Return ret
 		  
 		  Dim p As Ptr
-		  Call curl_global_sslset(SSLBackEnd.Ignore, Nil, p)
+		  Dim err As Integer = curl_global_sslset(SSLBackEnd.Ignore, Nil, p)
+		  If err <> CURLSSLSET_UNKNOWN_BACKEND Then
+		    Dim ex As New cURLException(Nil)
+		    ex.ErrorNumber = err
+		    Select Case err
+		    Case CURLSSLSET_TOO_LATE
+		      ex.Message = "The SSL backend has already been initialized and cannot be changed."
+		    Case CURLSSLSET_NO_BACKENDS
+		      ex.Message = "The installed version of libcurl was built without SSL support."
+		    Else
+		      ex.Message = "Unknown error while enumerating SSL backends."
+		    End Select
+		    Raise ex
+		  End If
 		  If p = Nil Then Return ret
 		  Dim mb As MemoryBlock = p.CString(0)
 		  For i As Integer = 0 To mb.Size - 1

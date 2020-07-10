@@ -109,7 +109,7 @@ Implements FormStreamGetter
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm.AddElement
 		  
 		  ' this dummy EasyHandle handles the ReadCallback by reading from ValueStream
-		  Dim dummy As New libcURL.EasyHandle(Me.Flags)
+		  Dim dummy As New libcURL.EasyHandle()
 		  dummy.UploadStream = ValueStream
 		  mStreams.Append(dummy)
 		  
@@ -163,8 +163,9 @@ Implements FormStreamGetter
 	#tag Method, Flags = &h0
 		Sub Constructor(GlobalInitFlags As Integer = libcURL.CURL_GLOBAL_DEFAULT)
 		  // Calling the overridden superclass constructor.
-		  // Constructor(GlobalInitFlags As Integer) -- From libcURL.cURLHandle
-		  Super.Constructor(GlobalInitFlags)
+		  // Constructor() -- From libcURL.cURLHandle
+		  #pragma Unused GlobalInitFlags
+		  Super.Constructor()
 		End Sub
 	#tag EndMethod
 
@@ -321,7 +322,7 @@ Implements FormStreamGetter
 		    Case Variant.TypeObject
 		      Select Case v(i)
 		      Case IsA FolderItem
-		        Dim mb As MemoryBlock = FolderItem(v(i)).AbsolutePath + Chr(0) ' make doubleplus sure it's null terminated
+		        Dim mb As MemoryBlock = FolderItem(v(i)).AbsolutePath_ + Chr(0) ' make doubleplus sure it's null terminated
 		        m.Append(mb)
 		      Case IsA cURLHandle
 		        m.Append(Ptr(cURLHandle(v(i)).Handle))

@@ -2,7 +2,32 @@
 Protected Class cURLHandle
 Implements ErrorSetter
 	#tag Method, Flags = &h1
-		Protected Sub Constructor(GlobalInitFlags As Integer)
+		Protected Sub Constructor()
+		  ' Initializes libcURL if necessary. 
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/curl_global_init.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLHandle.Constructor
+		  
+		  Static available As Boolean = libcURL.IsAvailable
+		  If Not available Then
+		    Dim err As New PlatformNotSupportedException
+		    err.Message = "libcURL is not available or is an unsupported version."
+		    Raise err
+		  End If
+		  
+		  mLastError = 0 ' clears the NOT_INITIALIZED default value
+		  
+		  If InitFlag = libcURL.Errors.INIT_FAILED Then
+		    mLastError = curl_global_init(CURL_GLOBAL_DEFAULT)
+		    If mLastError <> 0 Then Raise New cURLException(Me)
+		  End If
+		  mFlags = CURL_GLOBAL_DEFAULT
+		  InitFlag = CURL_GLOBAL_DEFAULT
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Attributes( deprecated ) Protected Sub Constructor(GlobalInitFlags As Integer)
 		  ' Initializes libcURL if necessary. GlobalInitFlags is one of the CURL_GLOBAL_* constants.
 		  ' This class keeps track of which flags have already been initialized, and only initializes
 		  ' libcURL if GlobalInitFlags is not among them.
@@ -70,7 +95,7 @@ Implements ErrorSetter
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Flags() As Integer
+		Attributes( deprecated )  Function Flags() As Integer
 		  ' The global initialization flags that were passed to the instance Constructor
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLHandle.Flags
@@ -108,10 +133,14 @@ Implements ErrorSetter
 	#tag Method, Flags = &h1
 		Protected Function Operator_Compare(OtherHandle As libcURL.cURLHandle) As Integer
 		  If OtherHandle Is Nil Then Return 1
-		  Return Sign(Me.Flags - OtherHandle.Flags)
+		  Return Sign(mFlags - OtherHandle.mFlags)
 		End Function
 	#tag EndMethod
 
+
+	#tag Property, Flags = &h21
+		Private Shared InitFlag As Integer = libcURL.Errors.INIT_FAILED
+	#tag EndProperty
 
 	#tag Property, Flags = &h21
 		Private Shared InitFlags As Dictionary

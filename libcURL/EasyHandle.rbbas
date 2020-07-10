@@ -37,8 +37,7 @@ Inherits libcURL.cURLHandle
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Constructor
 		  
 		  // Calling the overridden superclass constructor.
-		  // Constructor(GlobalInitFlags As Integer) -- From libcURL.cURLHandle
-		  Super.Constructor(GlobalInitFlags)
+		  Super.Constructor()
 		  If ExistingHandle <> 0 Then
 		    mHandle = ExistingHandle
 		  Else
@@ -72,8 +71,8 @@ Inherits libcURL.cURLHandle
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Constructor
 		  
 		  // Calling the overridden superclass constructor.
-		  // Constructor(GlobalInitFlags As Integer) -- From libcURL.cURLHandle
-		  Super.Constructor(CopyOpts.Flags)
+		  // Constructor() -- From libcURL.cURLHandle
+		  Super.Constructor()
 		  
 		  If CopyOpts.Handle = 0 Then Raise New NilObjectException
 		  mHandle = curl_easy_duphandle(CopyOpts.Handle)
@@ -371,7 +370,7 @@ Inherits libcURL.cURLHandle
 		    #Else
 		      mb = New MemoryBlock(8)
 		    #Endif
-		    If Me.GetInfo(InfoType, mb) And mb.Ptr(0) <> Nil Then Return New ListPtr(mb.Ptr(0), Me.Flags)
+		    If Me.GetInfo(InfoType, mb) And mb.Ptr(0) <> Nil Then Return New ListPtr(mb.Ptr(0))
 		    
 		  Else
 		    Dim err As New TypeMismatchException
@@ -746,7 +745,7 @@ Inherits libcURL.cURLHandle
 		      Return Me.SetOptionPtr(OptionNumber, NewValue.PtrValue)
 		      
 		    Case IsA FolderItem
-		      Return Me.SetOption(OptionNumber, FolderItem(NewValue).AbsolutePath)
+		      Return Me.SetOption(OptionNumber, FolderItem(NewValue).AbsolutePath_)
 		      
 		    Case IsA Dictionary ' assume a multipart form
 		      Dim form As Dictionary = NewValue
@@ -1833,6 +1832,18 @@ Inherits libcURL.cURLHandle
 	#tag EndConstant
 
 	#tag Constant, Name = CURLPAUSE_SEND, Type = Double, Dynamic = False, Default = \"4", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = CURLSSLOPT_ALLOW_BEAST, Type = Double, Dynamic = False, Default = \"1", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = CURLSSLOPT_NO_PARTIALCHAIN, Type = Double, Dynamic = False, Default = \"4", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = CURLSSLOPT_NO_REVOKE, Type = Double, Dynamic = False, Default = \"2", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = CURLSSLOPT_REVOKE_BEST_EFFORT, Type = Double, Dynamic = False, Default = \"8", Scope = Public
 	#tag EndConstant
 
 	#tag Constant, Name = CURL_DEFAULT_READ_SIZE, Type = Double, Dynamic = False, Default = \"16384", Scope = Public
