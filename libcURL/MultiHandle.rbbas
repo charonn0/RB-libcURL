@@ -162,7 +162,7 @@ Inherits libcURL.cURLHandle
 		Private Sub PerformTimerHandler(Sender As Timer)
 		  ' This method handles the PerformTimer.Action event. It calls PerformOnce on the main thread until PerformOnce returns False.
 		  
-		  ' this loop calls PerformOnce 3 times and then updates the Timer's period.
+		  ' this loop calls PerformOnce 4 times and then updates the Timer's period.
 		  For i As Integer = 0 To 4
 		    If Not Me.PerformOnce() Then
 		      Sender.Mode = Timer.ModeOff
