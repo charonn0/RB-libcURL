@@ -1,5 +1,34 @@
 #tag Module
 Protected Module Opts
+	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Function curl_easy_option_by_id Lib cURLLib (OptionID As Integer) As Ptr
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Function curl_easy_option_by_name Lib cURLLib (Name As CString) As Ptr
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Function curl_easy_option_next Lib cURLLib (Previous As Ptr) As Ptr
+	#tag EndExternalMethod
+
+	#tag Method, Flags = &h1
+		Protected Function GetOptionByID(OptionID As Integer) As libcURL.Opts.OptionInfo
+		  If Not libcURL.IsAvailable Then Return Nil
+		  Dim opt As Ptr = curl_easy_option_by_id(OptionID)
+		  If opt <> Nil Then Return New OptionInfo(opt.curl_easyoption)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function GetOptionByName(Name As CString) As libcURL.Opts.OptionInfo
+		  If Not libcURL.IsAvailable Then Return Nil
+		  Dim opt As Ptr = curl_easy_option_by_name(Name)
+		  If opt <> Nil Then Return New OptionInfo(opt.curl_easyoption)
+		End Function
+	#tag EndMethod
+
+
 	#tag Constant, Name = ACCEPT_ENCODING, Type = Double, Dynamic = False, Default = \"10102", Scope = Protected
 	#tag EndConstant
 
@@ -509,6 +538,26 @@ Protected Module Opts
 
 	#tag Constant, Name = XFERINFOFUNCTION, Type = Double, Dynamic = False, Default = \"20219", Scope = Protected
 	#tag EndConstant
+
+
+	#tag Structure, Name = curl_easyoption, Flags = &h21
+		Name As Ptr
+		  Option As Integer
+		Type As curl_easytype
+	#tag EndStructure
+
+
+	#tag Enum, Name = curl_easytype, Type = Integer, Flags = &h1
+		Long
+		  Values
+		  Off_T
+		  Object
+		  String
+		  SList
+		  CBPTR
+		  Blob
+		Routine
+	#tag EndEnum
 
 
 	#tag ViewBehavior
