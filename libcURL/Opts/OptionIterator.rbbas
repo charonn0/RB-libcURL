@@ -3,6 +3,13 @@ Protected Class OptionIterator
 	#tag Method, Flags = &h0
 		Sub Constructor()
 		  If Not libcURL.IsAvailable Then Raise New PlatformNotSupportedException
+		  If Not libcURL.Version.IsAtLeast(7, 73, 0) Then
+		    Dim err As New cURLException(Nil)
+		    err.ErrorNumber = libcURL.Errors.FEATURE_UNAVAILABLE
+		    err.Message = FormatError(err.ErrorNumber)
+		    Raise err
+		  End If
+		  
 		  mPrev = curl_easy_option_next(Nil)
 		  If mPrev = Nil Then 
 		    Dim err As New cURLException(Nil)
