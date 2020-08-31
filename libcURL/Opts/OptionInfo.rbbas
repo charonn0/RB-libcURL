@@ -21,7 +21,7 @@ Protected Class OptionInfo
 		    If opt <> Nil Then Me.Constructor(opt.curl_easyoption)
 		  Else
 		    mOpt.Option = OptionID
-		    mOpt.Type = curl_easytype.Unknown
+		    mOpt.Type = GetOptionType(OptionID)
 		  End If
 		  mBindingAlias = GetOptionName(OptionID)
 		End Sub
@@ -35,7 +35,7 @@ Protected Class OptionInfo
 		    If opt <> Nil Then Me.Constructor(opt.curl_easyoption)
 		  Else
 		    mOpt.Option = GetOptionByName(Uppercase(Name))
-		    mOpt.Type = curl_easytype.Unknown
+		    mOpt.Type = GetOptionType(Me.Value)
 		  End If
 		  mBindingAlias = GetOptionName(Me.Value)
 		End Sub

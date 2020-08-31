@@ -406,7 +406,7 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function GetOption(OptionNumber As Integer, DefaultValue As Variant = Nil) As Variant
+		Function GetOption(OptionNumber As Integer, DefaultValue As Variant = Nil) As libcURL.Opts.ValueInfo
 		  Dim v As Variant = mOptions.Lookup(OptionNumber, DefaultValue)
 		  If v IsA WeakRef And WeakRef(v).Value IsA cURLHandle Then v = WeakRef(v).Value
 		  Return v
@@ -740,7 +740,7 @@ Inherits libcURL.cURLHandle
 		    End If
 		    
 		  Case Variant.TypePtr, Variant.TypeInteger
-		    mOptions.Value(OptionNumber) = NewValue
+		    mOptions.Value(OptionNumber) = New libcURL.Opts.ValueInfo(OptionNumber, NewValue)
 		    Return Me.SetOptionPtr(OptionNumber, NewValue.PtrValue)
 		    
 		    #If Target64Bit Then
@@ -749,7 +749,7 @@ Inherits libcURL.cURLHandle
 		    #EndIf
 		    
 		  Case Variant.TypeString
-		    mOptions.Value(OptionNumber) = NewValue
+		    mOptions.Value(OptionNumber) = New libcURL.Opts.ValueInfo(OptionNumber, NewValue)
 		    Dim mb As MemoryBlock = NewValue.CStringValue + Chr(0) ' make doubleplus sure it's null terminated
 		    Return Me.SetOptionPtr(OptionNumber, mb)
 		    
@@ -757,11 +757,11 @@ Inherits libcURL.cURLHandle
 		    ' To add support for a custom object type, add a block to this Select statement
 		    Select Case NewValue
 		    Case IsA MemoryBlock
-		      mOptions.Value(OptionNumber) = NewValue
+		      mOptions.Value(OptionNumber) = New libcURL.Opts.ValueInfo(OptionNumber, NewValue)
 		      Return Me.SetOptionPtr(OptionNumber, NewValue.PtrValue)
 		      
 		    Case IsA FolderItem
-		      mOptions.Value(OptionNumber) = NewValue
+		      mOptions.Value(OptionNumber) = New libcURL.Opts.ValueInfo(OptionNumber, NewValue)
 		      Return Me.SetOption(OptionNumber, FolderItem(NewValue).AbsolutePath_)
 		      
 		    Case IsA Dictionary ' assume a multipart form
@@ -781,17 +781,17 @@ Inherits libcURL.cURLHandle
 		      Return True
 		      
 		    Case IsA cURLProgressCallback
-		      mOptions.Value(OptionNumber) = NewValue
+		      mOptions.Value(OptionNumber) = New libcURL.Opts.ValueInfo(OptionNumber, NewValue)
 		      Dim p As cURLProgressCallback = NewValue
 		      Return Me.SetOptionPtr(OptionNumber, p)
 		      
 		    Case IsA cURLIOCallback
-		      mOptions.Value(OptionNumber) = NewValue
+		      mOptions.Value(OptionNumber) = New libcURL.Opts.ValueInfo(OptionNumber, NewValue)
 		      Dim p As cURLIOCallback = NewValue
 		      Return Me.SetOptionPtr(OptionNumber, p)
 		      
 		    Case IsA cURLDebugCallback
-		      mOptions.Value(OptionNumber) = NewValue
+		      mOptions.Value(OptionNumber) = New libcURL.Opts.ValueInfo(OptionNumber, NewValue)
 		      Dim p As cURLDebugCallback = NewValue
 		      Return Me.SetOptionPtr(OptionNumber, p)
 		      
