@@ -47,8 +47,9 @@ Inherits libcURL.cURLHandle
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.Constructor
 		  
 		  // Calling the overridden superclass constructor.
-		  // Constructor(GlobalInitFlags As Integer) -- From libcURL.cURLHandle
-		  Super.Constructor(GlobalInitFlags)
+		  // Constructor() -- From libcURL.cURLHandle
+		  #pragma Unused GlobalInitFlags
+		  Super.Constructor()
 		  
 		  mHandle = curl_multi_init()
 		  If mHandle <= 0 Then
@@ -161,7 +162,7 @@ Inherits libcURL.cURLHandle
 		Private Sub PerformTimerHandler(Sender As Timer)
 		  ' This method handles the PerformTimer.Action event. It calls PerformOnce on the main thread until PerformOnce returns False.
 		  
-		  ' this loop calls PerformOnce 3 times and then updates the Timer's period.
+		  ' this loop calls PerformOnce 4 times and then updates the Timer's period.
 		  For i As Integer = 0 To 4
 		    If Not Me.PerformOnce() Then
 		      Sender.Mode = Timer.ModeOff

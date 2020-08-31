@@ -70,7 +70,7 @@ Protected Class MultipartFormElement
 			  
 			  If mContentHeaders = Nil Then
 			    Dim p As Ptr = Struct.ContentHeader
-			    If p <> Nil Then mContentHeaders = New ListPtr(p, mOwner.Flags)
+			    If p <> Nil Then mContentHeaders = New ListPtr(p)
 			  End If
 			  Return mContentHeaders
 			End Get
@@ -107,6 +107,8 @@ Protected Class MultipartFormElement
 			  If mb <> Nil Then
 			    If Struct.ContentsLen > 0 Then
 			      Return mb.StringValue(0, Struct.ContentsLen)
+			    ElseIf Struct.BufferLen > 0 Then
+			      If Struct.BufferLen > 0 Then Return mb.StringValue(0, Struct.BufferLen)
 			    Else
 			      Return mb.CString(0)
 			    End If

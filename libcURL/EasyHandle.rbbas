@@ -37,8 +37,9 @@ Inherits libcURL.cURLHandle
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Constructor
 		  
 		  // Calling the overridden superclass constructor.
-		  // Constructor(GlobalInitFlags As Integer) -- From libcURL.cURLHandle
-		  Super.Constructor(GlobalInitFlags)
+		  // Constructor() -- From libcURL.cURLHandle
+		  #pragma Unused GlobalInitFlags
+		  Super.Constructor()
 		  
 		  mHandle = curl_easy_init()
 		  If mHandle = 0 Then
@@ -69,8 +70,8 @@ Inherits libcURL.cURLHandle
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Constructor
 		  
 		  // Calling the overridden superclass constructor.
-		  // Constructor(GlobalInitFlags As Integer) -- From libcURL.cURLHandle
-		  Super.Constructor(CopyOpts.Flags)
+		  // Constructor() -- From libcURL.cURLHandle
+		  Super.Constructor()
 		  
 		  If CopyOpts.Handle = 0 Then Raise New NilObjectException
 		  mHandle = curl_easy_duphandle(CopyOpts.Handle)
@@ -254,7 +255,7 @@ Inherits libcURL.cURLHandle
 		  #pragma Unused Handle ' handle is the cURL handle of the instance, which we stored in UserData already
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
+		  If curl <> Nil And curl.Value IsA EasyHandle Then
 		    Return EasyHandle(curl.Value).curlDebug(info, data, size)
 		  End If
 		  
@@ -372,7 +373,7 @@ Inherits libcURL.cURLHandle
 		    #Else
 		      mb = New MemoryBlock(8)
 		    #Endif
-		    If Me.GetInfo(InfoType, mb) And mb.Ptr(0) <> Nil Then Return New ListPtr(mb.Ptr(0), Me.Flags)
+		    If Me.GetInfo(InfoType, mb) And mb.Ptr(0) <> Nil Then Return New ListPtr(mb.Ptr(0))
 		    
 		  Else
 		    Dim err As New TypeMismatchException
@@ -419,7 +420,7 @@ Inherits libcURL.cURLHandle
 		  #pragma X86CallingConvention CDecl
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
+		  If curl <> Nil And curl.Value IsA EasyHandle Then
 		    Return EasyHandle(curl.Value).curlHeader(char, size, nmemb)
 		  End If
 		  
@@ -535,7 +536,7 @@ Inherits libcURL.cURLHandle
 		  #pragma X86CallingConvention CDecl
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
+		  If curl <> Nil And curl.Value IsA EasyHandle Then
 		    Return EasyHandle(curl.Value).curlProgress(dlTotal, dlnow, ultotal, ulnow)
 		  End If
 		  
@@ -551,7 +552,7 @@ Inherits libcURL.cURLHandle
 		  #pragma X86CallingConvention CDecl
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
+		  If curl <> Nil And curl.Value IsA EasyHandle Then
 		    Return EasyHandle(curl.Value).curlRead(char, size, nmemb)
 		  End If
 		  
@@ -614,7 +615,7 @@ Inherits libcURL.cURLHandle
 		  #pragma X86CallingConvention CDecl
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
+		  If curl <> Nil And curl.Value IsA EasyHandle Then
 		    Return EasyHandle(curl.Value).curlSeek(Offset, Origin)
 		  End If
 		  
@@ -761,7 +762,7 @@ Inherits libcURL.cURLHandle
 		      
 		    Case IsA FolderItem
 		      mOptions.Value(OptionNumber) = NewValue
-		      Return Me.SetOption(OptionNumber, FolderItem(NewValue).AbsolutePath)
+		      Return Me.SetOption(OptionNumber, FolderItem(NewValue).AbsolutePath_)
 		      
 		    Case IsA Dictionary ' assume a multipart form
 		      Dim form As Dictionary = NewValue
@@ -867,7 +868,7 @@ Inherits libcURL.cURLHandle
 		  #pragma X86CallingConvention CDecl
 		  If Instances = Nil Then Return 0
 		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
-		  If curl <> Nil And curl.Value <> Nil And curl.Value IsA EasyHandle Then
+		  If curl <> Nil And curl.Value IsA EasyHandle Then
 		    Return EasyHandle(curl.Value).curlWrite(char, size, nmemb)
 		  End If
 		  
@@ -1289,7 +1290,7 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  ' Gets the version of HTTP to be used. Returns IPVersion.V4, IPVersion.V6, or IPVersion.Whatever
+			  ' Gets the version of IP to be used. Returns IPVersion.V4, IPVersion.V6, or IPVersion.Whatever
 			  
 			  return mIPVersion
 			End Get
@@ -1857,6 +1858,18 @@ Inherits libcURL.cURLHandle
 	#tag EndConstant
 
 	#tag Constant, Name = CURLPAUSE_SEND, Type = Double, Dynamic = False, Default = \"4", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = CURLSSLOPT_ALLOW_BEAST, Type = Double, Dynamic = False, Default = \"1", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = CURLSSLOPT_NO_PARTIALCHAIN, Type = Double, Dynamic = False, Default = \"4", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = CURLSSLOPT_NO_REVOKE, Type = Double, Dynamic = False, Default = \"2", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = CURLSSLOPT_REVOKE_BEST_EFFORT, Type = Double, Dynamic = False, Default = \"8", Scope = Public
 	#tag EndConstant
 
 	#tag Constant, Name = CURL_DEFAULT_READ_SIZE, Type = Double, Dynamic = False, Default = \"16384", Scope = Public
