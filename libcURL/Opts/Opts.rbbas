@@ -78,7 +78,6 @@ Protected Module Opts
 		End Function
 	#tag EndMethod
 
-
 	#tag Constant, Name = ACCEPT_ENCODING, Type = Double, Dynamic = False, Default = \"10102", Scope = Protected
 	#tag EndConstant
 
