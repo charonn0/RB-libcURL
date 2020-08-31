@@ -2,7 +2,6 @@
 Protected Class OptionIterator
 	#tag Method, Flags = &h0
 		Sub Constructor()
-		  If Not libcURL.IsAvailable Then Raise New PlatformNotSupportedException
 		  If Not libcURL.Version.IsAtLeast(7, 73, 0) Then
 		    Dim err As New cURLException(Nil)
 		    err.ErrorNumber = libcURL.Errors.FEATURE_UNAVAILABLE
@@ -11,7 +10,7 @@ Protected Class OptionIterator
 		  End If
 		  
 		  mPrev = curl_easy_option_next(Nil)
-		  If mPrev = Nil Then 
+		  If mPrev = Nil Then
 		    Dim err As New cURLException(Nil)
 		    err.ErrorNumber = libcURL.Errors.INIT_FAILED
 		    err.Message = libcURL.FormatError(libcURL.Errors.INIT_FAILED)
@@ -22,9 +21,33 @@ Protected Class OptionIterator
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub Constructor(Session As libcURL.EasyHandle)
+		  OptionDumper(Session).Dump(mDataStore)
+		  mIndex = 0
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function IsAvailable() As Boolean
+		  Return libcURL.Version.IsAtLeast(7, 73, 0)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function MoveNext() As Boolean
-		  mPrev = curl_easy_option_next(mPrev)
-		  Return mPrev <> Nil
+		  If mDataStore = Nil Then
+		    mPrev = curl_easy_option_next(mPrev)
+		    If mPrev <> Nil Then
+		      mIndex = mIndex + 1
+		      Return True
+		    End If
+		    
+		  Else
+		    If mIndex >= mDataStore.Count - 1 Then Return False
+		    mIndex = mIndex + 1
+		    Return True
+		    
+		  End If
 		End Function
 	#tag EndMethod
 
@@ -41,7 +64,10 @@ Protected Class OptionIterator
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  If mPrev <> Nil Then
+			  If mDataStore <> Nil Then
+			    Dim optnum As Integer = mDataStore.Key(mIndex)
+			    Return optnum
+			  ElseIf mPrev <> Nil Then
 			    Dim opt As curl_easyoption = mPrev.curl_easyoption
 			    Return New OptionInfo(opt)
 			  End If
@@ -49,6 +75,10 @@ Protected Class OptionIterator
 		#tag EndGetter
 		CurrentOption As libcURL.Opts.OptionInfo
 	#tag EndComputedProperty
+
+	#tag Property, Flags = &h21
+		Private mDataStore As Dictionary
+	#tag EndProperty
 
 	#tag Property, Flags = &h21
 		Private mIndex As Integer
