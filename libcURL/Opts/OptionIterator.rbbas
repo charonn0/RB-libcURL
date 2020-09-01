@@ -2,7 +2,7 @@
 Protected Class OptionIterator
 	#tag Method, Flags = &h0
 		Sub Constructor()
-		  If Not libcURL.Version.IsAtLeast(7, 73, 0) Then
+		  If Not IsAvailable() Then
 		    Dim err As New cURLException(Nil)
 		    err.ErrorNumber = libcURL.Errors.FEATURE_UNAVAILABLE
 		    err.Message = FormatError(err.ErrorNumber)

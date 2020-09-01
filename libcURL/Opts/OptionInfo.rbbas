@@ -145,7 +145,7 @@ Protected Class OptionInfo
 	#tag Method, Flags = &h0
 		Sub Operator_Convert(OptionID As Integer)
 		  If Not libcURL.IsAvailable Then Raise New PlatformNotSupportedException
-		  If libcURL.Version.IsAtLeast(7, 73, 0) Then
+		  If OptionIterator.IsAvailable() Then
 		    Dim opt As Ptr = curl_easy_option_by_id(OptionID)
 		    If opt <> Nil Then Me.Constructor(opt.curl_easyoption)
 		  Else
@@ -158,7 +158,7 @@ Protected Class OptionInfo
 	#tag Method, Flags = &h0
 		Sub Operator_Convert(Name As String)
 		  If Not libcURL.IsAvailable Then Raise New PlatformNotSupportedException
-		  If libcURL.Version.IsAtLeast(7, 73, 0) Then
+		  If OptionIterator.IsAvailable() Then
 		    Dim opt As Ptr = curl_easy_option_by_name(Name)
 		    If opt <> Nil Then Me.Constructor(opt.curl_easyoption)
 		  Else
