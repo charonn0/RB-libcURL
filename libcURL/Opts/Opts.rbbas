@@ -24,18 +24,8 @@ Protected Module Opts
 		    Dim opt As OptionInfo = OptionNumber
 		    If opt.OptionNumber = 0 Then Return False
 		    Dim e As New EasyHandle
-		    Select Case opt.Type
-		    Case OptionType.Bitmask, OptionType.LargeNumber, OptionType.Number
-		      If Not e.SetOption(opt, 1) Then Return False
-		      Return opt.Value(e) = 1
-		    Case OptionType.Blob, OptionType.List, OptionType.Opaque, OptionType.Ptr, OptionType.Subroutine
-		      If Not e.SetOption(opt, Nil) Then Return False
-		      Return opt.Value(e) = Nil
-		    Case OptionType.String
-		      If Not e.SetOption(opt, "") Then Return False
-		      Return opt.Value(e) = ""
-		    End Select
-		    
+		    If Not e.SetOption(opt, 1) Then Return False
+		    Return opt.Value(e) = 1
 		    
 		  End If
 		  
@@ -868,7 +858,7 @@ Protected Module Opts
 	#tag Constant, Name = UPLOAD, Type = Double, Dynamic = False, Default = \"46", Scope = Protected
 	#tag EndConstant
 
-	#tag Constant, Name = UPLOAD_BUFFERSIZE, Type = Double, Dynamic = False, Default = \"280", Scope = Protected
+	#tag Constant, Name = UPLOAD_BUFFERSIZE , Type = Double, Dynamic = False, Default = \"280", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = URL, Type = Double, Dynamic = False, Default = \"10002", Scope = Protected
@@ -923,12 +913,11 @@ Protected Module Opts
 	#tag Structure, Name = curl_easyoption, Flags = &h21
 		Name As Ptr
 		  Option As Integer
-		  Type As OptionType
-		Flags As UInt32
+		Type As curl_easytype
 	#tag EndStructure
 
 
-	#tag Enum, Name = OptionType, Flags = &h1
+	#tag Enum, Name = curl_easytype, Type = Integer, Flags = &h1
 		Number
 		  Bitmask
 		  LargeNumber
