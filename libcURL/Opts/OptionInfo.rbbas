@@ -1924,6 +1924,7 @@ Protected Class OptionInfo
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  If IsBooleanOption(OptionNumber) Then Return OptionType.Boolean
 			  Return mOpt.Type
 			End Get
 		#tag EndGetter
