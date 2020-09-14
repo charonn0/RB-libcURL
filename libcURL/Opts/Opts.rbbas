@@ -52,6 +52,36 @@ Protected Module Opts
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h1
+		Protected Function OptionTypeName(Type As libcURL.Opts.OptionType) As String
+		  Select Case Type
+		  Case OptionType.Bitmask
+		    Return "Bitmask"
+		  Case OptionType.Blob
+		    Return "Blob"
+		  Case OptionType.LargeNumber
+		    Return "Large number"
+		  Case OptionType.List
+		    Return "List"
+		  Case OptionType.Number
+		    Return "Number"
+		  Case OptionType.Opaque
+		    Return "Opaque"
+		  Case OptionType.Ptr
+		    Return "Ptr"
+		  Case OptionType.String
+		    Return "String"
+		  Case OptionType.Subroutine
+		    Return "Subroutine"
+		  Case OptionType.Boolean ' added by the binding
+		    Return "Boolean"
+		  Else
+		    Return "Unknown"
+		  End Select
+		End Function
+	#tag EndMethod
+
+
 	#tag Constant, Name = ABSTRACT_UNIX_SOCKET, Type = Double, Dynamic = False, Default = \"10264", Scope = Protected
 	#tag EndConstant
 
@@ -938,7 +968,8 @@ Protected Module Opts
 		  Opaque
 		  Blob
 		  Subroutine
-		Unknown
+		  Unknown
+		Boolean
 	#tag EndEnum
 
 
