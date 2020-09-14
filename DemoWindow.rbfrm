@@ -1725,7 +1725,7 @@ Begin Window DemoWindow
          LockRight       =   True
          LockTop         =   False
          Scope           =   0
-         State           =   0
+         State           =   1
          TabIndex        =   1
          TabPanelIndex   =   5
          TabStop         =   True
@@ -1734,7 +1734,7 @@ Begin Window DemoWindow
          TextUnit        =   0
          Top             =   376
          Underline       =   ""
-         Value           =   False
+         Value           =   True
          Visible         =   True
          Width           =   257
       End
@@ -2636,30 +2636,31 @@ End
 	#tag Method, Flags = &h21
 		Private Sub RefreshOpts()
 		  RawOptsList.DeleteAllRows()
-		  Dim iter As New libcURL.Opts.OptionIterator()
+		  Dim iter As libcURL.Opts.OptionIterator
+		  If ShowModdedOpts.Value Then
+		    iter = New libcURL.Opts.OptionIterator(Client.EasyItem)
+		  Else
+		    iter = New libcURL.Opts.OptionIterator()
+		  End If
 		  Do
 		    Dim opt As libcURL.Opts.OptionInfo = iter.CurrentOption
 		    Dim tp As String = libcURL.Opts.OptionTypeName(opt.Type)
 		    Dim vl As String = opt.StringValue(Client.EasyItem)
-		    If vl = "" And ShowModdedOpts.Value Then Continue
+		    If opt.IsDeprecated Then Continue
 		    
 		    If opt.Type = libcURL.Opts.OptionType.Boolean Then
 		      RawOptsList.AddRow(opt.Name, "", tp, opt.DocumentationURL)
 		      RawOptsList.CellType(RawOptsList.LastIndex, 1) = Listbox.TypeCheckbox
-		      Select Case vl
-		      Case "True"
+		      If vl = "True" Then
 		        RawOptsList.CellState(RawOptsList.LastIndex, 1) = CheckBox.CheckedStates.Checked
-		      Case "False"
-		        RawOptsList.CellState(RawOptsList.LastIndex, 1) = CheckBox.CheckedStates.Unchecked
 		      Else
-		        RawOptsList.CellState(RawOptsList.LastIndex, 1) = CheckBox.CheckedStates.Indeterminate
-		      End Select
+		        RawOptsList.CellState(RawOptsList.LastIndex, 1) = CheckBox.CheckedStates.Unchecked
+		      End If
 		    Else
 		      RawOptsList.AddRow(opt.Name, vl, tp, opt.DocumentationURL)
 		    End If
 		    
 		    RawOptsList.RowTag(RawOptsList.LastIndex) = opt
-		    
 		    
 		  Loop Until Not iter.MoveNext()
 		End Sub
@@ -3664,6 +3665,7 @@ End
 		    Case libcURL.Opts.OptionType.Ptr, libcURL.Opts.OptionType.Subroutine, libcURL.Opts.OptionType.Opaque, libcURL.Opts.OptionType.List
 		      Return False
 		    Else
+		      Me.CellTag(row, column) = Me.Cell(row, column)
 		      Me.CellType(row, column) = Listbox.TypeEditable
 		      Me.EditCell(row, column)
 		      Return True
@@ -3683,6 +3685,10 @@ End
 		  Case 0 ' name
 		    If opt.IsDeprecated And opt.StringValue(Client.EasyItem) <> "" Then
 		      g.ForeColor = &cFF000000 ' deprecated
+		      If opt.LibraryAlias <> "" Then
+		        g.DrawString(opt.LibraryAlias + "(as " + opt.Name + ")", x, y)
+		        Return True
+		      End If
 		    End If
 		    
 		  Case 1 ' value
@@ -3729,17 +3735,71 @@ End
 		Sub CellAction(row As Integer, column As Integer)
 		  If column <> 1 Then Return
 		  If mLockUI Then Return
-		  Dim opt As libcURL.Opts.OptionInfo = Me.RowTag(row)
-		  Select Case opt.Type
-		  Case libcURL.Opts.OptionType.Boolean
-		    opt.Value(Client.EasyItem) = Me.CellState(row, column) = CheckBox.CheckedStates.Checked
-		  Case libcURL.Opts.OptionType.String
-		    opt.Value(Client.EasyItem) = Me.Cell(row, column)
-		  Else
-		    opt.Value(Client.EasyItem) = Val(Me.Cell(row, column))
-		  End Select
-		  RefreshOpts()
+		  If Me.Cell(row, column) <> Me.CellTag(row, column) Then
+		    Dim opt As libcURL.Opts.OptionInfo = Me.RowTag(row)
+		    Select Case opt.Type
+		    Case libcURL.Opts.OptionType.Boolean
+		      opt.Value(Client.EasyItem) = Me.CellState(row, column) = CheckBox.CheckedStates.Checked
+		    Case libcURL.Opts.OptionType.String
+		      opt.Value(Client.EasyItem) = Me.Cell(row, column)
+		    Else
+		      opt.Value(Client.EasyItem) = Val(Me.Cell(row, column))
+		    End Select
+		  End If
+		  'RefreshOpts()
+		  
+		Exception err As TypeMismatchException
+		  Me.Cell(row, column) = Me.CellTag(row, column)
 		End Sub
+	#tag EndEvent
+	#tag Event
+		Function ConstructContextualMenu(base as MenuItem, x as Integer, y as Integer) As Boolean
+		  Dim row, col As Integer
+		  row = Me.RowFromXY(x, y)
+		  If row = -1 Then Return False
+		  col = Me.ColumnFromXY(x, y)
+		  If col = -1 Then Return False
+		  
+		  Dim opt As libcURL.Opts.OptionInfo = Me.RowTag(row)
+		  Dim edt As New MenuItem("Edit value")
+		  edt.Tag = row:col
+		  base.Append(edt)
+		  
+		  Dim rst As New MenuItem("Reset default")
+		  rst.Tag = row:col
+		  rst.Enabled = Not opt.IsSet(Client.EasyItem)
+		  base.Append(rst)
+		  
+		  Return True
+		End Function
+	#tag EndEvent
+	#tag Event
+		Function ContextualMenuAction(hitItem as MenuItem) As Boolean
+		  Dim p As Pair = hitItem.Tag
+		  Dim row As Integer = p.Left
+		  Dim column As Integer = p.Right
+		  Select Case hitItem.Text
+		  Case "Edit value"
+		    Me.EditCell(row, 1)
+		    
+		  Case "Reset default"
+		    Dim opt As libcURL.Opts.OptionInfo = Me.RowTag(row)
+		    Select Case opt.Type
+		    Case libcURL.Opts.OptionType.Boolean
+		      opt.Value(Client.EasyItem) = False
+		      Me.CellState(row, column) = CheckBox.CheckedStates.Indeterminate
+		    Case libcURL.Opts.OptionType.String
+		      opt.Value(Client.EasyItem) = ""
+		      Me.Cell(row, column) = ""
+		    Else
+		      opt.Value(Client.EasyItem) = 0
+		      Me.Cell(row, column) = ""
+		    End Select
+		  End Select
+		  
+		  Return True
+		  
+		End Function
 	#tag EndEvent
 #tag EndEvents
 #tag Events ShowModdedOpts
