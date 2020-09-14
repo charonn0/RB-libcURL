@@ -877,9 +877,9 @@ Protected Class OptionInfo
 		  Case PRIVATE_
 		    Return "PRIVATE_"
 		  Case PROGRESSDATA
-		    Return "PROGRESSDATA"
+		    Return "XFERINFODATA"
 		  Case PROGRESSFUNCTION
-		    Return "PROGRESSFUNCTION"
+		    Return "XFERINFOFUNCTION"
 		  Case PROTOCOLS
 		    Return "PROTOCOLS"
 		  Case PROXY
@@ -1759,7 +1759,7 @@ Protected Class OptionInfo
 	#tag Method, Flags = &h1
 		Protected Shared Function IsBooleanOption(OptionID As Integer) As Boolean
 		  Select Case OptionID
-		  Case APPEND, AUTOREFERER, BUFFERSIZE, CONNECT_ONLY, COOKIESESSION, DIRLISTONLY, DISALLOW_USERNAME_IN_URL, DNS_SHUFFLE_ADDRESSES, _
+		  Case APPEND, AUTOREFERER, CONNECT_ONLY, COOKIESESSION, DIRLISTONLY, DISALLOW_USERNAME_IN_URL, DNS_SHUFFLE_ADDRESSES, _
 		    DNS_USE_GLOBAL_CACHE, FAILONERROR, FILETIME, FOLLOWLOCATION, FORBID_REUSE, FRESH_CONNECT, FTP_CREATE_MISSING_DIRS, _
 		    FTP_SKIP_PASV_IP, FTP_USE_EPRT, FTP_USE_EPSV, FTP_USE_PRET, HAPROXYPROTOCOL, HEADER, HTTP09_ALLOWED, HTTPGET, HTTPPROXYTUNNEL, _
 		    HTTP_CONTENT_DECODING, HTTP_TRANSFER_DECODING, IGNORE_CONTENT_LENGTH, KEEP_SENDING_ON_ERROR, MAIL_RCPT_ALLLOWFAILS, NOBODY, _
@@ -1769,6 +1769,13 @@ Protected Class OptionInfo
 		    UPLOAD, VERBOSE, WILDCARDMATCH
 		    Return True
 		  End Select
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function IsSet(Session As libcURL.EasyHandle) As Boolean
+		  Dim s As String = StringValue(Session)
+		  Return s = ""
 		End Function
 	#tag EndMethod
 
