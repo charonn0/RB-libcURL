@@ -1815,15 +1815,15 @@ Protected Class OptionInfo
 		  Select Case Me.Type
 		  Case OptionType.Bitmask, OptionType.LargeNumber, OptionType.Number
 		    #If Target64Bit Then
-		      Return Str(Me.Value(Session).Int64Value)
+		      Dim i As Int64 = Me.Value(Session).Int64Value
 		    #Else
-		      Return Str(Me.Value(Session).Int32Value)
+		      Dim i As Int32 = Me.Value(Session).Int32Value
 		    #EndIf
 		    If i <> 0 Then Return Str(i)
 		    
 		  Case OptionType.List, OptionType.Opaque, OptionType.Ptr
 		    Dim p As Ptr = Me.Value(Session).PtrValue
-		    If p = Nil Then Return "(nil)"
+		    If p = Nil Then Return ""
 		    If Me.Type = OptionType.Ptr Then
 		      Try
 		        Dim mb As MemoryBlock = p
@@ -1838,7 +1838,10 @@ Protected Class OptionInfo
 		    Return Me.Value(Session).StringValue
 		    
 		  Case OptionType.Subroutine
-		    Return "(delegate)"
+		    If Me.Value(Session) <> Nil Then Return "(delegate)"
+		    
+		  Case OptionType.Boolean
+		    If Me.Value(Session).BooleanValue Then Return "True"
 		    
 		  End Select
 		  
