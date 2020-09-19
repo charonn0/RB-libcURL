@@ -1884,7 +1884,7 @@ Protected Class OptionInfo
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  If Name <> "" And Not IsDeprecated Then Return "https://curl.haxx.se/libcurl/c/CURLOPT_" + Name + ".html"
+			  If Name <> "" And Not IsDeprecated Then Return "https://curl.haxx.se/libcurl/c/" + LibraryAlias + ".html"
 			End Get
 		#tag EndGetter
 		DocumentationURL As String
@@ -1903,7 +1903,7 @@ Protected Class OptionInfo
 		#tag Getter
 			Get
 			  Dim nm As String = GetOptionName(OptionNumber)
-			  If nm = "INTERFACE" Then nm = "NETINTERFACE"
+			  If nm <> "" Then nm = "CURLOPT_" + nm
 			  Return nm
 			End Get
 		#tag EndGetter
