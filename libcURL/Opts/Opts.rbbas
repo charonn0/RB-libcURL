@@ -14,30 +14,25 @@ Protected Module Opts
 
 	#tag Method, Flags = &h1
 		Protected Function IsOptionAvailable(OptionNumber As Integer) As Boolean
-		  If OptionIterator.IsAvailable() Then ' listing available options is available
-		    Dim iter As New OptionIterator()
-		    Do
-		      If iter.CurrentOption = OptionNumber Then Return True
-		    Loop Until Not iter.MoveNext()
-		    
-		  Else ' fall back
-		    Dim opt As OptionInfo = OptionNumber
-		    If opt.OptionNumber = 0 Then Return False
-		    Dim e As New EasyHandle
-		    Select Case opt.Type
-		    Case OptionType.Bitmask, OptionType.LargeNumber, OptionType.Number
-		      If Not e.SetOption(opt, 1) Then Return False
-		      Return opt.Value(e) = 1
-		    Case OptionType.Blob, OptionType.List, OptionType.Opaque, OptionType.Ptr, OptionType.Subroutine
-		      If Not e.SetOption(opt, Nil) Then Return False
-		      Return opt.Value(e) = Nil
-		    Case OptionType.String
-		      If Not e.SetOption(opt, "") Then Return False
-		      Return opt.Value(e) = ""
-		    End Select
-		    
-		    
-		  End If
+		  If Not libcURL.IsAvailable Then Return False
+		  Dim iter As New OptionIterator()
+		  Do
+		    If iter.CurrentOption = OptionNumber Then
+		      Dim opt As OptionInfo = OptionNumber
+		      Dim e As New EasyHandle
+		      Select Case opt.Type
+		      Case OptionType.Bitmask, OptionType.LargeNumber, OptionType.Number
+		        If Not e.SetOption(opt, 1) Then Return False
+		        Return opt.Value(e) = 1
+		      Case OptionType.Blob, OptionType.List, OptionType.Opaque, OptionType.Ptr, OptionType.Subroutine
+		        If Not e.SetOption(opt, Nil) Then Return False
+		        Return opt.Value(e) = Nil
+		      Case OptionType.String
+		        If Not e.SetOption(opt, "") Then Return False
+		        Return opt.Value(e) = ""
+		      End Select
+		    End If
+		  Loop Until Not iter.MoveNext()
 		  
 		Exception
 		  Return False

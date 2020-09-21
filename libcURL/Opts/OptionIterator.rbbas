@@ -2,7 +2,7 @@
 Protected Class OptionIterator
 	#tag Method, Flags = &h0
 		Sub Constructor()
-		  If Not IsAvailable() Then
+		  If Not System.IsFunctionAvailable("curl_easy_option_next", cURLLib) Then
 		    mDataStore = FakeDataStore
 		  Else
 		    
@@ -40,12 +40,6 @@ Protected Class OptionIterator
 		    mPrev = lastp
 		    Return c
 		  End If
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		 Shared Function IsAvailable() As Boolean
-		  Return libcURL.Version.IsAtLeast(7, 73, 0)
 		End Function
 	#tag EndMethod
 
