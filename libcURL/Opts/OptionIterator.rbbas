@@ -3,18 +3,16 @@ Protected Class OptionIterator
 	#tag Method, Flags = &h0
 		Sub Constructor()
 		  If Not IsAvailable() Then
-		    Dim err As New cURLException(Nil)
-		    err.ErrorNumber = libcURL.Errors.FEATURE_UNAVAILABLE
-		    err.Message = FormatError(err.ErrorNumber)
-		    Raise err
-		  End If
-		  
-		  mPrev = curl_easy_option_next(Nil)
-		  If mPrev = Nil Then
-		    Dim err As New cURLException(Nil)
-		    err.ErrorNumber = libcURL.Errors.INIT_FAILED
-		    err.Message = libcURL.FormatError(libcURL.Errors.INIT_FAILED)
-		    Raise err
+		    mDataStore = FakeDataStore
+		  Else
+		    
+		    mPrev = curl_easy_option_next(Nil)
+		    If mPrev = Nil Then
+		      Dim err As New cURLException(Nil)
+		      err.ErrorNumber = libcURL.Errors.INIT_FAILED
+		      err.Message = libcURL.FormatError(libcURL.Errors.INIT_FAILED)
+		      Raise err
+		    End If
 		  End If
 		  mIndex = 0
 		End Sub
