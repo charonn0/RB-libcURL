@@ -26,6 +26,24 @@ Protected Class OptionIterator
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function Count() As Integer
+		  If mDataStore <> Nil Then
+		    Return mDataStore.Count
+		  Else
+		    If mPrev = Nil Then Return 0
+		    Dim lastp As Ptr = mPrev
+		    Dim lasti As Integer = mIndex
+		    Do Until Not Me.MoveNext()
+		    Loop
+		    Dim c As Integer = mIndex + 1
+		    mIndex = lasti
+		    mPrev = lastp
+		    Return c
+		  End If
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		 Shared Function IsAvailable() As Boolean
 		  Return libcURL.Version.IsAtLeast(7, 73, 0)
 		End Function
