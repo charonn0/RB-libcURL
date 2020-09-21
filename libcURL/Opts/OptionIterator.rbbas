@@ -4,15 +4,16 @@ Protected Class OptionIterator
 		Sub Constructor()
 		  If Not System.IsFunctionAvailable("curl_easy_option_next", cURLLib) Then
 		    mDataStore = FakeDataStore
-		  Else
 		    
+		  Else
 		    mPrev = curl_easy_option_next(Nil)
 		    If mPrev = Nil Then
 		      Dim err As New cURLException(Nil)
 		      err.ErrorNumber = libcURL.Errors.INIT_FAILED
-		      err.Message = libcURL.FormatError(libcURL.Errors.INIT_FAILED)
+		      err.Message = libcURL.FormatError(err.ErrorNumber)
 		      Raise err
 		    End If
+		    
 		  End If
 		  mIndex = 0
 		End Sub
@@ -47,17 +48,15 @@ Protected Class OptionIterator
 		Function MoveNext() As Boolean
 		  If mDataStore = Nil Then
 		    mPrev = curl_easy_option_next(mPrev)
-		    If mPrev <> Nil Then
-		      mIndex = mIndex + 1
-		      Return True
-		    End If
+		    If mPrev = Nil Then Return False
 		    
 		  Else
 		    If mIndex >= mDataStore.Count - 1 Then Return False
-		    mIndex = mIndex + 1
-		    Return True
 		    
 		  End If
+		  
+		  mIndex = mIndex + 1
+		  Return True
 		End Function
 	#tag EndMethod
 

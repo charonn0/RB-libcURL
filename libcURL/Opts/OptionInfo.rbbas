@@ -1951,5 +1951,6 @@ Protected Class OptionInfo
 	#tag Constant, Name = CURLOT_FLAG_ALIAS, Type = Double, Dynamic = False, Default = \"1", Scope = Protected
 	#tag EndConstant
 
+
 End Class
 #tag EndClass
