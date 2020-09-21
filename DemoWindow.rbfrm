@@ -1738,6 +1738,37 @@ Begin Window DemoWindow
          Visible         =   True
          Width           =   257
       End
+      Begin PopupMenu OptionNameTypeMnu
+         AutoDeactivate  =   True
+         Bold            =   ""
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "OptionsPanel"
+         InitialValue    =   "Name\r\nLibrary alias\r\nBinding alias"
+         Italic          =   ""
+         Left            =   514
+         ListIndex       =   0
+         LockBottom      =   True
+         LockedInPosition=   False
+         LockLeft        =   False
+         LockRight       =   True
+         LockTop         =   False
+         Scope           =   0
+         TabIndex        =   2
+         TabPanelIndex   =   5
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   376
+         Underline       =   ""
+         Visible         =   True
+         Width           =   117
+      End
    End
    Begin cURLClient Client
       Height          =   32
@@ -2647,9 +2678,18 @@ End
 		    Dim tp As String = libcURL.Opts.OptionTypeName(opt.Type)
 		    Dim vl As String = opt.StringValue(Client.EasyItem)
 		    If opt.IsDeprecated Then Continue
+		    Dim nm As String
+		    Select Case OptionNameTypeMnu.Text
+		    Case "Name"
+		      nm = opt.Name
+		    Case "Library alias"
+		      nm = opt.LibraryAlias
+		    Case "Binding alias"
+		      nm = opt.BindingAlias
+		    End Select
 		    
 		    If opt.Type = libcURL.Opts.OptionType.Boolean Then
-		      RawOptsList.AddRow(opt.Name, "", tp, opt.DocumentationURL)
+		      RawOptsList.AddRow(nm, "", tp, opt.DocumentationURL)
 		      RawOptsList.CellType(RawOptsList.LastIndex, 1) = Listbox.TypeCheckbox
 		      If vl = "True" Then
 		        RawOptsList.CellState(RawOptsList.LastIndex, 1) = CheckBox.CheckedStates.Checked
@@ -2657,7 +2697,7 @@ End
 		        RawOptsList.CellState(RawOptsList.LastIndex, 1) = CheckBox.CheckedStates.Unchecked
 		      End If
 		    Else
-		      RawOptsList.AddRow(opt.Name, vl, tp, opt.DocumentationURL)
+		      RawOptsList.AddRow(nm, vl, tp, opt.DocumentationURL)
 		    End If
 		    
 		    RawOptsList.RowTag(RawOptsList.LastIndex) = opt
@@ -3680,6 +3720,7 @@ End
 		Function CellTextPaint(g As Graphics, row As Integer, column As Integer, x as Integer, y as Integer) As Boolean
 		  #pragma Unused x
 		  #pragma Unused y
+		  If Me.Selected(row) Then Return False
 		  Dim opt As libcURL.Opts.OptionInfo = Me.RowTag(row)
 		  Select Case column
 		  Case 0 ' name
@@ -3724,6 +3765,7 @@ End
 	#tag EndEvent
 	#tag Event
 		Sub MouseMove(X As Integer, Y As Integer)
+		  If Me.RowFromXY(X, Y) = -1 Then Return
 		  If Me.RowFromXY(X, Y) >= 0 And Me.ColumnFromXY(X, Y) = 3 Then' doc url
 		    Me.MouseCursor = System.Cursors.FingerPointer
 		  Else
@@ -3805,6 +3847,14 @@ End
 #tag Events ShowModdedOpts
 	#tag Event
 		Sub Action()
+		  RefreshOpts()
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events OptionNameTypeMnu
+	#tag Event
+		Sub Change()
+		  If mLockUI Then Return
 		  RefreshOpts()
 		End Sub
 	#tag EndEvent
