@@ -146,6 +146,28 @@ Protected Class OptionIterator
 		Private Shared FakeDataStore As Dictionary
 	#tag EndComputedProperty
 
+	#tag ComputedProperty, Flags = &h1
+		#tag Getter
+			Get
+			  ' internal use. Returns True if the binding is emulating the option iterator interface.
+			  If mDataStore = Nil Then Return False
+			  Return mDataStore Is FakeDataStore
+			End Get
+		#tag EndGetter
+		Protected IsFake As Boolean
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h1
+		#tag Getter
+			Get
+			  ' internal use. Returns True if using the OptionDumper interface to read a session's options.
+			  If mDataStore = Nil Then Return False
+			  Return Not(IsFake)
+			End Get
+		#tag EndGetter
+		Protected IsSession As Boolean
+	#tag EndComputedProperty
+
 	#tag Property, Flags = &h21
 		Private mDataStore As Dictionary
 	#tag EndProperty
