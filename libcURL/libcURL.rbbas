@@ -2238,6 +2238,8 @@ Protected Module libcURL
 		  DarwinSSL=9
 		  AXTLS=10
 		  MBEDTLS=11
+		  MesaLink=12
+		  BearSSL=13
 		Ignore=-1
 	#tag EndEnum
 
