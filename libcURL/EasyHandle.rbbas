@@ -804,6 +804,7 @@ Implements OptionDumper
 		      Return Me.SetOptionPtr(OptionNumber, p)
 		      
 		    Case IsA cURLSeekCallback
+		      mOptions.Value(OptionNumber) = NewValue
 		      Dim p As cURLSeekCallback = NewValue
 		      Return Me.SetOptionPtr(OptionNumber, p)
 		      
