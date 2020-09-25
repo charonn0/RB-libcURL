@@ -754,6 +754,10 @@ Implements OptionDumper
 		    #If Target64Bit Then
 		  Case Variant.TypeInt64
 		    Return Me.SetOptionPtr(OptionNumber, NewValue.PtrValue)
+		    #Else
+		  Case Variant.TypeLong
+		    mLastError= curl_easy_setopt_long(mHandle, OptionNumber, NewValue)
+		    Return mLastError = 0
 		    #EndIf
 		    
 		  Case Variant.TypeString
