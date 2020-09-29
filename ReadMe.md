@@ -76,7 +76,7 @@ To perform one or more transfers in a non-blocking manner use the `MultiHandle` 
 ### Ensure the libcURL shared library is installed
 libcURL is installed by default on most Unix-like operating systems, including OS X and most Linux distributions. 
 
-Windows does not have it installed by default, you will need to ship all the necessary DLLs with your application. You can use pre-built DLLs available [here](http://curl.haxx.se/gknw.net/7.40.0/dist-w32/curl-7.40.0-devel-mingw32.zip) (Win32x86+OpenSSL+ZLib), or you can [build them yourself from source](https://github.com/blackrosezy/build-libcurl-windows). 
+Windows does not have it installed by default, you will need to ship all the necessary DLLs with your application. You can use pre-built DLLs available [here](https://curl.haxx.se/download.html), or you can [build them yourself from source](https://github.com/blackrosezy/build-libcurl-windows). 
 
 Depending on compile-time options, you may need to include additional DLLs for other libraries like OpenSSL or ZLib. Newly added features like HTTP/2 support may require building the latest version from source with special build flags and additional libraries. Review the libcURL documentation for the feature you're interested in.
 
