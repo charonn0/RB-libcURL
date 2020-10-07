@@ -1662,7 +1662,7 @@ Begin Window DemoWindow
          AutoHideScrollbars=   True
          Bold            =   ""
          Border          =   True
-         ColumnCount     =   4
+         ColumnCount     =   3
          ColumnsResizable=   True
          ColumnWidths    =   ""
          DataField       =   ""
@@ -1675,12 +1675,12 @@ Begin Window DemoWindow
          GridLinesVertical=   0
          HasHeading      =   True
          HeadingIndex    =   -1
-         Height          =   222
+         Height          =   244
          HelpTag         =   ""
          Hierarchical    =   ""
          Index           =   -2147483648
          InitialParent   =   "OptionsPanel"
-         InitialValue    =   "Name	Current Value	Type	Documentation"
+         InitialValue    =   "Name	Current Value	Type"
          Italic          =   ""
          Left            =   11
          LockBottom      =   True
@@ -1705,69 +1705,6 @@ Begin Window DemoWindow
          Visible         =   True
          Width           =   622
          _ScrollWidth    =   -1
-      End
-      Begin CheckBox ShowModdedOpts
-         AutoDeactivate  =   True
-         Bold            =   ""
-         Caption         =   "Show only modified options"
-         DataField       =   ""
-         DataSource      =   ""
-         Enabled         =   True
-         Height          =   20
-         HelpTag         =   ""
-         Index           =   -2147483648
-         InitialParent   =   "OptionsPanel"
-         Italic          =   ""
-         Left            =   11
-         LockBottom      =   True
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   True
-         LockTop         =   False
-         Scope           =   0
-         State           =   1
-         TabIndex        =   1
-         TabPanelIndex   =   5
-         TabStop         =   True
-         TextFont        =   "System"
-         TextSize        =   0
-         TextUnit        =   0
-         Top             =   376
-         Underline       =   ""
-         Value           =   True
-         Visible         =   True
-         Width           =   257
-      End
-      Begin PopupMenu OptionNameTypeMnu
-         AutoDeactivate  =   True
-         Bold            =   ""
-         DataField       =   ""
-         DataSource      =   ""
-         Enabled         =   True
-         Height          =   20
-         HelpTag         =   ""
-         Index           =   -2147483648
-         InitialParent   =   "OptionsPanel"
-         InitialValue    =   "Name\r\nLibrary alias\r\nBinding alias"
-         Italic          =   ""
-         Left            =   514
-         ListIndex       =   0
-         LockBottom      =   True
-         LockedInPosition=   False
-         LockLeft        =   False
-         LockRight       =   True
-         LockTop         =   False
-         Scope           =   0
-         TabIndex        =   2
-         TabPanelIndex   =   5
-         TabStop         =   True
-         TextFont        =   "System"
-         TextSize        =   0
-         TextUnit        =   0
-         Top             =   376
-         Underline       =   ""
-         Visible         =   True
-         Width           =   117
       End
    End
    Begin cURLClient Client
@@ -1871,7 +1808,7 @@ Begin Window DemoWindow
       TextUnit        =   0
       Top             =   0
       Underline       =   ""
-      Value           =   3
+      Value           =   0
       Visible         =   True
       Width           =   246
       Begin PushButton GetBtn
@@ -2668,7 +2605,6 @@ End
 		Private Sub RefreshOpts()
 		  RawOptsList.DeleteAllRows()
 		  Dim iter As libcURL.Opts.OptionIterator
-		  If ShowModdedOpts.Value Then
 		  If mShowOnlyModdedOpts Then
 		    iter = New libcURL.Opts.OptionIterator(Client.EasyItem)
 		  Else
@@ -3919,16 +3855,6 @@ End
 		  Return True
 		  
 		End Function
-	#tag EndEvent
-	#tag Event
-		Sub MouseMove(X As Integer, Y As Integer)
-		  'If Me.RowFromXY(X, Y) = -1 Then Return
-		  'If Me.RowFromXY(X, Y) >= 0 And Me.ColumnFromXY(X, Y) = 3 Then' doc url
-		  'Me.MouseCursor = System.Cursors.FingerPointer
-		  'Else
-		  'Me.MouseCursor = System.Cursors.StandardPointer
-		  'End If
-		End Sub
 	#tag EndEvent
 #tag EndEvents
 #tag Events Client
