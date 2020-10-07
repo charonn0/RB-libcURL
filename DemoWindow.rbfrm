@@ -2669,6 +2669,7 @@ End
 		  RawOptsList.DeleteAllRows()
 		  Dim iter As libcURL.Opts.OptionIterator
 		  If ShowModdedOpts.Value Then
+		  If mShowOnlyModdedOpts Then
 		    iter = New libcURL.Opts.OptionIterator(Client.EasyItem)
 		  Else
 		    iter = New libcURL.Opts.OptionIterator()
@@ -2677,16 +2678,28 @@ End
 		    Dim opt As libcURL.Opts.OptionInfo = iter.CurrentOption
 		    Dim tp As String = libcURL.Opts.OptionTypeName(opt.Type)
 		    Dim vl As String = opt.StringValue(Client.EasyItem)
-		    If opt.IsDeprecated Then Continue
+		    If opt.IsDeprecated And Not mShowDeprecatedOptions Then Continue
 		    Dim nm As String
-		    Select Case OptionNameTypeMnu.Text
-		    Case "Name"
-		      nm = opt.Name
-		    Case "Library alias"
-		      nm = opt.LibraryAlias
-		    Case "Binding alias"
-		      nm = opt.BindingAlias
-		    End Select
+		    
+		    If opt.IsDeprecated Then
+		      If mOptNameDisplay > 0 Then nm = "CURLOPT_"
+		      If opt.LibraryAlias <> "" Then
+		        nm = nm + opt.Name + " (" + opt.LibraryAlias + ")"
+		      Else
+		        nm = nm + opt.Name + " (Deprecated)"
+		      End If
+		      
+		    Else
+		      Select Case mOptNameDisplay
+		      Case 0
+		        nm = opt.Name
+		      Case 1
+		        nm = opt.LibraryAlias
+		      Case 2
+		        nm = opt.BindingAlias
+		      End Select
+		      
+		    End If
 		    
 		    If opt.Type = libcURL.Opts.OptionType.Boolean Then
 		      RawOptsList.AddRow(nm, "", tp, opt.DocumentationURL)
@@ -2917,7 +2930,19 @@ End
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
+		Private mOptNameDisplay As Integer
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
 		Private mPutTarget As FolderItem
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mShowDeprecatedOptions As Boolean = False
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mShowOnlyModdedOpts As Boolean = True
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -3710,9 +3735,9 @@ End
 		      Me.EditCell(row, column)
 		      Return True
 		    End Select
-		  Case 3 ' doc url
-		    If opt.DocumentationURL <> "" Then ShowURL(opt.DocumentationURL)
-		    Return True
+		    'Case 3 ' doc url
+		    'If opt.DocumentationURL <> "" Then ShowURL(opt.DocumentationURL)
+		    'Return True
 		  End Select
 		End Function
 	#tag EndEvent
@@ -3724,12 +3749,15 @@ End
 		  Dim opt As libcURL.Opts.OptionInfo = Me.RowTag(row)
 		  Select Case column
 		  Case 0 ' name
-		    If opt.IsDeprecated And opt.StringValue(Client.EasyItem) <> "" Then
+		    If opt.IsDeprecated Then
 		      g.ForeColor = &cFF000000 ' deprecated
-		      If opt.LibraryAlias <> "" Then
-		        g.DrawString(opt.LibraryAlias + "(as " + opt.Name + ")", x, y)
-		        Return True
-		      End If
+		      'If opt.LibraryAlias <> "" Then
+		      'g.DrawString(opt.Name + " (Alias " + opt.LibraryAlias + ")", x, y)
+		      'Return True
+		      'Else
+		      'g.DrawString(opt.Name + " (Deprecated)", x, y)
+		      'Return True
+		      'End If
 		    End If
 		    
 		  Case 1 ' value
@@ -3754,38 +3782,32 @@ End
 		      g.ForeColor = &c00800000
 		    End Select
 		    
-		  Case 3 ' doc url
-		    If opt.DocumentationURL <> "" Then
-		      g.ForeColor = &c0000FF00
-		      g.Underline = True
-		    End If
+		    'Case 3 ' doc url
+		    'If opt.DocumentationURL <> "" Then
+		    'g.ForeColor = &c0000FF00
+		    'g.Underline = True
+		    'End If
 		    
 		  End Select
 		End Function
 	#tag EndEvent
 	#tag Event
-		Sub MouseMove(X As Integer, Y As Integer)
-		  If Me.RowFromXY(X, Y) = -1 Then Return
-		  If Me.RowFromXY(X, Y) >= 0 And Me.ColumnFromXY(X, Y) = 3 Then' doc url
-		    Me.MouseCursor = System.Cursors.FingerPointer
-		  Else
-		    Me.MouseCursor = System.Cursors.StandardPointer
-		  End If
-		End Sub
-	#tag EndEvent
-	#tag Event
 		Sub CellAction(row As Integer, column As Integer)
 		  If column <> 1 Then Return
 		  If mLockUI Then Return
-		  If Me.Cell(row, column) <> Me.CellTag(row, column) Then
+		  If Me.Cell(row, column) <> Me.CellTag(row, column) Or Me.CellType(row, column) = Listbox.TypeCheckbox Then
 		    Dim opt As libcURL.Opts.OptionInfo = Me.RowTag(row)
 		    Select Case opt.Type
 		    Case libcURL.Opts.OptionType.Boolean
 		      opt.Value(Client.EasyItem) = Me.CellState(row, column) = CheckBox.CheckedStates.Checked
 		    Case libcURL.Opts.OptionType.String
 		      opt.Value(Client.EasyItem) = Me.Cell(row, column)
+		      
+		    Case libcURL.Opts.OptionType.List
+		      opt.StringValue(Client.EasyItem) = Me.Cell(row, column)
+		      
 		    Else
-		      opt.Value(Client.EasyItem) = Val(Me.Cell(row, column))
+		      opt.Value(Client.EasyItem) = CType(Val(Me.Cell(row, column)), Integer)
 		    End Select
 		  End If
 		  'RefreshOpts()
@@ -3798,44 +3820,99 @@ End
 		Function ConstructContextualMenu(base as MenuItem, x as Integer, y as Integer) As Boolean
 		  Dim row, col As Integer
 		  row = Me.RowFromXY(x, y)
-		  If row = -1 Then Return False
 		  col = Me.ColumnFromXY(x, y)
-		  If col = -1 Then Return False
+		  If col <> -1 And row <> -1 Then
+		    Dim opt As libcURL.Opts.OptionInfo = Me.RowTag(row)
+		    If opt.Type <> libcURL.Opts.OptionType.Boolean Then
+		      Dim edt As New MenuItem("Edit value")
+		      edt.Tag = row:col
+		      base.Append(edt)
+		    End If
+		    
+		    Dim rst As New MenuItem("Reset default")
+		    rst.Tag = row:col
+		    rst.Enabled = Not opt.IsSet(Client.EasyItem)
+		    base.Append(rst)
+		    
+		    Dim doc As New MenuItem("View documentation...")
+		    doc.Tag = opt.DocumentationURL
+		    doc.Enabled = (opt.DocumentationURL <> "")
+		    base.Append(doc)
+		    
+		  End If
 		  
-		  Dim opt As libcURL.Opts.OptionInfo = Me.RowTag(row)
-		  Dim edt As New MenuItem("Edit value")
-		  edt.Tag = row:col
-		  base.Append(edt)
+		  base.Append(New MenuItem(MenuItem.TextSeparator))
 		  
-		  Dim rst As New MenuItem("Reset default")
-		  rst.Tag = row:col
-		  rst.Enabled = Not opt.IsSet(Client.EasyItem)
-		  base.Append(rst)
+		  Dim showmodded As New MenuItem("Show only modified options")
+		  If mShowOnlyModdedOpts Then showmodded.Checked = True
+		  base.Append(showmodded)
+		  
+		  Dim showdeprecated As New MenuItem("Show deprecated options")
+		  If mShowDeprecatedOptions Then showdeprecated.Checked = True
+		  base.Append(showdeprecated)
+		  
+		  Dim nameopt As New MenuItem("Display")
+		  Dim basename As New MenuItem("Names")
+		  If mOptNameDisplay = 0 Then basename.Checked = True
+		  nameopt.Append(basename)
+		  Dim libalias As New MenuItem("Library alias")
+		  If mOptNameDisplay = 1 Then libalias.Checked = True
+		  nameopt.Append(libalias)
+		  Dim bindalias As New MenuItem("Binding alias")
+		  If mOptNameDisplay = 2 Then bindalias.Checked = True
+		  nameopt.Append(bindalias)
+		  
+		  base.Append(nameopt)
 		  
 		  Return True
 		End Function
 	#tag EndEvent
 	#tag Event
 		Function ContextualMenuAction(hitItem as MenuItem) As Boolean
-		  Dim p As Pair = hitItem.Tag
-		  Dim row As Integer = p.Left
-		  Dim column As Integer = p.Right
 		  Select Case hitItem.Text
-		  Case "Edit value"
-		    Me.EditCell(row, 1)
+		  Case "Show only modified options"
+		    mShowOnlyModdedOpts = Not mShowOnlyModdedOpts
+		    RefreshOpts()
+		  Case "Show deprecated options"
+		    mShowDeprecatedOptions = Not mShowDeprecatedOptions
+		    RefreshOpts()
 		    
-		  Case "Reset default"
-		    Dim opt As libcURL.Opts.OptionInfo = Me.RowTag(row)
-		    Select Case opt.Type
-		    Case libcURL.Opts.OptionType.Boolean
-		      opt.Value(Client.EasyItem) = False
-		      Me.CellState(row, column) = CheckBox.CheckedStates.Indeterminate
-		    Case libcURL.Opts.OptionType.String
-		      opt.Value(Client.EasyItem) = ""
-		      Me.Cell(row, column) = ""
-		    Else
-		      opt.Value(Client.EasyItem) = 0
-		      Me.Cell(row, column) = ""
+		  Case "Names"
+		    mOptNameDisplay = 0
+		    RefreshOpts()
+		  Case "Library alias"
+		    mOptNameDisplay = 1
+		    RefreshOpts()
+		  Case "Binding alias"
+		    mOptNameDisplay = 2
+		    RefreshOpts()
+		    
+		  Case "View documentation..."
+		    Dim url As String = hitItem.Tag
+		    If url.Trim <> "" Then ShowURL(url)
+		    
+		  Else
+		    
+		    Dim p As Pair = hitItem.Tag
+		    Dim row As Integer = p.Left
+		    Dim column As Integer = p.Right
+		    Select Case hitItem.Text
+		    Case "Edit value"
+		      Me.EditCell(row, 1)
+		      
+		    Case "Reset default"
+		      Dim opt As libcURL.Opts.OptionInfo = Me.RowTag(row)
+		      Select Case opt.Type
+		      Case libcURL.Opts.OptionType.Boolean
+		        opt.Value(Client.EasyItem) = False
+		        Me.CellState(row, column) = CheckBox.CheckedStates.Indeterminate
+		      Case libcURL.Opts.OptionType.String
+		        opt.Value(Client.EasyItem) = ""
+		        Me.Cell(row, column) = ""
+		      Else
+		        opt.Value(Client.EasyItem) = 0
+		        Me.Cell(row, column) = ""
+		      End Select
 		    End Select
 		  End Select
 		  
@@ -3843,19 +3920,14 @@ End
 		  
 		End Function
 	#tag EndEvent
-#tag EndEvents
-#tag Events ShowModdedOpts
 	#tag Event
-		Sub Action()
-		  RefreshOpts()
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events OptionNameTypeMnu
-	#tag Event
-		Sub Change()
-		  If mLockUI Then Return
-		  RefreshOpts()
+		Sub MouseMove(X As Integer, Y As Integer)
+		  'If Me.RowFromXY(X, Y) = -1 Then Return
+		  'If Me.RowFromXY(X, Y) >= 0 And Me.ColumnFromXY(X, Y) = 3 Then' doc url
+		  'Me.MouseCursor = System.Cursors.FingerPointer
+		  'Else
+		  'Me.MouseCursor = System.Cursors.StandardPointer
+		  'End If
 		End Sub
 	#tag EndEvent
 #tag EndEvents
