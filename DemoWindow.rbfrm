@@ -3740,7 +3740,6 @@ End
 		      opt.Value(Client.EasyItem) = Me.Cell(row, column)
 		      
 		    Case libcURL.Opts.OptionType.List
-		      opt.StringValue(Client.EasyItem) = Me.Cell(row, column)
 		      
 		    Else
 		      opt.Value(Client.EasyItem) = CType(Val(Me.Cell(row, column)), Integer)

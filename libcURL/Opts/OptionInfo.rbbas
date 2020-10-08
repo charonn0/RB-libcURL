@@ -2397,7 +2397,19 @@ Protected Class OptionInfo
 		    #EndIf
 		    If i <> 0 Then Return Str(i)
 		    
-		  Case OptionType.List, OptionType.Opaque, OptionType.Ptr
+		  Case OptionType.List
+		    Dim l As ListPtr = Me.Value(Session)
+		    If l <> Nil Then
+		      Dim s As String
+		      For i As Integer = 0 To l.Count - 1
+		        s = s + """" + l.Item(i) + """"
+		        If i < l.Count - 1 Then s = s + ","
+		      Next
+		      Return s
+		    End If
+		    
+		    
+		  Case OptionType.Opaque, OptionType.Ptr
 		    Dim p As Ptr = Me.Value(Session).PtrValue
 		    If p = Nil Then Return ""
 		    If Me.Type = OptionType.Ptr Then
@@ -2414,10 +2426,30 @@ Protected Class OptionInfo
 		    Return Me.Value(Session).StringValue
 		    
 		  Case OptionType.Subroutine
-		    If Me.Value(Session) <> Nil Then Return "(delegate)"
+		    If Me.Value(Session) <> Nil Then
+		      Select Case Me
+		      Case libcURL.Opts.CHUNK_BGN_FUNCTION
+		        Return "FTPWildCard.ChunkBeginCallback"
+		      Case libcURL.Opts.CHUNK_END_FUNCTION
+		        Return "FTPWildCard.ChunkEndCallback"
+		      Case libcURL.Opts.DEBUGFUNCTION
+		        Return "EasyHandle.DebugCallback"
+		      Case libcURL.Opts.SEEKFUNCTION
+		        Return "EasyHandle.SeekCallback"
+		      Case libcURL.Opts.XFERINFOFUNCTION, libcURL.Opts.PROGRESSFUNCTION
+		        Return "EasyHandle.ProgressCallback"
+		      Case libcURL.Opts.WRITEFUNCTION
+		        Return "EasyHandle.WriteCallback"
+		      Case libcURL.Opts.READFUNCTION
+		        Return "EasyHandle.ReadCallback"
+		      Case libcURL.Opts.HEADERFUNCTION
+		        Return "EasyHandle.HeaderCallback"
+		      End Select
+		      
+		    End If
 		    
 		  Case OptionType.Boolean
-		    If Me.Value(Session).BooleanValue Then Return "True"
+		    If Me.Value(Session).BooleanValue Then Return "True" Else Return "False"
 		    
 		  End Select
 		  
