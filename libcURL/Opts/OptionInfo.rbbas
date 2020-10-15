@@ -1,7 +1,7 @@
 #tag Class
 Protected Class OptionInfo
-	#tag Method, Flags = &h0
-		Attributes( hidden = true )  Sub Constructor(Option As curl_easyoption)
+	#tag Method, Flags = &h1
+		Protected Sub Constructor(Option As curl_easyoption)
 		  mOpt = Option
 		End Sub
 	#tag EndMethod
@@ -2556,7 +2556,7 @@ Protected Class OptionInfo
 			  Return mOpt.Type
 			End Get
 		#tag EndGetter
-		Type As libcURL.Opts.OptionType
+		Type As libcURL.OptionType
 	#tag EndComputedProperty
 
 

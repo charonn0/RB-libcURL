@@ -2637,7 +2637,7 @@ End
 		      
 		    End If
 		    
-		    If opt.Type = libcURL.Opts.OptionType.Boolean Then
+		    If opt.Type = libcURL.OptionType.Boolean Then
 		      RawOptsList.AddRow(nm, "", tp, opt.DocumentationURL)
 		      RawOptsList.CellType(RawOptsList.LastIndex, 1) = Listbox.TypeCheckbox
 		      If vl = "True" Then
@@ -3661,9 +3661,9 @@ End
 		  Select Case column
 		  Case 1 ' value
 		    Select Case opt.Type
-		    Case libcURL.Opts.OptionType.Boolean
+		    Case libcURL.OptionType.Boolean
 		      
-		    Case libcURL.Opts.OptionType.Ptr, libcURL.Opts.OptionType.Subroutine, libcURL.Opts.OptionType.Opaque, libcURL.Opts.OptionType.List
+		    Case libcURL.OptionType.Ptr, libcURL.OptionType.Subroutine, libcURL.OptionType.Opaque, libcURL.OptionType.List
 		      Return False
 		    Else
 		      Me.CellTag(row, column) = Me.Cell(row, column)
@@ -3697,7 +3697,7 @@ End
 		    End If
 		    
 		  Case 1 ' value
-		    If opt.Type = libcURL.Opts.OptionType.Boolean Then Return False
+		    If opt.Type = libcURL.OptionType.Boolean Then Return False
 		    If Me.Cell(row, column) = "" Then
 		      g.ForeColor = &c80808000
 		      g.Italic = True
@@ -3707,14 +3707,14 @@ End
 		    
 		  Case 2 ' type
 		    Select Case opt.Type
-		    Case libcURL.Opts.OptionType.Bitmask, libcURL.Opts.OptionType.LargeNumber, libcURL.Opts.OptionType.Number
+		    Case libcURL.OptionType.Bitmask, libcURL.OptionType.LargeNumber, libcURL.OptionType.Number
 		      g.ForeColor = &c0080FF00
-		    Case libcURL.Opts.OptionType.Blob, libcURL.Opts.OptionType.List, libcURL.Opts.OptionType.Opaque, libcURL.Opts.OptionType.Ptr, _
-		      libcURL.Opts.OptionType.Subroutine
+		    Case libcURL.OptionType.Blob, libcURL.OptionType.List, libcURL.OptionType.Opaque, libcURL.OptionType.Ptr, _
+		      libcURL.OptionType.Subroutine
 		      g.ForeColor = &cFF000000
-		    Case libcURL.Opts.OptionType.String
+		    Case libcURL.OptionType.String
 		      g.ForeColor = &c8000FF00
-		    Case libcURL.Opts.OptionType.Boolean
+		    Case libcURL.OptionType.Boolean
 		      g.ForeColor = &c00800000
 		    End Select
 		    
@@ -3734,12 +3734,12 @@ End
 		  If Me.Cell(row, column) <> Me.CellTag(row, column) Or Me.CellType(row, column) = Listbox.TypeCheckbox Then
 		    Dim opt As libcURL.Opts.OptionInfo = Me.RowTag(row)
 		    Select Case opt.Type
-		    Case libcURL.Opts.OptionType.Boolean
+		    Case libcURL.OptionType.Boolean
 		      opt.Value(Client.EasyItem) = Me.CellState(row, column) = CheckBox.CheckedStates.Checked
-		    Case libcURL.Opts.OptionType.String
+		    Case libcURL.OptionType.String
 		      opt.Value(Client.EasyItem) = Me.Cell(row, column)
 		      
-		    Case libcURL.Opts.OptionType.List
+		    Case libcURL.OptionType.List
 		      
 		    Else
 		      opt.Value(Client.EasyItem) = CType(Val(Me.Cell(row, column)), Integer)
@@ -3758,7 +3758,7 @@ End
 		  col = Me.ColumnFromXY(x, y)
 		  If col <> -1 And row <> -1 Then
 		    Dim opt As libcURL.Opts.OptionInfo = Me.RowTag(row)
-		    If opt.Type <> libcURL.Opts.OptionType.Boolean Then
+		    If opt.Type <> libcURL.OptionType.Boolean Then
 		      Dim edt As New MenuItem("Edit value")
 		      edt.Tag = row:col
 		      base.Append(edt)
@@ -3838,10 +3838,10 @@ End
 		    Case "Reset default"
 		      Dim opt As libcURL.Opts.OptionInfo = Me.RowTag(row)
 		      Select Case opt.Type
-		      Case libcURL.Opts.OptionType.Boolean
+		      Case libcURL.OptionType.Boolean
 		        opt.Value(Client.EasyItem) = False
 		        Me.CellState(row, column) = CheckBox.CheckedStates.Indeterminate
-		      Case libcURL.Opts.OptionType.String
+		      Case libcURL.OptionType.String
 		        opt.Value(Client.EasyItem) = ""
 		        Me.Cell(row, column) = ""
 		      Else

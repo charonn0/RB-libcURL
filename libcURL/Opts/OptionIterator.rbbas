@@ -21,7 +21,8 @@ Protected Class OptionIterator
 
 	#tag Method, Flags = &h0
 		Sub Constructor(Session As libcURL.EasyHandle)
-		  OptionDumper(Session).Dump(mDataStore)
+		  Const SECRET_INTERNAL_FLAG = &hFEF1F0F9
+		  mDataStore = Session.GetOption(SECRET_INTERNAL_FLAG, Session)
 		  mIndex = 0
 		End Sub
 	#tag EndMethod
@@ -78,7 +79,7 @@ Protected Class OptionIterator
 			    Return optnum
 			  ElseIf mPrev <> Nil Then
 			    Dim opt As curl_easyoption = mPrev.curl_easyoption
-			    Return New OptionInfo(opt)
+			    Return New OptionInfoCreator(opt)
 			  End If
 			End Get
 		#tag EndGetter

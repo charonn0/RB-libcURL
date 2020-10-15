@@ -1,7 +1,6 @@
 #tag Class
 Protected Class EasyHandle
 Inherits libcURL.cURLHandle
-Implements OptionDumper
 	#tag Method, Flags = &h0
 		Sub ClearFormData()
 		  ' Clears all forms and resets upload options. Can be used to do a "soft" reset even
@@ -82,39 +81,36 @@ Implements OptionDumper
 		  End If
 		  
 		  mOptions = New Dictionary
-		  For Each key As Integer In CopyOpts.mOptions.Keys
-		    If Not Me.SetOption(key, CopyOpts.mOptions.Value(key)) Then Raise New cURLException(Me)
-		  Next
 		  Instances.Value(mHandle) = New WeakRef(Me)
 		  InitCallbacks()
-		  'If CopyOpts.mAuthMethods <> Nil Then Call Me.SetAuthMethods(CopyOpts.GetAuthMethods)
-		  'mAutoDisconnect = CopyOpts.AutoDisconnect
-		  'mAutoReferer = CopyOpts.AutoReferer
-		  'If CopyOpts.mCA_ListFile <> Nil Then Me.CA_ListFile = CopyOpts.CA_ListFile
-		  'mConnectionTimeout = CopyOpts.ConnectionTimeout
-		  'mConnectionType = CopyOpts.ConnectionType
-		  'Me.CookieEngine.Enabled = CopyOpts.CookieEngine.Enabled
-		  'Me.UseErrorBuffer = CopyOpts.UseErrorBuffer
-		  'mFailOnServerError = CopyOpts.FailOnServerError
-		  'mFollowRedirects = CopyOpts.FollowRedirects
-		  'mHTTPCompression = CopyOpts.HTTPCompression
-		  'mHTTPPreserveMethod = CopyOpts.HTTPPreserveMethod
-		  'mHTTPVersion = CopyOpts.HTTPVersion
-		  'mMaxRedirects = CopyOpts.MaxRedirects
-		  'mPassword = CopyOpts.Password
-		  'If CopyOpts.mProxyEngine <> Nil Then
-		  'Me.ProxyEngine.Address = CopyOpts.ProxyEngine.Address
-		  'If CopyOpts.ProxyEngine.Port <> 1080 Then Me.ProxyEngine.Port = CopyOpts.ProxyEngine.Port
-		  'If CopyOpts.ProxyEngine.Type <> libcURL.ProxyType.HTTP Then Me.ProxyEngine.Type = CopyOpts.ProxyEngine.Type
-		  'End If
-		  'mSecure = CopyOpts.Secure
-		  'If CopyOpts.SSLVersion <> libcURL.SSLVersion.Default Then mSSLVersion = CopyOpts.SSLVersion
-		  'mTimeOut = CopyOpts.TimeOut
-		  'mUploadMode = CopyOpts.UploadMode
-		  'mUserAgent = CopyOpts.UserAgent
-		  'mUsername = CopyOpts.Username
-		  'Me.Verbose = CopyOpts.Verbose
-		  'mForm = CopyOpts.mForm
+		  If CopyOpts.mAuthMethods <> Nil Then Call Me.SetAuthMethods(CopyOpts.GetAuthMethods)
+		  mAutoDisconnect = CopyOpts.AutoDisconnect
+		  mAutoReferer = CopyOpts.AutoReferer
+		  If CopyOpts.mCA_ListFile <> Nil Then Me.CA_ListFile = CopyOpts.CA_ListFile
+		  mConnectionTimeout = CopyOpts.ConnectionTimeout
+		  mConnectionType = CopyOpts.ConnectionType
+		  Me.CookieEngine.Enabled = CopyOpts.CookieEngine.Enabled
+		  Me.UseErrorBuffer = CopyOpts.UseErrorBuffer
+		  mFailOnServerError = CopyOpts.FailOnServerError
+		  mFollowRedirects = CopyOpts.FollowRedirects
+		  mHTTPCompression = CopyOpts.HTTPCompression
+		  mHTTPPreserveMethod = CopyOpts.HTTPPreserveMethod
+		  mHTTPVersion = CopyOpts.HTTPVersion
+		  mMaxRedirects = CopyOpts.MaxRedirects
+		  mPassword = CopyOpts.Password
+		  If CopyOpts.mProxyEngine <> Nil Then
+		    Me.ProxyEngine.Address = CopyOpts.ProxyEngine.Address
+		    If CopyOpts.ProxyEngine.Port <> 1080 Then Me.ProxyEngine.Port = CopyOpts.ProxyEngine.Port
+		    If CopyOpts.ProxyEngine.Type <> libcURL.ProxyType.HTTP Then Me.ProxyEngine.Type = CopyOpts.ProxyEngine.Type
+		  End If
+		  mSecure = CopyOpts.Secure
+		  If CopyOpts.SSLVersion <> libcURL.SSLVersion.Default Then mSSLVersion = CopyOpts.SSLVersion
+		  mTimeOut = CopyOpts.TimeOut
+		  mUploadMode = CopyOpts.UploadMode
+		  mUserAgent = CopyOpts.UserAgent
+		  mUsername = CopyOpts.Username
+		  Me.Verbose = CopyOpts.Verbose
+		  mForm = CopyOpts.mForm
 		End Sub
 	#tag EndMethod
 
@@ -282,13 +278,6 @@ Implements OptionDumper
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h21
-		Private Sub Dump(ByRef DataStore As Dictionary)
-		  // Part of the OptionDumper interface.
-		  DataStore = mOptions
-		End Sub
-	#tag EndMethod
-
 	#tag Method, Flags = &h0
 		Function ErrorBuffer() As String
 		  ' Returns a copy of the contents of the error buffer, or an empty string. The contents of this buffer will persist
@@ -415,6 +404,9 @@ Implements OptionDumper
 
 	#tag Method, Flags = &h0
 		Function GetOption(OptionNumber As Integer, DefaultValue As Variant = Nil) As Variant
+		  Const SECRET_INTERNAL_FLAG = &hFEF1F0F9
+		  If OptionNumber = SECRET_INTERNAL_FLAG And DefaultValue Is Me Then Return mOptions
+		  
 		  Dim v As Variant = mOptions.Lookup(OptionNumber, DefaultValue)
 		  If v IsA WeakRef And WeakRef(v).Value IsA cURLHandle Then v = WeakRef(v).Value
 		  Return v
@@ -757,7 +749,12 @@ Implements OptionDumper
 		    #Else
 		  Case Variant.TypeLong
 		    mLastError= curl_easy_setopt_long(mHandle, OptionNumber, NewValue)
-		    Return mLastError = 0
+		    If mLastError = 0 Then 
+		      mOptions.Value(OptionNumber) = NewValue
+		      Return True
+		    Else
+		      Return False
+		    End If
 		    #EndIf
 		    
 		  Case Variant.TypeString

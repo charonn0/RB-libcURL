@@ -48,7 +48,7 @@ Protected Module Opts
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function OptionTypeName(Type As libcURL.Opts.OptionType) As String
+		Protected Function OptionTypeName(Type As libcURL.OptionType) As String
 		  Select Case Type
 		  Case OptionType.Bitmask
 		    Return "Bitmask"
@@ -951,21 +951,6 @@ Protected Module Opts
 		  Type As OptionType
 		Flags As UInt32
 	#tag EndStructure
-
-
-	#tag Enum, Name = OptionType, Flags = &h1
-		Number
-		  Bitmask
-		  LargeNumber
-		  Ptr
-		  String
-		  List
-		  Opaque
-		  Blob
-		  Subroutine
-		  Unknown
-		Boolean
-	#tag EndEnum
 
 
 	#tag ViewBehavior

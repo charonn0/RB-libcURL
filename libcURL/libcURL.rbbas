@@ -2212,6 +2212,20 @@ Protected Module libcURL
 		Multipart
 	#tag EndEnum
 
+	#tag Enum, Name = OptionType, Flags = &h1
+		Number
+		  Bitmask
+		  LargeNumber
+		  Ptr
+		  String
+		  List
+		  Opaque
+		  Blob
+		  Subroutine
+		  Unknown
+		Boolean
+	#tag EndEnum
+
 	#tag Enum, Name = ProxyType, Type = Integer, Flags = &h1
 		HTTP=0
 		  HTTP1_0=1
