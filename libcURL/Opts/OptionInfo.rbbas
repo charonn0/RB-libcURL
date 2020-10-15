@@ -7,7 +7,7 @@ Protected Class OptionInfo
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Shared Function GetOptionByName(Name As String) As Integer
+		Protected Shared Function GetOptionByName(Name As String) As Int32
 		  Name = Replace(Name, "CURLOPT_", "")
 		  Name = Replace(Name, "libcURL.Opts.", "")
 		  Select Case Name
@@ -586,7 +586,7 @@ Protected Class OptionInfo
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Shared Function GetOptionDefault(OptionID As Integer) As Variant
+		Protected Shared Function GetOptionDefault(OptionID As Int32) As Variant
 		  Select Case OptionID
 		  Case ABSTRACT_UNIX_SOCKET
 		    Return Nil
@@ -1155,7 +1155,7 @@ Protected Class OptionInfo
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Shared Function GetOptionName(OptionID As Integer) As String
+		Protected Shared Function GetOptionName(OptionID As Int32) As String
 		  Select Case OptionID
 		  Case ABSTRACT_UNIX_SOCKET
 		    Return "ABSTRACT_UNIX_SOCKET"
@@ -1732,7 +1732,7 @@ Protected Class OptionInfo
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Shared Function GetOptionType(OptionID As Integer) As OptionType
+		Protected Shared Function GetOptionType(OptionID As Int32) As OptionType
 		  Select Case OptionID
 		  Case ABSTRACT_UNIX_SOCKET
 		    Return OptionType.String
@@ -2326,7 +2326,7 @@ Protected Class OptionInfo
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Shared Function IsBooleanOption(OptionID As Integer) As Boolean
+		Protected Shared Function IsBooleanOption(OptionID As Int32) As Boolean
 		  Select Case OptionID
 		  Case APPEND, AUTOREFERER, CONNECT_ONLY, COOKIESESSION, DIRLISTONLY, DISALLOW_USERNAME_IN_URL, DNS_SHUFFLE_ADDRESSES, _
 		    DNS_USE_GLOBAL_CACHE, FAILONERROR, FILETIME, FOLLOWLOCATION, FORBID_REUSE, FRESH_CONNECT, FTP_CREATE_MISSING_DIRS, _
@@ -2355,13 +2355,13 @@ Protected Class OptionInfo
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Operator_Convert() As Integer
+		Function Operator_Convert() As Int32
 		  Return OptionNumber
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Operator_Convert(OptionID As Integer)
+		Sub Operator_Convert(OptionID As Int32)
 		  If Not libcURL.IsAvailable Then Raise New PlatformNotSupportedException
 		  If System.IsFunctionAvailable("curl_easy_option_by_id", cURLLib) Then
 		    Dim opt As Ptr = curl_easy_option_by_id(OptionID)
@@ -2546,7 +2546,7 @@ Protected Class OptionInfo
 			  Return mOpt.Option
 			End Get
 		#tag EndGetter
-		OptionNumber As Integer
+		OptionNumber As Int32
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
