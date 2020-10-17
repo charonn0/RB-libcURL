@@ -2376,11 +2376,14 @@ Protected Class OptionInfo
 	#tag Method, Flags = &h0
 		Sub Operator_Convert(Name As String)
 		  If Not libcURL.IsAvailable Then Raise New PlatformNotSupportedException
+		  Name = Replace(Name, "CURLOPT_", "")
+		  Name = Replace(Name, "libcURL.Opts.", "")
+		  Name = Name.Uppercase()
 		  If System.IsFunctionAvailable("curl_easy_option_by_name", cURLLib) Then
 		    Dim opt As Ptr = curl_easy_option_by_name(Name)
 		    If opt <> Nil Then Me.Constructor(opt.curl_easyoption)
 		  Else
-		    mOpt.Option = GetOptionByName(Uppercase(Name))
+		    mOpt.Option = GetOptionByName(Name)
 		    mOpt.Type = GetOptionType(OptionNumber)
 		  End If
 		End Sub
