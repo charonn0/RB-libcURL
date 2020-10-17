@@ -2350,7 +2350,7 @@ Protected Class OptionInfo
 
 	#tag Method, Flags = &h0
 		Function Operator_Compare(OtherOpt As libcURL.Opts.OptionInfo) As Integer
-		  Return Sign(OptionNumber - OtherOpt.OptionNumber)
+		  If OtherOpt Is Nil Then Return 1 Else Return Sign(OptionNumber - OtherOpt.OptionNumber)
 		End Function
 	#tag EndMethod
 
