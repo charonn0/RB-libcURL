@@ -1,5 +1,82 @@
 #tag Module
 Protected Module Opts
+	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Function curl_easy_option_by_id Lib cURLLib (OptionID As Integer) As Ptr
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Function curl_easy_option_by_name Lib cURLLib (Name As CString) As Ptr
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Function curl_easy_option_next Lib cURLLib (Previous As Ptr) As Ptr
+	#tag EndExternalMethod
+
+	#tag Method, Flags = &h1
+		Protected Function IsOptionAvailable(OptionNumber As Integer) As Boolean
+		  If Not libcURL.IsAvailable Then Return False
+		  Dim iter As New OptionIterator()
+		  Do
+		    If iter.CurrentOption = OptionNumber Then
+		      Dim opt As OptionInfo = OptionNumber
+		      Dim e As New EasyHandle
+		      Select Case opt.Type
+		      Case OptionType.Bitmask, OptionType.LargeNumber, OptionType.Number
+		        If Not e.SetOption(opt, 1) Then Return False
+		        Return opt.Value(e) = 1
+		      Case OptionType.Blob, OptionType.List, OptionType.Opaque, OptionType.Ptr, OptionType.Subroutine
+		        If Not e.SetOption(opt, Nil) Then Return False
+		        Return opt.Value(e) = Nil
+		      Case OptionType.String
+		        If Not e.SetOption(opt, "") Then Return False
+		        Return opt.Value(e) = ""
+		      End Select
+		    End If
+		  Loop Until Not iter.MoveNext()
+		  
+		Exception
+		  Return False
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function IsOptionAvailable(OptionName As String) As Boolean
+		  Dim opt As OptionInfo = OptionName
+		  If opt.OptionNumber = 0 Then Return False
+		  Return IsOptionAvailable(opt)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function OptionTypeName(Type As libcURL.OptionType) As String
+		  Select Case Type
+		  Case OptionType.Bitmask
+		    Return "Bitmask"
+		  Case OptionType.Blob
+		    Return "Blob"
+		  Case OptionType.LargeNumber
+		    Return "Large number"
+		  Case OptionType.List
+		    Return "List"
+		  Case OptionType.Number
+		    Return "Number"
+		  Case OptionType.Opaque
+		    Return "Opaque"
+		  Case OptionType.Ptr
+		    Return "Ptr"
+		  Case OptionType.String
+		    Return "String"
+		  Case OptionType.Subroutine
+		    Return "Subroutine"
+		  Case OptionType.Boolean ' added by the binding
+		    Return "Boolean"
+		  Else
+		    Return "Unknown"
+		  End Select
+		End Function
+	#tag EndMethod
+
+
 	#tag Constant, Name = ABSTRACT_UNIX_SOCKET, Type = Double, Dynamic = False, Default = \"10264", Scope = Protected
 	#tag EndConstant
 
@@ -816,7 +893,7 @@ Protected Module Opts
 	#tag Constant, Name = UPLOAD, Type = Double, Dynamic = False, Default = \"46", Scope = Protected
 	#tag EndConstant
 
-	#tag Constant, Name = UPLOAD_BUFFERSIZE , Type = Double, Dynamic = False, Default = \"280", Scope = Protected
+	#tag Constant, Name = UPLOAD_BUFFERSIZE, Type = Double, Dynamic = False, Default = \"280", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = URL, Type = Double, Dynamic = False, Default = \"10002", Scope = Protected
@@ -866,6 +943,14 @@ Protected Module Opts
 
 	#tag Constant, Name = XOAUTH2_BEARER, Type = Double, Dynamic = False, Default = \"10220", Scope = Protected
 	#tag EndConstant
+
+
+	#tag Structure, Name = curl_easyoption, Flags = &h21
+		Name As Ptr
+		  Option As Int32
+		  Type As OptionType
+		Flags As UInt32
+	#tag EndStructure
 
 
 	#tag ViewBehavior
