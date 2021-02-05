@@ -83,8 +83,8 @@ Protected Class MIMEMessagePart
 			    Case MIMEPartType.File ' file path
 			      Return mb.CString(0)
 			    Case MIMEPartType.Data
-			      If Struct.DataSize > 0 Then
-			        Return mb.StringValue(0, Struct.DataSize)
+			      If DataSize > 0 Then
+			        Return mb.StringValue(0, DataSize)
 			      Else
 			        Return mb.CString(0)
 			      End If
