@@ -180,10 +180,23 @@ Protected Class MIMEMessagePart
 			  ' See:
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MIMEMessagePart.Name
 			  
+			  Dim mb As MemoryBlock
 			  #If Target32Bit Then
-			    Dim mb As MemoryBlock = Struct.Name
+			    If libcURL.Version.IsAtLeast(7, 75, 0) Then
+			      ' libcURL changed the order of structure members as of this version
+			      ' https://github.com/curl/curl/commit/0a5827571f97feded67d6abc837c332224917f75#diff-cd44fdb2e5cf63c3377915693ec58491e7e27c0cb54be06e954ab819c789345d
+			      mb = Struct_7_75_0.Name
+			    Else
+			      mb = Struct.Name
+			    End If
 			  #Else
-			    Dim mb As MemoryBlock = Struct64.Name
+			    If libcURL.Version.IsAtLeast(7, 75, 0) Then
+			      ' libcURL changed the order of structure members as of this version
+			      ' https://github.com/curl/curl/commit/0a5827571f97feded67d6abc837c332224917f75#diff-cd44fdb2e5cf63c3377915693ec58491e7e27c0cb54be06e954ab819c789345d
+			      mb = Struct64_7_75_0.Name
+			    Else
+			      mb = Struct64.Name
+			    End If
 			  #endif
 			  If mb <> Nil Then Return mb.CString(0)
 			  
@@ -249,6 +262,24 @@ Protected Class MIMEMessagePart
 			End Get
 		#tag EndGetter
 		Protected Struct64 As curl_mimepart64
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h1
+		#tag Getter
+			Get
+			  If mStruct <> Nil Then Return mStruct.curl_mimepart64_7_75_0
+			End Get
+		#tag EndGetter
+		Protected Struct64_7_75_0 As curl_mimepart64_7_75_0
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h1
+		#tag Getter
+			Get
+			  If mStruct <> Nil Then Return mStruct.curl_mimepart_7_75_0
+			End Get
+		#tag EndGetter
+		Protected Struct_7_75_0 As curl_mimepart_7_75_0
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
@@ -357,6 +388,52 @@ Protected Class MIMEMessagePart
 		  Name As Ptr
 		  DataSize As UInt32
 		  Flags As UInt32
+		  State As Integer
+		  Encoder As Ptr
+		EncoderState As Integer
+	#tag EndStructure
+
+	#tag Structure, Name = curl_mimepart64_7_75_0, Flags = &h21, Attributes = \"StructureAlignment \x3D 8"
+		Easy As Integer
+		  Parent As Ptr
+		  NextPart As Ptr
+		  Kind As Integer
+		  Flags As UInt32
+		  Data As Ptr
+		  ReadFunc As Ptr
+		  SeekFunc As Ptr
+		  FreeFunc As Ptr
+		  UserData As Ptr
+		  FilePtr As Ptr
+		  Headers As Ptr
+		  UserHeaders As Ptr
+		  MIMEType As Ptr
+		  FileName As Ptr
+		  Name As Ptr
+		  DataSize As UInt32
+		  State As Integer
+		  Encoder As Ptr
+		EncoderState As Integer
+	#tag EndStructure
+
+	#tag Structure, Name = curl_mimepart_7_75_0, Flags = &h21
+		Easy As Integer
+		  Parent As Ptr
+		  NextPart As Ptr
+		  Kind As Integer
+		  Flags As UInt32
+		  Data As Ptr
+		  ReadFunc As Ptr
+		  SeekFunc As Ptr
+		  FreeFunc As Ptr
+		  UserData As Ptr
+		  FilePtr As Ptr
+		  Headers As Ptr
+		  UserHeaders As Ptr
+		  MIMEType As Ptr
+		  FileName As Ptr
+		  Name As Ptr
+		  DataSize As UInt32
 		  State As Integer
 		  Encoder As Ptr
 		EncoderState As Integer
