@@ -36,10 +36,19 @@ Protected Class MIMEMessagePart
 			  ' See:
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MIMEMessagePart.ContentType
 			  
+			  Dim mb As MemoryBlock
 			  #If Target32Bit Then
-			    Dim mb As MemoryBlock = Struct.MIMEType
+			    If libcURL.Version.IsAtLeast(7, 75, 0) Then ' libcURL changed the order of structure members as of this version
+			      mb = Struct_7_75_0.MIMEType
+			    Else
+			      mb = Struct.MIMEType
+			    End If
 			  #Else
-			    Dim mb As MemoryBlock = Struct64.MIMEType
+			    If libcURL.Version.IsAtLeast(7, 75, 0) Then
+			      mb = Struct64_7_75_0.MIMEType
+			    Else
+			      mb = Struct64.MIMEType
+			    End If
 			  #endif
 			  If mb <> Nil Then Return mb.CString(0)
 			End Get
@@ -55,10 +64,19 @@ Protected Class MIMEMessagePart
 			  ' See:
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MIMEMessagePart.Data
 			  
+			  Dim mb As MemoryBlock
 			  #If Target32Bit Then
-			    Dim mb As MemoryBlock = Struct.Data
+			    If libcURL.Version.IsAtLeast(7, 75, 0) Then ' libcURL changed the order of structure members as of this version
+			      mb = Struct_7_75_0.Data
+			    Else
+			      mb = Struct.Data
+			    End If
 			  #Else
-			    Dim mb As MemoryBlock = Struct64.Data
+			    If libcURL.Version.IsAtLeast(7, 75, 0) Then
+			      mb = Struct64_7_75_0.Data
+			    Else
+			      mb = Struct64.Data
+			    End If
 			  #endif
 			  If mb <> Nil Then
 			    Select Case Me.Type
@@ -86,9 +104,17 @@ Protected Class MIMEMessagePart
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MIMEMessagePart.DataSize
 			  
 			  #If Target32Bit Then
-			    Return Struct.DataSize
+			    If libcURL.Version.IsAtLeast(7, 75, 0) Then ' libcURL changed the order of structure members as of this version
+			      Return Struct_7_75_0.DataSize
+			    Else
+			      Return Struct.DataSize
+			    End If
 			  #Else
-			    Return Struct64.DataSize
+			    If libcURL.Version.IsAtLeast(7, 75, 0) Then
+			      Return Struct64_7_75_0.DataSize
+			    Else
+			      Return Struct64.DataSize
+			    End If
 			  #endif
 			End Get
 		#tag EndGetter
@@ -104,10 +130,19 @@ Protected Class MIMEMessagePart
 			  ' See:
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MIMEMessagePart.FileName
 			  
+			  Dim mb As MemoryBlock
 			  #If Target32Bit Then
-			    Dim mb As MemoryBlock = Struct.FileName
+			    If libcURL.Version.IsAtLeast(7, 75, 0) Then ' libcURL changed the order of structure members as of this version
+			      mb = Struct_7_75_0.FileName
+			    Else
+			      mb = Struct.FileName
+			    End If
 			  #Else
-			    Dim mb As MemoryBlock = Struct64.FileName
+			    If libcURL.Version.IsAtLeast(7, 75, 0) Then
+			      mb = Struct64_7_75_0.FileName
+			    Else
+			      mb = Struct64.FileName
+			    End If
 			  #endif
 			  If mb <> Nil Then Return mb.CString(0)
 			End Get
@@ -124,9 +159,17 @@ Protected Class MIMEMessagePart
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MIMEMessagePart.Flags
 			  
 			  #If Target32Bit Then
-			    Return Struct.Flags
+			    If libcURL.Version.IsAtLeast(7, 75, 0) Then ' libcURL changed the order of structure members as of this version
+			      Return Struct_7_75_0.Flags
+			    Else
+			      Return Struct.Flags
+			    End If
 			  #Else
-			    Return Struct64.Flags
+			    If libcURL.Version.IsAtLeast(7, 75, 0) Then
+			      Return Struct64_7_75_0.Flags
+			    Else
+			      Return Struct64.Flags
+			    End If
 			  #endif
 			End Get
 		#tag EndGetter
@@ -143,10 +186,19 @@ Protected Class MIMEMessagePart
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MIMEMessagePart.Headers
 			  
 			  If mHeaders = Nil Then
+			    Dim p As Ptr
 			    #If Target32Bit Then
-			      Dim p As Ptr = Struct.Headers
+			      If libcURL.Version.IsAtLeast(7, 75, 0) Then ' libcURL changed the order of structure members as of this version
+			        p = Struct_7_75_0.Headers
+			      Else
+			        p = Struct.Headers
+			      End If
 			    #Else
-			      Dim p As Ptr = Struct64.Headers
+			      If libcURL.Version.IsAtLeast(7, 75, 0) Then
+			        p = Struct64_7_75_0.Headers
+			      Else
+			        p = Struct64.Headers
+			      End If
 			    #endif
 			    If p <> Nil Then mHeaders = New ListPtr(p)
 			  End If
@@ -182,17 +234,13 @@ Protected Class MIMEMessagePart
 			  
 			  Dim mb As MemoryBlock
 			  #If Target32Bit Then
-			    If libcURL.Version.IsAtLeast(7, 75, 0) Then
-			      ' libcURL changed the order of structure members as of this version
-			      ' https://github.com/curl/curl/commit/0a5827571f97feded67d6abc837c332224917f75#diff-cd44fdb2e5cf63c3377915693ec58491e7e27c0cb54be06e954ab819c789345d
+			    If libcURL.Version.IsAtLeast(7, 75, 0) Then ' libcURL changed the order of structure members as of this version
 			      mb = Struct_7_75_0.Name
 			    Else
 			      mb = Struct.Name
 			    End If
 			  #Else
-			    If libcURL.Version.IsAtLeast(7, 75, 0) Then
-			      ' libcURL changed the order of structure members as of this version
-			      ' https://github.com/curl/curl/commit/0a5827571f97feded67d6abc837c332224917f75#diff-cd44fdb2e5cf63c3377915693ec58491e7e27c0cb54be06e954ab819c789345d
+			    If libcURL.Version.IsAtLeast(7, 75, 0) Then ' libcURL changed the order of structure members as of this version
 			      mb = Struct64_7_75_0.Name
 			    Else
 			      mb = Struct64.Name
@@ -214,10 +262,19 @@ Protected Class MIMEMessagePart
 			  ' See:
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MIMEMessagePart.NextPart
 			  
+			  Dim p As Ptr
 			  #If Target32Bit Then
-			    Dim p As Ptr = Struct.NextPart
+			    If libcURL.Version.IsAtLeast(7, 75, 0) Then ' libcURL changed the order of structure members as of this version
+			      p = Struct_7_75_0.NextPart
+			    Else
+			      p = Struct.NextPart
+			    End If
 			  #Else
-			    Dim p As Ptr = Struct64.NextPart
+			    If libcURL.Version.IsAtLeast(7, 75, 0) Then
+			      p = Struct64_7_75_0.NextPart
+			    Else
+			      p = Struct64.NextPart
+			    End If
 			  #endif
 			  If p <> Nil Then Return New MIMEMessagePart(p, mOwner)
 			End Get
@@ -235,12 +292,9 @@ Protected Class MIMEMessagePart
 			  ' See:
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MIMEMessagePart.Stream
 			  
-			  #If Target32Bit Then
-			    If Struct.UserData <> Nil And Me.Type = MIMEPartType.Callback Then Return FormStreamGetter(mOwner).GetStream(Struct.UserData)
-			  #Else
-			    If Struct64.UserData <> Nil And Me.Type = MIMEPartType.Callback Then Return FormStreamGetter(mOwner).GetStream(Struct64.UserData)
-			  #endif
-			  
+			  If Me.Type <> MIMEPartType.Callback Then Return Nil
+			  Dim p As Ptr = Me.UserData
+			  If p <> Nil Then Return FormStreamGetter(mOwner).GetStream(p)
 			End Get
 		#tag EndGetter
 		Stream As Readable
@@ -293,12 +347,7 @@ Protected Class MIMEMessagePart
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MIMEMessagePart.SubPart
 			  
 			  If Me.Type <> MIMEPartType.Multipart Then Return Nil
-			  #If Target32Bit Then
-			    Return New MIMEMessage(Struct.UserData, mOwner)
-			  #Else
-			    Return New MIMEMessage(Struct64.UserData, mOwner)
-			  #endif
-			  
+			  Return New MIMEMessage(Me.UserData, mOwner)
 			End Get
 		#tag EndGetter
 		SubPart As libcURL.MIMEMessage
@@ -313,14 +362,49 @@ Protected Class MIMEMessagePart
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MIMEMessagePart.Type
 			  
 			  #If Target32Bit Then
-			    Return MIMEPartType(Struct.Kind)
+			    If libcURL.Version.IsAtLeast(7, 75, 0) Then ' libcURL changed the order of structure members as of this version
+			      Return MIMEPartType(Struct_7_75_0.Kind)
+			    Else
+			      Return MIMEPartType(Struct.Kind)
+			    End If
 			  #Else
-			    Return MIMEPartType(Struct64.Kind)
+			    If libcURL.Version.IsAtLeast(7, 75, 0) Then
+			      Return MIMEPartType(Struct64_7_75_0.Kind)
+			    Else
+			      Return MIMEPartType(Struct64.Kind)
+			    End If
 			  #endif
 			  
 			End Get
 		#tag EndGetter
 		Type As libcURL.MIMEPartType
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  ' An opaque value used in callback functions. If the Type is not MIMEPartType.Callback then this property
+			  ' may be nil.
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MIMEMessagePart.UserData
+			  
+			  #If Target32Bit Then
+			    If libcURL.Version.IsAtLeast(7, 75, 0) Then ' libcURL changed the order of structure members as of this version
+			      Return Struct_7_75_0.UserData
+			    Else
+			      Return Struct.UserData
+			    End If
+			  #Else
+			    If libcURL.Version.IsAtLeast(7, 75, 0) Then
+			      Return Struct64_7_75_0.UserData
+			    Else
+			      Return Struct64.UserData
+			    End If
+			  #endif
+			End Get
+		#tag EndGetter
+		UserData As Ptr
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
@@ -333,10 +417,19 @@ Protected Class MIMEMessagePart
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MIMEMessagePart.UserHeaders
 			  
 			  If mUserHeaders = Nil Then
+			    Dim p As Ptr
 			    #If Target32Bit Then
-			      Dim p As Ptr = Struct.UserHeaders
+			      If libcURL.Version.IsAtLeast(7, 75, 0) Then ' libcURL changed the order of structure members as of this version
+			        p = Struct_7_75_0.UserHeaders
+			      Else
+			        p = Struct.UserHeaders
+			      End If
 			    #Else
-			      Dim p As Ptr = Struct64.UserHeaders
+			      If libcURL.Version.IsAtLeast(7, 75, 0) Then
+			        p = Struct64_7_75_0.UserHeaders
+			      Else
+			        p = Struct64.UserHeaders
+			      End If
 			    #endif
 			    If p <> Nil Then mUserHeaders = New ListPtr(p)
 			  End If
