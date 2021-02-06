@@ -363,15 +363,15 @@ Protected Class MIMEMessagePart
 			  
 			  #If Target32Bit Then
 			    If libcURL.Version.IsAtLeast(7, 75, 0) Then ' libcURL changed the order of structure members as of this version
-			      Return MIMEPartType(Struct_7_75_0.Kind)
+			      Return CType(Struct_7_75_0.Kind, MIMEPartType)
 			    Else
-			      Return MIMEPartType(Struct.Kind)
+			      Return CType(Struct.Kind, MIMEPartType)
 			    End If
 			  #Else
 			    If libcURL.Version.IsAtLeast(7, 75, 0) Then
-			      Return MIMEPartType(Struct64_7_75_0.Kind)
+			      Return CType(Struct64_7_75_0.Kind, MIMEPartType)
 			    Else
-			      Return MIMEPartType(Struct64.Kind)
+			      Return CType(Struct64.Kind, MIMEPartType)
 			    End If
 			  #endif
 			  
@@ -444,7 +444,7 @@ Protected Class MIMEMessagePart
 		Easy As Integer
 		  Parent As Ptr
 		  NextPart As Ptr
-		  Kind As Integer
+		  Kind As Int32
 		  Data As Ptr
 		  ReadFunc As Ptr
 		  SeekFunc As Ptr
@@ -467,7 +467,7 @@ Protected Class MIMEMessagePart
 		Easy As Integer
 		  Parent As Ptr
 		  NextPart As Ptr
-		  Kind As Integer
+		  Kind As Int32
 		  Data As Ptr
 		  ReadFunc As Ptr
 		  SeekFunc As Ptr
@@ -490,7 +490,7 @@ Protected Class MIMEMessagePart
 		Easy As Integer
 		  Parent As Ptr
 		  NextPart As Ptr
-		  Kind As Integer
+		  Kind As Int32
 		  Flags As UInt32
 		  Data As Ptr
 		  ReadFunc As Ptr
@@ -513,7 +513,7 @@ Protected Class MIMEMessagePart
 		Easy As Integer
 		  Parent As Ptr
 		  NextPart As Ptr
-		  Kind As Integer
+		  Kind As Int32
 		  Flags As UInt32
 		  Data As Ptr
 		  ReadFunc As Ptr
