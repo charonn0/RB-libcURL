@@ -491,6 +491,7 @@ Protected Class MIMEMessagePart
 		  Parent As Ptr
 		  NextPart As Ptr
 		  Kind As Integer
+		  Flags As UInt32
 		  Data As Ptr
 		  ReadFunc As Ptr
 		  SeekFunc As Ptr
@@ -503,7 +504,6 @@ Protected Class MIMEMessagePart
 		  FileName As Ptr
 		  Name As Ptr
 		  DataSize As UInt32
-		  Flags As UInt32
 		  State As Integer
 		  Encoder As Ptr
 		EncoderState As Integer
