@@ -913,7 +913,13 @@ Inherits libcURL.cURLHandle
 
 
 	#tag Note, Name = Using this class
-		This class provides basic access to the curl_easy API. It is strongly recommended that you
+		
+		  ##################################################################################################
+		  # NOTE: THIS CLASS IS NOT ACTUALLY THE EASY WAY TO USE THIS PROJECT. "Easy" is just what libcURL #
+		  # calls it for historical reasons. The easy way to use this project is the cURLClient class.     #
+		  ##################################################################################################
+		
+		This class provides low level access to the curl_easy API. It is strongly recommended that you
 		familiarize yourself with libcURL, as this class is mostly glue code for libcURL's API.
 		
 		Create a new instance, then use the SetOption method to define what cURL will be doing.

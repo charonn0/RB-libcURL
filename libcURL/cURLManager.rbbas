@@ -447,6 +447,32 @@ Protected Class cURLManager
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Gets the available/allowed HTTP authentication methods.
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.HTTPAuthenticationMethod
+			  
+			  Return EasyItem.GetAuthMethods
+			  
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  ' Sets the available/allowed HTTP authentication methods.
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.HTTPAuthenticationMethod
+			  
+			  Call EasyItem.SetAuthMethods(value)
+			  
+			End Set
+		#tag EndSetter
+		HTTPAuthenticationMethod As libcURL.HTTPAuthMethods
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
 			  ' Gets the version of HTTP to be used. Returns HTTP_VERSION_1_0, HTTP_VERSION_1_1, HTTP_VERSION_2_0, or HTTP_VERSION_NONE
 			  return EasyItem.HTTPVersion
 			End Get
