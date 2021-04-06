@@ -213,8 +213,10 @@ Protected Class cURLManager
 		    If Yield And Rnd > 0.99 Then
 		      #If TargetHasGUI Then
 		        App.SleepCurrentThread(50)
-		      #Else
+		      #ElseIf RBVersion < 2020 Then
 		        App.YieldToNextThread
+		      #Else
+		        Thread.YieldToNext
 		      #EndIf
 		    End If
 		  Loop
