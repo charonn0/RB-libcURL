@@ -745,6 +745,7 @@ Inherits libcURL.cURLHandle
 		    
 		    #If Target64Bit Then
 		  Case Variant.TypeInt64
+		    mOptions.Value(OptionNumber) = NewValue
 		    Return Me.SetOptionPtr(OptionNumber, NewValue.PtrValue)
 		    #Else
 		  Case Variant.TypeLong
