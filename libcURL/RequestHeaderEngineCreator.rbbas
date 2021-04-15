@@ -1,44 +1,25 @@
 #tag Class
-Private Class OptionInfoCreator
-Inherits libcURL.Opts.OptionInfo
+Private Class RequestHeaderEngineCreator
+Inherits libcURL.RequestHeaderEngine
 	#tag Method, Flags = &h0
-		Sub Constructor(Option As curl_easyoption)
+		Sub Constructor(Owner As libcURL.EasyHandle)
 		  ' This class exists solely to protect the superclass Constructor from being called
 		  ' from outside the libcURL module.
 		  
 		  // Calling the overridden superclass constructor.
-		  // Constructor(Option As curl_easyoption) -- From OptionInfo
-		  Super.Constructor(Option)
-		  
+		  // Constructor(Owner As libcURL.EasyHandle) -- From RequestHeaderEngine
+		  Super.Constructor(Owner)
 		End Sub
 	#tag EndMethod
 
 
 	#tag ViewBehavior
 		#tag ViewProperty
-			Name="BindingAlias"
-			Group="Behavior"
-			Type="String"
-			InheritedFrom="libcURL.Opts.OptionInfo"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="DocumentationURL"
-			Group="Behavior"
-			Type="String"
-			InheritedFrom="libcURL.Opts.OptionInfo"
-		#tag EndViewProperty
-		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
 			InheritedFrom="Object"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="IsDeprecated"
-			Group="Behavior"
-			Type="Boolean"
-			InheritedFrom="libcURL.Opts.OptionInfo"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
@@ -48,22 +29,10 @@ Inherits libcURL.Opts.OptionInfo
 			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="LibraryAlias"
-			Group="Behavior"
-			Type="String"
-			InheritedFrom="libcURL.Opts.OptionInfo"
-		#tag EndViewProperty
-		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
 			InheritedFrom="Object"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="OptionNumber"
-			Group="Behavior"
-			Type="Integer"
-			InheritedFrom="libcURL.Opts.OptionInfo"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"

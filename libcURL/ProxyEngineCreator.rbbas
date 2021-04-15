@@ -1,31 +1,31 @@
 #tag Class
-Private Class OptionInfoCreator
-Inherits libcURL.Opts.OptionInfo
+Private Class ProxyEngineCreator
+Inherits libcURL.ProxyEngine
 	#tag Method, Flags = &h0
-		Sub Constructor(Option As curl_easyoption)
+		Sub Constructor(Owner As libcURL.EasyHandle)
 		  ' This class exists solely to protect the superclass Constructor from being called
 		  ' from outside the libcURL module.
 		  
 		  // Calling the overridden superclass constructor.
-		  // Constructor(Option As curl_easyoption) -- From OptionInfo
-		  Super.Constructor(Option)
-		  
+		  // Constructor(Owner As libcURL.EasyHandle) -- From ProxyEngine
+		  Super.Constructor(Owner)
 		End Sub
 	#tag EndMethod
 
 
 	#tag ViewBehavior
 		#tag ViewProperty
-			Name="BindingAlias"
+			Name="Address"
 			Group="Behavior"
 			Type="String"
-			InheritedFrom="libcURL.Opts.OptionInfo"
+			EditorType="MultiLineEditor"
+			InheritedFrom="libcURL.ProxyEngine"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DocumentationURL"
+			Name="HTTPTunnel"
 			Group="Behavior"
-			Type="String"
-			InheritedFrom="libcURL.Opts.OptionInfo"
+			Type="Boolean"
+			InheritedFrom="libcURL.ProxyEngine"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
@@ -35,23 +35,11 @@ Inherits libcURL.Opts.OptionInfo
 			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="IsDeprecated"
-			Group="Behavior"
-			Type="Boolean"
-			InheritedFrom="libcURL.Opts.OptionInfo"
-		#tag EndViewProperty
-		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
 			InheritedFrom="Object"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="LibraryAlias"
-			Group="Behavior"
-			Type="String"
-			InheritedFrom="libcURL.Opts.OptionInfo"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
@@ -60,10 +48,24 @@ Inherits libcURL.Opts.OptionInfo
 			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="OptionNumber"
+			Name="Password"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+			InheritedFrom="libcURL.ProxyEngine"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Port"
 			Group="Behavior"
 			Type="Integer"
-			InheritedFrom="libcURL.Opts.OptionInfo"
+			InheritedFrom="libcURL.ProxyEngine"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="ServiceName"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+			InheritedFrom="libcURL.ProxyEngine"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
@@ -77,6 +79,19 @@ Inherits libcURL.Opts.OptionInfo
 			Group="Position"
 			InitialValue="0"
 			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="UnifiedHeaders"
+			Group="Behavior"
+			Type="Boolean"
+			InheritedFrom="libcURL.ProxyEngine"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Username"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+			InheritedFrom="libcURL.ProxyEngine"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

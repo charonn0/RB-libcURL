@@ -213,8 +213,10 @@ Protected Class cURLManager
 		    If Yield And Rnd > 0.99 Then
 		      #If TargetHasGUI Then
 		        App.SleepCurrentThread(50)
-		      #Else
+		      #ElseIf RBVersion < 2020 Then
 		        App.YieldToNextThread
+		      #Else
+		        Thread.YieldToNext
 		      #EndIf
 		    End If
 		  Loop
@@ -263,7 +265,7 @@ Protected Class cURLManager
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.RequestHeaders
 		  
-		  If mRequestHeaderEngine = Nil Then mRequestHeaderEngine = New RequestHeaderEngine(Me.EasyItem)
+		  If mRequestHeaderEngine = Nil Then mRequestHeaderEngine = New RequestHeaderEngineCreator(Me.EasyItem)
 		  Return mRequestHeaderEngine
 		End Function
 	#tag EndMethod

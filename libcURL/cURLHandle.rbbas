@@ -47,10 +47,22 @@ Implements ErrorSetter
 		  If InitFlagsLock = Nil Then InitFlagsLock = New Semaphore
 		  Do Until InitFlagsLock.TrySignal
 		    #If TargetHasGUI Then
-		      App.YieldToNextThread
-		    #else
-		      If App.CurrentThread <> Nil Then App.YieldToNextThread Else App.DoEvents(100)
-		    #endif
+		      #If RBVersion < 2020 Then
+		        App.YieldToNextThread
+		      #Else
+		        Thread.YieldToNext
+		      #EndIf
+		    #Else
+		      If App.CurrentThread <> Nil Then
+		        #If RBVersion < 2020 Then
+		          App.YieldToNextThread
+		        #Else
+		          Thread.YieldToNext
+		        #EndIf
+		      Else
+		        App.DoEvents(100)
+		      End If
+		    #EndIf
 		  Loop
 		  
 		  Try
@@ -78,7 +90,11 @@ Implements ErrorSetter
 		  
 		  If InitFlags = Nil Then Return
 		  Do Until InitFlagsLock.TrySignal
-		    App.YieldToNextThread
+		    #If RBVersion < 2020 Then
+		      App.YieldToNextThread
+		    #Else
+		      Thread.YieldToNext
+		    #EndIf
 		  Loop
 		  Try
 		    InitFlags.Value(mFlags) = InitFlags.Value(mFlags) - 1

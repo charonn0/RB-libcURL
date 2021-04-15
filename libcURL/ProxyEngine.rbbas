@@ -1,7 +1,7 @@
 #tag Class
 Protected Class ProxyEngine
-	#tag Method, Flags = &h0
-		Sub Constructor(Owner As libcURL.EasyHandle)
+	#tag Method, Flags = &h1
+		Protected Sub Constructor(Owner As libcURL.EasyHandle)
 		  ' Creates a new instance of ProxyEngine for the EasyHandle whose proxy settings are to be manipulated
 		  '
 		  ' See:

@@ -1,7 +1,7 @@
 #tag Class
 Protected Class MIMEMessagePart
-	#tag Method, Flags = &h0
-		Sub Constructor(ItemStruct As Ptr, Owner As libcURL.MIMEMessage)
+	#tag Method, Flags = &h1
+		Protected Sub Constructor(ItemStruct As Ptr, Owner As libcURL.MIMEMessage)
 		  ' Constructs a new MIMEMessagePart. Generally, you should not construct instances of
 		  ' this class. Use the value returned from MIMEMessage.FirstPart, MIMEMessagePart.NextPart,
 		  ' or MIMEMessage.SubPart instead.
