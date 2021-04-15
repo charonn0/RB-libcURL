@@ -1,7 +1,7 @@
 #tag Class
 Protected Class RequestHeaderEngine
-	#tag Method, Flags = &h0
-		Sub Constructor(Owner As libcURL.EasyHandle)
+	#tag Method, Flags = &h1
+		Protected Sub Constructor(Owner As libcURL.EasyHandle)
 		  ' Creates a new instance of RequestHeaderEngine for the EasyHandle whose request headers are to be manipulated
 		  '
 		  ' See:

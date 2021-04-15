@@ -513,7 +513,7 @@ Implements FormStreamGetter
 			  Dim List As Ptr = Ptr(Me.Handle)
 			  If List <> Nil Then 
 			    Dim m As curl_mime = List.curl_mime
-			    Return New MIMEMessagePart(m.FirstPart, Me)
+			    Return New MIMEMessagePartCreator(m.FirstPart, Me)
 			  End If
 			End Get
 		#tag EndGetter

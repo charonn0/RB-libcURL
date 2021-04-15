@@ -631,9 +631,7 @@ Implements FormStreamGetter
 			  
 			  Dim List As Ptr = Ptr(Me.Handle)
 			  If List = Nil Then Return Nil
-			  Return New MultipartFormElement(List, Me)
-			  
-			  
+			  Return New MultipartFormElementCreator(List, Me)
 			End Get
 		#tag EndGetter
 		Protected FirstElement As libcURL.MultipartFormElement

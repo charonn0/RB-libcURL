@@ -1143,7 +1143,7 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  If mCookieEngine = Nil Then mCookieEngine = New libcURL.CookieEngine(Me)
+			  If mCookieEngine = Nil Then mCookieEngine = New CookieEngineCreator(Me)
 			  return mCookieEngine
 			End Get
 		#tag EndGetter
@@ -1607,7 +1607,7 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  If mProxyEngine = Nil Then mProxyEngine = New libcURL.ProxyEngine(Me)
+			  If mProxyEngine = Nil Then mProxyEngine = New ProxyEngineCreator(Me)
 			  return mProxyEngine
 			End Get
 		#tag EndGetter

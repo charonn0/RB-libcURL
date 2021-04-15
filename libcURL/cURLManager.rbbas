@@ -265,7 +265,7 @@ Protected Class cURLManager
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.RequestHeaders
 		  
-		  If mRequestHeaderEngine = Nil Then mRequestHeaderEngine = New RequestHeaderEngine(Me.EasyItem)
+		  If mRequestHeaderEngine = Nil Then mRequestHeaderEngine = New RequestHeaderEngineCreator(Me.EasyItem)
 		  Return mRequestHeaderEngine
 		End Function
 	#tag EndMethod
