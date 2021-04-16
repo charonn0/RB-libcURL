@@ -1,7 +1,7 @@
 ## Introduction
 [libcurl](http://curl.haxx.se/libcurl/c/libcurl.html) is a cross-platform multi-protocol network transfer library. It is widely used both as a stand-alone command-line utility and as a standard or optional library for [many programming languages](http://curl.haxx.se/libcurl/bindings.html) and development environments.
 
-**RB-libcURL** is a libcurl [binding](http://en.wikipedia.org/wiki/Language_binding) for Realbasic and Xojo ("classic" framework) projects. Library binaries for [various platforms](http://curl.haxx.se/download.html) are available, or can built from source. 
+**RB-libcURL** is a libcurl [binding](http://en.wikipedia.org/wiki/Language_binding) for Realbasic and Xojo ("classic" framework) projects. Library binaries for [various platforms](http://curl.haxx.se/download.html) are available, or can be built from source. 
 
 The minimum supported libcURL version is [7.15.2](https://github.com/charonn0/RB-libcURL/wiki/libcURL.IsAvailable). The recommended minimum version is [7.33.0](https://curl.haxx.se/changes.html#7_33_0). Versions prior to 7.33.0 will function with degraded features, but versions prior to 7.15.2 will not function properly at all. The minimum supported Xojo version is RS2010R4.
 
@@ -13,7 +13,7 @@ This example performs a synchronous HTTP GET request on the calling thread. [**M
       Dim page As String = curl.GetDownloadedData()
   End If
 ```
-## Hilights
+## Highlights
 * [Synchronous and asynchronous](https://github.com/charonn0/RB-libcURL/wiki/Synchronous-vs.-Asynchronous-methods) transfers 
 * Use any protocol supported by libcURL: DICT, FILE, FTP, FTPS, Gopher, HTTP(1.0, 1.1, and 2† ), HTTPS, IMAP, IMAPS, LDAP, LDAPS, POP3, POP3S, RTMP, RTSP, SCP, SFTP, SMTP, SMTPS, Telnet and TFTP.
 * Support for modern HTTP features like [persistent connections](https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.AutoDisconnect), [pipelining](https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.HTTPPipelining), and [multiplexing](https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.HTTPMultiplexing)†.
@@ -39,7 +39,7 @@ This example performs a synchronous HTTP GET request on the calling thread. [**M
 ***
 It is strongly recommended that you familiarize yourself with [libcURL](http://curl.haxx.se/libcurl/c/libcurl-tutorial.html), as this project preserves the semantics of libcURL's API in an object-oriented, Xojo-flavored wrapper. 
 
-**For a simplified client interface that is appropriate for most types of transfers you should use the [`cURLClient`](https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLClient) class. Refer to the [examples](https://github.com/charonn0/RB-libcURL/wiki/Home#examples) below for demonstrations of `cURLClient`.**
+**For a simplified client interface that is appropriate for most types of transfers, you should use the [`cURLClient`](https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLClient) class. Refer to the [examples](https://github.com/charonn0/RB-libcURL/wiki/Home#examples) below for demonstrations of `cURLClient`.**
 
 For more thorough documentation of individual classes and methods refer to the [wiki](https://github.com/charonn0/RB-libcURL/wiki).
 
