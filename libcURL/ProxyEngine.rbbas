@@ -8,7 +8,7 @@ Protected Class ProxyEngine
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ProxyEngine.Constructor
 		  
 		  mOwner = New WeakRef(Owner)
-		  mUnifiedHeaders = libcURL.Version.IsAtLeast(7, 42, 1) ' as of libcurl 7.42.1 this defaults to True
+		  mUnifiedHeaders = Not libcURL.Version.IsAtLeast(7, 42, 1) ' as of libcurl 7.42.1 this defaults to True
 		  
 		  
 		End Sub
@@ -353,6 +353,14 @@ Protected Class ProxyEngine
 		#tag EndGetter
 		#tag Setter
 			Set
+			  ' When set to True (the default before libcurl 7.42.1), libcurl will send the same request headers to the
+			  ' proxy as it does to the server. When set to False only those headers set with the SetProxyHeader() method
+			  ' are sent to the proxy.
+			  '
+			  ' See:
+			  ' https://curl.se/libcurl/c/CURLOPT_HEADEROPT.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ProxyEngine.UnifiedHeaders
+			  
 			  If libcURL.Version.IsAtLeast(7, 37, 0) Then
 			    Const CURLHEADER_UNIFIED = 0
 			    Const CURLHEADER_SEPARATE = 1
