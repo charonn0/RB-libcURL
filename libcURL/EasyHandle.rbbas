@@ -81,6 +81,9 @@ Inherits libcURL.cURLHandle
 		  End If
 		  
 		  mOptions = New Dictionary
+		  For Each opt As Integer In CopyOpts.mOptions.Keys
+		    mOptions.Value(opt) = CopyOpts.mOptions.Value(opt)
+		  Next
 		  Instances.Value(mHandle) = New WeakRef(Me)
 		  InitCallbacks()
 		  If CopyOpts.mAuthMethods <> Nil Then Call Me.SetAuthMethods(CopyOpts.GetAuthMethods)

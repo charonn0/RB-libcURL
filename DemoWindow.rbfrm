@@ -3908,6 +3908,7 @@ End
 #tag Events GetBtn
 	#tag Event
 		Sub Action()
+		  Client.EasyItem = New libcURL.EasyHandle(Client.EasyItem)
 		  Dim bs As BinaryStream
 		  If SaveToFileChkBx.Value Then
 		    Dim name As String
