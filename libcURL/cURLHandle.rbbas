@@ -26,60 +26,6 @@ Implements ErrorSetter
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Attributes( deprecated ) Protected Sub Constructor(GlobalInitFlags As Integer)
-		  ' Initializes libcURL if necessary. GlobalInitFlags is one of the CURL_GLOBAL_* constants.
-		  ' This class keeps track of which flags have already been initialized, and only initializes
-		  ' libcURL if GlobalInitFlags is not among them.
-		  ' See:
-		  ' http://curl.haxx.se/libcurl/c/curl_global_init.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLHandle.Constructor
-		  
-		  Static available As Boolean = libcURL.IsAvailable
-		  If Not available Then
-		    Dim err As New PlatformNotSupportedException
-		    err.Message = "libcURL is not available or is an unsupported version."
-		    Raise err
-		  End If
-		  
-		  mLastError = 0 ' clears the NOT_INITIALIZED default value
-		  
-		  If InitFlagsLock = Nil Then InitFlagsLock = New Semaphore
-		  Do Until InitFlagsLock.TrySignal
-		    #If TargetHasGUI Then
-		      #If RBVersion < 2020 Then
-		        App.YieldToNextThread
-		      #Else
-		        Thread.YieldToNext
-		      #EndIf
-		    #Else
-		      If App.CurrentThread <> Nil Then
-		        #If RBVersion < 2020 Then
-		          App.YieldToNextThread
-		        #Else
-		          Thread.YieldToNext
-		        #EndIf
-		      Else
-		        App.DoEvents(100)
-		      End If
-		    #EndIf
-		  Loop
-		  
-		  Try
-		    If InitFlags = Nil Then InitFlags = New Dictionary
-		    If Not InitFlags.HasKey(GlobalInitFlags) Then
-		      mLastError = curl_global_init(GlobalInitFlags)
-		      If mLastError <> 0 Then Raise New cURLException(Me)
-		    End If
-		    InitFlags.Value(GlobalInitFlags) = InitFlags.Lookup(GlobalInitFlags, 0) + 1
-		    mFlags = GlobalInitFlags
-		  Finally
-		    InitFlagsLock.Release
-		  End Try
-		  
-		End Sub
-	#tag EndMethod
-
 	#tag Method, Flags = &h21
 		Private Sub Destructor()
 		  ' Decrements the reference count for the instance's Flags. If the count reaches zero
