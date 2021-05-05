@@ -211,12 +211,12 @@ Protected Class cURLManager
 		  QueueTransfer(URL, ReadFrom, WriteTo)
 		  Do Until Not mMultiItem.PerformOnce()
 		    If Yield And Rnd > 0.99 Then
-		      #If TargetHasGUI Then
+		      #If TargetDesktop Then
 		        App.SleepCurrentThread(50)
 		      #ElseIf RBVersion < 2020 Then
-		        App.YieldToNextThread
+		        App.YieldToNextThread()
 		      #Else
-		        Thread.YieldToNext
+		        Thread.YieldToNext()
 		      #EndIf
 		    End If
 		  Loop
