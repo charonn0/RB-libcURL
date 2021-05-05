@@ -2,6 +2,8 @@
 Protected Class OptionIterator
 	#tag Method, Flags = &h0
 		Sub Constructor()
+		  ' Enumerate all known options.
+		  
 		  If Not System.IsFunctionAvailable("curl_easy_option_next", cURLLib) Then
 		    mDataStore = FakeDataStore
 		    
@@ -21,6 +23,8 @@ Protected Class OptionIterator
 
 	#tag Method, Flags = &h0
 		Sub Constructor(Session As libcURL.EasyHandle)
+		  ' Enumerate the options that have been set on a specific instance of EasyHandle
+		  
 		  Const SECRET_INTERNAL_FLAG = &hFEF1F0F9
 		  mDataStore = Session.GetOption(SECRET_INTERNAL_FLAG, Session)
 		  mIndex = 0
@@ -29,6 +33,8 @@ Protected Class OptionIterator
 
 	#tag Method, Flags = &h0
 		Function Count() As Integer
+		  ' Returns the total number of options being enumerated
+		  
 		  If mDataStore <> Nil Then
 		    Return mDataStore.Count
 		  Else
@@ -47,6 +53,8 @@ Protected Class OptionIterator
 
 	#tag Method, Flags = &h0
 		Function MoveNext() As Boolean
+		  ' Advances the iterator to the next option in the list. Returns True until there are no further options.
+		  
 		  If mDataStore = Nil Then
 		    mPrev = curl_easy_option_next(mPrev)
 		    If mPrev = Nil Then Return False
