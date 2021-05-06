@@ -276,10 +276,10 @@ Protected Class cURLManager
 		  ' to their default values. Existing connections, the Session ID cache, the DNS cache, cookies, and shares are
 		  ' not affected.
 		  '
+		  ' It is not necessary to call this method between transfers.
+		  '
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.Reset
-		  
-		  It is not necessary to call this method between transfers.
 		  
 		  If mEasyItem = Nil Then mEasyItem = New libcURL.EasyHandle Else mEasyItem.Reset
 		  Me.EasyItem = mEasyItem
