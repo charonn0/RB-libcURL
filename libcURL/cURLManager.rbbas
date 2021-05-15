@@ -290,8 +290,8 @@ Protected Class cURLManager
 		  mEasyItem.FollowRedirects = True
 		  mEasyItem.AutoReferer = True
 		  mEasyItem.HTTPCompression = libcURL.Version.LibZ.IsAvailable
+		  mRequestHeaderEngine = Nil
 		  Me.Yield = True
-		  Me.RequestHeaders.Reset()
 		End Sub
 	#tag EndMethod
 
