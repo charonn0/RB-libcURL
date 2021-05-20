@@ -12,6 +12,11 @@ Implements ErrorSetter
 		  If Not available Then
 		    Dim err As New PlatformNotSupportedException
 		    err.Message = "libcURL is not available or is an unsupported version."
+		    ' We can't find the libcurl binary or one of its dependencies (OpenSSL, zlib, etc.) Verify
+		    ' that all neccesary dll/solib/dylib files are located in the expected directory for your
+		    ' environment. The easiest way to avoid this problem is to add a build step to your project
+		    ' that copies the necessary files automatically.
+		    ' See: http://docs.xojo.com/UserGuide:Build_Automation#Copy_Files
 		    Raise err
 		  End If
 		  
@@ -19,7 +24,11 @@ Implements ErrorSetter
 		  
 		  If InitFlag = libcURL.Errors.INIT_FAILED Then
 		    mLastError = curl_global_init(CURL_GLOBAL_DEFAULT)
-		    If mLastError <> 0 Then Raise New cURLException(Me)
+		    If mLastError <> 0 Then
+		      ' We were not able to initialize libcurl (or a dependency) even though the binary was
+		      ' successfully loaded.
+		      Raise New cURLException(Me)
+		    End If
 		  End If
 		  mFlags = CURL_GLOBAL_DEFAULT
 		  InitFlag = CURL_GLOBAL_DEFAULT
