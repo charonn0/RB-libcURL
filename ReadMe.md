@@ -101,5 +101,6 @@ RB-libcURL will raise a PlatformNotSupportedException when used if all required 
 * [DICT lookup example](https://github.com/charonn0/RB-libcURL/wiki/DICT-example)
 * [FILE protocol example](https://github.com/charonn0/RB-libcURL/wiki/FILE-protocol-example)
 * [Multiple Simultaneous Transfers](https://github.com/charonn0/RB-libcURL/wiki/Multiple-Simultaneous-Transfers)
+* [Query the server for protocol-specific metadata](https://github.com/charonn0/RB-libcURL/wiki/Query-URL-metadata-example)
 
 ![Powered by libcURL](https://raw.githubusercontent.com/wiki/charonn0/RB-libcURL/powered_by_curl7.gif)
