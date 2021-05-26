@@ -2268,7 +2268,12 @@ Protected Module libcURL
 		  SSLv3=3
 		  TLSv1_0=4
 		  TLSv1_1=5
-		TLSv1_2=6
+		  TLSv1_2=6
+		  TLSv1_3=7
+		  Max_TLSv1_0=65536
+		  Max_TLSv1_1=327680
+		  Max_TLSv1_2=393216
+		Max_TLSv1_3=458752
 	#tag EndEnum
 
 	#tag Enum, Name = TransferEncoding, Type = Integer, Flags = &h1
