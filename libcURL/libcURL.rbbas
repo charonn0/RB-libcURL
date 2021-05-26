@@ -89,6 +89,10 @@ Protected Module libcURL
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Function curl_easy_setopt_blob Lib cURLLib Alias "curl_easy_setopt" (EasyHandle As Integer, Option As Integer, ByRef Value As curl_blob) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h21
 		Private Soft Declare Function curl_easy_setopt_long Lib cURLLib Alias "curl_easy_setopt" (EasyHandle As Integer, Option As Integer, Value As Ptr) As Integer
 	#tag EndExternalMethod
 
@@ -2114,6 +2118,12 @@ Protected Module libcURL
 	#tag Constant, Name = CURLSSLSET_UNKNOWN_BACKEND, Type = Double, Dynamic = False, Default = \"1", Scope = Private
 	#tag EndConstant
 
+	#tag Constant, Name = CURL_BLOB_COPY, Type = Double, Dynamic = False, Default = \"1", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = CURL_BLOB_NOCOPY, Type = Double, Dynamic = False, Default = \"0", Scope = Private
+	#tag EndConstant
+
 	#tag Constant, Name = CURL_GLOBAL_ALL, Type = Double, Dynamic = False, Default = \"3", Scope = Protected
 	#tag EndConstant
 
@@ -2138,6 +2148,12 @@ Protected Module libcURL
 	#tag Constant, Name = CURL_WRITEFUNC_PAUSE, Type = Double, Dynamic = False, Default = \"CURL_READFUNC_PAUSE", Scope = Protected
 	#tag EndConstant
 
+
+	#tag Structure, Name = curl_blob, Flags = &h21
+		Data As Ptr
+		  Length As UInt32
+		Flags As UInt32
+	#tag EndStructure
 
 	#tag Structure, Name = timeval, Flags = &h21
 		tv_sec As Integer

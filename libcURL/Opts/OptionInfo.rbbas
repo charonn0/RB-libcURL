@@ -35,6 +35,8 @@ Protected Class OptionInfo
 		    Return CAINFO
 		  Case "CAPATH"
 		    Return CAPATH
+		  Case "CAINFO_BLOB"
+		    Return CAINFO_BLOB
 		  Case "CERTINFO"
 		    Return CERTINFO
 		  Case "CHUNK_BGN_FUNCTION"
@@ -614,6 +616,8 @@ Protected Class OptionInfo
 		    Return Nil
 		  Case CAPATH
 		    Return Nil
+		  Case CAINFO_BLOB
+		    Return Nil
 		  Case CERTINFO
 		    Return 0
 		  Case CHUNK_BGN_FUNCTION
@@ -1185,6 +1189,8 @@ Protected Class OptionInfo
 		    Return "CAINFO"
 		  Case CAPATH
 		    Return "CAPATH"
+		  Case CAINFO_BLOB
+		    Return "CAINFO_BLOB"
 		  Case CERTINFO
 		    Return "CERTINFO"
 		  Case CHUNK_BGN_FUNCTION
@@ -1764,6 +1770,8 @@ Protected Class OptionInfo
 		    Return OptionType.String
 		  Case CAPATH
 		    Return OptionType.String
+		  Case CAINFO_BLOB
+		    Return OptionType.Ptr
 		  Case CERTINFO
 		    Return OptionType.Number
 		  Case CHUNK_BGN_FUNCTION
