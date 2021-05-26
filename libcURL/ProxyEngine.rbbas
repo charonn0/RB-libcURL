@@ -9,7 +9,7 @@ Protected Class ProxyEngine
 		  
 		  mOwner = New WeakRef(Owner)
 		  mUnifiedHeaders = Not libcURL.Version.IsAtLeast(7, 42, 1) ' as of libcurl 7.42.1 this defaults to True
-		  If Owner.CA_ListFile <> Nil Then mCA_ListFile = Owner.CA_ListFile
+		  If Owner.CA_ListFile <> Nil Then CA_ListFile = Owner.CA_ListFile
 		End Sub
 	#tag EndMethod
 
