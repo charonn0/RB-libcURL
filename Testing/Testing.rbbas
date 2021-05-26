@@ -103,7 +103,7 @@ Protected Module Testing
 		  c.Cookies.Enabled = True
 		  
 		  Dim expiry As Date
-		  Assert(libcURL.ParseDate("Wed, 21 Apr 2021 02:55:26 GMT", expiry))
+		  Assert(libcURL.ParseDate("Sat, 23 May 2026 05:08:11 GMT", expiry))
 		  
 		  Assert(c.SetCookie("test1", "value1", "www.example.com", Nil, "", True))
 		  Assert(c.SetCookie("test2", "value2", "api.example.com", expiry))
