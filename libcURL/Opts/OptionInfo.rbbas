@@ -27,6 +27,8 @@ Protected Class OptionInfo
 		    Return APPEND
 		  Case "AUTOREFERER"
 		    Return AUTOREFERER
+		  Case "AWS_SIGV4"
+		    Return AWS_SIGV4
 		  Case "BUFFERSIZE"
 		    Return BUFFERSIZE
 		  Case "CAINFO"
@@ -604,6 +606,8 @@ Protected Class OptionInfo
 		    Return 0
 		  Case AUTOREFERER
 		    Return 0
+		  Case AWS_SIGV4
+		    Return Nil
 		  Case BUFFERSIZE
 		    Return EasyHandle.CURL_MAX_WRITE_SIZE
 		  Case CAINFO
@@ -1173,6 +1177,8 @@ Protected Class OptionInfo
 		    Return "APPEND"
 		  Case AUTOREFERER
 		    Return "AUTOREFERER"
+		  Case AWS_SIGV4
+		    Return "AWS_SIGV4"
 		  Case BUFFERSIZE
 		    Return "BUFFERSIZE"
 		  Case CAINFO
@@ -1750,6 +1756,8 @@ Protected Class OptionInfo
 		    Return OptionType.Number
 		  Case AUTOREFERER
 		    Return OptionType.Number
+		  Case AWS_SIGV4
+		    Return OptionType.String
 		  Case BUFFERSIZE
 		    Return OptionType.Number
 		  Case CAINFO
