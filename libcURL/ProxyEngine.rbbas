@@ -9,8 +9,7 @@ Protected Class ProxyEngine
 		  
 		  mOwner = New WeakRef(Owner)
 		  mUnifiedHeaders = Not libcURL.Version.IsAtLeast(7, 42, 1) ' as of libcurl 7.42.1 this defaults to True
-		  
-		  
+		  If Owner.CA_ListFile <> Nil Then mCA_ListFile = Owner.CA_ListFile
 		End Sub
 	#tag EndMethod
 
@@ -195,6 +194,49 @@ Protected Class ProxyEngine
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Gets the PEM file (or a directory of PEM files) containing one or more certificate authorities libcURL
+			  ' will trust to verify the proxy with. If no file/folder is specified (default) then returns Nil.
+			  
+			  return mCA_ListFile
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  ' Sets the PEM file (or a directory of PEM files) containing one or more certificate authorities libcURL
+			  ' should trust to verify the proxy with. 
+			  ' ProxyEngine.Secure must be set to True to enable certificate verification of proxies.
+			  '
+			  ' See:
+			  ' https://curl.se/libcurl/c/CURLOPT_PROXY_CAINFO.html
+			  ' https://curl.se/libcurl/c/CURLOPT_PROXY_CAPATH.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ProxyEngine.CA_ListFile
+			  
+			  Select Case True
+			  Case value = Nil
+			    If Not Owner.SetOption(libcURL.Opts.PROXY_CAINFO, Nil) Then Raise New cURLException(Owner)
+			    If Not Owner.SetOption(libcURL.Opts.PROXY_CAPATH, Nil) Then Raise New cURLException(Owner)
+			    
+			  Case Not value.Exists
+			    ErrorSetter(Owner).LastError = libcURL.Errors.INVALID_LOCAL_FILE
+			    Return
+			    
+			  Case value.Directory
+			    If Not Owner.SetOption(libcURL.Opts.PROXY_CAPATH, value) Then Raise New cURLException(Owner)
+			    
+			  Else
+			    If Not Owner.SetOption(libcURL.Opts.PROXY_CAINFO, value) Then Raise New cURLException(Owner)
+			    
+			  End Select
+			  
+			  mCA_ListFile = value
+			End Set
+		#tag EndSetter
+		CA_ListFile As FolderItem
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
 			  return mHTTPTunnel
 			End Get
 		#tag EndGetter
@@ -221,6 +263,10 @@ Protected Class ProxyEngine
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
+		Private mCA_ListFile As FolderItem
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
 		Private mExclusions() As String
 	#tag EndProperty
 
@@ -242,6 +288,10 @@ Protected Class ProxyEngine
 
 	#tag Property, Flags = &h21
 		Private mPort As Integer = 1080
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mSecure As Boolean
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -298,6 +348,43 @@ Protected Class ProxyEngine
 			End Set
 		#tag EndSetter
 		Port As Integer
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  Return mSecure
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  ' If True, libcURL will verify SSL certificates presented by the proxy server. This does not
+			  ' tell libcURL to use SSL, only to verify certs if SSL is used. Use ProxyEngine.CA_ListFile to
+			  ' specify a list of certificate authorities to be trusted.
+			  '
+			  ' See:
+			  ' https://curl.se/libcurl/c/CURLOPT_PROXY_SSL_VERIFYHOST.html
+			  ' https://curl.se/libcurl/c/CURLOPT_PROXY_SSL_VERIFYPEER.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ProxyEngine.Secure
+			  
+			  If Not libcURL.Version.IsAtLeast(7, 52, 0) Then
+			    ErrorSetter(Owner).LastError = libcURL.Errors.FEATURE_UNAVAILABLE
+			    Return
+			  End If
+			  
+			  
+			  If value Then
+			    If Not Owner.SetOption(libcURL.Opts.PROXY_SSL_VERIFYHOST, 2) Then Raise New cURLException(Owner) ' 2 is not a typo
+			    If Not Owner.SetOption(libcURL.Opts.PROXY_SSL_VERIFYPEER, 1) Then Raise New cURLException(Owner)
+			  Else
+			    If Not Owner.SetOption(libcURL.Opts.PROXY_SSL_VERIFYHOST, 0) Then Raise New cURLException(Owner)
+			    If Not Owner.SetOption(libcURL.Opts.PROXY_SSL_VERIFYPEER, 0) Then Raise New cURLException(Owner)
+			  End If
+			  
+			  mSecure = value
+			End Set
+		#tag EndSetter
+		Secure As Boolean
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
