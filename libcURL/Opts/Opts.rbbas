@@ -101,10 +101,16 @@ Protected Module Opts
 	#tag Constant, Name = AUTOREFERER, Type = Double, Dynamic = False, Default = \"58", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = AWS_SIGV4, Type = Double, Dynamic = False, Default = \"10305", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = BUFFERSIZE, Type = Double, Dynamic = False, Default = \"98", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = CAINFO, Type = Double, Dynamic = False, Default = \"10065", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CAINFO_BLOB, Type = Double, Dynamic = False, Default = \"40309", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = CAPATH, Type = Double, Dynamic = False, Default = \"10097", Scope = Protected

@@ -89,6 +89,10 @@ Protected Module libcURL
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Function curl_easy_setopt_blob Lib cURLLib Alias "curl_easy_setopt" (EasyHandle As Integer, Option As Integer, ByRef Value As curl_blob) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h21
 		Private Soft Declare Function curl_easy_setopt_long Lib cURLLib Alias "curl_easy_setopt" (EasyHandle As Integer, Option As Integer, Value As Ptr) As Integer
 	#tag EndExternalMethod
 
@@ -2072,7 +2076,7 @@ Protected Module libcURL
 
 	#tag Note, Name = Copying
 		RB-libcURL (https://github.com/charonn0/RB-libcURL)
-		Copyright (c)2014-19 Andrew Lambert, all rights reserved.
+		Copyright (c)2014-21 Andrew Lambert, all rights reserved.
 		
 		 Permission to use, copy, modify, and distribute this software for any purpose
 		 with or without fee is hereby granted, provided that the above copyright
@@ -2114,6 +2118,12 @@ Protected Module libcURL
 	#tag Constant, Name = CURLSSLSET_UNKNOWN_BACKEND, Type = Double, Dynamic = False, Default = \"1", Scope = Private
 	#tag EndConstant
 
+	#tag Constant, Name = CURL_BLOB_COPY, Type = Double, Dynamic = False, Default = \"1", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = CURL_BLOB_NOCOPY, Type = Double, Dynamic = False, Default = \"0", Scope = Private
+	#tag EndConstant
+
 	#tag Constant, Name = CURL_GLOBAL_ALL, Type = Double, Dynamic = False, Default = \"3", Scope = Protected
 	#tag EndConstant
 
@@ -2138,6 +2148,12 @@ Protected Module libcURL
 	#tag Constant, Name = CURL_WRITEFUNC_PAUSE, Type = Double, Dynamic = False, Default = \"CURL_READFUNC_PAUSE", Scope = Protected
 	#tag EndConstant
 
+
+	#tag Structure, Name = curl_blob, Flags = &h21
+		Data As Ptr
+		  Length As UInt32
+		Flags As UInt32
+	#tag EndStructure
 
 	#tag Structure, Name = timeval, Flags = &h21
 		tv_sec As Integer
@@ -2268,7 +2284,12 @@ Protected Module libcURL
 		  SSLv3=3
 		  TLSv1_0=4
 		  TLSv1_1=5
-		TLSv1_2=6
+		  TLSv1_2=6
+		  TLSv1_3=7
+		  Max_TLSv1_0=65536
+		  Max_TLSv1_1=327680
+		  Max_TLSv1_2=393216
+		Max_TLSv1_3=458752
 	#tag EndEnum
 
 	#tag Enum, Name = TransferEncoding, Type = Integer, Flags = &h1

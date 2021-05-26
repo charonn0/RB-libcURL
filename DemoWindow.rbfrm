@@ -3025,6 +3025,10 @@ End
 	#tag EndEvent
 	#tag Event
 		Sub Paint(g As Graphics)
+		  #If RBVersion > 2012.1 Then
+		    #pragma Unused areas
+		  #EndIf
+		  
 		  g.ForeColor = &cC0C0C000
 		  g.DrawRect(0, 0, g.Width, g.Height)
 		  
@@ -3235,6 +3239,10 @@ End
 	#tag EndEvent
 	#tag Event
 		Sub Paint(g As Graphics)
+		  #If RBVersion > 2012.1 Then
+		    #pragma Unused areas
+		  #EndIf
+		  
 		  g.ForeColor = &cC0C0C000
 		  g.DrawRect(0, 0, g.Width, g.Height)
 		  
@@ -3908,6 +3916,7 @@ End
 #tag Events GetBtn
 	#tag Event
 		Sub Action()
+		  Client.EasyItem = New libcURL.EasyHandle(Client.EasyItem)
 		  Dim bs As BinaryStream
 		  If SaveToFileChkBx.Value Then
 		    Dim name As String

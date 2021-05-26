@@ -81,6 +81,9 @@ Inherits libcURL.cURLHandle
 		  End If
 		  
 		  mOptions = New Dictionary
+		  For Each opt As Integer In CopyOpts.mOptions.Keys
+		    mOptions.Value(opt) = CopyOpts.mOptions.Value(opt)
+		  Next
 		  Instances.Value(mHandle) = New WeakRef(Me)
 		  InitCallbacks()
 		  If CopyOpts.mAuthMethods <> Nil Then Call Me.SetAuthMethods(CopyOpts.GetAuthMethods)
@@ -720,7 +723,7 @@ Inherits libcURL.cURLHandle
 		    libcURL.Opts.COOKIEJAR, libcURL.Opts.COOKIEFILE, libcURL.Opts.HTTPPOST, libcURL.Opts.CAINFO, libcURL.Opts.CAPATH, _
 		    libcURL.Opts.NETINTERFACE, libcURL.Opts.ERRORBUFFER, libcURL.Opts.COPYPOSTFIELDS, libcURL.Opts.ACCEPT_ENCODING, _
 		    libcURL.Opts.FNMATCH_FUNCTION, libcURL.Opts.CHUNK_BGN_FUNCTION, libcURL.Opts.CHUNK_END_FUNCTION, libcURL.Opts.CHUNK_DATA, _
-		    libcURL.Opts.SSLCERT, libcURL.Opts.MIMEPOST)
+		    libcURL.Opts.SSLCERT, libcURL.Opts.MIMEPOST, libcURL.Opts.CAINFO_BLOB)
 		    ' These option numbers explicitly accept NULL. Refer to the curl documentation on the individual option numbers for details.
 		    If Nilable.IndexOf(OptionNumber) > -1 Then
 		      If mOptions.HasKey(OptionNumber) Then mOptions.Remove(OptionNumber)
@@ -762,6 +765,18 @@ Inherits libcURL.cURLHandle
 		    mOptions.Value(OptionNumber) = NewValue
 		    Dim mb As MemoryBlock = NewValue.CStringValue + Chr(0) ' make doubleplus sure it's null terminated
 		    Return Me.SetOptionPtr(OptionNumber, mb)
+		    
+		  Case Variant.TypeStructure
+		    ' assume it's a curl_blob structure
+		    Dim struct As curl_blob = NewValue
+		    mLastError= curl_easy_setopt_blob(mHandle, OptionNumber, struct)
+		    If mLastError = 0 Then
+		      mOptions.Value(OptionNumber) = struct.Data
+		      Return True
+		    Else
+		      Return False
+		    End If
+		    
 		    
 		  Case Variant.TypeObject
 		    ' To add support for a custom object type, add a block to this Select statement
@@ -1048,6 +1063,53 @@ Inherits libcURL.cURLHandle
 			End Set
 		#tag EndSetter
 		BufferSizeUpload As Integer
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  ' Gets the memory block containing one or more certificate authorities libcURL will trust to
+			  ' verify the peer with. If no memoryblock is specified (default) then returns Nil.
+			  ' This feature was added in libcurl 7.77.0 and might not be available from all supported
+			  ' TLS backends. If set then this property overrides CA_ListFile.
+			  
+			  return mCA_List
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  ' Sets the memoryblock containing one or more certificate authorities libcURL should trust
+			  ' to verify the peer with. Set this to libcURL.Default_CA_Blob to use the default CA list for
+			  ' Mozilla products. Set this to Nil to unset the current list. This feature was added in libcurl
+			  ' 7.77.0 and might not be available from all supported TLS backends.If set then this property 
+			  ' overrides CA_ListFile. EasyHandle.Secure must be set to True to enable certificate verification.
+			  '
+			  ' See:
+			  ' https://curl.se/libcurl/c/CURLOPT_CAINFO_BLOB.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.CA_List
+			  
+			  ' If Not libcURL.Version.IsAtLeast(7, 77, 0) Then
+			  ' mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
+			  ' Raise New cURLException(Me)
+			  ' End If
+			  
+			  Select Case True
+			  Case value = Nil
+			    If Not Me.SetOption(libcURL.Opts.CAINFO_BLOB, Nil) Then Raise New cURLException(Me)
+			    mCA_List = Nil
+			    
+			  Else
+			    Dim blob As curl_blob
+			    blob.Data = value
+			    blob.Length = value.Size
+			    blob.Flags = CURL_BLOB_NOCOPY
+			    If Not Me.SetOption(libcURL.Opts.CAINFO_BLOB, blob) Then Raise New cURLException(Me)
+			    mCA_List = value
+			    
+			  End Select
+			End Set
+		#tag EndSetter
+		CA_List As MemoryBlock
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
@@ -1382,6 +1444,10 @@ Inherits libcURL.cURLHandle
 
 	#tag Property, Flags = &h21
 		Private mBufferSizeUpload As Integer = CURL_DEFAULT_WRITE_SIZE
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mCA_List As MemoryBlock
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -1878,6 +1944,9 @@ Inherits libcURL.cURLHandle
 	#tag EndConstant
 
 	#tag Constant, Name = CURLSSLOPT_ALLOW_BEAST, Type = Double, Dynamic = False, Default = \"1", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = CURLSSLOPT_AUTO_CLIENT_CERT, Type = Double, Dynamic = False, Default = \"32", Scope = Public
 	#tag EndConstant
 
 	#tag Constant, Name = CURLSSLOPT_NO_PARTIALCHAIN, Type = Double, Dynamic = False, Default = \"4", Scope = Public

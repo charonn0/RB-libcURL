@@ -2,6 +2,8 @@
 Protected Class OptionIterator
 	#tag Method, Flags = &h0
 		Sub Constructor()
+		  ' Enumerate all known options.
+		  
 		  If Not System.IsFunctionAvailable("curl_easy_option_next", cURLLib) Then
 		    mDataStore = FakeDataStore
 		    
@@ -21,6 +23,8 @@ Protected Class OptionIterator
 
 	#tag Method, Flags = &h0
 		Sub Constructor(Session As libcURL.EasyHandle)
+		  ' Enumerate the options that have been set on a specific instance of EasyHandle
+		  
 		  Const SECRET_INTERNAL_FLAG = &hFEF1F0F9
 		  mDataStore = Session.GetOption(SECRET_INTERNAL_FLAG, Session)
 		  mIndex = 0
@@ -29,6 +33,8 @@ Protected Class OptionIterator
 
 	#tag Method, Flags = &h0
 		Function Count() As Integer
+		  ' Returns the total number of options being enumerated
+		  
 		  If mDataStore <> Nil Then
 		    Return mDataStore.Count
 		  Else
@@ -47,6 +53,8 @@ Protected Class OptionIterator
 
 	#tag Method, Flags = &h0
 		Function MoveNext() As Boolean
+		  ' Advances the iterator to the next option in the list. Returns True until there are no further options.
+		  
 		  If mDataStore = Nil Then
 		    mPrev = curl_easy_option_next(mPrev)
 		    If mPrev = Nil Then Return False
@@ -91,8 +99,8 @@ Protected Class OptionIterator
 			Get
 			  Static store As Dictionary
 			  If store = Nil Then store = New Dictionary(ABSTRACT_UNIX_SOCKET:Nil, ACCEPTTIMEOUT_MS:60000, ACCEPT_ENCODING:Nil, ADDRESS_SCOPE:0, _
-			  ALTSVC:Nil, ALTSVC_CTRL:0, APPEND:False, AUTOREFERER:False, BUFFERSIZE:2097152, CAINFO:Nil, CAPATH:Nil, CERTINFO:0, _
-			  CHUNK_BGN_FUNCTION:Nil, CHUNK_DATA:Nil, CHUNK_END_FUNCTION:Nil, CLOSESOCKETDATA:Nil, CLOSESOCKETFUNCTION:Nil, CONNECTTIMEOUT:300, _
+			  ALTSVC:Nil, ALTSVC_CTRL:0, APPEND:False, AUTOREFERER:False, AWS_SIGV4:Nil, BUFFERSIZE:2097152, CAINFO:Nil, CAPATH:Nil, CAINFO_BLOB:Nil, _
+			  CERTINFO:0,CHUNK_BGN_FUNCTION:Nil, CHUNK_DATA:Nil, CHUNK_END_FUNCTION:Nil, CLOSESOCKETDATA:Nil, CLOSESOCKETFUNCTION:Nil, CONNECTTIMEOUT:300, _
 			  CONNECTTIMEOUT_MS:300000, CONNECT_ONLY:False, CONNECT_TO:Nil, CONV_FROM_NETWORK_FUNCTION:Nil, CONV_FROM_UTF8_FUNCTION:Nil, _
 			  CONV_TO_NETWORK_FUNCTION:Nil, COOKIE:Nil, COOKIEFILE:Nil, COOKIEJAR:Nil, COOKIELIST:Nil, COOKIESESSION:False, COPYPOSTFIELDS:Nil, _
 			  CRLF:0, CRLFILE:Nil, CURLU:Nil, CUSTOMREQUEST:Nil, DEBUGDATA:Nil, DEBUGFUNCTION:Nil, DEFAULT_PROTOCOL:Nil, DIRLISTONLY:False, _

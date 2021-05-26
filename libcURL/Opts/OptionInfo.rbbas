@@ -27,12 +27,16 @@ Protected Class OptionInfo
 		    Return APPEND
 		  Case "AUTOREFERER"
 		    Return AUTOREFERER
+		  Case "AWS_SIGV4"
+		    Return AWS_SIGV4
 		  Case "BUFFERSIZE"
 		    Return BUFFERSIZE
 		  Case "CAINFO"
 		    Return CAINFO
 		  Case "CAPATH"
 		    Return CAPATH
+		  Case "CAINFO_BLOB"
+		    Return CAINFO_BLOB
 		  Case "CERTINFO"
 		    Return CERTINFO
 		  Case "CHUNK_BGN_FUNCTION"
@@ -604,11 +608,15 @@ Protected Class OptionInfo
 		    Return 0
 		  Case AUTOREFERER
 		    Return 0
+		  Case AWS_SIGV4
+		    Return Nil
 		  Case BUFFERSIZE
 		    Return EasyHandle.CURL_MAX_WRITE_SIZE
 		  Case CAINFO
 		    Return Nil
 		  Case CAPATH
+		    Return Nil
+		  Case CAINFO_BLOB
 		    Return Nil
 		  Case CERTINFO
 		    Return 0
@@ -1173,12 +1181,16 @@ Protected Class OptionInfo
 		    Return "APPEND"
 		  Case AUTOREFERER
 		    Return "AUTOREFERER"
+		  Case AWS_SIGV4
+		    Return "AWS_SIGV4"
 		  Case BUFFERSIZE
 		    Return "BUFFERSIZE"
 		  Case CAINFO
 		    Return "CAINFO"
 		  Case CAPATH
 		    Return "CAPATH"
+		  Case CAINFO_BLOB
+		    Return "CAINFO_BLOB"
 		  Case CERTINFO
 		    Return "CERTINFO"
 		  Case CHUNK_BGN_FUNCTION
@@ -1750,12 +1762,16 @@ Protected Class OptionInfo
 		    Return OptionType.Number
 		  Case AUTOREFERER
 		    Return OptionType.Number
+		  Case AWS_SIGV4
+		    Return OptionType.String
 		  Case BUFFERSIZE
 		    Return OptionType.Number
 		  Case CAINFO
 		    Return OptionType.String
 		  Case CAPATH
 		    Return OptionType.String
+		  Case CAINFO_BLOB
+		    Return OptionType.Ptr
 		  Case CERTINFO
 		    Return OptionType.Number
 		  Case CHUNK_BGN_FUNCTION
