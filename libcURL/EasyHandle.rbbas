@@ -1883,6 +1883,9 @@ Inherits libcURL.cURLHandle
 	#tag Constant, Name = CURLSSLOPT_ALLOW_BEAST, Type = Double, Dynamic = False, Default = \"1", Scope = Public
 	#tag EndConstant
 
+	#tag Constant, Name = CURLSSLOPT_AUTO_CLIENT_CERT, Type = Double, Dynamic = False, Default = \"32", Scope = Public
+	#tag EndConstant
+
 	#tag Constant, Name = CURLSSLOPT_NO_PARTIALCHAIN, Type = Double, Dynamic = False, Default = \"4", Scope = Public
 	#tag EndConstant
 
