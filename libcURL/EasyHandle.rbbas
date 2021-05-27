@@ -1741,7 +1741,13 @@ Inherits libcURL.cURLHandle
 		#tag Setter
 			Set
 			  ' Sets the version of SSL/TLS to be used.
-			  
+			  If value = libcURL.SSLVersion.Max_Default Then
+			    If libcURL.Version.IsAtLeast(7, 61, 0) Then
+			      value = libcURL.SSLVersion.Max_TLSv1_2
+			    Else
+			      value = libcURL.SSLVersion.Max_TLSv1_3
+			    End If
+			  End If
 			  If Not Me.SetOption(libcURL.Opts.SSLVERSION, Integer(value)) Then Raise New cURLException(Me)
 			  mSSLVersion = value
 			End Set
