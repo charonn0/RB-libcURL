@@ -217,10 +217,12 @@ Protected Class cURLManager
 		  QueueTransfer(URL, ReadFrom, WriteTo)
 		  Do Until Not mMultiItem.PerformOnce()
 		    If Yield And Rnd > 0.99 Then
-		      #If TargetHasGUI Then
+		      #If TargetDesktop Then
 		        App.SleepCurrentThread(50)
+		      #ElseIf RBVersion < 2020 Then
+		        App.YieldToNextThread()
 		      #Else
-		        App.YieldToNextThread
+		        Thread.YieldToNext()
 		      #EndIf
 		    End If
 		  Loop
@@ -269,13 +271,22 @@ Protected Class cURLManager
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.RequestHeaders
 		  
-		  If mRequestHeaderEngine = Nil Then mRequestHeaderEngine = New RequestHeaderEngine(Me.EasyItem)
+		  If mRequestHeaderEngine = Nil Then mRequestHeaderEngine = New RequestHeaderEngineCreator(Me.EasyItem)
 		  Return mRequestHeaderEngine
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub Reset()
+		  ' Resets the cURLManager to a pristine state. All options that were previously set will be cleared and returned
+		  ' to their default values. Existing connections, the Session ID cache, the DNS cache, cookies, and shares are
+		  ' not affected.
+		  '
+		  ' It is not necessary to call this method between transfers.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.Reset
+		  
 		  If mEasyItem = Nil Then mEasyItem = New libcURL.EasyHandle Else mEasyItem.Reset
 		  Me.EasyItem = mEasyItem
 		  mEasyItem.UserAgent = libcURL.Version.UserAgent
@@ -285,8 +296,8 @@ Protected Class cURLManager
 		  mEasyItem.FollowRedirects = True
 		  mEasyItem.AutoReferer = True
 		  mEasyItem.HTTPCompression = libcURL.Version.LibZ.IsAvailable
+		  mRequestHeaderEngine = Nil
 		  Me.Yield = True
-		  Me.RequestHeaders.Reset()
 		End Sub
 	#tag EndMethod
 
@@ -482,6 +493,32 @@ Protected Class cURLManager
 			End Set
 		#tag EndSetter
 		HTTP2Push As Boolean
+	#tag EndComputedProperty
+	
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  ' Gets the available/allowed HTTP authentication methods.
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.HTTPAuthenticationMethod
+			  
+			  Return EasyItem.GetAuthMethods
+			  
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  ' Sets the available/allowed HTTP authentication methods.
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.HTTPAuthenticationMethod
+			  
+			  Call EasyItem.SetAuthMethods(value)
+			  
+			End Set
+		#tag EndSetter
+		HTTPAuthenticationMethod As libcURL.HTTPAuthMethods
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0

@@ -1,7 +1,7 @@
 #tag Class
 Protected Class MultipartFormElement
-	#tag Method, Flags = &h0
-		Sub Constructor(ItemStruct As Ptr, Owner As libcURL.MultipartForm)
+	#tag Method, Flags = &h1
+		Protected Sub Constructor(ItemStruct As Ptr, Owner As libcURL.MultipartForm)
 		  ' Constructs a new MultipartFormElement. Generally, you should not construct instances
 		  ' of this class. Use the value returned from MultipartForm.GetElement, MultipartFormElement.NextElement, 
 		  ' or MultipartFormElement.MoreFiles instead.

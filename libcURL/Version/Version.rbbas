@@ -8,7 +8,7 @@ Protected Module Version
 		  Static avail As Boolean = System.IsFunctionAvailable("curl_global_init", cURLLib)
 		  If Not avail Then Return False
 		  If maj = 0 Then
-		    Dim n As String = UserAgent()
+		    Dim n As String = UserAgent
 		    maj = Val(NthField(NthField(NthField(n, " ", 1), "/", 2), ".", 1))
 		    min = Val(NthField(NthField(NthField(n, " ", 1), "/", 2), ".", 2))
 		    pat = Val(NthField(NthField(NthField(n, " ", 1), "/", 2), ".", 3))

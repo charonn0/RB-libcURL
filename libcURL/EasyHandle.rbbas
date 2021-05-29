@@ -53,6 +53,11 @@ Inherits libcURL.cURLHandle
 		    Raise New cURLException(Me)
 		  End If
 		  
+		  mOptions = New Dictionary
+		  If Instances = Nil Then Instances = New Dictionary
+		  Instances.Value(mHandle) = New WeakRef(Me)
+		  InitCallbacks()
+		  
 		  ' by default, only raise the DebugMessage event if we're debugging
 		  #If DebugBuild Then
 		    Me.Verbose = True
@@ -82,6 +87,10 @@ Inherits libcURL.cURLHandle
 		    Raise New cURLException(Me)
 		  End If
 		  
+		  mOptions = New Dictionary
+		  For Each opt As Integer In CopyOpts.mOptions.Keys
+		    mOptions.Value(opt) = CopyOpts.mOptions.Value(opt)
+		  Next
 		  Instances.Value(mHandle) = New WeakRef(Me)
 		  InitCallbacks()
 		  If CopyOpts.mAuthMethods <> Nil Then Call Me.SetAuthMethods(CopyOpts.GetAuthMethods)
@@ -387,10 +396,10 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Function GetInfo(InfoType As Integer, Buffer As MemoryBlock) As Boolean
-		  ' Calls curl_easy_getinfo. If the operation succeeded then this function returns True 
-		  ' and the requested information is copied into the Buffer. Otherwise this function 
-		  ' returns False and the error code is stored in LastError. This method returns various 
-		  ' data about the most recently completed connection (successful or not.) As such, it 
+		  ' Calls curl_easy_getinfo. If the operation succeeded then this function returns True
+		  ' and the requested information is copied into the Buffer. Otherwise this function
+		  ' returns False and the error code is stored in LastError. This method returns various
+		  ' data about the most recently completed connection (successful or not.) As such, it
 		  ' is not useful to call this method before the first connection attempt.
 		  '
 		  ' See:
@@ -400,6 +409,25 @@ Inherits libcURL.cURLHandle
 		  
 		  mLastError = curl_easy_getinfo(mHandle, InfoType, Buffer)
 		  Return mLastError = 0
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function GetOption(OptionNumber As Integer, DefaultValue As Variant = Nil) As Variant
+		  ' This method complements the SetOption method. You can use this method to retrieve any previously-set
+		  ' option value. If the OptionNumber has not been set then the DefaultValue parameter is returned.
+		  '
+		  ' This method cannot retrieve option values which were set using the SetOptionPtr method.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.GetOption
+		  
+		  Const SECRET_INTERNAL_FLAG = &hFEF1F0F9
+		  If OptionNumber = SECRET_INTERNAL_FLAG And DefaultValue Is Me Then Return mOptions
+		  
+		  Dim v As Variant = mOptions.Lookup(OptionNumber, DefaultValue)
+		  If v IsA WeakRef And WeakRef(v).Value IsA cURLHandle Then v = WeakRef(v).Value
+		  Return v
 		End Function
 	#tag EndMethod
 
@@ -468,7 +496,7 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Function Operator_Compare(OtherEasy As libcURL.EasyHandle) As Integer
-		  ' This method overloads the comparison operator(=), permitting direct 
+		  ' This method overloads the comparison operator(=), permitting direct
 		  ' comparisons between instances of EasyHandle.
 		  '
 		  ' See:
@@ -558,6 +586,7 @@ Inherits libcURL.cURLHandle
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Reset
 		  
 		  curl_easy_reset(mHandle)
+		  mOptions = New Dictionary
 		  mAuthMethods = Nil
 		  mAutoDisconnect = False
 		  mAutoReferer = False
@@ -683,12 +712,12 @@ Inherits libcURL.cURLHandle
 		  ' and a value that is acceptable for that option. SetOption does not check that a value is valid for
 		  ' a particular option (except Nil,) however it will raise an exception if an unsupported type is passed.
 		  
-		  ' NewValue may be a Boolean, Integer, Ptr, String, MemoryBlock, FolderItem, libcURL.MultipartForm, 
+		  ' NewValue may be a Boolean, Integer, Ptr, String, MemoryBlock, FolderItem, libcURL.MultipartForm,
 		  ' libcURL.ListPtr, libcuRL.HTTPAuthMethods; or, a Delegate matching cURLIOCallback, cURLCloseCallback,
-		  ' cURLDebugCallback, cURLOpenCallback, or cURLProgressCallback. Passing Nil will raise an exception 
+		  ' cURLDebugCallback, cURLOpenCallback, or cURLProgressCallback. Passing Nil will raise an exception
 		  ' unless the option explicitly accepts NULL.
 		  
-		  ' If the option was set then this method returns True. If it returns False then the option was not set 
+		  ' If the option was set then this method returns True. If it returns False then the option was not set
 		  ' and the curl error number is stored in EasyHandle.LastError.
 		  
 		  ' See:
@@ -709,9 +738,10 @@ Inherits libcURL.cURLHandle
 		    libcURL.Opts.COOKIEJAR, libcURL.Opts.COOKIEFILE, libcURL.Opts.HTTPPOST, libcURL.Opts.CAINFO, libcURL.Opts.CAPATH, _
 		    libcURL.Opts.NETINTERFACE, libcURL.Opts.ERRORBUFFER, libcURL.Opts.COPYPOSTFIELDS, libcURL.Opts.ACCEPT_ENCODING, _
 		    libcURL.Opts.FNMATCH_FUNCTION, libcURL.Opts.CHUNK_BGN_FUNCTION, libcURL.Opts.CHUNK_END_FUNCTION, libcURL.Opts.CHUNK_DATA, _
-		    libcURL.Opts.SSLCERT, libcURL.Opts.MIMEPOST)
+		    libcURL.Opts.SSLCERT, libcURL.Opts.MIMEPOST, libcURL.Opts.CAINFO_BLOB)
 		    ' These option numbers explicitly accept NULL. Refer to the curl documentation on the individual option numbers for details.
 		    If Nilable.IndexOf(OptionNumber) > -1 Then
+		      If mOptions.HasKey(OptionNumber) Then mOptions.Remove(OptionNumber)
 		      Return Me.SetOptionPtr(OptionNumber, Nil)
 		    Else
 		      ' for all other option numbers reject NULL values.
@@ -728,24 +758,50 @@ Inherits libcURL.cURLHandle
 		    End If
 		    
 		  Case Variant.TypePtr, Variant.TypeInteger
+		    mOptions.Value(OptionNumber) = NewValue
 		    Return Me.SetOptionPtr(OptionNumber, NewValue.PtrValue)
 		    
 		    #If Target64Bit Then
 		  Case Variant.TypeInt64
+		    mOptions.Value(OptionNumber) = NewValue
 		    Return Me.SetOptionPtr(OptionNumber, NewValue.PtrValue)
+		    #Else
+		  Case Variant.TypeLong
+		    mLastError= curl_easy_setopt_long(mHandle, OptionNumber, NewValue)
+		    If mLastError = 0 Then 
+		      mOptions.Value(OptionNumber) = NewValue
+		      Return True
+		    Else
+		      Return False
+		    End If
 		    #EndIf
 		    
 		  Case Variant.TypeString
+		    mOptions.Value(OptionNumber) = NewValue
 		    Dim mb As MemoryBlock = NewValue.CStringValue + Chr(0) ' make doubleplus sure it's null terminated
 		    Return Me.SetOptionPtr(OptionNumber, mb)
+		    
+		  Case Variant.TypeStructure
+		    ' assume it's a curl_blob structure
+		    Dim struct As curl_blob = NewValue
+		    mLastError= curl_easy_setopt_blob(mHandle, OptionNumber, struct)
+		    If mLastError = 0 Then
+		      mOptions.Value(OptionNumber) = struct.Data
+		      Return True
+		    Else
+		      Return False
+		    End If
+		    
 		    
 		  Case Variant.TypeObject
 		    ' To add support for a custom object type, add a block to this Select statement
 		    Select Case NewValue
 		    Case IsA MemoryBlock
+		      mOptions.Value(OptionNumber) = NewValue
 		      Return Me.SetOptionPtr(OptionNumber, NewValue.PtrValue)
 		      
 		    Case IsA FolderItem
+		      mOptions.Value(OptionNumber) = NewValue
 		      Return Me.SetOption(OptionNumber, FolderItem(NewValue).AbsolutePath_)
 		      
 		    Case IsA Dictionary ' assume a multipart form
@@ -760,21 +816,27 @@ Inherits libcURL.cURLHandle
 		    Case IsA libcURL.cURLHandle
 		      If NewValue IsA URLParser Then Return SetOption(OptionNumber, URLParser(NewValue).StringValue)
 		      Dim cURL As libcURL.cURLHandle = NewValue
-		      Return Me.SetOption(OptionNumber, cURL.Handle)
+		      If Not Me.SetOption(OptionNumber, cURL.Handle) Then Return False
+		      mOptions.Value(OptionNumber) = New WeakRef(cURL)
+		      Return True
 		      
 		    Case IsA cURLProgressCallback
+		      mOptions.Value(OptionNumber) = NewValue
 		      Dim p As cURLProgressCallback = NewValue
 		      Return Me.SetOptionPtr(OptionNumber, p)
 		      
 		    Case IsA cURLIOCallback
+		      mOptions.Value(OptionNumber) = NewValue
 		      Dim p As cURLIOCallback = NewValue
 		      Return Me.SetOptionPtr(OptionNumber, p)
 		      
 		    Case IsA cURLDebugCallback
+		      mOptions.Value(OptionNumber) = NewValue
 		      Dim p As cURLDebugCallback = NewValue
 		      Return Me.SetOptionPtr(OptionNumber, p)
 		      
 		    Case IsA cURLSeekCallback
+		      mOptions.Value(OptionNumber) = NewValue
 		      Dim p As cURLSeekCallback = NewValue
 		      Return Me.SetOptionPtr(OptionNumber, p)
 		      
@@ -882,7 +944,13 @@ Inherits libcURL.cURLHandle
 
 
 	#tag Note, Name = Using this class
-		This class provides basic access to the curl_easy API. It is strongly recommended that you
+		
+		  ##################################################################################################
+		  # NOTE: THIS CLASS IS NOT ACTUALLY THE EASY WAY TO USE THIS PROJECT. "Easy" is just what libcURL #
+		  # calls it for historical reasons. The easy way to use this project is the cURLClient class.     #
+		  ##################################################################################################
+		
+		This class provides low level access to the curl_easy API. It is strongly recommended that you
 		familiarize yourself with libcURL, as this class is mostly glue code for libcURL's API.
 		
 		Create a new instance, then use the SetOption method to define what cURL will be doing.
@@ -968,7 +1036,7 @@ Inherits libcURL.cURLHandle
 		#tag EndGetter
 		#tag Setter
 			Set
-			  ' Set preferred receive buffer size (in bytes). The main point of this would be that the DataAvailable event 
+			  ' Set preferred receive buffer size (in bytes). The main point of this would be that the DataAvailable event
 			  ' gets called more often and with smaller chunks. Secondly, for some protocols, there's a benefit of having
 			  ' a larger buffer for performance. This is just treated as a request, not an order. You cannot be guaranteed
 			  ' to actually get the given size.
@@ -1010,6 +1078,53 @@ Inherits libcURL.cURLHandle
 			End Set
 		#tag EndSetter
 		BufferSizeUpload As Integer
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  ' Gets the memory block containing one or more certificate authorities libcURL will trust to
+			  ' verify the peer with. If no memoryblock is specified (default) then returns Nil.
+			  ' This feature was added in libcurl 7.77.0 and might not be available from all supported
+			  ' TLS backends. If set then this property overrides CA_ListFile.
+			  
+			  return mCA_List
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  ' Sets the memoryblock containing one or more certificate authorities libcURL should trust
+			  ' to verify the peer with. Set this to DEFAULT_CA_INFO_PEM to use the default CA list for
+			  ' Mozilla products. Set this to Nil to unset the current list. This feature was added in libcurl
+			  ' 7.77.0 and might not be available from all supported TLS backends.If set then this property 
+			  ' overrides CA_ListFile. EasyHandle.Secure must be set to True to enable certificate verification.
+			  '
+			  ' See:
+			  ' https://curl.se/libcurl/c/CURLOPT_CAINFO_BLOB.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.CA_List
+			  
+			  If Not libcURL.Version.IsAtLeast(7, 77, 0) Then
+			    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
+			    Raise New cURLException(Me)
+			  End If
+			  
+			  Select Case True
+			  Case value = Nil
+			    If Not Me.SetOption(libcURL.Opts.CAINFO_BLOB, Nil) Then Raise New cURLException(Me)
+			    mCA_List = Nil
+			    
+			  Else
+			    Dim blob As curl_blob
+			    blob.Data = value
+			    blob.Length = value.Size
+			    blob.Flags = CURL_BLOB_NOCOPY
+			    If Not Me.SetOption(libcURL.Opts.CAINFO_BLOB, blob) Then Raise New cURLException(Me)
+			    mCA_List = value
+			    
+			  End Select
+			End Set
+		#tag EndSetter
+		CA_List As MemoryBlock
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
@@ -1105,7 +1220,7 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  If mCookieEngine = Nil Then mCookieEngine = New libcURL.CookieEngine(Me)
+			  If mCookieEngine = Nil Then mCookieEngine = New CookieEngineCreator(Me)
 			  return mCookieEngine
 			End Get
 		#tag EndGetter
@@ -1269,7 +1384,7 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  ' Gets the version of HTTP to be used. Returns IPVersion.V4, IPVersion.V6, or IPVersion.Whatever
+			  ' Gets the version of IP to be used. Returns IPVersion.V4, IPVersion.V6, or IPVersion.Whatever
 			  
 			  return mIPVersion
 			End Get
@@ -1347,6 +1462,10 @@ Inherits libcURL.cURLHandle
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
+		Private mCA_List As MemoryBlock
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
 		Private mCA_ListFile As FolderItem
 	#tag EndProperty
 
@@ -1404,6 +1523,10 @@ Inherits libcURL.cURLHandle
 
 	#tag Property, Flags = &h21
 		Private mMIMEMessage As libcURL.MIMEMessage
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected mOptions As Dictionary
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -1565,7 +1688,7 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  If mProxyEngine = Nil Then mProxyEngine = New libcURL.ProxyEngine(Me)
+			  If mProxyEngine = Nil Then mProxyEngine = New ProxyEngineCreator(Me)
 			  return mProxyEngine
 			End Get
 		#tag EndGetter
@@ -1625,7 +1748,13 @@ Inherits libcURL.cURLHandle
 		#tag Setter
 			Set
 			  ' Sets the version of SSL/TLS to be used.
-			  
+			  If value = libcURL.SSLVersion.Max_Default Then
+			    If libcURL.Version.IsAtLeast(7, 61, 0) Then
+			      value = libcURL.SSLVersion.Max_TLSv1_2
+			    Else
+			      value = libcURL.SSLVersion.Max_TLSv1_3
+			    End If
+			  End If
 			  If Not Me.SetOption(libcURL.Opts.SSLVERSION, Integer(value)) Then Raise New cURLException(Me)
 			  mSSLVersion = value
 			End Set
@@ -1838,6 +1967,9 @@ Inherits libcURL.cURLHandle
 	#tag Constant, Name = CURLSSLOPT_ALLOW_BEAST, Type = Double, Dynamic = False, Default = \"1", Scope = Public
 	#tag EndConstant
 
+	#tag Constant, Name = CURLSSLOPT_AUTO_CLIENT_CERT, Type = Double, Dynamic = False, Default = \"32", Scope = Public
+	#tag EndConstant
+
 	#tag Constant, Name = CURLSSLOPT_NO_PARTIALCHAIN, Type = Double, Dynamic = False, Default = \"4", Scope = Public
 	#tag EndConstant
 
@@ -1890,6 +2022,11 @@ Inherits libcURL.cURLHandle
 			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
+			Name="BufferSize"
+			Group="Behavior"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="ConnectionTimeout"
 			Group="Behavior"
 			Type="Integer"
@@ -1913,11 +2050,6 @@ Inherits libcURL.cURLHandle
 			Name="HTTPPreserveMethod"
 			Group="Behavior"
 			Type="Boolean"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="HTTPVersion"
-			Group="Behavior"
-			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
@@ -1955,6 +2087,11 @@ Inherits libcURL.cURLHandle
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="PipeWait"
+			Group="Behavior"
+			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Port"

@@ -42,7 +42,7 @@ Begin Window DemoWindow
       Panels          =   ""
       Scope           =   0
       SmallTabs       =   ""
-      TabDefinition   =   "Information\rOutput\rFeatures\rCookies"
+      TabDefinition   =   "Information\rOutput\rFeatures\rCookies\rRaw Options"
       TabIndex        =   11
       TabPanelIndex   =   0
       TabStop         =   True
@@ -51,7 +51,7 @@ Begin Window DemoWindow
       TextUnit        =   0
       Top             =   119
       Underline       =   ""
-      Value           =   1
+      Value           =   4
       Visible         =   True
       Width           =   636
       Begin Listbox Headers
@@ -151,765 +151,6 @@ Begin Window DemoWindow
          Visible         =   True
          Width           =   618
          _ScrollWidth    =   -1
-      End
-      Begin Label Label1
-         AutoDeactivate  =   True
-         Bold            =   ""
-         DataField       =   ""
-         DataSource      =   ""
-         Enabled         =   True
-         Height          =   20
-         HelpTag         =   ""
-         Index           =   -2147483648
-         InitialParent   =   "OptionsPanel"
-         Italic          =   ""
-         Left            =   11
-         LockBottom      =   True
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   False
-         LockTop         =   False
-         Multiline       =   ""
-         Scope           =   0
-         Selectable      =   False
-         TabIndex        =   2
-         TabPanelIndex   =   3
-         Text            =   "CA List:"
-         TextAlign       =   2
-         TextColor       =   &h000000
-         TextFont        =   "System"
-         TextSize        =   0
-         TextUnit        =   0
-         Top             =   351
-         Transparent     =   True
-         Underline       =   ""
-         Visible         =   True
-         Width           =   94
-      End
-      Begin Label Label2
-         AutoDeactivate  =   True
-         Bold            =   ""
-         DataField       =   ""
-         DataSource      =   ""
-         Enabled         =   True
-         Height          =   20
-         HelpTag         =   ""
-         Index           =   -2147483648
-         InitialParent   =   "OptionsPanel"
-         Italic          =   ""
-         Left            =   11
-         LockBottom      =   True
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   False
-         LockTop         =   False
-         Multiline       =   ""
-         Scope           =   0
-         Selectable      =   False
-         TabIndex        =   3
-         TabPanelIndex   =   3
-         Text            =   "Client certificate:"
-         TextAlign       =   2
-         TextColor       =   &h000000
-         TextFont        =   "System"
-         TextSize        =   0
-         TextUnit        =   0
-         Top             =   373
-         Transparent     =   True
-         Underline       =   ""
-         Visible         =   True
-         Width           =   94
-      End
-      Begin Label CAListFile
-         AutoDeactivate  =   True
-         Bold            =   ""
-         DataField       =   ""
-         DataSource      =   ""
-         Enabled         =   True
-         Height          =   20
-         HelpTag         =   ""
-         Index           =   -2147483648
-         InitialParent   =   "OptionsPanel"
-         Italic          =   ""
-         Left            =   110
-         LockBottom      =   True
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   True
-         LockTop         =   False
-         Multiline       =   ""
-         Scope           =   0
-         Selectable      =   True
-         TabIndex        =   4
-         TabPanelIndex   =   3
-         Text            =   "Not specified"
-         TextAlign       =   0
-         TextColor       =   &h00464646
-         TextFont        =   "System"
-         TextSize        =   0
-         TextUnit        =   0
-         Top             =   352
-         Transparent     =   True
-         Underline       =   ""
-         Visible         =   True
-         Width           =   451
-      End
-      Begin PushButton CASet
-         AutoDeactivate  =   True
-         Bold            =   ""
-         ButtonStyle     =   0
-         Cancel          =   ""
-         Caption         =   "Set"
-         Default         =   ""
-         Enabled         =   True
-         Height          =   22
-         HelpTag         =   ""
-         Index           =   -2147483648
-         InitialParent   =   "OptionsPanel"
-         Italic          =   ""
-         Left            =   565
-         LockBottom      =   True
-         LockedInPosition=   False
-         LockLeft        =   False
-         LockRight       =   True
-         LockTop         =   False
-         Scope           =   0
-         TabIndex        =   5
-         TabPanelIndex   =   3
-         TabStop         =   True
-         TextFont        =   "System"
-         TextSize        =   0
-         TextUnit        =   0
-         Top             =   351
-         Underline       =   ""
-         Visible         =   True
-         Width           =   34
-      End
-      Begin PushButton CAUnset
-         AutoDeactivate  =   True
-         Bold            =   ""
-         ButtonStyle     =   0
-         Cancel          =   ""
-         Caption         =   "Unset"
-         Default         =   ""
-         Enabled         =   True
-         Height          =   22
-         HelpTag         =   ""
-         Index           =   -2147483648
-         InitialParent   =   "OptionsPanel"
-         Italic          =   ""
-         Left            =   598
-         LockBottom      =   True
-         LockedInPosition=   False
-         LockLeft        =   False
-         LockRight       =   True
-         LockTop         =   False
-         Scope           =   0
-         TabIndex        =   6
-         TabPanelIndex   =   3
-         TabStop         =   True
-         TextFont        =   "System"
-         TextSize        =   0
-         TextUnit        =   0
-         Top             =   351
-         Underline       =   ""
-         Visible         =   True
-         Width           =   34
-      End
-      Begin Label ClientCert
-         AutoDeactivate  =   True
-         Bold            =   ""
-         DataField       =   ""
-         DataSource      =   ""
-         Enabled         =   True
-         Height          =   20
-         HelpTag         =   ""
-         Index           =   -2147483648
-         InitialParent   =   "OptionsPanel"
-         Italic          =   ""
-         Left            =   110
-         LockBottom      =   True
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   True
-         LockTop         =   False
-         Multiline       =   ""
-         Scope           =   0
-         Selectable      =   True
-         TabIndex        =   7
-         TabPanelIndex   =   3
-         Text            =   "Not specified"
-         TextAlign       =   0
-         TextColor       =   &h00464646
-         TextFont        =   "System"
-         TextSize        =   0
-         TextUnit        =   0
-         Top             =   374
-         Transparent     =   True
-         Underline       =   ""
-         Visible         =   True
-         Width           =   451
-      End
-      Begin PushButton ClientCertSet
-         AutoDeactivate  =   True
-         Bold            =   ""
-         ButtonStyle     =   0
-         Cancel          =   ""
-         Caption         =   "Set"
-         Default         =   ""
-         Enabled         =   True
-         Height          =   22
-         HelpTag         =   ""
-         Index           =   -2147483648
-         InitialParent   =   "OptionsPanel"
-         Italic          =   ""
-         Left            =   565
-         LockBottom      =   True
-         LockedInPosition=   False
-         LockLeft        =   False
-         LockRight       =   True
-         LockTop         =   False
-         Scope           =   0
-         TabIndex        =   8
-         TabPanelIndex   =   3
-         TabStop         =   True
-         TextFont        =   "System"
-         TextSize        =   0
-         TextUnit        =   0
-         Top             =   373
-         Underline       =   ""
-         Visible         =   True
-         Width           =   34
-      End
-      Begin PushButton ClientCertUnset
-         AutoDeactivate  =   True
-         Bold            =   ""
-         ButtonStyle     =   0
-         Cancel          =   ""
-         Caption         =   "Unset"
-         Default         =   ""
-         Enabled         =   True
-         Height          =   22
-         HelpTag         =   ""
-         Index           =   -2147483648
-         InitialParent   =   "OptionsPanel"
-         Italic          =   ""
-         Left            =   598
-         LockBottom      =   True
-         LockedInPosition=   False
-         LockLeft        =   False
-         LockRight       =   True
-         LockTop         =   False
-         Scope           =   0
-         TabIndex        =   9
-         TabPanelIndex   =   3
-         TabStop         =   True
-         TextFont        =   "System"
-         TextSize        =   0
-         TextUnit        =   0
-         Top             =   373
-         Underline       =   ""
-         Visible         =   True
-         Width           =   34
-      End
-      Begin Label Label6
-         AutoDeactivate  =   True
-         Bold            =   ""
-         DataField       =   ""
-         DataSource      =   ""
-         Enabled         =   True
-         Height          =   20
-         HelpTag         =   ""
-         Index           =   -2147483648
-         InitialParent   =   "OptionsPanel"
-         Italic          =   ""
-         Left            =   224
-         LockBottom      =   ""
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   ""
-         LockTop         =   True
-         Multiline       =   ""
-         Scope           =   0
-         Selectable      =   False
-         TabIndex        =   22
-         TabPanelIndex   =   3
-         Text            =   "Interface:"
-         TextAlign       =   0
-         TextColor       =   &h000000
-         TextFont        =   "System"
-         TextSize        =   0
-         TextUnit        =   0
-         Top             =   268
-         Transparent     =   True
-         Underline       =   ""
-         Visible         =   True
-         Width           =   73
-      End
-      Begin ComboBox nic
-         AutoComplete    =   False
-         AutoDeactivate  =   True
-         Bold            =   False
-         DataField       =   ""
-         DataSource      =   ""
-         Enabled         =   True
-         Height          =   20
-         HelpTag         =   ""
-         Index           =   -2147483648
-         InitialParent   =   "OptionsPanel"
-         InitialValue    =   ""
-         Italic          =   False
-         Left            =   302
-         ListIndex       =   0
-         LockBottom      =   False
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   False
-         LockTop         =   True
-         Scope           =   0
-         TabIndex        =   3
-         TabPanelIndex   =   3
-         TabStop         =   True
-         TextFont        =   "System"
-         TextSize        =   0.0
-         TextUnit        =   0
-         Top             =   268
-         Underline       =   False
-         UseFocusRing    =   True
-         Visible         =   True
-         Width           =   174
-      End
-      Begin CheckBox Verbose
-         AutoDeactivate  =   True
-         Bold            =   ""
-         Caption         =   "Verbose"
-         DataField       =   ""
-         DataSource      =   ""
-         Enabled         =   True
-         Height          =   20
-         HelpTag         =   ""
-         Index           =   -2147483648
-         InitialParent   =   "OptionsPanel"
-         Italic          =   ""
-         Left            =   356
-         LockBottom      =   ""
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   ""
-         LockTop         =   True
-         Scope           =   0
-         State           =   0
-         TabIndex        =   21
-         TabPanelIndex   =   3
-         TabStop         =   True
-         TextFont        =   "System"
-         TextSize        =   0
-         TextUnit        =   0
-         Top             =   210
-         Underline       =   ""
-         Value           =   False
-         Visible         =   True
-         Width           =   120
-      End
-      Begin CheckBox Secure
-         AutoDeactivate  =   True
-         Bold            =   ""
-         Caption         =   "Validate SSL"
-         DataField       =   ""
-         DataSource      =   ""
-         Enabled         =   True
-         Height          =   20
-         HelpTag         =   ""
-         Index           =   -2147483648
-         InitialParent   =   "OptionsPanel"
-         Italic          =   ""
-         Left            =   356
-         LockBottom      =   ""
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   ""
-         LockTop         =   True
-         Scope           =   0
-         State           =   0
-         TabIndex        =   20
-         TabPanelIndex   =   3
-         TabStop         =   True
-         TextFont        =   "System"
-         TextSize        =   0
-         TextUnit        =   0
-         Top             =   190
-         Underline       =   ""
-         Value           =   False
-         Visible         =   True
-         Width           =   120
-      End
-      Begin CheckBox HTTPPreserveMethod
-         AutoDeactivate  =   True
-         Bold            =   ""
-         Caption         =   "Preserve method"
-         DataField       =   ""
-         DataSource      =   ""
-         Enabled         =   True
-         Height          =   20
-         HelpTag         =   ""
-         Index           =   -2147483648
-         InitialParent   =   "OptionsPanel"
-         Italic          =   ""
-         Left            =   356
-         LockBottom      =   ""
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   ""
-         LockTop         =   True
-         Scope           =   0
-         State           =   0
-         TabIndex        =   19
-         TabPanelIndex   =   3
-         TabStop         =   True
-         TextFont        =   "System"
-         TextSize        =   0
-         TextUnit        =   0
-         Top             =   170
-         Underline       =   ""
-         Value           =   False
-         Visible         =   True
-         Width           =   120
-      End
-      Begin CheckBox HTTPCompress
-         AutoDeactivate  =   True
-         Bold            =   ""
-         Caption         =   "gzip,deflate"
-         DataField       =   ""
-         DataSource      =   ""
-         Enabled         =   True
-         Height          =   20
-         HelpTag         =   ""
-         Index           =   -2147483648
-         InitialParent   =   "OptionsPanel"
-         Italic          =   ""
-         Left            =   356
-         LockBottom      =   ""
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   ""
-         LockTop         =   True
-         Scope           =   0
-         State           =   0
-         TabIndex        =   18
-         TabPanelIndex   =   3
-         TabStop         =   True
-         TextFont        =   "System"
-         TextSize        =   0
-         TextUnit        =   0
-         Top             =   150
-         Underline       =   ""
-         Value           =   False
-         Visible         =   True
-         Width           =   120
-      End
-      Begin CheckBox FollowRedirects
-         AutoDeactivate  =   True
-         Bold            =   ""
-         Caption         =   "Follow redirects"
-         DataField       =   ""
-         DataSource      =   ""
-         Enabled         =   True
-         Height          =   20
-         HelpTag         =   ""
-         Index           =   -2147483648
-         InitialParent   =   "OptionsPanel"
-         Italic          =   ""
-         Left            =   224
-         LockBottom      =   ""
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   ""
-         LockTop         =   True
-         Scope           =   0
-         State           =   0
-         TabIndex        =   17
-         TabPanelIndex   =   3
-         TabStop         =   True
-         TextFont        =   "System"
-         TextSize        =   0
-         TextUnit        =   0
-         Top             =   210
-         Underline       =   ""
-         Value           =   False
-         Visible         =   True
-         Width           =   120
-      End
-      Begin CheckBox Autoreferer
-         AutoDeactivate  =   True
-         Bold            =   ""
-         Caption         =   "AutoReferrer"
-         DataField       =   ""
-         DataSource      =   ""
-         Enabled         =   True
-         Height          =   20
-         HelpTag         =   ""
-         Index           =   -2147483648
-         InitialParent   =   "OptionsPanel"
-         Italic          =   ""
-         Left            =   224
-         LockBottom      =   ""
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   ""
-         LockTop         =   True
-         Scope           =   0
-         State           =   0
-         TabIndex        =   16
-         TabPanelIndex   =   3
-         TabStop         =   True
-         TextFont        =   "System"
-         TextSize        =   0
-         TextUnit        =   0
-         Top             =   190
-         Underline       =   ""
-         Value           =   False
-         Visible         =   True
-         Width           =   120
-      End
-      Begin CheckBox AutoDisconnect
-         AutoDeactivate  =   True
-         Bold            =   ""
-         Caption         =   "Autodisconnect"
-         DataField       =   ""
-         DataSource      =   ""
-         Enabled         =   True
-         Height          =   20
-         HelpTag         =   ""
-         Index           =   -2147483648
-         InitialParent   =   "OptionsPanel"
-         Italic          =   ""
-         Left            =   224
-         LockBottom      =   ""
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   ""
-         LockTop         =   True
-         Scope           =   0
-         State           =   0
-         TabIndex        =   15
-         TabPanelIndex   =   3
-         TabStop         =   True
-         TextFont        =   "System"
-         TextSize        =   0
-         TextUnit        =   0
-         Top             =   170
-         Underline       =   ""
-         Value           =   False
-         Visible         =   True
-         Width           =   120
-      End
-      Begin CheckBox FailOnError
-         AutoDeactivate  =   True
-         Bold            =   ""
-         Caption         =   "Fail on error"
-         DataField       =   ""
-         DataSource      =   ""
-         Enabled         =   True
-         Height          =   20
-         HelpTag         =   ""
-         Index           =   -2147483648
-         InitialParent   =   "OptionsPanel"
-         Italic          =   ""
-         Left            =   224
-         LockBottom      =   ""
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   ""
-         LockTop         =   True
-         Scope           =   0
-         State           =   0
-         TabIndex        =   14
-         TabPanelIndex   =   3
-         TabStop         =   True
-         TextFont        =   "System"
-         TextSize        =   0
-         TextUnit        =   0
-         Top             =   150
-         Underline       =   ""
-         Value           =   False
-         Visible         =   True
-         Width           =   120
-      End
-      Begin Label Label7
-         AutoDeactivate  =   True
-         Bold            =   ""
-         DataField       =   ""
-         DataSource      =   ""
-         Enabled         =   True
-         Height          =   20
-         HelpTag         =   ""
-         Index           =   -2147483648
-         InitialParent   =   "OptionsPanel"
-         Italic          =   ""
-         Left            =   224
-         LockBottom      =   ""
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   ""
-         LockTop         =   True
-         Multiline       =   ""
-         Scope           =   0
-         Selectable      =   False
-         TabIndex        =   23
-         TabPanelIndex   =   3
-         Text            =   "Proxy server:"
-         TextAlign       =   0
-         TextColor       =   &h000000
-         TextFont        =   "System"
-         TextSize        =   0
-         TextUnit        =   0
-         Top             =   293
-         Transparent     =   True
-         Underline       =   ""
-         Visible         =   True
-         Width           =   73
-      End
-      Begin TextField ProxyServer
-         AcceptTabs      =   ""
-         Alignment       =   0
-         AutoDeactivate  =   True
-         AutomaticallyCheckSpelling=   False
-         BackColor       =   &hFFFFFF
-         Bold            =   ""
-         Border          =   True
-         CueText         =   ""
-         DataField       =   ""
-         DataSource      =   ""
-         Enabled         =   True
-         Format          =   ""
-         Height          =   22
-         HelpTag         =   ""
-         Index           =   -2147483648
-         InitialParent   =   "OptionsPanel"
-         Italic          =   ""
-         Left            =   302
-         LimitText       =   0
-         LockBottom      =   ""
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   ""
-         LockTop         =   True
-         Mask            =   ""
-         Password        =   ""
-         ReadOnly        =   ""
-         Scope           =   0
-         TabIndex        =   24
-         TabPanelIndex   =   3
-         TabStop         =   True
-         Text            =   ""
-         TextColor       =   &h000000
-         TextFont        =   "System"
-         TextSize        =   0
-         TextUnit        =   0
-         Top             =   293
-         Underline       =   ""
-         UseFocusRing    =   True
-         Visible         =   True
-         Width           =   174
-      End
-      Begin Label Label8
-         AutoDeactivate  =   True
-         Bold            =   ""
-         DataField       =   ""
-         DataSource      =   ""
-         Enabled         =   True
-         Height          =   20
-         HelpTag         =   ""
-         Index           =   -2147483648
-         InitialParent   =   "OptionsPanel"
-         Italic          =   ""
-         Left            =   224
-         LockBottom      =   ""
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   ""
-         LockTop         =   True
-         Multiline       =   ""
-         Scope           =   0
-         Selectable      =   False
-         TabIndex        =   25
-         TabPanelIndex   =   3
-         Text            =   "Proxy type:"
-         TextAlign       =   0
-         TextColor       =   &h000000
-         TextFont        =   "System"
-         TextSize        =   0
-         TextUnit        =   0
-         Top             =   316
-         Transparent     =   True
-         Underline       =   ""
-         Visible         =   True
-         Width           =   73
-      End
-      Begin ComboBox ProxyTypes
-         AutoComplete    =   False
-         AutoDeactivate  =   True
-         Bold            =   False
-         DataField       =   ""
-         DataSource      =   ""
-         Enabled         =   True
-         Height          =   20
-         HelpTag         =   ""
-         Index           =   -2147483648
-         InitialParent   =   "OptionsPanel"
-         InitialValue    =   "Socks 4\r\nSocks 4A\r\nSocks 5\r\nSocks 5A\r\nHTTP\r\nHTTP 1.0"
-         Italic          =   False
-         Left            =   302
-         ListIndex       =   0
-         LockBottom      =   False
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   False
-         LockTop         =   True
-         Scope           =   0
-         TabIndex        =   26
-         TabPanelIndex   =   3
-         TabStop         =   True
-         TextFont        =   "System"
-         TextSize        =   0.0
-         TextUnit        =   0
-         Top             =   316
-         Underline       =   False
-         UseFocusRing    =   True
-         Visible         =   True
-         Width           =   174
-      End
-      Begin CheckBox NoProgress
-         AutoDeactivate  =   True
-         Bold            =   ""
-         Caption         =   "Progress Event"
-         DataField       =   ""
-         DataSource      =   ""
-         Enabled         =   True
-         Height          =   20
-         HelpTag         =   ""
-         Index           =   -2147483648
-         InitialParent   =   "OptionsPanel"
-         Italic          =   ""
-         Left            =   356
-         LockBottom      =   ""
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   ""
-         LockTop         =   True
-         Scope           =   0
-         State           =   0
-         TabIndex        =   27
-         TabPanelIndex   =   3
-         TabStop         =   True
-         TextFont        =   "System"
-         TextSize        =   0
-         TextUnit        =   0
-         Top             =   230
-         Underline       =   ""
-         Value           =   False
-         Visible         =   True
-         Width           =   111
       End
       Begin TextArea DownloadOutput
          AcceptTabs      =   ""
@@ -1451,185 +692,6 @@ Begin Window DemoWindow
          Visible         =   True
          Width           =   135
       End
-      Begin ComboBox SSLVer
-         AutoComplete    =   False
-         AutoDeactivate  =   True
-         Bold            =   False
-         DataField       =   ""
-         DataSource      =   ""
-         Enabled         =   True
-         Height          =   20
-         HelpTag         =   ""
-         Index           =   -2147483648
-         InitialParent   =   "OptionsPanel"
-         InitialValue    =   "Default SSL/TLS\r\nSSLv2\r\nSSLv3\r\nTLSv1.X\r\nTLSv1.0\r\nTLSv1.1\r\nTLSv1.2"
-         Italic          =   False
-         Left            =   480
-         ListIndex       =   0
-         LockBottom      =   False
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   False
-         LockTop         =   True
-         Scope           =   0
-         TabIndex        =   15
-         TabPanelIndex   =   3
-         TabStop         =   True
-         TextFont        =   "System"
-         TextSize        =   0.0
-         TextUnit        =   0
-         Top             =   200
-         Underline       =   False
-         UseFocusRing    =   True
-         Visible         =   True
-         Width           =   100
-      End
-      Begin ComboBox HTTPVer
-         AutoComplete    =   False
-         AutoDeactivate  =   True
-         Bold            =   False
-         DataField       =   ""
-         DataSource      =   ""
-         Enabled         =   True
-         Height          =   20
-         HelpTag         =   ""
-         Index           =   -2147483648
-         InitialParent   =   "OptionsPanel"
-         InitialValue    =   "HTTP/1.1\r\nHTTP/1.0\r\nHTTP/2"
-         Italic          =   False
-         Left            =   480
-         ListIndex       =   0
-         LockBottom      =   False
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   False
-         LockTop         =   True
-         Scope           =   0
-         TabIndex        =   28
-         TabPanelIndex   =   3
-         TabStop         =   True
-         TextFont        =   "System"
-         TextSize        =   0.0
-         TextUnit        =   0
-         Top             =   169
-         Underline       =   False
-         UseFocusRing    =   True
-         Visible         =   True
-         Width           =   100
-      End
-      Begin Listbox Features
-         AutoDeactivate  =   True
-         AutoHideScrollbars=   True
-         Bold            =   ""
-         Border          =   True
-         ColumnCount     =   1
-         ColumnsResizable=   ""
-         ColumnWidths    =   ""
-         DataField       =   ""
-         DataSource      =   ""
-         DefaultRowHeight=   -1
-         Enabled         =   True
-         EnableDrag      =   ""
-         EnableDragReorder=   ""
-         GridLinesHorizontal=   0
-         GridLinesVertical=   0
-         HasHeading      =   True
-         HeadingIndex    =   -1
-         Height          =   161
-         HelpTag         =   ""
-         Hierarchical    =   True
-         Index           =   -2147483648
-         InitialParent   =   "OptionsPanel"
-         InitialValue    =   "Available Features"
-         Italic          =   ""
-         Left            =   11
-         LockBottom      =   True
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   False
-         LockTop         =   True
-         RequiresSelection=   ""
-         Scope           =   0
-         ScrollbarHorizontal=   True
-         ScrollBarVertical=   True
-         SelectionType   =   0
-         TabIndex        =   0
-         TabPanelIndex   =   3
-         TabStop         =   True
-         TextFont        =   "System"
-         TextSize        =   0
-         TextUnit        =   0
-         Top             =   150
-         Underline       =   ""
-         UseFocusRing    =   True
-         Visible         =   True
-         Width           =   170
-         _ScrollWidth    =   -1
-      End
-      Begin CheckBox ShowDataMsgs
-         AutoDeactivate  =   True
-         Bold            =   ""
-         Caption         =   "Show data messages"
-         DataField       =   ""
-         DataSource      =   ""
-         Enabled         =   True
-         Height          =   20
-         HelpTag         =   ""
-         Index           =   -2147483648
-         InitialParent   =   "OptionsPanel"
-         Italic          =   ""
-         Left            =   20
-         LockBottom      =   True
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   ""
-         LockTop         =   False
-         Scope           =   0
-         State           =   0
-         TabIndex        =   29
-         TabPanelIndex   =   3
-         TabStop         =   True
-         TextFont        =   "System"
-         TextSize        =   0
-         TextUnit        =   0
-         Top             =   319
-         Underline       =   ""
-         Value           =   False
-         Visible         =   True
-         Width           =   145
-      End
-      Begin CheckBox YieldOnLoop
-         AutoDeactivate  =   True
-         Bold            =   ""
-         Caption         =   "Yield"
-         DataField       =   ""
-         DataSource      =   ""
-         Enabled         =   True
-         Height          =   20
-         HelpTag         =   ""
-         Index           =   -2147483648
-         InitialParent   =   "OptionsPanel"
-         Italic          =   ""
-         Left            =   224
-         LockBottom      =   ""
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   ""
-         LockTop         =   True
-         Scope           =   0
-         State           =   0
-         TabIndex        =   30
-         TabPanelIndex   =   3
-         TabStop         =   True
-         TextFont        =   "System"
-         TextSize        =   0
-         TextUnit        =   0
-         Top             =   230
-         Underline       =   ""
-         Value           =   False
-         Visible         =   True
-         Width           =   120
-      End
       Begin Canvas HSplitter2
          AcceptFocus     =   ""
          AcceptTabs      =   ""
@@ -1656,6 +718,993 @@ Begin Window DemoWindow
          UseFocusRing    =   True
          Visible         =   True
          Width           =   370
+      End
+      Begin Label CAListFile
+         AutoDeactivate  =   True
+         Bold            =   ""
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "OptionsPanel"
+         Italic          =   ""
+         Left            =   104
+         LockBottom      =   True
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   True
+         LockTop         =   False
+         Multiline       =   ""
+         Scope           =   0
+         Selectable      =   True
+         TabIndex        =   0
+         TabPanelIndex   =   3
+         Text            =   "Not specified"
+         TextAlign       =   0
+         TextColor       =   &h00464646
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   351
+         Transparent     =   True
+         Underline       =   ""
+         Visible         =   True
+         Width           =   451
+      End
+      Begin PushButton CASet
+         AutoDeactivate  =   True
+         Bold            =   ""
+         ButtonStyle     =   0
+         Cancel          =   ""
+         Caption         =   "Set"
+         Default         =   ""
+         Enabled         =   True
+         Height          =   22
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "OptionsPanel"
+         Italic          =   ""
+         Left            =   559
+         LockBottom      =   True
+         LockedInPosition=   False
+         LockLeft        =   False
+         LockRight       =   True
+         LockTop         =   False
+         Scope           =   0
+         TabIndex        =   1
+         TabPanelIndex   =   3
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   350
+         Underline       =   ""
+         Visible         =   True
+         Width           =   34
+      End
+      Begin PushButton CAUnset
+         AutoDeactivate  =   True
+         Bold            =   ""
+         ButtonStyle     =   0
+         Cancel          =   ""
+         Caption         =   "Unset"
+         Default         =   ""
+         Enabled         =   True
+         Height          =   22
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "OptionsPanel"
+         Italic          =   ""
+         Left            =   592
+         LockBottom      =   True
+         LockedInPosition=   False
+         LockLeft        =   False
+         LockRight       =   True
+         LockTop         =   False
+         Scope           =   0
+         TabIndex        =   2
+         TabPanelIndex   =   3
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   350
+         Underline       =   ""
+         Visible         =   True
+         Width           =   34
+      End
+      Begin Label ClientCert
+         AutoDeactivate  =   True
+         Bold            =   ""
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "OptionsPanel"
+         Italic          =   ""
+         Left            =   104
+         LockBottom      =   True
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   True
+         LockTop         =   False
+         Multiline       =   ""
+         Scope           =   0
+         Selectable      =   True
+         TabIndex        =   3
+         TabPanelIndex   =   3
+         Text            =   "Not specified"
+         TextAlign       =   0
+         TextColor       =   &h00464646
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   373
+         Transparent     =   True
+         Underline       =   ""
+         Visible         =   True
+         Width           =   451
+      End
+      Begin PushButton ClientCertSet
+         AutoDeactivate  =   True
+         Bold            =   ""
+         ButtonStyle     =   0
+         Cancel          =   ""
+         Caption         =   "Set"
+         Default         =   ""
+         Enabled         =   True
+         Height          =   22
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "OptionsPanel"
+         Italic          =   ""
+         Left            =   559
+         LockBottom      =   True
+         LockedInPosition=   False
+         LockLeft        =   False
+         LockRight       =   True
+         LockTop         =   False
+         Scope           =   0
+         TabIndex        =   4
+         TabPanelIndex   =   3
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   372
+         Underline       =   ""
+         Visible         =   True
+         Width           =   34
+      End
+      Begin PushButton ClientCertUnset
+         AutoDeactivate  =   True
+         Bold            =   ""
+         ButtonStyle     =   0
+         Cancel          =   ""
+         Caption         =   "Unset"
+         Default         =   ""
+         Enabled         =   True
+         Height          =   22
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "OptionsPanel"
+         Italic          =   ""
+         Left            =   592
+         LockBottom      =   True
+         LockedInPosition=   False
+         LockLeft        =   False
+         LockRight       =   True
+         LockTop         =   False
+         Scope           =   0
+         TabIndex        =   5
+         TabPanelIndex   =   3
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   372
+         Underline       =   ""
+         Visible         =   True
+         Width           =   34
+      End
+      Begin Label Label6
+         AutoDeactivate  =   True
+         Bold            =   ""
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "OptionsPanel"
+         Italic          =   ""
+         Left            =   218
+         LockBottom      =   ""
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   ""
+         LockTop         =   True
+         Multiline       =   ""
+         Scope           =   0
+         Selectable      =   False
+         TabIndex        =   6
+         TabPanelIndex   =   3
+         Text            =   "Interface:"
+         TextAlign       =   0
+         TextColor       =   &h000000
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   267
+         Transparent     =   True
+         Underline       =   ""
+         Visible         =   True
+         Width           =   73
+      End
+      Begin ComboBox nic
+         AutoComplete    =   False
+         AutoDeactivate  =   True
+         Bold            =   False
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "OptionsPanel"
+         InitialValue    =   ""
+         Italic          =   False
+         Left            =   296
+         ListIndex       =   0
+         LockBottom      =   False
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   False
+         LockTop         =   True
+         Scope           =   0
+         TabIndex        =   7
+         TabPanelIndex   =   3
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0.0
+         TextUnit        =   0
+         Top             =   267
+         Underline       =   False
+         UseFocusRing    =   True
+         Visible         =   True
+         Width           =   174
+      End
+      Begin CheckBox Verbose
+         AutoDeactivate  =   True
+         Bold            =   ""
+         Caption         =   "Verbose"
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "OptionsPanel"
+         Italic          =   ""
+         Left            =   350
+         LockBottom      =   ""
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   ""
+         LockTop         =   True
+         Scope           =   0
+         State           =   0
+         TabIndex        =   8
+         TabPanelIndex   =   3
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   209
+         Underline       =   ""
+         Value           =   False
+         Visible         =   True
+         Width           =   120
+      End
+      Begin CheckBox Secure
+         AutoDeactivate  =   True
+         Bold            =   ""
+         Caption         =   "Validate SSL"
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "OptionsPanel"
+         Italic          =   ""
+         Left            =   350
+         LockBottom      =   ""
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   ""
+         LockTop         =   True
+         Scope           =   0
+         State           =   0
+         TabIndex        =   9
+         TabPanelIndex   =   3
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   189
+         Underline       =   ""
+         Value           =   False
+         Visible         =   True
+         Width           =   120
+      End
+      Begin CheckBox HTTPPreserveMethod
+         AutoDeactivate  =   True
+         Bold            =   ""
+         Caption         =   "Preserve method"
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "OptionsPanel"
+         Italic          =   ""
+         Left            =   350
+         LockBottom      =   ""
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   ""
+         LockTop         =   True
+         Scope           =   0
+         State           =   0
+         TabIndex        =   10
+         TabPanelIndex   =   3
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   169
+         Underline       =   ""
+         Value           =   False
+         Visible         =   True
+         Width           =   120
+      End
+      Begin CheckBox HTTPCompress
+         AutoDeactivate  =   True
+         Bold            =   ""
+         Caption         =   "gzip,deflate"
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "OptionsPanel"
+         Italic          =   ""
+         Left            =   350
+         LockBottom      =   ""
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   ""
+         LockTop         =   True
+         Scope           =   0
+         State           =   0
+         TabIndex        =   11
+         TabPanelIndex   =   3
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   149
+         Underline       =   ""
+         Value           =   False
+         Visible         =   True
+         Width           =   120
+      End
+      Begin CheckBox FollowRedirects
+         AutoDeactivate  =   True
+         Bold            =   ""
+         Caption         =   "Follow redirects"
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "OptionsPanel"
+         Italic          =   ""
+         Left            =   218
+         LockBottom      =   ""
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   ""
+         LockTop         =   True
+         Scope           =   0
+         State           =   0
+         TabIndex        =   12
+         TabPanelIndex   =   3
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   209
+         Underline       =   ""
+         Value           =   False
+         Visible         =   True
+         Width           =   120
+      End
+      Begin CheckBox Autoreferer
+         AutoDeactivate  =   True
+         Bold            =   ""
+         Caption         =   "AutoReferrer"
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "OptionsPanel"
+         Italic          =   ""
+         Left            =   218
+         LockBottom      =   ""
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   ""
+         LockTop         =   True
+         Scope           =   0
+         State           =   0
+         TabIndex        =   13
+         TabPanelIndex   =   3
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   189
+         Underline       =   ""
+         Value           =   False
+         Visible         =   True
+         Width           =   120
+      End
+      Begin CheckBox AutoDisconnect
+         AutoDeactivate  =   True
+         Bold            =   ""
+         Caption         =   "Autodisconnect"
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "OptionsPanel"
+         Italic          =   ""
+         Left            =   218
+         LockBottom      =   ""
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   ""
+         LockTop         =   True
+         Scope           =   0
+         State           =   0
+         TabIndex        =   14
+         TabPanelIndex   =   3
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   169
+         Underline       =   ""
+         Value           =   False
+         Visible         =   True
+         Width           =   120
+      End
+      Begin CheckBox FailOnError
+         AutoDeactivate  =   True
+         Bold            =   ""
+         Caption         =   "Fail on error"
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "OptionsPanel"
+         Italic          =   ""
+         Left            =   218
+         LockBottom      =   ""
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   ""
+         LockTop         =   True
+         Scope           =   0
+         State           =   0
+         TabIndex        =   15
+         TabPanelIndex   =   3
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   149
+         Underline       =   ""
+         Value           =   False
+         Visible         =   True
+         Width           =   120
+      End
+      Begin Label Label7
+         AutoDeactivate  =   True
+         Bold            =   ""
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "OptionsPanel"
+         Italic          =   ""
+         Left            =   218
+         LockBottom      =   ""
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   ""
+         LockTop         =   True
+         Multiline       =   ""
+         Scope           =   0
+         Selectable      =   False
+         TabIndex        =   16
+         TabPanelIndex   =   3
+         Text            =   "Proxy server:"
+         TextAlign       =   0
+         TextColor       =   &h000000
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   292
+         Transparent     =   True
+         Underline       =   ""
+         Visible         =   True
+         Width           =   73
+      End
+      Begin TextField ProxyServer
+         AcceptTabs      =   ""
+         Alignment       =   0
+         AutoDeactivate  =   True
+         AutomaticallyCheckSpelling=   False
+         BackColor       =   &hFFFFFF
+         Bold            =   ""
+         Border          =   True
+         CueText         =   ""
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Format          =   ""
+         Height          =   22
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "OptionsPanel"
+         Italic          =   ""
+         Left            =   296
+         LimitText       =   0
+         LockBottom      =   ""
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   ""
+         LockTop         =   True
+         Mask            =   ""
+         Password        =   ""
+         ReadOnly        =   ""
+         Scope           =   0
+         TabIndex        =   17
+         TabPanelIndex   =   3
+         TabStop         =   True
+         Text            =   ""
+         TextColor       =   &h000000
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   292
+         Underline       =   ""
+         UseFocusRing    =   True
+         Visible         =   True
+         Width           =   174
+      End
+      Begin Label Label8
+         AutoDeactivate  =   True
+         Bold            =   ""
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "OptionsPanel"
+         Italic          =   ""
+         Left            =   218
+         LockBottom      =   ""
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   ""
+         LockTop         =   True
+         Multiline       =   ""
+         Scope           =   0
+         Selectable      =   False
+         TabIndex        =   18
+         TabPanelIndex   =   3
+         Text            =   "Proxy type:"
+         TextAlign       =   0
+         TextColor       =   &h000000
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   315
+         Transparent     =   True
+         Underline       =   ""
+         Visible         =   True
+         Width           =   73
+      End
+      Begin ComboBox ProxyTypes
+         AutoComplete    =   False
+         AutoDeactivate  =   True
+         Bold            =   False
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "OptionsPanel"
+         InitialValue    =   "Socks 4\r\nSocks 4A\r\nSocks 5\r\nSocks 5A\r\nHTTP\r\nHTTP 1.0"
+         Italic          =   False
+         Left            =   296
+         ListIndex       =   0
+         LockBottom      =   False
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   False
+         LockTop         =   True
+         Scope           =   0
+         TabIndex        =   19
+         TabPanelIndex   =   3
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0.0
+         TextUnit        =   0
+         Top             =   315
+         Underline       =   False
+         UseFocusRing    =   True
+         Visible         =   True
+         Width           =   174
+      End
+      Begin CheckBox NoProgress
+         AutoDeactivate  =   True
+         Bold            =   ""
+         Caption         =   "Progress Event"
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "OptionsPanel"
+         Italic          =   ""
+         Left            =   350
+         LockBottom      =   ""
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   ""
+         LockTop         =   True
+         Scope           =   0
+         State           =   0
+         TabIndex        =   20
+         TabPanelIndex   =   3
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   229
+         Underline       =   ""
+         Value           =   False
+         Visible         =   True
+         Width           =   111
+      End
+      Begin ComboBox SSLVer
+         AutoComplete    =   False
+         AutoDeactivate  =   True
+         Bold            =   False
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "OptionsPanel"
+         InitialValue    =   "Default SSL/TLS\r\nSSLv2\r\nSSLv3\r\nTLSv1.X\r\nTLSv1.0\r\nTLSv1.1\r\nTLSv1.2"
+         Italic          =   False
+         Left            =   474
+         ListIndex       =   0
+         LockBottom      =   False
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   False
+         LockTop         =   True
+         Scope           =   0
+         TabIndex        =   21
+         TabPanelIndex   =   3
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0.0
+         TextUnit        =   0
+         Top             =   199
+         Underline       =   False
+         UseFocusRing    =   True
+         Visible         =   True
+         Width           =   100
+      End
+      Begin ComboBox HTTPVer
+         AutoComplete    =   False
+         AutoDeactivate  =   True
+         Bold            =   False
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "OptionsPanel"
+         InitialValue    =   "HTTP/1.1\r\nHTTP/1.0\r\nHTTP/2"
+         Italic          =   False
+         Left            =   474
+         ListIndex       =   0
+         LockBottom      =   False
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   False
+         LockTop         =   True
+         Scope           =   0
+         TabIndex        =   22
+         TabPanelIndex   =   3
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0.0
+         TextUnit        =   0
+         Top             =   168
+         Underline       =   False
+         UseFocusRing    =   True
+         Visible         =   True
+         Width           =   100
+      End
+      Begin CheckBox ShowDataMsgs
+         AutoDeactivate  =   True
+         Bold            =   ""
+         Caption         =   "Show data messages"
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "OptionsPanel"
+         Italic          =   ""
+         Left            =   14
+         LockBottom      =   True
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   ""
+         LockTop         =   False
+         Scope           =   0
+         State           =   0
+         TabIndex        =   23
+         TabPanelIndex   =   3
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   318
+         Underline       =   ""
+         Value           =   False
+         Visible         =   True
+         Width           =   145
+      End
+      Begin CheckBox YieldOnLoop
+         AutoDeactivate  =   True
+         Bold            =   ""
+         Caption         =   "Yield"
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "OptionsPanel"
+         Italic          =   ""
+         Left            =   218
+         LockBottom      =   ""
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   ""
+         LockTop         =   True
+         Scope           =   0
+         State           =   0
+         TabIndex        =   24
+         TabPanelIndex   =   3
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   229
+         Underline       =   ""
+         Value           =   False
+         Visible         =   True
+         Width           =   120
+      End
+      Begin Listbox Features
+         AutoDeactivate  =   True
+         AutoHideScrollbars=   True
+         Bold            =   ""
+         Border          =   True
+         ColumnCount     =   1
+         ColumnsResizable=   ""
+         ColumnWidths    =   ""
+         DataField       =   ""
+         DataSource      =   ""
+         DefaultRowHeight=   -1
+         Enabled         =   True
+         EnableDrag      =   ""
+         EnableDragReorder=   ""
+         GridLinesHorizontal=   0
+         GridLinesVertical=   0
+         HasHeading      =   True
+         HeadingIndex    =   -1
+         Height          =   161
+         HelpTag         =   ""
+         Hierarchical    =   True
+         Index           =   -2147483648
+         InitialParent   =   "OptionsPanel"
+         InitialValue    =   "Available Features"
+         Italic          =   ""
+         Left            =   14
+         LockBottom      =   True
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   False
+         LockTop         =   True
+         RequiresSelection=   ""
+         Scope           =   0
+         ScrollbarHorizontal=   True
+         ScrollBarVertical=   True
+         SelectionType   =   0
+         TabIndex        =   26
+         TabPanelIndex   =   3
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   153
+         Underline       =   ""
+         UseFocusRing    =   True
+         Visible         =   True
+         Width           =   170
+         _ScrollWidth    =   -1
+      End
+      Begin Label Label2
+         AutoDeactivate  =   True
+         Bold            =   ""
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "OptionsPanel"
+         Italic          =   ""
+         Left            =   10
+         LockBottom      =   True
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   False
+         LockTop         =   False
+         Multiline       =   ""
+         Scope           =   0
+         Selectable      =   False
+         TabIndex        =   27
+         TabPanelIndex   =   3
+         Text            =   "Client certificate:"
+         TextAlign       =   2
+         TextColor       =   &h000000
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   372
+         Transparent     =   True
+         Underline       =   ""
+         Visible         =   True
+         Width           =   93
+      End
+      Begin Label Label1
+         AutoDeactivate  =   True
+         Bold            =   ""
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "OptionsPanel"
+         Italic          =   ""
+         Left            =   18
+         LockBottom      =   True
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   False
+         LockTop         =   False
+         Multiline       =   ""
+         Scope           =   0
+         Selectable      =   False
+         TabIndex        =   28
+         TabPanelIndex   =   3
+         Text            =   "CA List:"
+         TextAlign       =   2
+         TextColor       =   &h000000
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   350
+         Transparent     =   True
+         Underline       =   ""
+         Visible         =   True
+         Width           =   85
+      End
+      Begin Listbox RawOptsList
+         AutoDeactivate  =   True
+         AutoHideScrollbars=   True
+         Bold            =   ""
+         Border          =   True
+         ColumnCount     =   3
+         ColumnsResizable=   True
+         ColumnWidths    =   ""
+         DataField       =   ""
+         DataSource      =   ""
+         DefaultRowHeight=   -1
+         Enabled         =   True
+         EnableDrag      =   ""
+         EnableDragReorder=   ""
+         GridLinesHorizontal=   0
+         GridLinesVertical=   0
+         HasHeading      =   True
+         HeadingIndex    =   -1
+         Height          =   244
+         HelpTag         =   ""
+         Hierarchical    =   ""
+         Index           =   -2147483648
+         InitialParent   =   "OptionsPanel"
+         InitialValue    =   "Name	Current Value	Type"
+         Italic          =   ""
+         Left            =   11
+         LockBottom      =   True
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   True
+         LockTop         =   True
+         RequiresSelection=   ""
+         Scope           =   0
+         ScrollbarHorizontal=   ""
+         ScrollBarVertical=   True
+         SelectionType   =   0
+         TabIndex        =   0
+         TabPanelIndex   =   5
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   150
+         Underline       =   ""
+         UseFocusRing    =   True
+         Visible         =   True
+         Width           =   622
+         _ScrollWidth    =   -1
       End
    End
    Begin cURLClient Client
@@ -1760,7 +1809,7 @@ Begin Window DemoWindow
       TextUnit        =   0
       Top             =   0
       Underline       =   ""
-      Value           =   3
+      Value           =   0
       Visible         =   True
       Width           =   246
       Begin PushButton GetBtn
@@ -2300,6 +2349,7 @@ End
 		Sub Open()
 		  Me.Title = Me.Title + " - " + libcURL.Version.UserAgent
 		  Client.EasyItem.UseErrorBuffer = True
+		  RefreshOpts()
 		End Sub
 	#tag EndEvent
 
@@ -2545,8 +2595,64 @@ End
 		    SSLVer.ListIndex = 6
 		  End Select
 		  
+		  RefreshOpts()
+		  
 		Finally
 		  mLockUI = False
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub RefreshOpts()
+		  RawOptsList.DeleteAllRows()
+		  Dim iter As libcURL.Opts.OptionIterator
+		  If mShowOnlyModdedOpts Then
+		    iter = New libcURL.Opts.OptionIterator(Client.EasyItem)
+		  Else
+		    iter = New libcURL.Opts.OptionIterator()
+		  End If
+		  Do
+		    Dim opt As libcURL.Opts.OptionInfo = iter.CurrentOption
+		    Dim tp As String = libcURL.Opts.OptionTypeName(opt.Type)
+		    Dim vl As String = opt.StringValue(Client.EasyItem)
+		    If opt.IsDeprecated And Not mShowDeprecatedOptions Then Continue
+		    Dim nm As String
+		    
+		    If opt.IsDeprecated Then
+		      If mOptNameDisplay > 0 Then nm = "CURLOPT_"
+		      If opt.LibraryAlias <> "" Then
+		        nm = nm + opt.Name + " (" + opt.LibraryAlias + ")"
+		      Else
+		        nm = nm + opt.Name + " (Deprecated)"
+		      End If
+		      
+		    Else
+		      Select Case mOptNameDisplay
+		      Case 0
+		        nm = opt.Name
+		      Case 1
+		        nm = opt.LibraryAlias
+		      Case 2
+		        nm = opt.BindingAlias
+		      End Select
+		      
+		    End If
+		    
+		    If opt.Type = libcURL.OptionType.Boolean Then
+		      RawOptsList.AddRow(nm, "", tp, opt.DocumentationURL)
+		      RawOptsList.CellType(RawOptsList.LastIndex, 1) = Listbox.TypeCheckbox
+		      If vl = "True" Then
+		        RawOptsList.CellState(RawOptsList.LastIndex, 1) = CheckBox.CheckedStates.Checked
+		      Else
+		        RawOptsList.CellState(RawOptsList.LastIndex, 1) = CheckBox.CheckedStates.Unchecked
+		      End If
+		    Else
+		      RawOptsList.AddRow(nm, vl, tp, opt.DocumentationURL)
+		    End If
+		    
+		    RawOptsList.RowTag(RawOptsList.LastIndex) = opt
+		    
+		  Loop Until Not iter.MoveNext()
 		End Sub
 	#tag EndMethod
 
@@ -2635,7 +2741,7 @@ End
 		    Else
 		      CAListFile.Text = "Not specified"
 		    End If
-		    
+		    RefreshOpts()
 		  Finally
 		    mLockUI = False
 		  End Try
@@ -2761,7 +2867,19 @@ End
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
+		Private mOptNameDisplay As Integer
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
 		Private mPutTarget As FolderItem
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mShowDeprecatedOptions As Boolean = False
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mShowOnlyModdedOpts As Boolean = True
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -2845,6 +2963,293 @@ End
 		    CurlInfo.Cell(CurlInfo.LastIndex, 1) = FormatBytes(Client.GetInfo(libcURL.Info.SIZE_UPLOAD).DoubleValue)
 		    
 		  End Select
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events Debug
+	#tag Event
+		Function ConstructContextualMenu(base as MenuItem, x as Integer, y as Integer) As Boolean
+		  #pragma Unused X
+		  #pragma Unused Y
+		  base.Append(New MenuItem("Clear log"))
+		  Return True
+		End Function
+	#tag EndEvent
+	#tag Event
+		Function ContextualMenuAction(hitItem as MenuItem) As Boolean
+		  Select Case hitItem.Text
+		  Case "Clear log"
+		    Me.DeleteAllRows
+		    Return True
+		  End Select
+		End Function
+	#tag EndEvent
+#tag EndEvents
+#tag Events HSplitter1
+	#tag Event
+		Sub MouseEnter()
+		  Me.MouseCursor = System.Cursors.SplitterNorthSouth
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Sub MouseExit()
+		  Me.MouseCursor = System.Cursors.StandardPointer
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Function MouseDown(X As Integer, Y As Integer) As Boolean
+		  #pragma Unused X
+		  #pragma Unused Y
+		  Return True
+		End Function
+	#tag EndEvent
+	#tag Event
+		Sub MouseDrag(X As Integer, Y As Integer)
+		  #pragma Unused X
+		  #pragma Unused Y
+		  If Me.Width > Me.Height Then 'horizontal
+		    Me.Top = Me.Window.MouseY
+		  Else
+		    Me.Left = Me.Window.MouseX
+		  End If
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Sub MouseUp(X As Integer, Y As Integer)
+		  #pragma Unused X
+		  #pragma Unused Y
+		  
+		  CurlInfo.Height = Me.Top - CurlInfo.Top - 1
+		  Debug.Top = Me.Top + Me.Height + 1
+		  Debug.Height = Me.Window.Height - Debug.Top - 5
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Sub Paint(g As Graphics)
+		  #If RBVersion > 2012.1 Then
+		    #pragma Unused areas
+		  #EndIf
+		  
+		  g.ForeColor = &cC0C0C000
+		  g.DrawRect(0, 0, g.Width, g.Height)
+		  
+		  g.ForeColor = &c80808000
+		  g.DrawLine(0.25 * g.Width, 0.25 * g.Height, 0.75 * g.Width, 0.25 * g.Height)
+		  g.DrawLine(0.25 * g.Width, 0.75 * g.Height, 0.75 * g.Width, 0.75 * g.Height)
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events CookieList
+	#tag Event
+		Sub CellAction(row As Integer, column As Integer)
+		  #pragma Unused column
+		  
+		  If column <> 3 And Me.Cell(row, 0) = Me.CellTag(row, 0) And Me.Cell(row, 1) = Me.CellTag(row, 1) And Me.Cell(row, 2) = Me.CellTag(row, 2) And _
+		    Me.Cell(row, 4) = Me.CellTag(row, 4) Then Return ' no changes
+		    
+		    Dim n, v, d, p As String
+		    Dim h As Boolean
+		    Dim e As Date
+		    n = Me.Cell(row, 0)
+		    v = Me.Cell(row, 1)
+		    d = Me.Cell(row, 2)
+		    If Me.Cell(row, 3) <> "" Then Call libcURL.ParseDate(Me.Cell(row, 3), e)
+		    p = Me.Cell(row, 4)
+		    h = Me.CellCheck(row, 4)
+		    
+		    If Not Client.Cookies.SetCookie(n, v, d, e, p, h) Then
+		      Dim err As New libcURL.cURLException(Client.EasyItem)
+		      MsgBox(err.Message)
+		      Me.Cell(row, 0) = Me.CellTag(row, 0)
+		      Me.Cell(row, 1) = Me.CellTag(row, 1)
+		      Me.Cell(row, 2) = Me.CellTag(row, 2)
+		      Me.Cell(row, 3) = Me.CellTag(row, 3)
+		      Me.Cell(row, 4) = Me.CellTag(row, 4)
+		    End If
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Function ConstructContextualMenu(base as MenuItem, x as Integer, y as Integer) As Boolean
+		  Dim r, c As Integer
+		  r = Me.RowFromXY(x, y)
+		  c = Me.ColumnFromXY(x, y)
+		  If r = -1 Then Return False
+		  If Me.RowTag(r) < 0 Then Return False
+		  Dim m As New MenuItem("Expire")
+		  m.Tag = r
+		  base.Append(m)
+		  Return True
+		End Function
+	#tag EndEvent
+	#tag Event
+		Function ContextualMenuAction(hitItem as MenuItem) As Boolean
+		  Select Case hitItem.Text
+		  Case "Expire"
+		    Dim i As Integer = hitItem.Tag
+		    If i > -1 Then
+		      Dim index As Integer = Me.RowTag(i)
+		      If MsgBox("Delete this cookie?", 48 + 4, "Confirm deletion") = 6 Then
+		        Client.Cookies.Expiry(index) = New Date(1970, 2, 1, 0, 0, 0, 0.0)
+		        Me.RemoveRow(i)
+		      End If
+		      Return True
+		    End If
+		  End Select
+		End Function
+	#tag EndEvent
+	#tag Event
+		Function CellClick(row as Integer, column as Integer, x as Integer, y as Integer) As Boolean
+		  #pragma Unused x
+		  #pragma Unused y
+		  If (column = 1 Or column = 3 Or column = 4) And Not IsContextualClick And Me.Selected(row) Then
+		    Me.CellTag(row, column) = Me.Cell(row, column)
+		    Me.EditCell(row, column)
+		    Return True
+		  End If
+		  Return (column = 5)
+		  
+		End Function
+	#tag EndEvent
+	#tag Event
+		Function CompareRows(row1 as Integer, row2 as Integer, column as Integer, ByRef result as Integer) As Boolean
+		  If column = 5 Then
+		    Dim a, b As Boolean
+		    a = (Me.CellState(row1, column) = CheckBox.CheckedStates.Checked)
+		    b = (Me.CellState(row2, column) = CheckBox.CheckedStates.Checked)
+		    
+		    If a Xor b Then
+		      If a And Not b Then
+		        result = 1
+		      Else
+		        result = -1
+		      End If
+		    End If
+		    Return True
+		  End If
+		  
+		  If column = 3 Then
+		    Dim d1 As Date = Me.CellTag(row1, 3)
+		    Dim d2 As Date = Me.CellTag(row2, 3)
+		    Select Case True
+		    Case d1 = Nil And d2 = Nil
+		      result = 0
+		    Case d1 = Nil And d2 <> Nil
+		      result = -1
+		    Case d1 <> Nil And d2 = Nil
+		      result = 1
+		    Else
+		      Dim s1, s2 As Double
+		      s1 = d1.TotalSeconds
+		      s2 = d2.TotalSeconds
+		      result = Sign(s1 - s2)
+		    End Select
+		    Return True
+		  End If
+		  
+		End Function
+	#tag EndEvent
+#tag EndEvents
+#tag Events CookieLookupButton
+	#tag Event
+		Sub Action()
+		  UpdateCookieList()
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events WriteCookies
+	#tag Event
+		Sub Action()
+		  Dim f As FolderItem = GetSaveFolderItem(cURLTypes.NetscapeCookieJar, "cookie.jar")
+		  If f <> Nil Then
+		    If Not Client.Cookies.WriteCookies(f) Then
+		      Call MsgBox(libcURL.FormatError(Client.EasyItem.LastError), 16, "Cookie save failed")
+		    Else
+		      MsgBox("Cookies saved!")
+		    End If
+		  End If
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events ReadCookies
+	#tag Event
+		Sub Action()
+		  Dim f As FolderItem = GetOpenFolderItem(cURLTypes.NetscapeCookieJar)
+		  If f <> Nil Then
+		    Client.Cookies.ReadCookies(f)
+		    UseCookies.Value = True
+		    Call Client.Cookies.Reload
+		    UpdateCookieList()
+		  End If
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events NewCookieSessionButton
+	#tag Event
+		Sub Action()
+		  If Not Client.Cookies.NewSession Then Raise New libcURL.cURLException(Client.EasyItem)
+		  UpdateCookieList()
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events UseCookies
+	#tag Event
+		Sub Action()
+		  If Not mLockUI Then Client.Cookies.Enabled = Me.Value
+		  CookieControl.Enabled = Me.Value
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events HSplitter2
+	#tag Event
+		Sub MouseEnter()
+		  Me.MouseCursor = System.Cursors.SplitterNorthSouth
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Sub MouseExit()
+		  Me.MouseCursor = System.Cursors.StandardPointer
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Function MouseDown(X As Integer, Y As Integer) As Boolean
+		  #pragma Unused X
+		  #pragma Unused Y
+		  Return True
+		End Function
+	#tag EndEvent
+	#tag Event
+		Sub MouseDrag(X As Integer, Y As Integer)
+		  #pragma Unused X
+		  #pragma Unused Y
+		  If Me.Width > Me.Height Then 'horizontal
+		    Me.Top = Me.Window.MouseY
+		  Else
+		    Me.Left = Me.Window.MouseX
+		  End If
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Sub MouseUp(X As Integer, Y As Integer)
+		  #pragma Unused X
+		  #pragma Unused Y
+		  
+		  Headers.Height = Me.Top - Headers.Top - 1
+		  DownloadOutput.Top = Me.Top + Me.Height + 1
+		  DownloadOutput.Height = Me.Window.Height - DownloadOutput.Top - 5
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Sub Paint(g As Graphics)
+		  #If RBVersion > 2012.1 Then
+		    #pragma Unused areas
+		  #EndIf
+		  
+		  g.ForeColor = &cC0C0C000
+		  g.DrawRect(0, 0, g.Width, g.Height)
+		  
+		  g.ForeColor = &c80808000
+		  g.DrawLine(0.25 * g.Width, 0.25 * g.Height, 0.75 * g.Width, 0.25 * g.Height)
+		  g.DrawLine(0.25 * g.Width, 0.75 * g.Height, 0.75 * g.Width, 0.75 * g.Height)
 		End Sub
 	#tag EndEvent
 #tag EndEvents
@@ -3143,235 +3548,6 @@ End
 		End Sub
 	#tag EndEvent
 #tag EndEvents
-#tag Events Debug
-	#tag Event
-		Function ConstructContextualMenu(base as MenuItem, x as Integer, y as Integer) As Boolean
-		  #pragma Unused X
-		  #pragma Unused Y
-		  base.Append(New MenuItem("Clear log"))
-		  Return True
-		End Function
-	#tag EndEvent
-	#tag Event
-		Function ContextualMenuAction(hitItem as MenuItem) As Boolean
-		  Select Case hitItem.Text
-		  Case "Clear log"
-		    Me.DeleteAllRows
-		    Return True
-		  End Select
-		End Function
-	#tag EndEvent
-#tag EndEvents
-#tag Events HSplitter1
-	#tag Event
-		Sub MouseEnter()
-		  Me.MouseCursor = System.Cursors.SplitterNorthSouth
-		End Sub
-	#tag EndEvent
-	#tag Event
-		Sub MouseExit()
-		  Me.MouseCursor = System.Cursors.StandardPointer
-		End Sub
-	#tag EndEvent
-	#tag Event
-		Function MouseDown(X As Integer, Y As Integer) As Boolean
-		  #pragma Unused X
-		  #pragma Unused Y
-		  Return True
-		End Function
-	#tag EndEvent
-	#tag Event
-		Sub MouseDrag(X As Integer, Y As Integer)
-		  #pragma Unused X
-		  #pragma Unused Y
-		  If Me.Width > Me.Height Then 'horizontal
-		    Me.Top = Me.Window.MouseY
-		  Else
-		    Me.Left = Me.Window.MouseX
-		  End If
-		End Sub
-	#tag EndEvent
-	#tag Event
-		Sub MouseUp(X As Integer, Y As Integer)
-		  #pragma Unused X
-		  #pragma Unused Y
-		  
-		  CurlInfo.Height = Me.Top - CurlInfo.Top - 1
-		  Debug.Top = Me.Top + Me.Height + 1
-		  Debug.Height = Me.Window.Height - Debug.Top - 5
-		End Sub
-	#tag EndEvent
-	#tag Event
-		Sub Paint(g As Graphics)
-		  g.ForeColor = &cC0C0C000
-		  g.DrawRect(0, 0, g.Width, g.Height)
-		  
-		  g.ForeColor = &c80808000
-		  g.DrawLine(0.25 * g.Width, 0.25 * g.Height, 0.75 * g.Width, 0.25 * g.Height)
-		  g.DrawLine(0.25 * g.Width, 0.75 * g.Height, 0.75 * g.Width, 0.75 * g.Height)
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events CookieList
-	#tag Event
-		Sub CellAction(row As Integer, column As Integer)
-		  #pragma Unused column
-		  
-		  If column <> 3 And Me.Cell(row, 0) = Me.CellTag(row, 0) And Me.Cell(row, 1) = Me.CellTag(row, 1) And Me.Cell(row, 2) = Me.CellTag(row, 2) And _
-		    Me.Cell(row, 4) = Me.CellTag(row, 4) Then Return ' no changes
-		    
-		    Dim n, v, d, p As String
-		    Dim h As Boolean
-		    Dim e As Date
-		    n = Me.Cell(row, 0)
-		    v = Me.Cell(row, 1)
-		    d = Me.Cell(row, 2)
-		    If Me.Cell(row, 3) <> "" Then Call libcURL.ParseDate(Me.Cell(row, 3), e)
-		    p = Me.Cell(row, 4)
-		    h = Me.CellCheck(row, 4)
-		    
-		    If Not Client.Cookies.SetCookie(n, v, d, e, p, h) Then
-		      Dim err As New libcURL.cURLException(Client.EasyItem)
-		      MsgBox(err.Message)
-		      Me.Cell(row, 0) = Me.CellTag(row, 0)
-		      Me.Cell(row, 1) = Me.CellTag(row, 1)
-		      Me.Cell(row, 2) = Me.CellTag(row, 2)
-		      Me.Cell(row, 3) = Me.CellTag(row, 3)
-		      Me.Cell(row, 4) = Me.CellTag(row, 4)
-		    End If
-		End Sub
-	#tag EndEvent
-	#tag Event
-		Function ConstructContextualMenu(base as MenuItem, x as Integer, y as Integer) As Boolean
-		  Dim r, c As Integer
-		  r = Me.RowFromXY(x, y)
-		  c = Me.ColumnFromXY(x, y)
-		  If r = -1 Then Return False
-		  If Me.RowTag(r) < 0 Then Return False
-		  Dim m As New MenuItem("Expire")
-		  m.Tag = r
-		  base.Append(m)
-		  Return True
-		End Function
-	#tag EndEvent
-	#tag Event
-		Function ContextualMenuAction(hitItem as MenuItem) As Boolean
-		  Select Case hitItem.Text
-		  Case "Expire"
-		    Dim i As Integer = hitItem.Tag
-		    If i > -1 Then
-		      Dim index As Integer = Me.RowTag(i)
-		      If MsgBox("Delete this cookie?", 48 + 4, "Confirm deletion") = 6 Then
-		        Client.Cookies.Expiry(index) = New Date(1970, 2, 1, 0, 0, 0, 0.0)
-		        Me.RemoveRow(i)
-		      End If
-		      Return True
-		    End If
-		  End Select
-		End Function
-	#tag EndEvent
-	#tag Event
-		Function CellClick(row as Integer, column as Integer, x as Integer, y as Integer) As Boolean
-		  #pragma Unused x
-		  #pragma Unused y
-		  If (column = 1 Or column = 3 Or column = 4) And Not IsContextualClick And Me.Selected(row) Then
-		    Me.CellTag(row, column) = Me.Cell(row, column)
-		    Me.EditCell(row, column)
-		    Return True
-		  End If
-		  Return (column = 5)
-		  
-		End Function
-	#tag EndEvent
-	#tag Event
-		Function CompareRows(row1 as Integer, row2 as Integer, column as Integer, ByRef result as Integer) As Boolean
-		  If column = 5 Then
-		    Dim a, b As Boolean
-		    a = (Me.CellState(row1, column) = CheckBox.CheckedStates.Checked)
-		    b = (Me.CellState(row2, column) = CheckBox.CheckedStates.Checked)
-		    
-		    If a Xor b Then
-		      If a And Not b Then
-		        result = 1
-		      Else
-		        result = -1
-		      End If
-		    End If
-		    Return True
-		  End If
-		  
-		  If column = 3 Then
-		    Dim d1 As Date = Me.CellTag(row1, 3)
-		    Dim d2 As Date = Me.CellTag(row2, 3)
-		    Select Case True
-		    Case d1 = Nil And d2 = Nil
-		      result = 0
-		    Case d1 = Nil And d2 <> Nil
-		      result = -1
-		    Case d1 <> Nil And d2 = Nil
-		      result = 1
-		    Else
-		      Dim s1, s2 As Double
-		      s1 = d1.TotalSeconds
-		      s2 = d2.TotalSeconds
-		      result = Sign(s1 - s2)
-		    End Select
-		    Return True
-		  End If
-		  
-		End Function
-	#tag EndEvent
-#tag EndEvents
-#tag Events CookieLookupButton
-	#tag Event
-		Sub Action()
-		  UpdateCookieList()
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events WriteCookies
-	#tag Event
-		Sub Action()
-		  Dim f As FolderItem = GetSaveFolderItem(cURLTypes.NetscapeCookieJar, "cookie.jar")
-		  If f <> Nil Then
-		    If Not Client.Cookies.WriteCookies(f) Then
-		      Call MsgBox(libcURL.FormatError(Client.EasyItem.LastError), 16, "Cookie save failed")
-		    Else
-		      MsgBox("Cookies saved!")
-		    End If
-		  End If
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events ReadCookies
-	#tag Event
-		Sub Action()
-		  Dim f As FolderItem = GetOpenFolderItem(cURLTypes.NetscapeCookieJar)
-		  If f <> Nil Then
-		    Client.Cookies.ReadCookies(f)
-		    UseCookies.Value = True
-		    Call Client.Cookies.Reload
-		    UpdateCookieList()
-		  End If
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events NewCookieSessionButton
-	#tag Event
-		Sub Action()
-		  If Not Client.Cookies.NewSession Then Raise New libcURL.cURLException(Client.EasyItem)
-		  UpdateCookieList()
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events UseCookies
-	#tag Event
-		Sub Action()
-		  If Not mLockUI Then Client.Cookies.Enabled = Me.Value
-		  CookieControl.Enabled = Me.Value
-		End Sub
-	#tag EndEvent
-#tag EndEvents
 #tag Events SSLVer
 	#tag Event
 		Sub Change()
@@ -3426,6 +3602,23 @@ End
 		End Sub
 	#tag EndEvent
 #tag EndEvents
+#tag Events YieldOnLoop
+	#tag Event
+		Sub Open()
+		  If Client.EasyItem.FollowRedirects Then
+		    Me.State = CheckBox.CheckedStates.Checked
+		  Else
+		    Me.State = CheckBox.CheckedStates.Unchecked
+		  End If
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Sub Action()
+		  If mLockUI Then Return
+		  Client.Yield = Me.Value
+		End Sub
+	#tag EndEvent
+#tag EndEvents
 #tag Events Features
 	#tag Event
 		Sub Open()
@@ -3461,71 +3654,215 @@ End
 		End Sub
 	#tag EndEvent
 #tag EndEvents
-#tag Events YieldOnLoop
+#tag Events RawOptsList
 	#tag Event
-		Sub Open()
-		  If Client.EasyItem.FollowRedirects Then
-		    Me.State = CheckBox.CheckedStates.Checked
-		  Else
-		    Me.State = CheckBox.CheckedStates.Unchecked
+		Function KeyDown(Key As String) As Boolean
+		  If Asc(Key) = &hCC Then 'F5
+		    RefreshOpts()
 		  End If
-		End Sub
+		End Function
 	#tag EndEvent
 	#tag Event
-		Sub Action()
+		Function CellClick(row as Integer, column as Integer, x as Integer, y as Integer) As Boolean
+		  #pragma Unused x
+		  #pragma Unused y
+		  Dim opt As libcURL.Opts.OptionInfo = Me.RowTag(row)
+		  Select Case column
+		  Case 1 ' value
+		    Select Case opt.Type
+		    Case libcURL.OptionType.Boolean
+		      
+		    Case libcURL.OptionType.Ptr, libcURL.OptionType.Subroutine, libcURL.OptionType.Opaque, libcURL.OptionType.List
+		      Return False
+		    Else
+		      Me.CellTag(row, column) = Me.Cell(row, column)
+		      Me.CellType(row, column) = Listbox.TypeEditable
+		      Me.EditCell(row, column)
+		      Return True
+		    End Select
+		    'Case 3 ' doc url
+		    'If opt.DocumentationURL <> "" Then ShowURL(opt.DocumentationURL)
+		    'Return True
+		  End Select
+		End Function
+	#tag EndEvent
+	#tag Event
+		Function CellTextPaint(g As Graphics, row As Integer, column As Integer, x as Integer, y as Integer) As Boolean
+		  #pragma Unused x
+		  #pragma Unused y
+		  If Me.Selected(row) Then Return False
+		  Dim opt As libcURL.Opts.OptionInfo = Me.RowTag(row)
+		  Select Case column
+		  Case 0 ' name
+		    If opt.IsDeprecated Then
+		      g.ForeColor = &cFF000000 ' deprecated
+		      'If opt.LibraryAlias <> "" Then
+		      'g.DrawString(opt.Name + " (Alias " + opt.LibraryAlias + ")", x, y)
+		      'Return True
+		      'Else
+		      'g.DrawString(opt.Name + " (Deprecated)", x, y)
+		      'Return True
+		      'End If
+		    End If
+		    
+		  Case 1 ' value
+		    If opt.Type = libcURL.OptionType.Boolean Then Return False
+		    If Me.Cell(row, column) = "" Then
+		      g.ForeColor = &c80808000
+		      g.Italic = True
+		      g.DrawString("default", x, y)
+		      Return True
+		    End If
+		    
+		  Case 2 ' type
+		    Select Case opt.Type
+		    Case libcURL.OptionType.Bitmask, libcURL.OptionType.LargeNumber, libcURL.OptionType.Number
+		      g.ForeColor = &c0080FF00
+		    Case libcURL.OptionType.Blob, libcURL.OptionType.List, libcURL.OptionType.Opaque, libcURL.OptionType.Ptr, _
+		      libcURL.OptionType.Subroutine
+		      g.ForeColor = &cFF000000
+		    Case libcURL.OptionType.String
+		      g.ForeColor = &c8000FF00
+		    Case libcURL.OptionType.Boolean
+		      g.ForeColor = &c00800000
+		    End Select
+		    
+		    'Case 3 ' doc url
+		    'If opt.DocumentationURL <> "" Then
+		    'g.ForeColor = &c0000FF00
+		    'g.Underline = True
+		    'End If
+		    
+		  End Select
+		End Function
+	#tag EndEvent
+	#tag Event
+		Sub CellAction(row As Integer, column As Integer)
+		  If column <> 1 Then Return
 		  If mLockUI Then Return
-		  Client.Yield = Me.Value
+		  If Me.Cell(row, column) <> Me.CellTag(row, column) Or Me.CellType(row, column) = Listbox.TypeCheckbox Then
+		    Dim opt As libcURL.Opts.OptionInfo = Me.RowTag(row)
+		    Select Case opt.Type
+		    Case libcURL.OptionType.Boolean
+		      opt.Value(Client.EasyItem) = Me.CellState(row, column) = CheckBox.CheckedStates.Checked
+		    Case libcURL.OptionType.String
+		      opt.Value(Client.EasyItem) = Me.Cell(row, column)
+		      
+		    Case libcURL.OptionType.List
+		      
+		    Else
+		      opt.Value(Client.EasyItem) = CType(Val(Me.Cell(row, column)), Integer)
+		    End Select
+		  End If
+		  'RefreshOpts()
+		  
+		Exception err As TypeMismatchException
+		  Me.Cell(row, column) = Me.CellTag(row, column)
 		End Sub
 	#tag EndEvent
-#tag EndEvents
-#tag Events HSplitter2
 	#tag Event
-		Sub MouseEnter()
-		  Me.MouseCursor = System.Cursors.SplitterNorthSouth
-		End Sub
-	#tag EndEvent
-	#tag Event
-		Sub MouseExit()
-		  Me.MouseCursor = System.Cursors.StandardPointer
-		End Sub
-	#tag EndEvent
-	#tag Event
-		Function MouseDown(X As Integer, Y As Integer) As Boolean
-		  #pragma Unused X
-		  #pragma Unused Y
+		Function ConstructContextualMenu(base as MenuItem, x as Integer, y as Integer) As Boolean
+		  Dim row, col As Integer
+		  row = Me.RowFromXY(x, y)
+		  col = Me.ColumnFromXY(x, y)
+		  If col <> -1 And row <> -1 Then
+		    Dim opt As libcURL.Opts.OptionInfo = Me.RowTag(row)
+		    If opt.Type <> libcURL.OptionType.Boolean Then
+		      Dim edt As New MenuItem("Edit value")
+		      edt.Tag = row:col
+		      base.Append(edt)
+		    End If
+		    
+		    Dim rst As New MenuItem("Reset default")
+		    rst.Tag = row:col
+		    rst.Enabled = Not opt.IsSet(Client.EasyItem)
+		    base.Append(rst)
+		    
+		    Dim doc As New MenuItem("View documentation...")
+		    doc.Tag = opt.DocumentationURL
+		    doc.Enabled = (opt.DocumentationURL <> "")
+		    base.Append(doc)
+		    
+		  End If
+		  
+		  base.Append(New MenuItem(MenuItem.TextSeparator))
+		  
+		  Dim showmodded As New MenuItem("Show only modified options")
+		  If mShowOnlyModdedOpts Then showmodded.Checked = True
+		  base.Append(showmodded)
+		  
+		  Dim showdeprecated As New MenuItem("Show deprecated options")
+		  If mShowDeprecatedOptions Then showdeprecated.Checked = True
+		  base.Append(showdeprecated)
+		  
+		  Dim nameopt As New MenuItem("Display")
+		  Dim basename As New MenuItem("Names")
+		  If mOptNameDisplay = 0 Then basename.Checked = True
+		  nameopt.Append(basename)
+		  Dim libalias As New MenuItem("Library alias")
+		  If mOptNameDisplay = 1 Then libalias.Checked = True
+		  nameopt.Append(libalias)
+		  Dim bindalias As New MenuItem("Binding alias")
+		  If mOptNameDisplay = 2 Then bindalias.Checked = True
+		  nameopt.Append(bindalias)
+		  
+		  base.Append(nameopt)
+		  
 		  Return True
 		End Function
 	#tag EndEvent
 	#tag Event
-		Sub MouseDrag(X As Integer, Y As Integer)
-		  #pragma Unused X
-		  #pragma Unused Y
-		  If Me.Width > Me.Height Then 'horizontal
-		    Me.Top = Me.Window.MouseY
+		Function ContextualMenuAction(hitItem as MenuItem) As Boolean
+		  Select Case hitItem.Text
+		  Case "Show only modified options"
+		    mShowOnlyModdedOpts = Not mShowOnlyModdedOpts
+		    RefreshOpts()
+		  Case "Show deprecated options"
+		    mShowDeprecatedOptions = Not mShowDeprecatedOptions
+		    RefreshOpts()
+		    
+		  Case "Names"
+		    mOptNameDisplay = 0
+		    RefreshOpts()
+		  Case "Library alias"
+		    mOptNameDisplay = 1
+		    RefreshOpts()
+		  Case "Binding alias"
+		    mOptNameDisplay = 2
+		    RefreshOpts()
+		    
+		  Case "View documentation..."
+		    Dim url As String = hitItem.Tag
+		    If url.Trim <> "" Then ShowURL(url)
+		    
 		  Else
-		    Me.Left = Me.Window.MouseX
-		  End If
-		End Sub
-	#tag EndEvent
-	#tag Event
-		Sub MouseUp(X As Integer, Y As Integer)
-		  #pragma Unused X
-		  #pragma Unused Y
+		    
+		    Dim p As Pair = hitItem.Tag
+		    Dim row As Integer = p.Left
+		    Dim column As Integer = p.Right
+		    Select Case hitItem.Text
+		    Case "Edit value"
+		      Me.EditCell(row, 1)
+		      
+		    Case "Reset default"
+		      Dim opt As libcURL.Opts.OptionInfo = Me.RowTag(row)
+		      Select Case opt.Type
+		      Case libcURL.OptionType.Boolean
+		        opt.Value(Client.EasyItem) = False
+		        Me.CellState(row, column) = CheckBox.CheckedStates.Indeterminate
+		      Case libcURL.OptionType.String
+		        opt.Value(Client.EasyItem) = ""
+		        Me.Cell(row, column) = ""
+		      Else
+		        opt.Value(Client.EasyItem) = 0
+		        Me.Cell(row, column) = ""
+		      End Select
+		    End Select
+		  End Select
 		  
-		  Headers.Height = Me.Top - Headers.Top - 1
-		  DownloadOutput.Top = Me.Top + Me.Height + 1
-		  DownloadOutput.Height = Me.Window.Height - DownloadOutput.Top - 5
-		End Sub
-	#tag EndEvent
-	#tag Event
-		Sub Paint(g As Graphics)
-		  g.ForeColor = &cC0C0C000
-		  g.DrawRect(0, 0, g.Width, g.Height)
+		  Return True
 		  
-		  g.ForeColor = &c80808000
-		  g.DrawLine(0.25 * g.Width, 0.25 * g.Height, 0.75 * g.Width, 0.25 * g.Height)
-		  g.DrawLine(0.25 * g.Width, 0.75 * g.Height, 0.75 * g.Width, 0.75 * g.Height)
-		End Sub
+		End Function
 	#tag EndEvent
 #tag EndEvents
 #tag Events Client
@@ -3581,6 +3918,7 @@ End
 #tag Events GetBtn
 	#tag Event
 		Sub Action()
+		  Client.EasyItem = New libcURL.EasyHandle(Client.EasyItem)
 		  Dim bs As BinaryStream
 		  If SaveToFileChkBx.Value Then
 		    Dim name As String
