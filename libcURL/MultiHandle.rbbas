@@ -350,7 +350,7 @@ Inherits libcURL.cURLHandle
 		Private Function _curlPush(ParentConnection As Integer, NewConnection As Integer, NumHeaders As Integer, PushHeaders As Ptr) As Integer
 		  Dim parent As EasyHandle = EasyHandles.Lookup(ParentConnection, Nil)
 		  If parent = Nil Then Return CURL_PUSH_DENY
-		  Dim child As New EasyHandle(parent.Flags, NewConnection)
+		  Dim child As New HTTP2PushedConnection(parent, NewConnection)
 		  Dim pheaders As New InternetHeaders
 		  For i As Integer = 0 To NumHeaders - 1
 		    Dim header As MemoryBlock = curl_pushheader_bynum(PushHeaders, i)

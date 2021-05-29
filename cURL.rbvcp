@@ -43,6 +43,7 @@ Class=ProxyEngineCreator;libcURL/ProxyEngineCreator.rbbas;&h4E481FFF;&h1B9FF7FF;
 Class=RequestHeaderEngineCreator;libcURL/RequestHeaderEngineCreator.rbbas;&h7E464FFF;&h1B9FF7FF;false
 Class=MultipartFormElementCreator;libcURL/MultipartFormElementCreator.rbbas;&h4A764FFF;&h1B9FF7FF;false
 Class=MIMEMessagePartCreator;libcURL/MIMEMessagePartCreator.rbbas;&h5B3747FF;&h1B9FF7FF;false
+Class=HTTP2PushedConnection;libcURL/HTTP2PushedConnection.rbbas;&h371FFFF;&h1B9FF7FF;false
 DefaultWindow=DemoWindow
 MajorVersion=1
 MinorVersion=0

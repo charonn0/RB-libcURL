@@ -205,14 +205,6 @@ Protected Module libcURL
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Function curl_pushheader_byname Lib cURLLib (curl_pushheaders As Ptr, Name As CString) As Ptr
-	#tag EndExternalMethod
-
-	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Function curl_pushheader_bynum Lib cURLLib (curl_pushheaders As Ptr, Number As Integer) As Ptr
-	#tag EndExternalMethod
-
-	#tag ExternalMethod, Flags = &h21
 		Private Soft Declare Function curl_mime_name Lib cURLLib (MIMEPart As Ptr, Name As Ptr, NameSize As Integer) As Integer
 	#tag EndExternalMethod
 
@@ -258,6 +250,14 @@ Protected Module libcURL
 
 	#tag ExternalMethod, Flags = &h21
 		Private Soft Declare Function curl_multi_timeout Lib cURLLib (MultiHandle As Integer, ByRef Timeout As timeval) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Function curl_pushheader_byname Lib cURLLib (curl_pushheaders As Ptr, Name As CString) As Ptr
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Function curl_pushheader_bynum Lib cURLLib (curl_pushheaders As Ptr, Number As Integer) As Ptr
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21

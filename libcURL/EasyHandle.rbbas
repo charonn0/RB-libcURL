@@ -28,7 +28,7 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Constructor(GlobalInitFlags As Integer = libcURL.CURL_GLOBAL_DEFAULT, ExistingHandle As Integer = 0)
+		Sub Constructor(GlobalInitFlags As Integer = libcURL.CURL_GLOBAL_DEFAULT)
 		  ' Creates a new curl_easy handle. If creating the handle fails for any reason
 		  ' an exception will be raised; otherwise, the handle may be used immediately.
 		  '
@@ -39,11 +39,7 @@ Inherits libcURL.cURLHandle
 		  #pragma Unused GlobalInitFlags
 		  // Calling the overridden superclass constructor.
 		  Super.Constructor()
-		  If ExistingHandle <> 0 Then
-		    mHandle = ExistingHandle
-		  Else
-		    mHandle = curl_easy_init()
-		  End If
+		  mHandle = curl_easy_init()
 		  If mHandle > 0 Then
 		    If Instances = Nil Then Instances = New Dictionary
 		    Instances.Value(mHandle) = New WeakRef(Me)
@@ -87,40 +83,47 @@ Inherits libcURL.cURLHandle
 		    Raise New cURLException(Me)
 		  End If
 		  
-		  mOptions = New Dictionary
-		  For Each opt As Integer In CopyOpts.mOptions.Keys
-		    mOptions.Value(opt) = CopyOpts.mOptions.Value(opt)
-		  Next
 		  Instances.Value(mHandle) = New WeakRef(Me)
+		  mOptions = New Dictionary
+		  Me.CopyOpts(CopyOpts)
 		  InitCallbacks()
-		  If CopyOpts.mAuthMethods <> Nil Then Call Me.SetAuthMethods(CopyOpts.GetAuthMethods)
-		  mAutoDisconnect = CopyOpts.AutoDisconnect
-		  mAutoReferer = CopyOpts.AutoReferer
-		  If CopyOpts.mCA_ListFile <> Nil Then Me.CA_ListFile = CopyOpts.CA_ListFile
-		  mConnectionTimeout = CopyOpts.ConnectionTimeout
-		  mConnectionType = CopyOpts.ConnectionType
-		  Me.CookieEngine.Enabled = CopyOpts.CookieEngine.Enabled
-		  Me.UseErrorBuffer = CopyOpts.UseErrorBuffer
-		  mFailOnServerError = CopyOpts.FailOnServerError
-		  mFollowRedirects = CopyOpts.FollowRedirects
-		  mHTTPCompression = CopyOpts.HTTPCompression
-		  mHTTPPreserveMethod = CopyOpts.HTTPPreserveMethod
-		  mHTTPVersion = CopyOpts.HTTPVersion
-		  mMaxRedirects = CopyOpts.MaxRedirects
-		  mPassword = CopyOpts.Password
-		  If CopyOpts.mProxyEngine <> Nil Then
-		    Me.ProxyEngine.Address = CopyOpts.ProxyEngine.Address
-		    If CopyOpts.ProxyEngine.Port <> 1080 Then Me.ProxyEngine.Port = CopyOpts.ProxyEngine.Port
-		    If CopyOpts.ProxyEngine.Type <> libcURL.ProxyType.HTTP Then Me.ProxyEngine.Type = CopyOpts.ProxyEngine.Type
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub CopyOpts(From As libcURL.EasyHandle)
+		  For Each opt As Integer In From.mOptions.Keys
+		    mOptions.Value(opt) = From.mOptions.Value(opt)
+		  Next
+		  If From.mAuthMethods <> Nil Then Call Me.SetAuthMethods(From.GetAuthMethods)
+		  mAutoDisconnect = From.AutoDisconnect
+		  mAutoReferer = From.AutoReferer
+		  If From.mCA_ListFile <> Nil Then Me.CA_ListFile = From.CA_ListFile
+		  mConnectionTimeout = From.ConnectionTimeout
+		  mConnectionType = From.ConnectionType
+		  Me.CookieEngine.Enabled = From.CookieEngine.Enabled
+		  Me.UseErrorBuffer = From.UseErrorBuffer
+		  mFailOnServerError = From.FailOnServerError
+		  mFollowRedirects = From.FollowRedirects
+		  mHTTPCompression = From.HTTPCompression
+		  mHTTPPreserveMethod = From.HTTPPreserveMethod
+		  mHTTPVersion = From.HTTPVersion
+		  mMaxRedirects = From.MaxRedirects
+		  mPassword = From.Password
+		  If From.mProxyEngine <> Nil Then
+		    Me.ProxyEngine.Address = From.ProxyEngine.Address
+		    If From.ProxyEngine.Port <> 1080 Then Me.ProxyEngine.Port = From.ProxyEngine.Port
+		    If From.ProxyEngine.Type <> libcURL.ProxyType.HTTP Then Me.ProxyEngine.Type = From.ProxyEngine.Type
 		  End If
-		  mSecure = CopyOpts.Secure
-		  If CopyOpts.SSLVersion <> libcURL.SSLVersion.Default Then mSSLVersion = CopyOpts.SSLVersion
-		  mTimeOut = CopyOpts.TimeOut
-		  mUploadMode = CopyOpts.UploadMode
-		  mUserAgent = CopyOpts.UserAgent
-		  mUsername = CopyOpts.Username
-		  Me.Verbose = CopyOpts.Verbose
-		  mForm = CopyOpts.mForm
+		  mSecure = From.Secure
+		  If From.SSLVersion <> libcURL.SSLVersion.Default Then mSSLVersion = From.SSLVersion
+		  mTimeOut = From.TimeOut
+		  mUploadMode = From.UploadMode
+		  mUserAgent = From.UserAgent
+		  mUsername = From.Username
+		  Me.Verbose = From.Verbose
+		  mForm = From.mForm
 		End Sub
 	#tag EndMethod
 
