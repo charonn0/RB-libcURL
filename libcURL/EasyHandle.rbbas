@@ -407,6 +407,14 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Function GetOption(OptionNumber As Integer, DefaultValue As Variant = Nil) As Variant
+		  ' This method complements the SetOption method. You can use this method to retrieve any previously-set
+		  ' option value. If the OptionNumber has not been set then the DefaultValue parameter is returned.
+		  '
+		  ' This method cannot retrieve option values which were set using the SetOptionPtr method.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.GetOption
+		  
 		  Const SECRET_INTERNAL_FLAG = &hFEF1F0F9
 		  If OptionNumber = SECRET_INTERNAL_FLAG And DefaultValue Is Me Then Return mOptions
 		  
@@ -1079,7 +1087,7 @@ Inherits libcURL.cURLHandle
 		#tag Setter
 			Set
 			  ' Sets the memoryblock containing one or more certificate authorities libcURL should trust
-			  ' to verify the peer with. Set this to libcURL.Default_CA_Blob to use the default CA list for
+			  ' to verify the peer with. Set this to DEFAULT_CA_INFO_PEM to use the default CA list for
 			  ' Mozilla products. Set this to Nil to unset the current list. This feature was added in libcurl
 			  ' 7.77.0 and might not be available from all supported TLS backends.If set then this property 
 			  ' overrides CA_ListFile. EasyHandle.Secure must be set to True to enable certificate verification.
@@ -1088,10 +1096,10 @@ Inherits libcURL.cURLHandle
 			  ' https://curl.se/libcurl/c/CURLOPT_CAINFO_BLOB.html
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.CA_List
 			  
-			  ' If Not libcURL.Version.IsAtLeast(7, 77, 0) Then
-			  ' mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
-			  ' Raise New cURLException(Me)
-			  ' End If
+			  If Not libcURL.Version.IsAtLeast(7, 77, 0) Then
+			    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
+			    Raise New cURLException(Me)
+			  End If
 			  
 			  Select Case True
 			  Case value = Nil
@@ -1733,7 +1741,13 @@ Inherits libcURL.cURLHandle
 		#tag Setter
 			Set
 			  ' Sets the version of SSL/TLS to be used.
-			  
+			  If value = libcURL.SSLVersion.Max_Default Then
+			    If libcURL.Version.IsAtLeast(7, 61, 0) Then
+			      value = libcURL.SSLVersion.Max_TLSv1_2
+			    Else
+			      value = libcURL.SSLVersion.Max_TLSv1_3
+			    End If
+			  End If
 			  If Not Me.SetOption(libcURL.Opts.SSLVERSION, Integer(value)) Then Raise New cURLException(Me)
 			  mSSLVersion = value
 			End Set
