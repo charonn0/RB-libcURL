@@ -459,6 +459,9 @@ Inherits libcURL.cURLHandle
 	#tag Constant, Name = CURLUE_USER_NOT_ALLOWED, Type = Double, Dynamic = False, Default = \"8", Scope = Public
 	#tag EndConstant
 
+	#tag Constant, Name = CURLU_ALLOW_SPACE , Type = Double, Dynamic = False, Default = \"2048", Scope = Public
+	#tag EndConstant
+
 	#tag Constant, Name = CURLU_APPENDQUERY, Type = Double, Dynamic = False, Default = \"256", Scope = Public
 	#tag EndConstant
 
@@ -469,6 +472,9 @@ Inherits libcURL.cURLHandle
 	#tag EndConstant
 
 	#tag Constant, Name = CURLU_DISALLOW_USER, Type = Double, Dynamic = False, Default = \"32", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = CURLU_GUESS_SCHEME, Type = Double, Dynamic = False, Default = \"512", Scope = Public
 	#tag EndConstant
 
 	#tag Constant, Name = CURLU_NON_SUPPORT_SCHEME, Type = Double, Dynamic = False, Default = \"8", Scope = Public
