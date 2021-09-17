@@ -519,6 +519,7 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Function Perform(URL As String = "", Timeout As Integer = 0) As Boolean
+		  ' THIS IS PROBABLY NOT THE METHOD YOU ARE LOOKING FOR. YOU PROBABLY WANT CURLCLIENT.PERFORM()
 		  ' Tells libcURL to perform the transfer. Pass a URL if you have not specified one already using EasyHandle.URL.
 		  ' Pass an integer representing how long libcURL should wait, in seconds, before giving up the connection
 		  ' attempt. The default is to wait forever.
