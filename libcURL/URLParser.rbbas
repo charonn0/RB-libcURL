@@ -212,6 +212,16 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  Dim n As String = Me.Path
+			  Return NthField(n, "/", CountFields(n, "/"))
+			End Get
+		#tag EndGetter
+		Filename As String
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
 			  ' Get the fragment as a string.
 			  '
 			  ' See:
