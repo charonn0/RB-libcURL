@@ -3568,6 +3568,12 @@ End
 		    Client.EasyItem.SSLVersion = libcURL.SSLVersion.Default
 		  End Select
 		  
+		  Exception err As libcURL.cURLException
+		    If err.ErrorNumber = libcURL.Errors.BAD_FUNCTION_ARGUMENT Then
+		      Call MsgBox("Unsupported SSL/TLS version", 16, "Option error")
+		    Else
+		      Raise err
+		    End If
 		End Sub
 	#tag EndEvent
 	#tag Event
