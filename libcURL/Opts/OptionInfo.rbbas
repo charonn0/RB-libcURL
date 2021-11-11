@@ -299,6 +299,10 @@ Protected Class OptionInfo
 		    Return POSTQUOTE
 		  Case "POSTREDIR"
 		    Return POSTREDIR
+		  Case "PREREQDATA"
+		    Return PREREQDATA
+		  Case "PREREQFUNCTION"
+		    Return PREREQFUNCTION
 		  Case "PREQUOTE"
 		    Return PREQUOTE
 		  Case "PRE_PROXY"
@@ -884,6 +888,10 @@ Protected Class OptionInfo
 		    Return Nil
 		  Case POSTREDIR
 		    Return 0
+		  Case PREREQDATA
+		    Return Nil
+		  Case PREREQFUNCTION
+		    Return Nil
 		  Case PREQUOTE
 		    Return Nil
 		  Case PRE_PROXY
@@ -1457,6 +1465,10 @@ Protected Class OptionInfo
 		    Return "POSTQUOTE"
 		  Case POSTREDIR
 		    Return "POSTREDIR"
+		  Case PREREQDATA
+		    Return "PREREQDATA"
+		  Case PREREQFUNCTION
+		    Return "PREREQFUNCTION"
 		  Case PREQUOTE
 		    Return "PREQUOTE"
 		  Case PRE_PROXY
@@ -2050,6 +2062,10 @@ Protected Class OptionInfo
 		    Return OptionType.List
 		  Case POSTREDIR
 		    Return OptionType.Bitmask
+		  Case PREREQDATA
+		    Return OptionType.Opaque
+		  Case PREREQFUNCTION
+		    Return OptionType.Subroutine
 		  Case PREQUOTE
 		    Return OptionType.List
 		  Case PRE_PROXY
