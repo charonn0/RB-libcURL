@@ -160,6 +160,31 @@ Inherits libcURL.cURLHandle
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h21
+		Private Function curlInitRequest(PrimaryIP As MemoryBlock, LocalIP As MemoryBlock, PrimaryPort As Int32, LocalPort As Int32) As Integer
+		  ' This method is the intermediary between InitRequestCallback and the RequestInitiated event.
+		  ' DO NOT CALL THIS METHOD
+		  
+		  Const CURL_PREREQFUNC_ABORT = 1
+		  Const CURL_PREREQFUNC_OK = 0
+		  
+		  Dim remote, local As String
+		  remote = DefineEncoding(PrimaryIP.CString(0), Encodings.UTF8)
+		  local = DefineEncoding(LocalIP.CString(0), Encodings.UTF8)
+		  
+		  If RaiseEvent RequestInitiated(remote, local, PrimaryPort, LocalPort) Then Return CURL_PREREQFUNC_ABORT
+		  Return CURL_PREREQFUNC_OK
+		  
+		Exception Err As RuntimeException
+		  If Err IsA ThreadEndException Or Err IsA EndException Then Raise Err
+		  Return 0
+		End Function
+	#tag EndMethod
+
+	#tag DelegateDeclaration, Flags = &h21
+		Private Delegate Function cURLInitRequestCallback(UserData As Integer, PrimaryIP As Ptr, LocalIP As Ptr, PrimaryPort As Int32, LocalPort As Int32) As Integer
+	#tag EndDelegateDeclaration
+
 	#tag DelegateDeclaration, Flags = &h21
 		Private Delegate Function cURLIOCallback(char As Ptr, size As Integer, nmemb As Integer, UserData As Integer) As Integer
 	#tag EndDelegateDeclaration
@@ -468,7 +493,27 @@ Inherits libcURL.cURLHandle
 		  
 		  If Not SetOption(libcURL.Opts.DEBUGDATA, mHandle) Then Raise New cURLException(Me)
 		  If Not SetOption(libcURL.Opts.DEBUGFUNCTION, AddressOf DebugCallback) Then Raise New cURLException(Me)
+		  
+		  If libcURL.Version.IsAtLeast(7, 80, 0) Then
+		    If Not SetOption(libcURL.Opts.PREREQDATA, mHandle) Then Raise New cURLException(Me)
+		    If Not SetOption(libcURL.Opts.PREREQFUNCTION, AddressOf InitRequestCallback) Then Raise New cURLException(Me)
+		  End If
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Shared Function InitRequestCallback(UserData As Integer, PrimaryIP As Ptr, LocalIP As Ptr, PrimaryPort As Int32, LocalPort As Int32) As Integer
+		  ' This method is invoked by libcURL. DO NOT CALL THIS METHOD
+		  
+		  #pragma X86CallingConvention CDecl
+		  If Instances = Nil Then Return 0
+		  Dim curl As WeakRef = Instances.Lookup(UserData, Nil)
+		  If curl <> Nil And curl.Value IsA EasyHandle Then
+		    Return EasyHandle(curl.Value).curlInitRequest(PrimaryIP, LocalIP, PrimaryPort, LocalPort)
+		  End If
+		  
+		  Break ' UserData does not refer to a valid instance!
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -834,6 +879,11 @@ Inherits libcURL.cURLHandle
 		      Dim p As cURLSeekCallback = NewValue
 		      Return Me.SetOptionPtr(OptionNumber, p)
 		      
+		    Case IsA cURLInitRequestCallback
+		      mOptions.Value(OptionNumber) = NewValue
+		      Dim p As cURLInitRequestCallback = NewValue
+		      Return Me.SetOptionPtr(OptionNumber, p)
+		      
 		    End Select
 		  End Select
 		  
@@ -930,6 +980,10 @@ Inherits libcURL.cURLHandle
 
 	#tag Hook, Flags = &h0
 		Event Progress(dlTotal As Int64, dlNow As Int64, ulTotal As Int64, ulNow As Int64) As Boolean
+	#tag EndHook
+
+	#tag Hook, Flags = &h0
+		Event RequestInitiated(RemoteIP As String, LocalIP As String, RemotePort As Integer, LocalPort As Integer) As Boolean
 	#tag EndHook
 
 	#tag Hook, Flags = &h0

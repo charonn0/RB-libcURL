@@ -297,6 +297,10 @@ Protected Module libcURL
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Function curl_url_strerror Lib cURLLib (CURLUCode As Int32) As Ptr
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h21
 		Private Soft Declare Function curl_version Lib cURLLib () As Ptr
 	#tag EndExternalMethod
 
@@ -423,52 +427,62 @@ Protected Module libcURL
 	#tag Method, Flags = &h1
 		Protected Function FormatURLError(cURLURLError As Integer, Encoding As TextEncoding = Nil) As String
 		  ' Translates libcurl URL API error numbers to messages
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/curl_url_strerror.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.FormatURLError
 		  
 		  Dim msg As String
-		  Select Case cURLURLError
-		  Case URLParser.CURLUE_OK
-		    msg = "No error"
-		  Case URLParser.CURLUE_BAD_HANDLE
-		    msg = "Bad URL handle"
-		  Case URLParser.CURLUE_BAD_PARTPOINTER
-		    msg = "Bad URL part pointer"
-		  Case URLParser.CURLUE_MALFORMED_INPUT
-		    msg = "The URL is malformed."
-		  Case URLParser.CURLUE_BAD_PORT_NUMBER
-		    msg = "The port number is invalid."
-		  Case URLParser.CURLUE_UNSUPPORTED_SCHEME
-		    msg = "The URL scheme does not correspond to a supported protocol."
-		  Case URLParser.CURLUE_URLDECODE
-		    msg = "Unable to decode URL part."
-		  Case URLParser.CURLUE_RELATIVE
-		    msg = "Relative?"
-		  Case URLParser.CURLUE_USER_NOT_ALLOWED
-		    msg = "The URL contains a username field, but this is disallowed."
-		  Case URLParser.CURLUE_UNKNOWN_PART
-		    msg = "Unknown URL part"
-		  Case URLParser.CURLUE_NO_SCHEME
-		    msg = "This URL does not have a scheme part."
-		  Case URLParser.CURLUE_NO_USER
-		    msg = "This URL does not have a username part."
-		  Case URLParser.CURLUE_NO_PASSWORD
-		    msg = "This URL does not have a password part."
-		  Case URLParser.CURLUE_NO_OPTIONS
-		    msg = "This URL does not have an options part."
-		  Case URLParser.CURLUE_NO_HOST
-		    msg = "This URL does not have a hostname part."
-		  Case URLParser.CURLUE_NO_PORT
-		    msg = "This URL does not have a port part."
-		  Case URLParser.CURLUE_NO_PATH
-		    msg = "This URL does not have a path part."
-		  Case URLParser.CURLUE_NO_QUERY
-		    msg = "This URL does not have an arguments part."
-		  Case URLParser.CURLUE_NO_FRAGMENT
-		    msg = "This URL does not have a fragment part."
-		  Case URLParser.CURLUE_OUT_OF_MEMORY
-		    msg = "Out of memory"
+		  
+		  If libcURL.Version.IsAtLeast(7, 80, 0) Then
+		    Dim mb As MemoryBlock = curl_url_strerror(cURLURLError)
+		    If mb <> Nil Then msg = mb.CString(0)
 		  Else
-		    msg = "Unknown error while parsing a URL"
-		  End Select
+		    Select Case cURLURLError
+		    Case URLParser.CURLUE_OK
+		      msg = "No error"
+		    Case URLParser.CURLUE_BAD_HANDLE
+		      msg = "Bad URL handle"
+		    Case URLParser.CURLUE_BAD_PARTPOINTER
+		      msg = "Bad URL part pointer"
+		    Case URLParser.CURLUE_MALFORMED_INPUT
+		      msg = "The URL is malformed."
+		    Case URLParser.CURLUE_BAD_PORT_NUMBER
+		      msg = "The port number is invalid."
+		    Case URLParser.CURLUE_UNSUPPORTED_SCHEME
+		      msg = "The URL scheme does not correspond to a supported protocol."
+		    Case URLParser.CURLUE_URLDECODE
+		      msg = "Unable to decode URL part."
+		    Case URLParser.CURLUE_RELATIVE
+		      msg = "An internal memory function failed"
+		    Case URLParser.CURLUE_USER_NOT_ALLOWED
+		      msg = "The URL contains a username field, but this is disallowed."
+		    Case URLParser.CURLUE_UNKNOWN_PART
+		      msg = "Unknown URL part"
+		    Case URLParser.CURLUE_NO_SCHEME
+		      msg = "This URL does not have a scheme part."
+		    Case URLParser.CURLUE_NO_USER
+		      msg = "This URL does not have a username part."
+		    Case URLParser.CURLUE_NO_PASSWORD
+		      msg = "This URL does not have a password part."
+		    Case URLParser.CURLUE_NO_OPTIONS
+		      msg = "This URL does not have an options part."
+		    Case URLParser.CURLUE_NO_HOST
+		      msg = "This URL does not have a hostname part."
+		    Case URLParser.CURLUE_NO_PORT
+		      msg = "This URL does not have a port part."
+		    Case URLParser.CURLUE_NO_PATH
+		      msg = "This URL does not have a path part."
+		    Case URLParser.CURLUE_NO_QUERY
+		      msg = "This URL does not have an arguments part."
+		    Case URLParser.CURLUE_NO_FRAGMENT
+		      msg = "This URL does not have a fragment part."
+		    Case URLParser.CURLUE_OUT_OF_MEMORY
+		      msg = "Out of memory"
+		    Else
+		      msg = "Unknown error while parsing a URL"
+		    End Select
+		  End If
+		  
 		  If Encoding <> Nil Then
 		    Return ConvertEncoding(msg, Encoding)
 		  Else

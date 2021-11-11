@@ -243,6 +243,8 @@ Protected Class OptionInfo
 		    Return MAXFILESIZE_LARGE
 		  Case "MAXREDIRS"
 		    Return MAXREDIRS
+		  Case "MAXLIFETIME_CONN"
+		    Return MAXLIFETIME_CONN
 		  Case "MAX_RECV_SPEED_LARGE"
 		    Return MAX_RECV_SPEED_LARGE
 		  Case "MAX_SEND_SPEED_LARGE"
@@ -297,6 +299,10 @@ Protected Class OptionInfo
 		    Return POSTQUOTE
 		  Case "POSTREDIR"
 		    Return POSTREDIR
+		  Case "PREREQDATA"
+		    Return PREREQDATA
+		  Case "PREREQFUNCTION"
+		    Return PREREQFUNCTION
 		  Case "PREQUOTE"
 		    Return PREQUOTE
 		  Case "PRE_PROXY"
@@ -834,6 +840,8 @@ Protected Class OptionInfo
 		    Return 0
 		  Case MAXREDIRS
 		    Return -1
+		  Case MAXLIFETIME_CONN
+		    Return 0
 		  Case MAX_RECV_SPEED_LARGE
 		    Return 0
 		  Case MAX_SEND_SPEED_LARGE
@@ -880,6 +888,10 @@ Protected Class OptionInfo
 		    Return Nil
 		  Case POSTREDIR
 		    Return 0
+		  Case PREREQDATA
+		    Return Nil
+		  Case PREREQFUNCTION
+		    Return Nil
 		  Case PREQUOTE
 		    Return Nil
 		  Case PRE_PROXY
@@ -1397,6 +1409,8 @@ Protected Class OptionInfo
 		    Return "MAXFILESIZE_LARGE"
 		  Case MAXREDIRS
 		    Return "MAXREDIRS"
+		  Case MAXLIFETIME_CONN
+		    Return "MAXLIFETIME_CONN"
 		  Case MAX_RECV_SPEED_LARGE
 		    Return "MAX_RECV_SPEED_LARGE"
 		  Case MAX_SEND_SPEED_LARGE
@@ -1451,6 +1465,10 @@ Protected Class OptionInfo
 		    Return "POSTQUOTE"
 		  Case POSTREDIR
 		    Return "POSTREDIR"
+		  Case PREREQDATA
+		    Return "PREREQDATA"
+		  Case PREREQFUNCTION
+		    Return "PREREQFUNCTION"
 		  Case PREQUOTE
 		    Return "PREQUOTE"
 		  Case PRE_PROXY
@@ -1992,6 +2010,8 @@ Protected Class OptionInfo
 		    Return OptionType.LargeNumber
 		  Case MAXREDIRS
 		    Return OptionType.Number
+		  Case MAXLIFETIME_CONN
+		    Return OptionType.Number
 		  Case MAX_RECV_SPEED_LARGE
 		    Return OptionType.LargeNumber
 		  Case MAX_SEND_SPEED_LARGE
@@ -2042,6 +2062,10 @@ Protected Class OptionInfo
 		    Return OptionType.List
 		  Case POSTREDIR
 		    Return OptionType.Bitmask
+		  Case PREREQDATA
+		    Return OptionType.Opaque
+		  Case PREREQFUNCTION
+		    Return OptionType.Subroutine
 		  Case PREQUOTE
 		    Return OptionType.List
 		  Case PRE_PROXY

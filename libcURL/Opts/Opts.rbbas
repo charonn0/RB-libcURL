@@ -422,6 +422,9 @@ Protected Module Opts
 	#tag Constant, Name = MAXFILESIZE_LARGE, Type = Double, Dynamic = False, Default = \"30117", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = MAXLIFETIME_CONN, Type = Double, Dynamic = False, Default = \"314", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = MAXREDIRS, Type = Double, Dynamic = False, Default = \"68", Scope = Protected
 	#tag EndConstant
 
@@ -507,6 +510,12 @@ Protected Module Opts
 	#tag EndConstant
 
 	#tag Constant, Name = PREQUOTE, Type = Double, Dynamic = False, Default = \"10093", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = PREREQDATA, Type = Double, Dynamic = False, Default = \"10313", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = PREREQFUNCTION, Type = Double, Dynamic = False, Default = \"20312", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = PRE_PROXY, Type = Double, Dynamic = False, Default = \"10262", Scope = Protected
