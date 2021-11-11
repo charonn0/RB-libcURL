@@ -469,7 +469,7 @@ Inherits libcURL.cURLHandle
 	#tag Constant, Name = CURLUE_USER_NOT_ALLOWED, Type = Double, Dynamic = False, Default = \"8", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = CURLU_ALLOW_SPACE , Type = Double, Dynamic = False, Default = \"2048", Scope = Public
+	#tag Constant, Name = CURLU_ALLOW_SPACE, Type = Double, Dynamic = False, Default = \"2048", Scope = Public
 	#tag EndConstant
 
 	#tag Constant, Name = CURLU_APPENDQUERY, Type = Double, Dynamic = False, Default = \"256", Scope = Public
