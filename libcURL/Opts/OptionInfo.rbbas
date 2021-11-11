@@ -243,6 +243,8 @@ Protected Class OptionInfo
 		    Return MAXFILESIZE_LARGE
 		  Case "MAXREDIRS"
 		    Return MAXREDIRS
+		  Case "MAXLIFETIME_CONN"
+		    Return MAXLIFETIME_CONN
 		  Case "MAX_RECV_SPEED_LARGE"
 		    Return MAX_RECV_SPEED_LARGE
 		  Case "MAX_SEND_SPEED_LARGE"
@@ -834,6 +836,8 @@ Protected Class OptionInfo
 		    Return 0
 		  Case MAXREDIRS
 		    Return -1
+		  Case MAXLIFETIME_CONN
+		    Return 0
 		  Case MAX_RECV_SPEED_LARGE
 		    Return 0
 		  Case MAX_SEND_SPEED_LARGE
@@ -1397,6 +1401,8 @@ Protected Class OptionInfo
 		    Return "MAXFILESIZE_LARGE"
 		  Case MAXREDIRS
 		    Return "MAXREDIRS"
+		  Case MAXLIFETIME_CONN
+		    Return "MAXLIFETIME_CONN"
 		  Case MAX_RECV_SPEED_LARGE
 		    Return "MAX_RECV_SPEED_LARGE"
 		  Case MAX_SEND_SPEED_LARGE
@@ -1991,6 +1997,8 @@ Protected Class OptionInfo
 		  Case MAXFILESIZE_LARGE
 		    Return OptionType.LargeNumber
 		  Case MAXREDIRS
+		    Return OptionType.Number
+		  Case MAXLIFETIME_CONN
 		    Return OptionType.Number
 		  Case MAX_RECV_SPEED_LARGE
 		    Return OptionType.LargeNumber

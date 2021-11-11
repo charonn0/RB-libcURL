@@ -422,6 +422,9 @@ Protected Module Opts
 	#tag Constant, Name = MAXFILESIZE_LARGE, Type = Double, Dynamic = False, Default = \"30117", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = MAXLIFETIME_CONN, Type = Double, Dynamic = False, Default = \"314", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = MAXREDIRS, Type = Double, Dynamic = False, Default = \"68", Scope = Protected
 	#tag EndConstant
 
