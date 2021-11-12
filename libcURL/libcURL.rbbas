@@ -506,6 +506,12 @@ Protected Module libcURL
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
+		Protected Function IsFeatureAvailable(Feature As libcURL.FeatureType) As Boolean
+		  Return IsAvailable() And BitAnd(libcURL.Version.Features, CType(Feature, Integer)) = CType(Feature, Integer)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
 		Protected Function IsProtocolAvailable(ParamArray Schemes() As String) As Boolean
 		  ' Returns True if libcURL is available and supports the protocol specified by the Scheme (e.g. "https", "ftp")
 		  '
@@ -2221,6 +2227,24 @@ Protected Module libcURL
 		Multi=1
 		  None
 		Single
+	#tag EndEnum
+
+	#tag Enum, Name = FeatureType, Flags = &h1
+		AsyncDNS=128
+		  CharsetConversion=4096
+		  DebugSymbols=8192
+		  HTTP2=65536
+		  InternationalDomainNames=1024
+		  IPv6=1
+		  LargeFiles=512
+		  SSL=4
+		  Auth_Kerberos4=2
+		  Auth_Kerberos5
+		  Auth_NTLM=16
+		  Auth_GSS=32
+		  Auth_SPNEGO=256
+		  Auth_SSPI=2048
+		Auth_TLS_SRP=16384
 	#tag EndEnum
 
 	#tag Enum, Name = FormElementType, Flags = &h1
