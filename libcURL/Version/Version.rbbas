@@ -3,6 +3,9 @@ Protected Module Version
 	#tag Method, Flags = &h1
 		Protected Function IsAtLeast(Major As Integer, Minor As Integer, Patch As Integer) As Boolean
 		  ' Returns True if libcURL is available and at least the version specified.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Version.IsAtLeast
 		  
 		  Static min, maj, pat As Integer
 		  Static avail As Boolean = System.IsFunctionAvailable("curl_global_init", cURLLib)
@@ -21,6 +24,9 @@ Protected Module Version
 	#tag Method, Flags = &h1
 		Protected Function IsExactly(Major As Integer, Minor As Integer, Patch As Integer) As Boolean
 		  ' Returns True if libcURL is available and exactly the version specified.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Version.IsExactly
 		  
 		  Static min, maj, pat As Integer
 		  Static avail As Boolean = System.IsFunctionAvailable("curl_global_init", cURLLib)
@@ -52,6 +58,9 @@ Protected Module Version
 	#tag Method, Flags = &h1
 		Protected Function Protocols() As String()
 		  ' Returns an array of available protocols.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Version.Protocols
 		  
 		  Dim prots() As String
 		  #If Target32Bit Then
