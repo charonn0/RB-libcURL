@@ -85,7 +85,7 @@ Protected Module Version
 			  Return BitAnd(Features, FEATURE_ASYNCHDNS) = FEATURE_ASYNCHDNS  // asynchronous dns resolves
 			End Get
 		#tag EndGetter
-		Protected ASYNCHDNS As Boolean
+		Attributes( deprecated = "libcURL.IsFeatureAvailable" ) Protected ASYNCHDNS As Boolean
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h1
@@ -94,7 +94,7 @@ Protected Module Version
 			  Return BitAnd(Features, FEATURE_CONV) = FEATURE_CONV // character conversions are supported
 			End Get
 		#tag EndGetter
-		Protected CONV As Boolean
+		Attributes( deprecated = "libcURL.IsFeatureAvailable" ) Protected CONV As Boolean
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h1
@@ -103,7 +103,7 @@ Protected Module Version
 			  Return BitAnd(Features, FEATURE_CURLDEBUG) = FEATURE_CURLDEBUG // built with memory tracking debug capabilities
 			End Get
 		#tag EndGetter
-		Protected CURLDEBUG As Boolean
+		Attributes( deprecated = "libcURL.IsFeatureAvailable" ) Protected CURLDEBUG As Boolean
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h21
@@ -133,10 +133,10 @@ Protected Module Version
 			  Return BitAnd(Features, FEATURE_DEBUG) = FEATURE_DEBUG // built with debug capabilities
 			End Get
 		#tag EndGetter
-		Protected DEBUG As Boolean
+		Attributes( deprecated = "libcURL.IsFeatureAvailable" ) Protected DEBUG As Boolean
 	#tag EndComputedProperty
 
-	#tag ComputedProperty, Flags = &h21
+	#tag ComputedProperty, Flags = &h1
 		#tag Getter
 			Get
 			  #If Target32Bit Then
@@ -156,7 +156,7 @@ Protected Module Version
 			  Return BitAnd(Features, FEATURE_GSSNEGOTIATE) = FEATURE_GSSNEGOTIATE // Negotiate auth support
 			End Get
 		#tag EndGetter
-		Protected GSSNEGOTIATE As Boolean
+		Attributes( deprecated = "libcURL.IsFeatureAvailable" ) Protected GSSNEGOTIATE As Boolean
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h1
@@ -165,7 +165,7 @@ Protected Module Version
 			  Return BitAnd(Features, FEATURE_HTTP2) = FEATURE_HTTP2 // HTTP2.0 support
 			End Get
 		#tag EndGetter
-		Protected HTTP2 As Boolean
+		Attributes( deprecated = "libcURL.IsFeatureAvailable" ) Protected HTTP2 As Boolean
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h1
@@ -174,7 +174,7 @@ Protected Module Version
 			  Return BitAnd(Features, FEATURE_IDN) = FEATURE_IDN // International Domain Names support
 			End Get
 		#tag EndGetter
-		Protected IDN As Boolean
+		Attributes( deprecated = "libcURL.IsFeatureAvailable" ) Protected IDN As Boolean
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h1
@@ -183,7 +183,7 @@ Protected Module Version
 			  Return BitAnd(Features, FEATURE_IPV6) = FEATURE_IPV6 // IPv6-enabled
 			End Get
 		#tag EndGetter
-		Protected IPV6 As Boolean
+		Attributes( deprecated = "libcURL.IsFeatureAvailable" ) Protected IPV6 As Boolean
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h1
@@ -192,7 +192,7 @@ Protected Module Version
 			  Return BitAnd(Features, FEATURE_KERBEROS4) = FEATURE_KERBEROS4 // kerberos 4 auth is supported
 			End Get
 		#tag EndGetter
-		Protected KERBEROS4 As Boolean
+		Attributes( deprecated = "libcURL.IsFeatureAvailable" ) Protected KERBEROS4 As Boolean
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h1
@@ -201,7 +201,7 @@ Protected Module Version
 			  Return BitAnd(Features, FEATURE_KERBEROS5) = FEATURE_KERBEROS5 // kerberos 5 auth is supported
 			End Get
 		#tag EndGetter
-		Protected KERBEROS5 As Boolean
+		Attributes( deprecated = "libcURL.IsFeatureAvailable" ) Protected KERBEROS5 As Boolean
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h1
@@ -210,7 +210,7 @@ Protected Module Version
 			  Return BitAnd(Features, FEATURE_LARGEFILE) = FEATURE_LARGEFILE // supports files bigger than 2GB
 			End Get
 		#tag EndGetter
-		Protected LARGEFILE As Boolean
+		Attributes( deprecated = "libcURL.IsFeatureAvailable" ) Protected LARGEFILE As Boolean
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h1
@@ -219,7 +219,7 @@ Protected Module Version
 			  Return BitAnd(Features, FEATURE_NTLM) = FEATURE_NTLM // NTLM auth is supported
 			End Get
 		#tag EndGetter
-		Protected NTLM As Boolean
+		Attributes( deprecated = "libcURL.IsFeatureAvailable" ) Protected NTLM As Boolean
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h1
@@ -242,7 +242,7 @@ Protected Module Version
 			  Return BitAnd(Features, FEATURE_SPNEGO) = FEATURE_SPNEGO // SPNEGO auth
 			End Get
 		#tag EndGetter
-		Protected SPNEGO As Boolean
+		Attributes( deprecated = "libcURL.IsFeatureAvailable" ) Protected SPNEGO As Boolean
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h1
@@ -266,7 +266,7 @@ Protected Module Version
 			  Return BitAnd(Features, FEATURE_SSL) = FEATURE_SSL // SSL options are present
 			End Get
 		#tag EndGetter
-		Protected SSL As Boolean
+		Attributes( deprecated = "libcURL.IsFeatureAvailable" ) Protected SSL As Boolean
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h1
@@ -291,7 +291,7 @@ Protected Module Version
 			  Return BitAnd(Features, kSSPI) = kSSPI // SSPI is supported
 			End Get
 		#tag EndGetter
-		Protected SSPI As Boolean
+		Attributes( deprecated = "libcURL.IsFeatureAvailable" ) Protected SSPI As Boolean
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h21
@@ -362,7 +362,7 @@ Protected Module Version
 			  Return BitAnd(Features, FEATURE_TLSAUTH_SRP) = FEATURE_TLSAUTH_SRP // TLS-SRP support
 			End Get
 		#tag EndGetter
-		Protected TLS_SRP As Boolean
+		Attributes( deprecated = "libcURL.IsFeatureAvailable" ) Protected TLS_SRP As Boolean
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h1
