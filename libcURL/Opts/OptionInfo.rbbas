@@ -779,7 +779,7 @@ Protected Class OptionInfo
 		  Case HTTP_TRANSFER_DECODING
 		    Return 1
 		  Case HTTP_VERSION
-		    If libcURL.Version.IsAtLeast(7, 62, 0) And libcURL.Version.HTTP2 Then
+		    If libcURL.Version.IsAtLeast(7, 62, 0) And libcURL.IsFeatureAvailable(libcURL.FeatureType.HTTP2) Then
 		      Return libcURL.HTTPVersion.HTTP2TLS
 		    Else
 		      Return libcURL.HTTPVersion.HTTP1_1

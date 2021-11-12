@@ -363,7 +363,7 @@ Inherits libcURL.cURLHandle
 			  ' https://curl.haxx.se/libcurl/c/CURLMOPT_PIPELINING.html
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.HTTPMultiplexing
 			  
-			  If Not libcURL.Version.IsAtLeast(7, 43, 0) Or Not libcURL.Version.HTTP2 Then
+			  If Not libcURL.Version.IsAtLeast(7, 43, 0) Or Not libcURL.IsFeatureAvailable(libcURL.FeatureType.HTTP2) Then
 			    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
 			    Return
 			  End If
