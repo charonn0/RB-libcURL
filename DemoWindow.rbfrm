@@ -3578,7 +3578,7 @@ End
 	#tag EndEvent
 	#tag Event
 		Sub Open()
-		  Me.Enabled = libcURL.Version.SSL
+		  Me.Enabled = libcURL.IsFeatureAvailable(libcURL.FeatureType.SSL)
 		End Sub
 	#tag EndEvent
 #tag EndEvents
@@ -3628,23 +3628,22 @@ End
 	#tag Event
 		Sub Open()
 		  Me.AddFolder("Protocols")
-		  If libcURL.Version.ASYNCHDNS Then Me.AddRow("Asynchronous DNS")
-		  If libcURL.Version.DEBUG Then Me.AddRow("Debug capabilities")
-		  If libcURL.Version.CONV Then Me.AddRow("Encoding conversion")
-		  If libcURL.Version.LARGEFILE Then Me.AddRow("Files >2GB")
-		  If libcURL.Version.HTTP2 Then Me.AddRow("HTTP/2")
+		  If libcURL.IsFeatureAvailable(libcURL.FeatureType.AsyncDNS) Then Me.AddRow("Asynchronous DNS")
+		  If libcURL.IsFeatureAvailable(libcURL.FeatureType.DebugSymbols) Then Me.AddRow("Debug capabilities")
+		  If libcURL.IsFeatureAvailable(libcURL.FeatureType.CharsetConversion) Then Me.AddRow("Encoding conversion")
+		  If libcURL.IsFeatureAvailable(libcURL.FeatureType.LargeFiles) Then Me.AddRow("Files >2GB")
+		  If libcURL.IsFeatureAvailable(libcURL.FeatureType.HTTP2) Then Me.AddRow("HTTP/2")
 		  If libcURL.Version.LibZ.IsAvailable Then Me.AddRow("HTTP decompression")
-		  If libcURL.Version.IDN Then Me.AddRow("International Domain Names")
-		  If libcURL.Version.IPV6 Then Me.AddRow("IPv6")
-		  If libcURL.Version.KERBEROS4 Then Me.AddRow("Kerberos 4")
-		  If libcURL.Version.KERBEROS5 Then Me.AddRow("Kerberos 5")
-		  If libcURL.Version.DEBUG Then Me.AddRow("Memory debug capabilities")
-		  If libcURL.Version.SSPI Then Me.AddRow("Microsoft SSPI")
-		  If libcURL.Version.GSSNEGOTIATE Then Me.AddRow("Negotiate auth")
-		  If libcURL.Version.NTLM Then Me.AddRow("NTLM auth")
-		  If libcURL.Version.SPNEGO Then Me.AddRow("SPNEGO auth")
-		  If libcURL.Version.SSL Then Me.AddRow("SSL/TLS security")
-		  If libcURL.Version.SSPI Then Me.AddRow("TLS-SRP")
+		  If libcURL.IsFeatureAvailable(libcURL.FeatureType.InternationalDomainNames) Then Me.AddRow("International Domain Names")
+		  If libcURL.IsFeatureAvailable(libcURL.FeatureType.IPv6) Then Me.AddRow("IPv6")
+		  If libcURL.IsFeatureAvailable(libcURL.FeatureType.Auth_Kerberos4) Then Me.AddRow("Kerberos 4")
+		  If libcURL.IsFeatureAvailable(libcURL.FeatureType.Auth_Kerberos5) Then Me.AddRow("Kerberos 5")
+		  If libcURL.IsFeatureAvailable(libcURL.FeatureType.Auth_SSPI) Then Me.AddRow("Microsoft SSPI")
+		  If libcURL.IsFeatureAvailable(libcURL.FeatureType.Auth_GSS) Then Me.AddRow("Negotiate auth")
+		  If libcURL.IsFeatureAvailable(libcURL.FeatureType.Auth_NTLM) Then Me.AddRow("NTLM auth")
+		  If libcURL.IsFeatureAvailable(libcURL.FeatureType.Auth_SPNEGO) Then Me.AddRow("SPNEGO auth")
+		  If libcURL.IsFeatureAvailable(libcURL.FeatureType.SSL) Then Me.AddRow("SSL/TLS security")
+		  If libcURL.IsFeatureAvailable(libcURL.FeatureType.Auth_TLS_SRP) Then Me.AddRow("TLS-SRP")
 		End Sub
 	#tag EndEvent
 	#tag Event
