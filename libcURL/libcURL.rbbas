@@ -505,6 +505,22 @@ Protected Module libcURL
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h1
+		Protected Function IsProtocolAvailable(ParamArray Schemes() As String) As Boolean
+		  ' Returns True if libcURL is available and supports the protocol specified by the Scheme (e.g. "https", "ftp")
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.IsProtocolAvailable
+		  
+		  Dim s() As String = libcURL.Version.Protocols()
+		  If libcURL.IsFeatureAvailable(FeatureType.HTTP2) Then s.Append("http2")
+		  For Each p As String In Schemes
+		    If s.IndexOf(p.Lowercase) = -1 Then Return False
+		  Next
+		  Return True
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h21
 		Private Function MimeType(File As FolderItem) As String
 		  Select Case NthField(File.Name, ".", CountFields(File.Name, "."))

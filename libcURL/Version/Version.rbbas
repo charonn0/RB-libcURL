@@ -43,19 +43,6 @@ Protected Module Version
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function IsProtocolAvailable(ParamArray Schemes() As String) As Boolean
-		  ' Returns True if libcURL is available and supports the protocol specified by the Scheme (e.g. "https", "ftp")
-		  
-		  Dim s() As String = Protocols()
-		  If HTTP2 Then s.Append("http2")
-		  For Each p As String In Schemes
-		    If s.IndexOf(p.Lowercase) = -1 Then Return False
-		  Next
-		  Return True
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
 		Protected Function Protocols() As String()
 		  ' Returns an array of available protocols.
 		  '
