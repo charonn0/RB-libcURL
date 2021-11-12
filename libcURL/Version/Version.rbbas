@@ -147,7 +147,7 @@ Protected Module Version
 			  
 			End Get
 		#tag EndGetter
-		Private Features As Integer
+		Protected Features As Integer
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h1
