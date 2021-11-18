@@ -2487,6 +2487,8 @@ Protected Class OptionInfo
 		        Return "EasyHandle.ReadCallback"
 		      Case libcURL.Opts.HEADERFUNCTION
 		        Return "EasyHandle.HeaderCallback"
+		      Case libcURL.Opts.PREREQFUNCTION
+		        Return "EasyHandle.InitRequestCallback"
 		      End Select
 		      
 		    End If
