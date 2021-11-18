@@ -4088,10 +4088,12 @@ End
 	#tag Event
 		Sub Action()
 		  If Me.Caption = "Pause" Then
-		    If Client.EasyItem.Pause Then Me.Caption = "Resume"
+		    Client.Pause
+		    Me.Caption = "Resume"
 		    ProgressTimer.Mode = Timer.ModeSingle
 		  Else
-		    If Client.EasyItem.Resume Then Me.Caption = "Pause"
+		    Client.Resume
+		    Me.Caption = "Pause"
 		    ProgressTimer.Mode = Timer.ModeOff
 		  End If
 		End Sub
