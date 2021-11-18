@@ -4100,7 +4100,9 @@ End
 #tag Events AbortButton
 	#tag Event
 		Sub Action()
-		  Client.Abort()
+		  If Not Client.IsTransferComplete And MsgBox("Are you sure you want to cancel?", 32 + 4, "Confirm cancel") = 6 Then
+		    Client.Abort()
+		  End If
 		End Sub
 	#tag EndEvent
 #tag EndEvents
