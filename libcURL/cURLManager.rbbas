@@ -190,6 +190,18 @@ Protected Class cURLManager
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub Pause()
+		  ' Pauses the current transfer if one exists and is not paused. This method pauses both
+		  ' upload and download operations; to pause them separately refer to EasyHandle.Pause.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.Pause
+		  
+		  Call EasyItem.Pause()
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub Perform(URL As String, ReadFrom As Readable, WriteTo As Writeable)
 		  ' Performs the transfer on the main thread/event loop.
 		  '
@@ -238,7 +250,10 @@ Protected Class cURLManager
 
 	#tag Method, Flags = &h21
 		Private Sub QueueTransfer(URL As String, ReadFrom As Readable, WriteTo As Writeable)
-		  If Not mMultiItem.AddItem(mEasyItem) Then Raise New cURLException(mMultiItem)
+		  If Not mMultiItem.AddItem(mEasyItem) Then
+		    ' Most likely another transfer is already in progress.
+		    Raise New cURLException(mMultiItem)
+		  End If
 		  
 		  mIsTransferComplete = False
 		  mAbort = False
@@ -292,6 +307,18 @@ Protected Class cURLManager
 		  mEasyItem.HTTPCompression = libcURL.Version.LibZ.IsAvailable
 		  mRequestHeaderEngine = Nil
 		  Me.Yield = True
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Resume()
+		  ' Resumes the current transfer if one exists and is paused. This method resumes both
+		  ' upload and download operations; to resume them separately refer to EasyHandle.Resume.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.Pause
+		  
+		  Call EasyItem.Resume()
 		End Sub
 	#tag EndMethod
 
