@@ -2394,18 +2394,6 @@ End
 		Private Shared Function ETA(Total As UInt64, Current As UInt64, BPS As Double) As String
 		  Dim remaining As UInt64 = Total - Current
 		  Dim secs As Double = remaining / BPS
-		  
-		  'Dim hours As Integer = secs \ 3600
-		  'Dim minutes As Integer = (secs Mod 3600) \ 60
-		  'Dim seconds As Integer =  (secs Mod 3600) Mod 60
-		  'Dim out As String
-		  'If hours > 0 Then
-		  'out = Str(hours) + ":" + Format(minutes, "00") + ":"
-		  'Else
-		  'out = out + Format(minutes, "#0") + ":"
-		  'End If
-		  'out = out + Format(seconds, "00")
-		  'Return out
 		  Return FormatTime(secs * 1000, True)
 		End Function
 	#tag EndMethod
