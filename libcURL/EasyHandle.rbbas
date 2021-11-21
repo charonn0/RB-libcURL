@@ -177,7 +177,7 @@ Inherits libcURL.cURLHandle
 		  
 		Exception Err As RuntimeException
 		  If Err IsA ThreadEndException Or Err IsA EndException Then Raise Err
-		  Return 0
+		  Return CURL_PREREQFUNC_ABORT
 		End Function
 	#tag EndMethod
 
