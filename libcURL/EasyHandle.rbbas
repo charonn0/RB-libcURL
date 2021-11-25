@@ -368,6 +368,11 @@ Inherits libcURL.cURLHandle
 		    mb = New MemoryBlock(4)
 		    If Me.GetInfo(InfoType, mb) Then Return mb.Int32Value(0)
 		    
+		  Case libcURL.Info.PROXY_ERROR
+		    mb = New MemoryBlock(4)
+		    If Me.GetInfo(InfoType, mb) Then Return CType(mb.Int32Value(0), libcURL.ProxyErrorType)
+		    
+		    ' dates
 		  Case libcURL.Info.FILETIME
 		    mb = New MemoryBlock(4)
 		    If Me.GetInfo(InfoType, mb) Then
