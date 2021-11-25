@@ -348,8 +348,10 @@ Inherits libcURL.cURLHandle
 		  Dim mb As MemoryBlock
 		  
 		  Select Case InfoType
+		    ' strings
 		  Case libcURL.Info.EFFECTIVE_URL, libcURL.Info.REDIRECT_URL, libcURL.Info.CONTENT_TYPE, libcURL.Info.PRIVATE_, libcURL.Info.PRIMARY_IP, _
-		    libcURL.Info.LOCAL_IP, libcURL.Info.FTP_ENTRY_PATH, libcURL.Info.RTSP_SESSION_ID, libcURL.Info.SCHEME
+		    libcURL.Info.LOCAL_IP, libcURL.Info.FTP_ENTRY_PATH, libcURL.Info.RTSP_SESSION_ID, libcURL.Info.SCHEME, libcURL.Info.EFFECTIVE_METHOD, _
+		    libcURL.Info.REFERER
 		    #If Target32Bit Then
 		      mb = New MemoryBlock(4)
 		    #Else
@@ -360,11 +362,12 @@ Inherits libcURL.cURLHandle
 		      If mb <> Nil Then Return mb.CString(0)
 		    End If
 		    
+		    ' Int32s
 		  Case libcURL.Info.RESPONSE_CODE, libcURL.Info.HTTP_CONNECTCODE, libcURL.Info.REDIRECT_COUNT, libcURL.Info.HEADER_SIZE, _
 		    libcURL.Info.REQUEST_SIZE, libcURL.Info.SSL_VERIFYRESULT, libcURL.Info.OS_ERRNO, _
 		    libcURL.Info.NUM_CONNECTS, libcURL.Info.PRIMARY_PORT, libcURL.Info.LOCAL_PORT, libcURL.Info.LASTSOCKET, libcURL.Info.CONDITION_UNMET, _
 		    libcURL.Info.RTSP_CLIENT_CSEQ, libcURL.Info.RTSP_SERVER_CSEQ, libcURL.Info.RTSP_CSEQ_RECV, libcURL.Info.HTTP_VERSION, libcURL.Info.PROTOCOL, _
-		    libcURL.Info.PROXY_SSL_VERIFYRESULT
+		    libcURL.Info.PROXY_SSL_VERIFYRESULT, libcURL.Info.ACTIVESOCKET
 		    mb = New MemoryBlock(4)
 		    If Me.GetInfo(InfoType, mb) Then Return mb.Int32Value(0)
 		    
@@ -384,6 +387,7 @@ Inherits libcURL.cURLHandle
 		      End If
 		    End If
 		    
+		    ' HTTPAuthMethods
 		  Case libcurl.Info.PROXYAUTH_AVAIL, libcURL.Info.HTTPAUTH_AVAIL
 		    mb = New MemoryBlock(4)
 		    If Me.GetInfo(InfoType, mb) Then
@@ -391,12 +395,22 @@ Inherits libcURL.cURLHandle
 		      Return h
 		    End If
 		    
+		    ' Doubles
 		  Case libcURL.Info.TOTAL_TIME, libcURL.Info.NAMELOOKUP_TIME, libcURL.Info.CONNECT_TIME, libcURL.Info.APPCONNECT_TIME, libcURL.Info.PRETRANSFER_TIME, _
 		    libcURL.Info.STARTTRANSFER_TIME, libcURL.Info.REDIRECT_TIME, libcURL.Info.SIZE_DOWNLOAD, libcURL.Info.SIZE_UPLOAD, libcURL.Info.SPEED_DOWNLOAD, _
 		    libcURL.Info.SPEED_UPLOAD, libcURL.Info.CONTENT_LENGTH_UPLOAD, libcURL.Info.CONTENT_LENGTH_DOWNLOAD
 		    mb = New MemoryBlock(8)
 		    If Me.GetInfo(InfoType, mb) Then Return mb.DoubleValue(0)
 		    
+		    ' Int64s
+		  Case libcURL.Info.TOTAL_TIME_T, libcURL.Info.NAMELOOKUP_TIME_T, libcURL.Info.CONNECT_TIME_T, libcURL.Info.APPCONNECT_TIME_T, _
+		    libcURL.Info.PRETRANSFER_TIME_T, libcURL.Info.STARTTRANSFER_TIME_T, libcURL.Info.REDIRECT_TIME_T, libcURL.Info.SIZE_DOWNLOAD_T, _
+		    libcURL.Info.SIZE_UPLOAD_T, libcURL.Info.SPEED_DOWNLOAD_T, libcURL.Info.SPEED_UPLOAD_T, libcURL.Info.CONTENT_LENGTH_UPLOAD_T, _
+		    libcURL.Info.CONTENT_LENGTH_DOWNLOAD_T
+		    mb = New MemoryBlock(8)
+		    If Me.GetInfo(InfoType, mb) Then Return mb.Int64Value(0)
+		    
+		    ' ListPtrs
 		  Case libcURL.Info.SSL_ENGINES, libcURL.Info.COOKIELIST
 		    #If Target32Bit Then
 		      mb = New MemoryBlock(4)
