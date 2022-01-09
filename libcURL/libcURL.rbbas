@@ -438,46 +438,64 @@ Protected Module libcURL
 		    If mb <> Nil Then msg = mb.CString(0)
 		  Else
 		    Select Case cURLURLError
-		    Case URLParser.CURLUE_OK
-		      msg = "No error"
 		    Case URLParser.CURLUE_BAD_HANDLE
-		      msg = "Bad URL handle"
+		      msg = "An invalid CURLU pointer was passed as argument."
 		    Case URLParser.CURLUE_BAD_PARTPOINTER
-		      msg = "Bad URL part pointer"
+		      msg = "An invalid 'part' argument was passed as argument."
 		    Case URLParser.CURLUE_MALFORMED_INPUT
-		      msg = "The URL is malformed."
+		      msg = "A malformed input was passed to a URL API function."
 		    Case URLParser.CURLUE_BAD_PORT_NUMBER
-		      msg = "The port number is invalid."
+		      msg = "The port number was not a decimal number between 0 and 65535."
 		    Case URLParser.CURLUE_UNSUPPORTED_SCHEME
-		      msg = "The URL scheme does not correspond to a supported protocol."
+		      msg = "This libcurl build does not support the given URL scheme."
 		    Case URLParser.CURLUE_URLDECODE
-		      msg = "Unable to decode URL part."
-		    Case URLParser.CURLUE_RELATIVE
-		      msg = "An internal memory function failed"
-		    Case URLParser.CURLUE_USER_NOT_ALLOWED
-		      msg = "The URL contains a username field, but this is disallowed."
-		    Case URLParser.CURLUE_UNKNOWN_PART
-		      msg = "Unknown URL part"
-		    Case URLParser.CURLUE_NO_SCHEME
-		      msg = "This URL does not have a scheme part."
-		    Case URLParser.CURLUE_NO_USER
-		      msg = "This URL does not have a username part."
-		    Case URLParser.CURLUE_NO_PASSWORD
-		      msg = "This URL does not have a password part."
-		    Case URLParser.CURLUE_NO_OPTIONS
-		      msg = "This URL does not have an options part."
-		    Case URLParser.CURLUE_NO_HOST
-		      msg = "This URL does not have a hostname part."
-		    Case URLParser.CURLUE_NO_PORT
-		      msg = "This URL does not have a port part."
-		    Case URLParser.CURLUE_NO_PATH
-		      msg = "This URL does not have a path part."
-		    Case URLParser.CURLUE_NO_QUERY
-		      msg = "This URL does not have an arguments part."
-		    Case URLParser.CURLUE_NO_FRAGMENT
-		      msg = "This URL does not have a fragment part."
+		      msg = "URL decode error, most likely because of rubbish in the input."
 		    Case URLParser.CURLUE_OUT_OF_MEMORY
-		      msg = "Out of memory"
+		      msg = "A memory function failed."
+		    Case URLParser.CURLUE_USER_NOT_ALLOWED
+		      msg = "Credentials was passed in the URL when prohibited."
+		    Case URLParser.CURLUE_UNKNOWN_PART
+		      msg = "An unknown part ID was passed to a URL API function."
+		    Case URLParser.CURLUE_NO_SCHEME
+		      msg = "There is no scheme part in the URL."
+		    Case URLParser.CURLUE_NO_USER
+		      msg = "There is no user part in the URL."
+		    Case URLParser.CURLUE_NO_PASSWORD
+		      msg = "There is no password part in the URL."
+		    Case URLParser.CURLUE_NO_OPTIONS
+		      msg = "There is no options part in the URL."
+		    Case URLParser.CURLUE_NO_HOST
+		      msg = "There is no host part in the URL."
+		    Case URLParser.CURLUE_NO_PORT
+		      msg = "There is no port part in the URL."
+		    Case URLParser.CURLUE_NO_QUERY
+		      msg = "There is no query part in the URL."
+		    Case URLParser.CURLUE_NO_FRAGMENT
+		      msg = "There is no fragment part in the URL."
+		    Case URLParser.CURLUE_NO_ZONEID
+		      msg = "There is no zoneid set in the URL."
+		    Case URLParser.CURLUE_BAD_FILE_URL
+		      msg = "The file:// URL is invalid."
+		    Case URLParser.CURLUE_BAD_FRAGMENT
+		      msg = "The fragment part of the URL contained bad or invalid characters."
+		    Case URLParser.CURLUE_BAD_HOSTNAME
+		      msg = "The hostname contained bad or invalid characters."
+		    Case URLParser.CURLUE_BAD_IPV6
+		      msg = "The IPv6 address hostname contained bad or invalid characters."
+		    Case URLParser.CURLUE_BAD_LOGIN
+		      msg = "The login part of the URL contained bad or invalid characters."
+		    Case URLParser.CURLUE_BAD_PASSWORD
+		      msg = "The password part of the URL contained bad or invalid characters."
+		    Case URLParser.CURLUE_BAD_PATH
+		      msg = "The path part of the URL contained bad or invalid characters."
+		    Case URLParser.CURLUE_BAD_QUERY
+		      msg = "The query part of the URL contained bad or invalid characters."
+		    Case URLParser.CURLUE_BAD_SCHEME
+		      msg = "The scheme part of the URL contained bad or invalid characters."
+		    Case URLParser.CURLUE_BAD_SLASHES
+		      msg = "The URL contained an invalid number of slashes."
+		    Case URLParser.CURLUE_BAD_USER
+		      msg = "The user part of the URL contained bad or invalid characters."
 		    Else
 		      msg = "Unknown error while parsing a URL"
 		    End Select
