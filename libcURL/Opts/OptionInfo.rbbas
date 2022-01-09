@@ -249,6 +249,8 @@ Protected Class OptionInfo
 		    Return MAX_RECV_SPEED_LARGE
 		  Case "MAX_SEND_SPEED_LARGE"
 		    Return MAX_SEND_SPEED_LARGE
+		  Case "MIME_OPTIONS"
+		    Return MIME_OPTIONS
 		  Case "MIMEPOST"
 		    Return MIMEPOST
 		  Case "NETINTERFACE", "INTERFACE"
@@ -846,6 +848,8 @@ Protected Class OptionInfo
 		    Return 0
 		  Case MAX_SEND_SPEED_LARGE
 		    Return 0
+		  Case MIME_OPTIONS
+		    Return 0
 		  Case NETRC
 		    Return 0
 		  Case NETRC_FILE
@@ -1415,6 +1419,8 @@ Protected Class OptionInfo
 		    Return "MAX_RECV_SPEED_LARGE"
 		  Case MAX_SEND_SPEED_LARGE
 		    Return "MAX_SEND_SPEED_LARGE"
+		  Case MIME_OPTIONS
+		    Return "MIME_OPTIONS"
 		  Case MIMEPOST
 		    Return "MIMEPOST"
 		  Case NETINTERFACE
@@ -2016,6 +2022,8 @@ Protected Class OptionInfo
 		    Return OptionType.LargeNumber
 		  Case MAX_SEND_SPEED_LARGE
 		    Return OptionType.LargeNumber
+		  Case MIME_OPTIONS
+		    Return OptionType.Bitmask
 		  Case MIMEPOST
 		    Return OptionType.Ptr
 		  Case NETRC

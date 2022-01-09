@@ -437,6 +437,9 @@ Protected Module Opts
 	#tag Constant, Name = MIMEPOST, Type = Double, Dynamic = False, Default = \"10269", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = MIME_OPTIONS, Type = Double, Dynamic = False, Default = \"315", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = NETINTERFACE, Type = Double, Dynamic = False, Default = \"10062", Scope = Protected
 	#tag EndConstant
 
