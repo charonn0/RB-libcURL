@@ -2655,6 +2655,15 @@ Protected Class OptionInfo
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  return DefaultValue Is Nil
+			End Get
+		#tag EndGetter
+		IsNullable As Boolean
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
 			  Dim nm As String = GetOptionName(OptionNumber)
 			  If nm <> "" Then nm = "CURLOPT_" + nm
 			  Return nm
