@@ -787,24 +787,15 @@ Inherits libcURL.cURLHandle
 		  Select Case ValueType
 		    
 		  Case Variant.TypeNil ' Sometimes Nil is an error; sometimes not
-		    Static Nilable() As Integer = Array(libcURL.Opts.POSTFIELDS, libcURL.Opts.HTTPHEADER, libcURL.Opts.PROXYHEADER, _
-		    libcURL.Opts.FTPPORT, libcURL.Opts.QUOTE, libcURL.Opts.POSTQUOTE, libcURL.Opts.PREQUOTE, libcURL.Opts.FTP_ACCOUNT, _
-		    libcURL.Opts.RTSP_SESSION_ID, libcURL.Opts.RANGE, libcURL.Opts.CUSTOMREQUEST, libcURL.Opts.DNS_INTERFACE, _
-		    libcURL.Opts.DNS_LOCAL_IP4, libcURL.Opts.DNS_LOCAL_IP6, libcURL.Opts.KRBLEVEL, libcURL.Opts.CLOSESOCKETFUNCTION, _
-		    libcURL.Opts.DEBUGFUNCTION, libcURL.Opts.HEADERFUNCTION, libcURL.Opts.OPENSOCKETFUNCTION, libcURL.Opts.PROGRESSFUNCTION, _
-		    libcURL.Opts.READFUNCTION, libcURL.Opts.SSL_CTX_FUNCTION, libcURL.Opts.WRITEFUNCTION, libcURL.Opts.SHARE, _
-		    libcURL.Opts.COOKIEJAR, libcURL.Opts.COOKIEFILE, libcURL.Opts.HTTPPOST, libcURL.Opts.CAINFO, libcURL.Opts.CAPATH, _
-		    libcURL.Opts.NETINTERFACE, libcURL.Opts.ERRORBUFFER, libcURL.Opts.COPYPOSTFIELDS, libcURL.Opts.ACCEPT_ENCODING, _
-		    libcURL.Opts.FNMATCH_FUNCTION, libcURL.Opts.CHUNK_BGN_FUNCTION, libcURL.Opts.CHUNK_END_FUNCTION, libcURL.Opts.CHUNK_DATA, _
-		    libcURL.Opts.SSLCERT, libcURL.Opts.MIMEPOST, libcURL.Opts.CAINFO_BLOB)
-		    ' These option numbers explicitly accept NULL. Refer to the curl documentation on the individual option numbers for details.
-		    If Nilable.IndexOf(OptionNumber) > -1 Then
+		    ' Only some option numbers may accept NULL. Refer to the curl documentation on the individual option numbers for details.
+		    Dim opt As libcURL.Opts.OptionInfo = OptionNumber
+		    If opt.IsNullable Then
 		      If mOptions.HasKey(OptionNumber) Then mOptions.Remove(OptionNumber)
 		      Return Me.SetOptionPtr(OptionNumber, Nil)
 		    Else
 		      ' for all other option numbers reject NULL values.
 		      Dim err As New NilObjectException
-		      err.Message = "cURL option number 0x" + Hex(OptionNumber) + " may not be set to null."
+		      err.Message = "cURL option " + opt.LibraryAlias + "(0x" + Hex(OptionNumber) + ") may not be set to null."
 		      Raise err
 		    End If
 		    
