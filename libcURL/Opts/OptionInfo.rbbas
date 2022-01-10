@@ -1223,6 +1223,613 @@ Protected Class OptionInfo
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
+		Protected Shared Function GetOptionFirstVersion(OptionID As Int32, ByRef Major As Integer, ByRef Minor As Integer, ByRef Patch As Integer) As Boolean
+		  Dim tmp As String
+		  Select Case OptionID
+		  Case ABSTRACT_UNIX_SOCKET
+		    tmp = "7.53.0"
+		  Case ACCEPTTIMEOUT_MS
+		    tmp = "7.24.0"
+		  Case ACCEPT_ENCODING
+		    tmp = "7.21.6"
+		  Case ADDRESS_SCOPE
+		    tmp = "7.19.0"
+		  Case ALTSVC
+		    tmp = "7.64.1"
+		  Case ALTSVC_CTRL
+		    tmp = "7.64.1"
+		  Case APPEND
+		    tmp = "7.17.0"
+		  Case AUTOREFERER
+		    tmp = "7.1"
+		  Case BUFFERSIZE
+		    tmp = "7.10"
+		  Case CAINFO
+		    tmp = "7.4.2"
+		  Case CAINFO_BLOB
+		    tmp = "7.77.0"
+		  Case CAPATH
+		    tmp = "7.9.8"
+		  Case CERTINFO
+		    tmp = "7.19.1"
+		  Case CHUNK_BGN_FUNCTION
+		    tmp = "7.21.0"
+		  Case CHUNK_DATA
+		    tmp = "7.21.0"
+		  Case CHUNK_END_FUNCTION
+		    tmp = "7.21.0"
+		  Case CLOSESOCKETDATA
+		    tmp = "7.21.7"
+		  Case CLOSESOCKETFUNCTION
+		    tmp = "7.21.7"
+		  Case CONNECTTIMEOUT
+		    tmp = "7.7"
+		  Case CONNECTTIMEOUT_MS
+		    tmp = "7.16.2"
+		  Case CONNECT_ONLY
+		    tmp = "7.15.2"
+		  Case CONNECT_TO
+		    tmp = "7.49.0"
+		  Case CONV_FROM_NETWORK_FUNCTION
+		    tmp = "7.15.4"
+		  Case CONV_FROM_UTF8_FUNCTION
+		    tmp = "7.15.4"
+		  Case CONV_TO_NETWORK_FUNCTION
+		    tmp = "7.15.4"
+		  Case COOKIE
+		    tmp = "7.1"
+		  Case COOKIEFILE
+		    tmp = "7.1"
+		  Case COOKIEJAR
+		    tmp = "7.9"
+		  Case COOKIELIST
+		    tmp = "7.14.1"
+		  Case COOKIESESSION
+		    tmp = "7.9.7"
+		  Case COPYPOSTFIELDS
+		    tmp = "7.17.1"
+		  Case CRLF
+		    tmp = "7.1"
+		  Case CRLFILE
+		    tmp = "7.19.0"
+		  Case CURLU
+		    tmp = "7.63.0"
+		  Case CUSTOMREQUEST
+		    tmp = "7.1"
+		  Case DEBUGDATA
+		    tmp = "7.9.6"
+		  Case DEBUGFUNCTION
+		    tmp = "7.9.6"
+		  Case DEFAULT_PROTOCOL
+		    tmp = "7.45.0"
+		  Case DIRLISTONLY
+		    tmp = "7.17.0"
+		  Case DISALLOW_USERNAME_IN_URL
+		    tmp = "7.61.0"
+		  Case DNS_CACHE_TIMEOUT
+		    tmp = "7.9.3"
+		  Case DNS_INTERFACE
+		    tmp = "7.33.0"
+		  Case DNS_LOCAL_IP4
+		    tmp = "7.33.0"
+		  Case DNS_LOCAL_IP6
+		    tmp = "7.33.0"
+		  Case DNS_SERVERS
+		    tmp = "7.24.0"
+		  Case DNS_SHUFFLE_ADDRESSES
+		    tmp = "7.60.0"
+		  Case DNS_USE_GLOBAL_CACHE
+		    tmp = "7.9.3"
+		  Case DOH_SSL_VERIFYHOST
+		    tmp = "7.76.0"
+		  Case DOH_SSL_VERIFYPEER
+		    tmp = "7.76.0"
+		  Case DOH_SSL_VERIFYSTATUS
+		    tmp = "7.76.0"
+		  Case DOH_URL
+		    tmp = "7.62.0"
+		  Case EGDSOCKET
+		    tmp = "7.7"
+		  Case ERRORBUFFER
+		    tmp = "7.1"
+		  Case EXPECT_100_TIMEOUT_MS
+		    tmp = "7.36.0"
+		  Case FAILONERROR
+		    tmp = "7.1"
+		  Case FILETIME
+		    tmp = "7.5"
+		  Case FNMATCH_DATA
+		    tmp = "7.21.0"
+		  Case FNMATCH_FUNCTION
+		    tmp = "7.21.0"
+		  Case FOLLOWLOCATION
+		    tmp = "7.1"
+		  Case FORBID_REUSE
+		    tmp = "7.7"
+		  Case FRESH_CONNECT
+		    tmp = "7.7"
+		  Case FTPPORT
+		    tmp = "7.1"
+		  Case FTPSSLAUTH
+		    tmp = "7.12.2"
+		  Case FTP_ACCOUNT
+		    tmp = "7.13.0"
+		  Case FTP_ALTERNATIVE_TO_USER
+		    tmp = "7.15.5"
+		  Case FTP_CREATE_MISSING_DIRS
+		    tmp = "7.10.7"
+		  Case FTP_FILEMETHOD
+		    tmp = "7.15.1"
+		  Case FTP_RESPONSE_TIMEOUT
+		    tmp = "7.10.8"
+		  Case FTP_SKIP_PASV_IP
+		    tmp = "7.15.0"
+		  Case FTP_SSL_CCC
+		    tmp = "7.16.1"
+		  Case FTP_USE_EPRT
+		    tmp = "7.10.5"
+		  Case FTP_USE_EPSV
+		    tmp = "7.9.2"
+		  Case FTP_USE_PRET
+		    tmp = "7.20.0"
+		  Case GSSAPI_DELEGATION
+		    tmp = "7.22.0"
+		  Case HAPPY_EYEBALLS_TIMEOUT_MS
+		    tmp = "7.59.0"
+		  Case HAPROXYPROTOCOL
+		    tmp = "7.60.0"
+		  Case HEADER
+		    tmp = "7.1"
+		  Case HEADERDATA
+		    tmp = "7.10"
+		  Case HEADERFUNCTION
+		    tmp = "7.7.2"
+		  Case HEADEROPT
+		    tmp = "7.37.0"
+		  Case HSTS
+		    tmp = "7.74.0"
+		  Case HSTS_CTRL
+		    tmp = "7.74.0"
+		  Case HSTSREADDATA
+		    tmp = "7.74.0"
+		  Case HSTSREADFUNCTION
+		    tmp = "7.74.0"
+		  Case HSTSWRITEDATA
+		    tmp = "7.74.0"
+		  Case HSTSWRITEFUNCTION
+		    tmp = "7.74.0"
+		  Case HTTP09_ALLOWED
+		    tmp = "7.64.0"
+		  Case HTTP200ALIASES
+		    tmp = "7.10.3"
+		  Case HTTPAUTH
+		    tmp = "7.10.6"
+		  Case HTTPGET
+		    tmp = "7.8.1"
+		  Case HTTPHEADER
+		    tmp = "7.1"
+		  Case HTTPPOST
+		    tmp = "7.1"
+		  Case HTTPPROXYTUNNEL
+		    tmp = "7.3"
+		  Case HTTP_CONTENT_DECODING
+		    tmp = "7.16.2"
+		  Case HTTP_TRANSFER_DECODING
+		    tmp = "7.16.2"
+		  Case HTTP_VERSION
+		    tmp = "7.9.1"
+		  Case IGNORE_CONTENT_LENGTH
+		    tmp = "7.14.1"
+		  Case INFILESIZE
+		    tmp = "7.1"
+		  Case INFILESIZE_LARGE
+		    tmp = "7.11.0"
+		  Case NETINTERFACE ' actual name is INTERFACE, but that's a reserved word
+		    tmp = "7.3"
+		  Case INTERLEAVEDATA
+		    tmp = "7.20.0"
+		  Case INTERLEAVEFUNCTION
+		    tmp = "7.20.0"
+		  Case IOCTLDATA
+		    tmp = "7.12.3"
+		  Case IOCTLFUNCTION
+		    tmp = "7.12.3"
+		  Case IPRESOLVE
+		    tmp = "7.10.8"
+		  Case ISSUERCERT
+		    tmp = "7.19.0"
+		  Case ISSUERCERT_BLOB
+		    tmp = "7.71.0"
+		  Case KEEP_SENDING_ON_ERROR
+		    tmp = "7.51.0"
+		  Case KEYPASSWD
+		    tmp = "7.17.0"
+		  Case KRBLEVEL
+		    tmp = "7.16.4"
+		  Case LOCALPORT
+		    tmp = "7.15.2"
+		  Case LOCALPORTRANGE
+		    tmp = "7.15.2"
+		  Case LOGIN_OPTIONS
+		    tmp = "7.34.0"
+		  Case LOW_SPEED_LIMIT
+		    tmp = "7.1"
+		  Case LOW_SPEED_TIME
+		    tmp = "7.1"
+		  Case MAIL_AUTH
+		    tmp = "7.25.0"
+		  Case MAIL_FROM
+		    tmp = "7.20.0"
+		  Case MAIL_RCPT
+		    tmp = "7.20.0"
+		  Case MAIL_RCPT_ALLLOWFAILS
+		    tmp = "7.69.0"
+		  Case MAXAGE_CONN
+		    tmp = "7.65.0"
+		  Case MAXCONNECTS
+		    tmp = "7.7"
+		  Case MAXFILESIZE
+		    tmp = "7.10.8"
+		  Case MAXFILESIZE_LARGE
+		    tmp = "7.11.0"
+		  Case MAXLIFETIME_CONN
+		    tmp = "7.80.0"
+		  Case MAXREDIRS
+		    tmp = "7.5"
+		  Case MAX_RECV_SPEED_LARGE
+		    tmp = "7.15.5"
+		  Case MAX_SEND_SPEED_LARGE
+		    tmp = "7.15.5"
+		  Case MIMEPOST
+		    tmp = "7.56.0"
+		  Case MIME_OPTIONS
+		    tmp = "7.81.0"
+		  Case NETRC
+		    tmp = "7.1"
+		  Case NETRC_FILE
+		    tmp = "7.11.0"
+		  Case NEW_DIRECTORY_PERMS
+		    tmp = "7.16.4"
+		  Case NEW_FILE_PERMS
+		    tmp = "7.16.4"
+		  Case NOBODY
+		    tmp = "7.1"
+		  Case NOPROGRESS
+		    tmp = "7.1"
+		  Case NOPROXY
+		    tmp = "7.19.4"
+		  Case NOSIGNAL
+		    tmp = "7.10"
+		  Case OPENSOCKETDATA
+		    tmp = "7.17.1"
+		  Case OPENSOCKETFUNCTION
+		    tmp = "7.17.1"
+		  Case PASSWORD
+		    tmp = "7.19.1"
+		  Case PATH_AS_IS
+		    tmp = "7.42.0"
+		  Case PINNEDPUBLICKEY
+		    tmp = "7.39.0"
+		  Case PIPEWAIT
+		    tmp = "7.43.0"
+		  Case PORT
+		    tmp = "7.1"
+		  Case POST
+		    tmp = "7.1"
+		  Case POSTFIELDS
+		    tmp = "7.1"
+		  Case POSTFIELDSIZE
+		    tmp = "7.2"
+		  Case POSTFIELDSIZE_LARGE
+		    tmp = "7.11.1"
+		  Case POSTQUOTE
+		    tmp = "7.1"
+		  Case POSTREDIR
+		    tmp = "7.19.1"
+		  Case PREQUOTE
+		    tmp = "7.9.5"
+		  Case PREREQDATA
+		    tmp = "7.80.0"
+		  Case PREREQFUNCTION
+		    tmp = "7.80.0"
+		  Case PRE_PROXY
+		    tmp = "7.52.0"
+		  Case PRIVATE_
+		    tmp = "7.10.3"
+		  Case PROGRESSDATA
+		    tmp = "7.1"
+		  Case PROGRESSFUNCTION
+		    tmp = "7.1"
+		  Case PROTOCOLS
+		    tmp = "7.19.4"
+		  Case PROXY
+		    tmp = "7.1"
+		  Case PROXYAUTH
+		    tmp = "7.10.7"
+		  Case PROXYHEADER
+		    tmp = "7.37.0"
+		  Case PROXYPASSWORD
+		    tmp = "7.19.1"
+		  Case PROXYPORT
+		    tmp = "7.1"
+		  Case PROXYTYPE
+		    tmp = "7.10"
+		  Case PROXYUSERNAME
+		    tmp = "7.19.1"
+		  Case PROXYUSERPWD
+		    tmp = "7.1"
+		  Case PROXY_CAINFO
+		    tmp = "7.52.0"
+		  Case PROXY_CAINFO_BLOB
+		    tmp = "7.77.0"
+		  Case PROXY_CAPATH
+		    tmp = "7.52.0"
+		  Case PROXY_CRLFILE
+		    tmp = "7.52.0"
+		  Case PROXY_ISSUERCERT
+		    tmp = "7.71.0"
+		  Case PROXY_ISSUERCERT_BLOB
+		    tmp = "7.71.0"
+		  Case PROXY_KEYPASSWD
+		    tmp = "7.52.0"
+		  Case PROXY_PINNEDPUBLICKEY
+		    tmp = "7.52.0"
+		  Case PROXY_SERVICE_NAME
+		    tmp = "7.43.0"
+		  Case PROXY_SSLCERT
+		    tmp = "7.52.0"
+		  Case PROXY_SSLCERTTYPE
+		    tmp = "7.52.0"
+		  Case PROXY_SSLCERT_BLOB
+		    tmp = "7.71.0"
+		  Case PROXY_SSLKEY
+		    tmp = "7.52.0"
+		  Case PROXY_SSLKEYTYPE
+		    tmp = "7.52.0"
+		  Case PROXY_SSLKEY_BLOB
+		    tmp = "7.71.0"
+		  Case PROXY_SSLVERSION
+		    tmp = "7.52.0"
+		  Case PROXY_SSL_CIPHER_LIST
+		    tmp = "7.52.0"
+		  Case PROXY_SSL_OPTIONS
+		    tmp = "7.52.0"
+		  Case PROXY_SSL_VERIFYHOST
+		    tmp = "7.52.0"
+		  Case PROXY_SSL_VERIFYPEER
+		    tmp = "7.52.0"
+		  Case PROXY_TLS13_CIPHERS
+		    tmp = "7.61.0"
+		  Case PROXY_TLSAUTH_PASSWORD
+		    tmp = "7.52.0"
+		  Case PROXY_TLSAUTH_TYPE
+		    tmp = "7.52.0"
+		  Case PROXY_TLSAUTH_USERNAME
+		    tmp = "7.52.0"
+		  Case PROXY_TRANSFER_MODE
+		    tmp = "7.18.0"
+		  Case PUT
+		    tmp = "7.1"
+		  Case QUOTE
+		    tmp = "7.1"
+		  Case RANDOM_FILE
+		    tmp = "7.7"
+		  Case RANGE
+		    tmp = "7.1"
+		  Case READDATA
+		    tmp = "7.9.7"
+		  Case READFUNCTION
+		    tmp = "7.1"
+		  Case REDIR_PROTOCOLS
+		    tmp = "7.19.4"
+		  Case REFERER
+		    tmp = "7.1"
+		  Case REQUEST_TARGET
+		    tmp = "7.55.0"
+		  Case RESOLVE
+		    tmp = "7.21.3"
+		  Case RESOLVER_START_DATA
+		    tmp = "7.59.0"
+		  Case RESOLVER_START_FUNCTION
+		    tmp = "7.59.0"
+		  Case RESUME_FROM
+		    tmp = "7.1"
+		  Case RESUME_FROM_LARGE
+		    tmp = "7.11.0"
+		  Case RTSP_CLIENT_CSEQ
+		    tmp = "7.20.0"
+		  Case RTSP_REQUEST
+		    tmp = "7.20.0"
+		  Case RTSP_SERVER_CSEQ
+		    tmp = "7.20.0"
+		  Case RTSP_SESSION_ID
+		    tmp = "7.20.0"
+		  Case RTSP_STREAM_URI
+		    tmp = "7.20.0"
+		  Case RTSP_TRANSPORT
+		    tmp = "7.20.0"
+		  Case SASL_AUTHZID
+		    tmp = "7.66.0"
+		  Case SASL_IR
+		    tmp = "7.31.0"
+		  Case SEEKDATA
+		    tmp = "7.18.0"
+		  Case SEEKFUNCTION
+		    tmp = "7.18.0"
+		  Case SERVICE_NAME
+		    tmp = "7.43.0"
+		  Case SHARE
+		    tmp = "7.10"
+		  Case SOCKOPTDATA
+		    tmp = "7.16.0"
+		  Case SOCKOPTFUNCTION
+		    tmp = "7.16.0"
+		  Case SOCKS5_AUTH
+		    tmp = "7.55.0"
+		  Case SOCKS5_GSSAPI_NEC
+		    tmp = "7.19.4"
+		  Case SOCKS5_GSSAPI_SERVICE
+		    tmp = "7.19.4"
+		  Case SSH_AUTH_TYPES
+		    tmp = "7.16.1"
+		  Case SSH_COMPRESSION
+		    tmp = "7.56.0"
+		  Case SSH_HOST_PUBLIC_KEY_MD5
+		    tmp = "7.17.1"
+		  Case SSH_HOST_PUBLIC_KEY_SHA256
+		    tmp = "7.80.0"
+		  Case SSH_KEYDATA
+		    tmp = "7.19.6"
+		  Case SSH_KEYFUNCTION
+		    tmp = "7.19.6"
+		  Case SSH_KNOWNHOSTS
+		    tmp = "7.19.6"
+		  Case SSH_PRIVATE_KEYFILE
+		    tmp = "7.16.1"
+		  Case SSH_PUBLIC_KEYFILE
+		    tmp = "7.16.1"
+		  Case SSLCERT
+		    tmp = "7.1"
+		  Case SSLCERTTYPE
+		    tmp = "7.9.3"
+		  Case SSLCERT_BLOB
+		    tmp = "7.71.0"
+		  Case SSLENGINE
+		    tmp = "7.9.3"
+		  Case SSLENGINE_DEFAULT
+		    tmp = "7.9.3"
+		  Case SSLKEY
+		    tmp = "7.9.3"
+		  Case SSLKEYTYPE
+		    tmp = "7.9.3"
+		  Case SSLKEY_BLOB
+		    tmp = "7.71.0"
+		  Case SSLVERSION
+		    tmp = "7.1"
+		  Case SSL_CIPHER_LIST
+		    tmp = "7.9"
+		  Case SSL_CTX_DATA
+		    tmp = "7.10.6"
+		  Case SSL_CTX_FUNCTION
+		    tmp = "7.10.6"
+		  Case SSL_EC_CURVES
+		    tmp = "7.73.0"
+		  Case SSL_ENABLE_ALPN
+		    tmp = "7.36.0"
+		  Case SSL_ENABLE_NPN
+		    tmp = "7.36.0"
+		  Case SSL_FALSESTART
+		    tmp = "7.42.0"
+		  Case SSL_OPTIONS
+		    tmp = "7.25.0"
+		  Case SSL_SESSIONID_CACHE
+		    tmp = "7.16.0"
+		  Case SSL_VERIFYHOST
+		    tmp = "7.8.1"
+		  Case SSL_VERIFYPEER
+		    tmp = "7.4.2"
+		  Case SSL_VERIFYSTATUS
+		    tmp = "7.41.0"
+		  Case STDERR
+		    tmp = "7.1"
+		  Case STREAM_DEPENDS
+		    tmp = "7.46.0"
+		  Case STREAM_DEPENDS_E
+		    tmp = "7.46.0"
+		  Case STREAM_WEIGHT
+		    tmp = "7.46.0"
+		  Case SUPPRESS_CONNECT_HEADERS
+		    tmp = "7.54.0"
+		  Case TCP_FASTOPEN
+		    tmp = "7.49.0"
+		  Case TCP_KEEPALIVE
+		    tmp = "7.25.0"
+		  Case TCP_KEEPIDLE
+		    tmp = "7.25.0"
+		  Case TCP_KEEPINTVL
+		    tmp = "7.25.0"
+		  Case TCP_NODELAY
+		    tmp = "7.11.2"
+		  Case TELNETOPTIONS
+		    tmp = "7.7"
+		  Case TFTP_BLKSIZE
+		    tmp = "7.19.4"
+		  Case TFTP_NO_OPTIONS
+		    tmp = "7.48.0"
+		  Case TIMECONDITION
+		    tmp = "7.1"
+		  Case TIMEOUT
+		    tmp = "7.1"
+		  Case TIMEOUT_MS
+		    tmp = "7.16.2"
+		  Case TIMEVALUE
+		    tmp = "7.1"
+		  Case TIMEVALUE_LARGE
+		    tmp = "7.59.0"
+		  Case TLS13_CIPHERS
+		    tmp = "7.61.0"
+		  Case TLSAUTH_PASSWORD
+		    tmp = "7.21.4"
+		  Case TLSAUTH_TYPE
+		    tmp = "7.21.4"
+		  Case TLSAUTH_USERNAME
+		    tmp = "7.21.4"
+		  Case TRAILERDATA
+		    tmp = "7.64.0"
+		  Case TRAILERFUNCTION
+		    tmp = "7.64.0"
+		  Case TRANSFERTEXT
+		    tmp = "7.1.1"
+		  Case TRANSFER_ENCODING
+		    tmp = "7.21.6"
+		  Case UNIX_SOCKET_PATH
+		    tmp = "7.40.0"
+		  Case UNRESTRICTED_AUTH
+		    tmp = "7.10.4"
+		  Case UPKEEP_INTERVAL_MS
+		    tmp = "7.62.0"
+		  Case UPLOAD
+		    tmp = "7.1"
+		  Case UPLOAD_BUFFERSIZE
+		    tmp = "7.62.0"
+		  Case URL
+		    tmp = "7.1"
+		  Case USERAGENT
+		    tmp = "7.1"
+		  Case USERNAME
+		    tmp = "7.19.1"
+		  Case USERPWD
+		    tmp = "7.1"
+		  Case USE_SSL
+		    tmp = "7.17.0"
+		  Case AWS_SIGV4
+		    tmp = "7.75.0"
+		  Case VERBOSE
+		    tmp = "7.1"
+		  Case WILDCARDMATCH
+		    tmp = "7.21.0"
+		  Case WRITEDATA
+		    tmp = "7.9.7"
+		  Case WRITEFUNCTION
+		    tmp = "7.1"
+		  Case XFERINFODATA
+		    tmp = "7.32.0"
+		  Case XFERINFOFUNCTION
+		    tmp = "7.32.0"
+		  Case XOAUTH2_BEARER
+		    tmp = "7.33.0"
+		  End Select
+		  If tmp = "" Then Return False
+		  Major = Val(NthField(tmp, ".", 1))
+		  Minor = Val(NthField(tmp, ".", 2))
+		  Patch = Val(NthField(tmp, ".", 3))
+		  Return True
+		  
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
 		Protected Shared Function GetOptionName(OptionID As Int32) As String
 		  Select Case OptionID
 		  Case ABSTRACT_UNIX_SOCKET
