@@ -3,6 +3,7 @@ Protected Class OptionInfo
 	#tag Method, Flags = &h1
 		Protected Sub Constructor(Option As curl_easyoption)
 		  mOpt = Option
+		  Call GetOptionFirstVersion(OptionNumber, mMinMajor, mMinMinor, mMinPatch)
 		End Sub
 	#tag EndMethod
 
@@ -3112,6 +3113,7 @@ Protected Class OptionInfo
 		  Else
 		    mOpt.Option = OptionID
 		    mOpt.Type = GetOptionType(OptionID)
+		    Call GetOptionFirstVersion(OptionNumber, mMinMajor, mMinMinor, mMinPatch)
 		  End If
 		End Sub
 	#tag EndMethod
@@ -3128,6 +3130,7 @@ Protected Class OptionInfo
 		  Else
 		    mOpt.Option = GetOptionByName(Name)
 		    mOpt.Type = GetOptionType(OptionNumber)
+		    Call GetOptionFirstVersion(OptionNumber, mMinMajor, mMinMinor, mMinPatch)
 		  End If
 		End Sub
 	#tag EndMethod
@@ -3253,6 +3256,16 @@ Protected Class OptionInfo
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  If mMinMajor = 0 Then Return True
+			  Return libcURL.Version.IsAtLeast(mMinMajor, mMinMinor, mMinPatch)
+			End Get
+		#tag EndGetter
+		IsAvailable As Boolean
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
 			  return mOpt.Flags = CURLOT_FLAG_ALIAS
 			End Get
 		#tag EndGetter
@@ -3278,6 +3291,18 @@ Protected Class OptionInfo
 		#tag EndGetter
 		LibraryAlias As String
 	#tag EndComputedProperty
+
+	#tag Property, Flags = &h21
+		Private mMinMajor As Integer
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mMinMinor As Integer
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mMinPatch As Integer
+	#tag EndProperty
 
 	#tag Property, Flags = &h21
 		Private mOpt As curl_easyoption
