@@ -221,6 +221,15 @@ Protected Module Opts
 	#tag Constant, Name = DNS_USE_GLOBAL_CACHE, Type = Double, Dynamic = False, Default = \"91", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = DOH_SSL_VERIFYHOST, Type = Double, Dynamic = False, Default = \"307", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = DOH_SSL_VERIFYPEER, Type = Double, Dynamic = False, Default = \"306", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = DOH_SSL_VERIFYSTATUS, Type = Double, Dynamic = False, Default = \"308", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = DOH_URL, Type = Double, Dynamic = False, Default = \"10279", Scope = Protected
 	#tag EndConstant
 
@@ -309,6 +318,24 @@ Protected Module Opts
 	#tag EndConstant
 
 	#tag Constant, Name = HEADEROPT, Type = Double, Dynamic = False, Default = \"229", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = HSTS, Type = Double, Dynamic = False, Default = \"10300", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = HSTSREADDATA, Type = Double, Dynamic = False, Default = \"10302", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = HSTSREADFUNCTION, Type = Double, Dynamic = False, Default = \"20301", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = HSTSWRITEDATA, Type = Double, Dynamic = False, Default = \"10304", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = HSTSWRITEFUNCTION, Type = Double, Dynamic = False, Default = \"20303", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = HSTS_CTRL, Type = Double, Dynamic = False, Default = \"299", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = HTTP09_ALLOWED, Type = Double, Dynamic = False, Default = \"285", Scope = Protected
@@ -563,6 +590,9 @@ Protected Module Opts
 	#tag Constant, Name = PROXY_CAINFO, Type = Double, Dynamic = False, Default = \"10246", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = PROXY_CAINFO_BLOB, Type = Double, Dynamic = False, Default = \"40310", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = PROXY_CAPATH, Type = Double, Dynamic = False, Default = \"10247", Scope = Protected
 	#tag EndConstant
 
@@ -741,6 +771,9 @@ Protected Module Opts
 	#tag EndConstant
 
 	#tag Constant, Name = SSH_HOST_PUBLIC_KEY_MD5, Type = Double, Dynamic = False, Default = \"10162", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = SSH_HOST_PUBLIC_KEY_SHA256, Type = Double, Dynamic = False, Default = \"10311", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = SSH_KEYDATA, Type = Double, Dynamic = False, Default = \"10185", Scope = Protected

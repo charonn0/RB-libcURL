@@ -107,6 +107,12 @@ Protected Class OptionInfo
 		    Return DNS_SHUFFLE_ADDRESSES
 		  Case "DNS_USE_GLOBAL_CACHE"
 		    Return DNS_USE_GLOBAL_CACHE
+		  Case "DOH_SSL_VERIFYHOST"
+		    Return DOH_SSL_VERIFYHOST
+		  Case "DOH_SSL_VERIFYPEER"
+		    Return DOH_SSL_VERIFYPEER
+		  Case "DOH_SSL_VERIFYSTATUS"
+		    Return DOH_SSL_VERIFYSTATUS
 		  Case "DOH_URL"
 		    Return DOH_URL
 		  Case "EGDSOCKET"
@@ -167,6 +173,18 @@ Protected Class OptionInfo
 		    Return HEADERFUNCTION
 		  Case "HEADEROPT"
 		    Return HEADEROPT
+		  Case "HSTS"
+		    Return HSTS
+		  Case "HSTSREADDATA"
+		    Return HSTSREADDATA
+		  Case "HSTSREADFUNCTION"
+		    Return HSTSREADFUNCTION
+		  Case "HSTSWRITEDATA"
+		    Return HSTSWRITEDATA
+		  Case "HSTSWRITEFUNCTION"
+		    Return HSTSWRITEFUNCTION
+		  Case "HSTS_CTRL"
+		    Return HSTS_CTRL
 		  Case "HTTP09_ALLOWED"
 		    Return HTTP09_ALLOWED
 		  Case "HTTP200ALIASES"
@@ -335,6 +353,8 @@ Protected Class OptionInfo
 		    Return PROXYUSERPWD
 		  Case "PROXY_CAINFO"
 		    Return PROXY_CAINFO
+		  Case "PROXY_CAINFO_BLOB"
+		    Return PROXY_CAINFO_BLOB
 		  Case "PROXY_CAPATH"
 		    Return PROXY_CAPATH
 		  Case "PROXY_CRLFILE"
@@ -455,6 +475,8 @@ Protected Class OptionInfo
 		    Return SSH_COMPRESSION
 		  Case "SSH_HOST_PUBLIC_KEY_MD5"
 		    Return SSH_HOST_PUBLIC_KEY_MD5
+		  Case "SSH_HOST_PUBLIC_KEY_SHA256"
+		    Return SSH_HOST_PUBLIC_KEY_SHA256
 		  Case "SSH_KEYDATA"
 		    Return SSH_KEYDATA
 		  Case "SSH_KEYFUNCTION"
@@ -696,6 +718,12 @@ Protected Class OptionInfo
 		    Return 0
 		  Case DNS_USE_GLOBAL_CACHE
 		    Return 0
+		  Case DOH_SSL_VERIFYHOST
+		    Return 2
+		  Case DOH_SSL_VERIFYPEER
+		    Return 1
+		  Case DOH_SSL_VERIFYSTATUS
+		    Return 0
 		  Case DOH_URL
 		    Return Nil
 		  Case EGDSOCKET
@@ -762,6 +790,18 @@ Protected Class OptionInfo
 		    Else
 		      Return CURLHEADER_SEPARATE
 		    End If
+		  Case HSTS
+		    Return Nil
+		  Case HSTSREADDATA
+		    Return Nil
+		  Case HSTSREADFUNCTION
+		    Return Nil
+		  Case HSTSWRITEDATA
+		    Return Nil
+		  Case HSTSWRITEFUNCTION
+		    Return Nil
+		  Case HSTS_CTRL
+		    Return 0
 		  Case HTTP09_ALLOWED
 		    Return 0
 		  Case HTTP200ALIASES
@@ -926,6 +966,8 @@ Protected Class OptionInfo
 		    Return Nil
 		  Case PROXY_CAINFO
 		    Return Nil
+		  Case PROXY_CAINFO_BLOB
+		    Return Nil
 		  Case PROXY_CAPATH
 		    Return Nil
 		  Case PROXY_CRLFILE
@@ -1037,6 +1079,8 @@ Protected Class OptionInfo
 		  Case SSH_COMPRESSION
 		    Return 0
 		  Case SSH_HOST_PUBLIC_KEY_MD5
+		    Return Nil
+		  Case SSH_HOST_PUBLIC_KEY_SHA256
 		    Return Nil
 		  Case SSH_KEYDATA
 		    Return Nil
@@ -1277,6 +1321,12 @@ Protected Class OptionInfo
 		    Return "DNS_SHUFFLE_ADDRESSES"
 		  Case DNS_USE_GLOBAL_CACHE
 		    Return "DNS_USE_GLOBAL_CACHE"
+		  Case DOH_SSL_VERIFYHOST
+		    Return "DOH_SSL_VERIFYHOST"
+		  Case DOH_SSL_VERIFYPEER
+		    Return "DOH_SSL_VERIFYPEER"
+		  Case DOH_SSL_VERIFYSTATUS
+		    Return "DOH_SSL_VERIFYSTATUS"
 		  Case DOH_URL
 		    Return "DOH_URL"
 		  Case EGDSOCKET
@@ -1337,6 +1387,18 @@ Protected Class OptionInfo
 		    Return "HEADERFUNCTION"
 		  Case HEADEROPT
 		    Return "HEADEROPT"
+		  Case HSTS
+		    Return "HSTS"
+		  Case HSTSREADDATA
+		    Return "HSTSREADDATA"
+		  Case HSTSREADFUNCTION
+		    Return "HSTSREADFUNCTION"
+		  Case HSTSWRITEDATA
+		    Return "HSTSWRITEDATA"
+		  Case HSTSWRITEFUNCTION
+		    Return "HSTSWRITEFUNCTION"
+		  Case HSTS_CTRL
+		    Return "HSTS_CTRL"
 		  Case HTTP09_ALLOWED
 		    Return "HTTP09_ALLOWED"
 		  Case HTTP200ALIASES
@@ -1505,6 +1567,8 @@ Protected Class OptionInfo
 		    Return "PROXYUSERPWD"
 		  Case PROXY_CAINFO
 		    Return "PROXY_CAINFO"
+		  Case PROXY_CAINFO_BLOB
+		    Return "PROXY_CAINFO_BLOB"
 		  Case PROXY_CAPATH
 		    Return "PROXY_CAPATH"
 		  Case PROXY_CRLFILE
@@ -1625,6 +1689,8 @@ Protected Class OptionInfo
 		    Return "SSH_COMPRESSION"
 		  Case SSH_HOST_PUBLIC_KEY_MD5
 		    Return "SSH_HOST_PUBLIC_KEY_MD5"
+		  Case SSH_HOST_PUBLIC_KEY_SHA256
+		    Return "SSH_HOST_PUBLIC_KEY_SHA256"
 		  Case SSH_KEYDATA
 		    Return "SSH_KEYDATA"
 		  Case SSH_KEYFUNCTION
@@ -1866,6 +1932,12 @@ Protected Class OptionInfo
 		    Return OptionType.Number
 		  Case DNS_USE_GLOBAL_CACHE
 		    Return OptionType.Number
+		  Case DOH_SSL_VERIFYHOST
+		    Return OptionType.Number
+		  Case DOH_SSL_VERIFYPEER
+		    Return OptionType.Number
+		  Case DOH_SSL_VERIFYSTATUS
+		    Return OptionType.Number
 		  Case DOH_URL
 		    Return OptionType.String
 		  Case EGDSOCKET
@@ -1935,6 +2007,18 @@ Protected Class OptionInfo
 		  Case HEADERFUNCTION
 		    Return OptionType.Subroutine
 		  Case HEADEROPT
+		    Return OptionType.Bitmask
+		  Case HSTS
+		    Return OptionType.String
+		  Case HSTSREADDATA
+		    Return OptionType.Opaque
+		  Case HSTSREADFUNCTION
+		    Return OptionType.Subroutine
+		  Case HSTSWRITEDATA
+		    Return OptionType.Opaque
+		  Case HSTSWRITEFUNCTION
+		    Return OptionType.Subroutine
+		  Case HSTS_CTRL
 		    Return OptionType.Bitmask
 		  Case HTTP09_ALLOWED
 		    Return OptionType.Number
@@ -2104,6 +2188,8 @@ Protected Class OptionInfo
 		    Return OptionType.String
 		  Case PROXY_CAINFO
 		    Return OptionType.String
+		  Case PROXY_CAINFO_BLOB
+		    Return OptionType.Blob
 		  Case PROXY_CAPATH
 		    Return OptionType.String
 		  Case PROXY_CRLFILE
@@ -2221,6 +2307,8 @@ Protected Class OptionInfo
 		  Case SSH_COMPRESSION
 		    Return OptionType.Number
 		  Case SSH_HOST_PUBLIC_KEY_MD5
+		    Return OptionType.String
+		  Case SSH_HOST_PUBLIC_KEY_SHA256
 		    Return OptionType.String
 		  Case SSH_KEYDATA
 		    Return OptionType.Opaque
