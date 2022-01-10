@@ -409,19 +409,52 @@ Inherits libcURL.cURLHandle
 	#tag EndComputedProperty
 
 
+	#tag Constant, Name = CURLUE_BAD_FILE_URL, Type = Double, Dynamic = False, Default = \"19", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = CURLUE_BAD_FRAGMENT, Type = Double, Dynamic = False, Default = \"20", Scope = Public
+	#tag EndConstant
+
 	#tag Constant, Name = CURLUE_BAD_HANDLE, Type = Double, Dynamic = False, Default = \"1", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = CURLUE_BAD_HOSTNAME, Type = Double, Dynamic = False, Default = \"21", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = CURLUE_BAD_IPV6, Type = Double, Dynamic = False, Default = \"22", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = CURLUE_BAD_LOGIN, Type = Double, Dynamic = False, Default = \"23", Scope = Public
 	#tag EndConstant
 
 	#tag Constant, Name = CURLUE_BAD_PARTPOINTER, Type = Double, Dynamic = False, Default = \"2", Scope = Public
 	#tag EndConstant
 
+	#tag Constant, Name = CURLUE_BAD_PASSWORD, Type = Double, Dynamic = False, Default = \"24", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = CURLUE_BAD_PATH, Type = Double, Dynamic = False, Default = \"25", Scope = Public
+	#tag EndConstant
+
 	#tag Constant, Name = CURLUE_BAD_PORT_NUMBER, Type = Double, Dynamic = False, Default = \"4", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = CURLUE_BAD_QUERY, Type = Double, Dynamic = False, Default = \"26", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = CURLUE_BAD_SCHEME, Type = Double, Dynamic = False, Default = \"27", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = CURLUE_BAD_SLASHES, Type = Double, Dynamic = False, Default = \"28", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = CURLUE_BAD_USER, Type = Double, Dynamic = False, Default = \"29", Scope = Public
 	#tag EndConstant
 
 	#tag Constant, Name = CURLUE_MALFORMED_INPUT, Type = Double, Dynamic = False, Default = \"3", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = CURLUE_NO_FRAGMENT, Type = Double, Dynamic = False, Default = \"18", Scope = Public
+	#tag Constant, Name = CURLUE_NO_FRAGMENT, Type = Double, Dynamic = False, Default = \"17", Scope = Public
 	#tag EndConstant
 
 	#tag Constant, Name = CURLUE_NO_HOST, Type = Double, Dynamic = False, Default = \"14", Scope = Public
@@ -439,7 +472,7 @@ Inherits libcURL.cURLHandle
 	#tag Constant, Name = CURLUE_NO_PORT, Type = Double, Dynamic = False, Default = \"15", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = CURLUE_NO_QUERY, Type = Double, Dynamic = False, Default = \"17", Scope = Public
+	#tag Constant, Name = CURLUE_NO_QUERY, Type = Double, Dynamic = False, Default = \"16", Scope = Public
 	#tag EndConstant
 
 	#tag Constant, Name = CURLUE_NO_SCHEME, Type = Double, Dynamic = False, Default = \"10", Scope = Public
@@ -448,10 +481,13 @@ Inherits libcURL.cURLHandle
 	#tag Constant, Name = CURLUE_NO_USER, Type = Double, Dynamic = False, Default = \"11", Scope = Public
 	#tag EndConstant
 
+	#tag Constant, Name = CURLUE_NO_ZONEID, Type = Double, Dynamic = False, Default = \"18", Scope = Public
+	#tag EndConstant
+
 	#tag Constant, Name = CURLUE_OK, Type = Double, Dynamic = False, Default = \"0", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = CURLUE_OUT_OF_MEMORY, Type = Double, Dynamic = False, Default = \"19", Scope = Public
+	#tag Constant, Name = CURLUE_OUT_OF_MEMORY, Type = Double, Dynamic = False, Default = \"7", Scope = Public
 	#tag EndConstant
 
 	#tag Constant, Name = CURLUE_RELATIVE, Type = Double, Dynamic = False, Default = \"7", Scope = Public

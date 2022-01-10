@@ -177,7 +177,7 @@ Inherits libcURL.cURLHandle
 		  
 		Exception Err As RuntimeException
 		  If Err IsA ThreadEndException Or Err IsA EndException Then Raise Err
-		  Return 0
+		  Return CURL_PREREQFUNC_ABORT
 		End Function
 	#tag EndMethod
 
@@ -348,8 +348,10 @@ Inherits libcURL.cURLHandle
 		  Dim mb As MemoryBlock
 		  
 		  Select Case InfoType
+		    ' strings
 		  Case libcURL.Info.EFFECTIVE_URL, libcURL.Info.REDIRECT_URL, libcURL.Info.CONTENT_TYPE, libcURL.Info.PRIVATE_, libcURL.Info.PRIMARY_IP, _
-		    libcURL.Info.LOCAL_IP, libcURL.Info.FTP_ENTRY_PATH, libcURL.Info.RTSP_SESSION_ID, libcURL.Info.SCHEME
+		    libcURL.Info.LOCAL_IP, libcURL.Info.FTP_ENTRY_PATH, libcURL.Info.RTSP_SESSION_ID, libcURL.Info.SCHEME, libcURL.Info.EFFECTIVE_METHOD, _
+		    libcURL.Info.REFERER
 		    #If Target32Bit Then
 		      mb = New MemoryBlock(4)
 		    #Else
@@ -360,14 +362,20 @@ Inherits libcURL.cURLHandle
 		      If mb <> Nil Then Return mb.CString(0)
 		    End If
 		    
+		    ' Int32s
 		  Case libcURL.Info.RESPONSE_CODE, libcURL.Info.HTTP_CONNECTCODE, libcURL.Info.REDIRECT_COUNT, libcURL.Info.HEADER_SIZE, _
 		    libcURL.Info.REQUEST_SIZE, libcURL.Info.SSL_VERIFYRESULT, libcURL.Info.OS_ERRNO, _
 		    libcURL.Info.NUM_CONNECTS, libcURL.Info.PRIMARY_PORT, libcURL.Info.LOCAL_PORT, libcURL.Info.LASTSOCKET, libcURL.Info.CONDITION_UNMET, _
 		    libcURL.Info.RTSP_CLIENT_CSEQ, libcURL.Info.RTSP_SERVER_CSEQ, libcURL.Info.RTSP_CSEQ_RECV, libcURL.Info.HTTP_VERSION, libcURL.Info.PROTOCOL, _
-		    libcURL.Info.PROXY_SSL_VERIFYRESULT
+		    libcURL.Info.PROXY_SSL_VERIFYRESULT, libcURL.Info.ACTIVESOCKET
 		    mb = New MemoryBlock(4)
 		    If Me.GetInfo(InfoType, mb) Then Return mb.Int32Value(0)
 		    
+		  Case libcURL.Info.PROXY_ERROR
+		    mb = New MemoryBlock(4)
+		    If Me.GetInfo(InfoType, mb) Then Return CType(mb.Int32Value(0), libcURL.ProxyErrorType)
+		    
+		    ' dates
 		  Case libcURL.Info.FILETIME
 		    mb = New MemoryBlock(4)
 		    If Me.GetInfo(InfoType, mb) Then
@@ -379,6 +387,7 @@ Inherits libcURL.cURLHandle
 		      End If
 		    End If
 		    
+		    ' HTTPAuthMethods
 		  Case libcurl.Info.PROXYAUTH_AVAIL, libcURL.Info.HTTPAUTH_AVAIL
 		    mb = New MemoryBlock(4)
 		    If Me.GetInfo(InfoType, mb) Then
@@ -386,12 +395,22 @@ Inherits libcURL.cURLHandle
 		      Return h
 		    End If
 		    
+		    ' Doubles
 		  Case libcURL.Info.TOTAL_TIME, libcURL.Info.NAMELOOKUP_TIME, libcURL.Info.CONNECT_TIME, libcURL.Info.APPCONNECT_TIME, libcURL.Info.PRETRANSFER_TIME, _
 		    libcURL.Info.STARTTRANSFER_TIME, libcURL.Info.REDIRECT_TIME, libcURL.Info.SIZE_DOWNLOAD, libcURL.Info.SIZE_UPLOAD, libcURL.Info.SPEED_DOWNLOAD, _
 		    libcURL.Info.SPEED_UPLOAD, libcURL.Info.CONTENT_LENGTH_UPLOAD, libcURL.Info.CONTENT_LENGTH_DOWNLOAD
 		    mb = New MemoryBlock(8)
 		    If Me.GetInfo(InfoType, mb) Then Return mb.DoubleValue(0)
 		    
+		    ' Int64s
+		  Case libcURL.Info.TOTAL_TIME_T, libcURL.Info.NAMELOOKUP_TIME_T, libcURL.Info.CONNECT_TIME_T, libcURL.Info.APPCONNECT_TIME_T, _
+		    libcURL.Info.PRETRANSFER_TIME_T, libcURL.Info.STARTTRANSFER_TIME_T, libcURL.Info.REDIRECT_TIME_T, libcURL.Info.SIZE_DOWNLOAD_T, _
+		    libcURL.Info.SIZE_UPLOAD_T, libcURL.Info.SPEED_DOWNLOAD_T, libcURL.Info.SPEED_UPLOAD_T, libcURL.Info.CONTENT_LENGTH_UPLOAD_T, _
+		    libcURL.Info.CONTENT_LENGTH_DOWNLOAD_T
+		    mb = New MemoryBlock(8)
+		    If Me.GetInfo(InfoType, mb) Then Return mb.Int64Value(0)
+		    
+		    ' ListPtrs
 		  Case libcURL.Info.SSL_ENGINES, libcURL.Info.COOKIELIST
 		    #If Target32Bit Then
 		      mb = New MemoryBlock(4)
@@ -768,24 +787,15 @@ Inherits libcURL.cURLHandle
 		  Select Case ValueType
 		    
 		  Case Variant.TypeNil ' Sometimes Nil is an error; sometimes not
-		    Static Nilable() As Integer = Array(libcURL.Opts.POSTFIELDS, libcURL.Opts.HTTPHEADER, libcURL.Opts.PROXYHEADER, _
-		    libcURL.Opts.FTPPORT, libcURL.Opts.QUOTE, libcURL.Opts.POSTQUOTE, libcURL.Opts.PREQUOTE, libcURL.Opts.FTP_ACCOUNT, _
-		    libcURL.Opts.RTSP_SESSION_ID, libcURL.Opts.RANGE, libcURL.Opts.CUSTOMREQUEST, libcURL.Opts.DNS_INTERFACE, _
-		    libcURL.Opts.DNS_LOCAL_IP4, libcURL.Opts.DNS_LOCAL_IP6, libcURL.Opts.KRBLEVEL, libcURL.Opts.CLOSESOCKETFUNCTION, _
-		    libcURL.Opts.DEBUGFUNCTION, libcURL.Opts.HEADERFUNCTION, libcURL.Opts.OPENSOCKETFUNCTION, libcURL.Opts.PROGRESSFUNCTION, _
-		    libcURL.Opts.READFUNCTION, libcURL.Opts.SSL_CTX_FUNCTION, libcURL.Opts.WRITEFUNCTION, libcURL.Opts.SHARE, _
-		    libcURL.Opts.COOKIEJAR, libcURL.Opts.COOKIEFILE, libcURL.Opts.HTTPPOST, libcURL.Opts.CAINFO, libcURL.Opts.CAPATH, _
-		    libcURL.Opts.NETINTERFACE, libcURL.Opts.ERRORBUFFER, libcURL.Opts.COPYPOSTFIELDS, libcURL.Opts.ACCEPT_ENCODING, _
-		    libcURL.Opts.FNMATCH_FUNCTION, libcURL.Opts.CHUNK_BGN_FUNCTION, libcURL.Opts.CHUNK_END_FUNCTION, libcURL.Opts.CHUNK_DATA, _
-		    libcURL.Opts.SSLCERT, libcURL.Opts.MIMEPOST, libcURL.Opts.CAINFO_BLOB)
-		    ' These option numbers explicitly accept NULL. Refer to the curl documentation on the individual option numbers for details.
-		    If Nilable.IndexOf(OptionNumber) > -1 Then
+		    ' Only some option numbers may accept NULL. Refer to the curl documentation on the individual option numbers for details.
+		    Dim opt As libcURL.Opts.OptionInfo = OptionNumber
+		    If opt.IsNullable Then
 		      If mOptions.HasKey(OptionNumber) Then mOptions.Remove(OptionNumber)
 		      Return Me.SetOptionPtr(OptionNumber, Nil)
 		    Else
 		      ' for all other option numbers reject NULL values.
 		      Dim err As New NilObjectException
-		      err.Message = "cURL option number 0x" + Hex(OptionNumber) + " may not be set to null."
+		      err.Message = "cURL option " + opt.LibraryAlias + "(0x" + Hex(OptionNumber) + ") may not be set to null."
 		      Raise err
 		    End If
 		    
