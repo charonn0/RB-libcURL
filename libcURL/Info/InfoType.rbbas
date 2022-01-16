@@ -386,6 +386,8 @@ Protected Class InfoType
 		    Return "PRIMARY_PORT"
 		  Case PRIVATE_
 		    Return "PRIVATE"
+		  Case PROTOCOL
+		    Return "PROTOCOL"
 		  Case PROXYAUTH_AVAIL
 		    Return "PROXYAUTH_AVAIL"
 		  Case PROXY_ERROR
