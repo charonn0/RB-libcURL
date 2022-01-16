@@ -3292,6 +3292,16 @@ Protected Class OptionInfo
 		LibraryAlias As String
 	#tag EndComputedProperty
 
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  If mMinMajor = 0 Then Return ""
+			  Return Str(mMinMajor) + "." + Str(mMinMinor) + "." + Str(mMinPatch)
+			End Get
+		#tag EndGetter
+		MinimumVersion As String
+	#tag EndComputedProperty
+
 	#tag Property, Flags = &h21
 		Private mMinMajor As Integer
 	#tag EndProperty
