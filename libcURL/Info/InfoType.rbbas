@@ -523,8 +523,8 @@ Protected Class InfoType
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Operator_Convert(OptionID As Int32)
-		  Me.Constructor(OptionID)
+		Sub Operator_Convert(InfoID As Int32)
+		  Me.Constructor(InfoID)
 		End Sub
 	#tag EndMethod
 
