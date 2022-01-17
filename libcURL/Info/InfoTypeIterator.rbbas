@@ -3,6 +3,9 @@ Protected Class InfoTypeIterator
 	#tag Method, Flags = &h0
 		Sub Constructor()
 		  ' Enumerate all known info types.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Info.InfoTypeIterator.Constructor
 		  
 		  If UBound(AllTypes) = -1 Then
 		    Dim all() As Integer = Array( _
@@ -28,7 +31,10 @@ Protected Class InfoTypeIterator
 
 	#tag Method, Flags = &h0
 		Function Count() As Integer
-		  ' Returns the total number of info types known
+		  ' Returns the total number of info types known.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Info.InfoTypeIterator.Count
 		  
 		  Return UBound(AllTypes) + 1
 		End Function
@@ -36,7 +42,11 @@ Protected Class InfoTypeIterator
 
 	#tag Method, Flags = &h0
 		Function MoveNext() As Boolean
-		  ' Advances the iterator to the next info type in the list. Returns True until there are no further types.
+		  ' Advances the iterator to the next info type in the list. Returns True
+		  ' until there are no further types.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Info.InfoTypeIterator.MoveNext
 		  
 		  If mIndex < UBound(AllTypes) Then
 		    mIndex = mIndex + 1
@@ -53,6 +63,11 @@ Protected Class InfoTypeIterator
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' The index of the current infotype in the list.
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Info.InfoTypeIterator.CurrentIndex
+			  
 			  Return mIndex
 			End Get
 		#tag EndGetter
@@ -62,6 +77,11 @@ Protected Class InfoTypeIterator
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' The current InfoType object in the list.
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Info.InfoTypeIterator.CurrentInfoType
+			  
 			  Return AllTypes(mIndex)
 			End Get
 		#tag EndGetter

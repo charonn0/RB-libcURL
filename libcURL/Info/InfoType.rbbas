@@ -514,30 +514,64 @@ Protected Class InfoType
 
 	#tag Method, Flags = &h0
 		Function Operator_Compare(OtherInfo As libcURL.Info.InfoType) As Integer
+		  ' Compares this InfoType to another InfoType. InfoType instances are considered equal if
+		  ' they represent the same info type number. Since the InfoType class automatically converts
+		  ' from an Int32, you can compare an instance of InfoType to a literal number using this method.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Info.InfoType.Operator_Compare
+		  
 		  If OtherInfo Is Nil Then Return 1 Else Return Sign(Number - OtherInfo.Number)
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function Operator_Convert() As Int32
+		  ' This method overloads the conversion operator (=) allowing direct conversion to an Int32.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Info.InfoType.Operator_Convert
+		  
 		  Return Number
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub Operator_Convert(InfoID As Int32)
+		  ' This method overloads the conversion operator (=) allowing direct conversion from an Int32.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Info.InfoType.Operator_Convert
+		  
 		  Me.Constructor(InfoID)
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub Operator_Convert(Name As String)
+		  ' This method overloads the conversion operator (=) allowing direct conversion from
+		  ' the name or alias of an infotype.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Info.InfoType.Operator_Convert
+		  
 		  Me.Constructor(GetInfoByName(Name))
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function StringValue(Session As libcURL.EasyHandle) As String
+		  ' A string representation, if one is available, of the current value of the infotype
+		  ' for the specified EasyHandle.
+		  ' This method is useful for displaying values to the user. If no string representation
+		  ' can be provided, for example if the option hasn't been set, then an empty string is returned.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Info.InfoType.StringValue
+		  
+		  Me.Constructor(GetInfoByName(Name))
+		  
+		  
 		  Dim mb As MemoryBlock
 		  
 		  Select Case Number
@@ -626,6 +660,11 @@ Protected Class InfoType
 
 	#tag Method, Flags = &h0
 		Function Value(Session As libcURL.EasyHandle) As Variant
+		  ' Returns the current value of the infotype for the specified EasyHandle.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Info.InfoType.Value
+		  
 		  Return Session.GetInfo(Number)
 		End Function
 	#tag EndMethod
@@ -634,6 +673,11 @@ Protected Class InfoType
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' The alias under which the infotype is known in Xojo. e.g. "libcURL.Info.EFFECTIVE_METHOD"
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Info.InfoType.BindingAlias
+			  
 			  Dim nm As String = GetInfoName(Number)
 			  If nm <> "" Then nm = "libcURL.Info." + nm
 			  Return nm
@@ -645,6 +689,11 @@ Protected Class InfoType
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' The URL to the documentation for this infotype on the libcurl website.
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Info.InfoType.DocumentationURL
+			  
 			  If Name <> "" And Not IsDeprecated Then Return "https://curl.haxx.se/libcurl/c/" + LibraryAlias + ".html"
 			End Get
 		#tag EndGetter
@@ -654,6 +703,10 @@ Protected Class InfoType
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' This property is True if this infotype is available at runtime.
+			  '
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Info.InfoType.IsAvailable
+			  
 			  If mMinMajor = 0 Then Return True
 			  Return libcURL.Version.IsAtLeast(mMinMajor, mMinMinor, mMinPatch)
 			End Get
@@ -664,6 +717,11 @@ Protected Class InfoType
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' This property is True if this infotype has been deprecated.
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Info.InfoType.IsDeprecated
+			  
 			  Select Case Number
 			  Case SIZE_UPLOAD, SIZE_DOWNLOAD, SPEED_DOWNLOAD, SPEED_UPLOAD, CONTENT_LENGTH_DOWNLOAD, CONTENT_LENGTH_UPLOAD
 			    Return libcURL.Version.IsAtLeast(7, 55, 0)
@@ -678,6 +736,11 @@ Protected Class InfoType
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' The alias under which the infotype is known in libcURL (and elsewhere). e.g. "CURLINFO_EFFECTIVE_METHOD"
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Info.InfoType.LibraryAlias
+			  
 			  Dim nm As String = GetInfoName(Number)
 			  If nm <> "" Then nm = "CURLINFO_" + nm
 			  Return nm
@@ -689,6 +752,12 @@ Protected Class InfoType
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Returns a string containing the first libcurl version that supports this
+			  ' infotype, if known. For example, "7.15.9".
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Info.InfoType.MinimumVersion
+			  
 			  If mMinMajor = 0 Then Return ""
 			  Return Str(mMinMajor) + "." + Str(mMinMinor) + "." + Str(mMinPatch)
 			End Get
@@ -715,6 +784,11 @@ Protected Class InfoType
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' The name of the infotype without prefixes. e.g. "EFFECTIVE_METHOD"
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Info.InfoType.Name
+			  
 			  Return GetInfoName(Number)
 			End Get
 		#tag EndGetter
@@ -724,6 +798,11 @@ Protected Class InfoType
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' The numeric value of the infotype.
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Info.InfoType.Number
+			  
 			  Return mNumber
 			End Get
 		#tag EndGetter
@@ -733,6 +812,13 @@ Protected Class InfoType
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' If the infotype is deprecated then this will hold a reference to another
+			  ' InfoType for the replacement infotype. If there is no replacement then
+			  ' this value is Nil.
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Info.InfoType.Replacement
+			  
 			  If Not IsDeprecated Then Return Nil
 			  Select Case Number
 			  Case SIZE_UPLOAD
@@ -758,6 +844,11 @@ Protected Class InfoType
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' The Xojo datatype for values of this infotype. e.g. Variant.TypeString.
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Info.InfoType.Type
+			  
 			  Return GetInfoType(Number)
 			End Get
 		#tag EndGetter
