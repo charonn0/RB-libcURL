@@ -610,7 +610,7 @@ Protected Class InfoType
 		      If t >= 0 Then
 		        Dim d As New Date(1970, 1, 1, 0, 0, 0, 0.0) 'UNIX epoch
 		        d.TotalSeconds = d.TotalSeconds + t
-		        Return d.SQLDateTime
+		        Return libcURL.ParseDate(d)
 		      End If
 		    End If
 		    
@@ -619,7 +619,8 @@ Protected Class InfoType
 		    mb = New MemoryBlock(4)
 		    If Session.GetInfo(Number, mb) Then
 		      Dim h As libcURL.HTTPAuthMethods = mb.Int32Value(0)
-		      Return Str(h)
+		      Dim i As Integer = h.Mask
+		      Return Str(i)
 		    End If
 		    
 		    ' Doubles
