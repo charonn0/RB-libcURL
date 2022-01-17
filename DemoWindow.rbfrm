@@ -123,7 +123,7 @@ Begin Window DemoWindow
          HeadingIndex    =   -1
          Height          =   155
          HelpTag         =   ""
-         Hierarchical    =   True
+         Hierarchical    =   False
          Index           =   -2147483648
          InitialParent   =   "OptionsPanel"
          InitialValue    =   "Info Name	Last request Value"
@@ -2527,27 +2527,41 @@ End
 		  Else
 		    MsgBox("Transfer completed (" + Str(BytesWritten) + " bytes written, " + Str(BytesRead) +" bytes read) with status: " + Str(Client.GetStatusCode))
 		  End If
-		  CurlInfo.AddRow("EFFECTIVE_URL", Client.EasyItem.URL)
-		  If Client.GetInfo(libcURL.Info.REDIRECT_COUNT).Int32Value > 0 Then
-		    CurlInfo.AddRow("REDIRECT_COUNT", Str(Client.GetInfo(libcURL.Info.REDIRECT_COUNT).Int32Value))
-		  End If
-		  If Client.GetInfo(libcURL.Info.REDIRECT_URL) <> "" Then
-		    CurlInfo.AddRow("REDIRECT_URL", Client.GetInfo(libcURL.Info.REDIRECT_URL))
-		  End If
-		  If Client.GetInfo(libcURL.Info.FTP_ENTRY_PATH).StringValue.Trim <> "" Then
-		    CurlInfo.AddRow("FTP_ENTRY_PATH", Client.GetInfo(libcURL.Info.FTP_ENTRY_PATH))
-		  End If
-		  CurlInfo.AddRow("RESPONSE_CODE", Str(Client.GetInfo(libcURL.Info.RESPONSE_CODE).Int32Value))
-		  CurlInfo.AddRow("NUM_CONNECTS", Str(Client.GetInfo(libcURL.Info.NUM_CONNECTS).Int32Value))
-		  CurlInfo.AddRow("OS_ERRNO", Str(Client.GetInfo(libcURL.Info.OS_ERRNO).Int32Value))
-		  CurlInfo.AddRow("SPEED_DOWNLOAD", FormatBytes(Client.GetInfo(libcURL.Info.SPEED_DOWNLOAD).DoubleValue) + "/sec")
-		  CurlInfo.AddRow("SPEED_UPLOAD", FormatBytes(Client.GetInfo(libcURL.Info.SPEED_UPLOAD).DoubleValue) + "/sec")
-		  CurlInfo.AddFolder("Time")
-		  CurlInfo.AddFolder("Content")
-		  CurlInfo.AddFolder("Sizes")
 		  
-		  Dim d As Date = Client.GetInfo(libcURL.Info.FILETIME)
-		  If d <> Nil Then CurlInfo.AddRow("FILETIME", libcURL.ParseDate(d))
+		  Dim infoiterator As New libcURL.Info.InfoTypeIterator()
+		  Do
+		    Dim info As libcURL.Info.InfoType = infoiterator.CurrentInfoType
+		    Dim value As String
+		    Select Case info.Name
+		    Case "SPEED_DOWNLOAD", "SPEED_UPLOAD"
+		      value = FormatBytes(info.Value(Client.EasyHandle).DoubleValue) + "/sec"
+		      
+		    Case "SPEED_DOWNLOAD_T", "SPEED_UPLOAD_T"
+		      value = FormatBytes(info.Value(Client.EasyHandle).Int64Value) + "/sec"
+		      
+		    Case "APPCONNECT_TIME", "CONNECT_TIME", "STARTTRANSFER_TIME", "TOTAL_TIME", "NAMELOOKUP_TIME", "PRETRANSFER_TIME", "REDIRECT_TIME"
+		      value = Format(info.Value(Client.EasyHandle).DoubleValue, "###,###,##0.0##")
+		      
+		    Case "APPCONNECT_TIME_T", "CONNECT_TIME_T", "STARTTRANSFER_TIME_T", "TOTAL_TIME_T", "NAMELOOKUP_TIME_T", "PRETRANSFER_TIME_T", "REDIRECT_TIME_T"
+		      value = Format(info.Value(Client.EasyHandle).Int64Value / 1000000, "###,###,##0.0##")
+		      
+		    Case "CONTENT_LENGTH_DOWNLOAD", "CONTENT_LENGTH_UPLOAD", "SIZE_DOWNLOAD", "SIZE_UPLOAD"
+		      value = FormatBytes(info.Value(Client.EasyHandle).DoubleValue)
+		      
+		    Case "CONTENT_LENGTH_DOWNLOAD_T", "CONTENT_LENGTH_UPLOAD_T", "SIZE_DOWNLOAD_T", "SIZE_UPLOAD_T"
+		      value = FormatBytes(info.Value(Client.EasyHandle).Int64Value)
+		      
+		    Case "HEADER_SIZE", "REQUEST_SIZE"
+		      value = FormatBytes(info.Value(Client.EasyHandle).Int32Value)
+		      
+		    Else
+		      value = info.StringValue(Client.EasyHandle)
+		    End Select
+		    
+		    CurlInfo.AddRow(info.Name, value)
+		  Loop Until Not infoiterator.MoveNext()
+		  
+		  
 		  
 		  Dim h As InternetHeaders = Client.GetResponseHeaders
 		  If h <> Nil Then
@@ -2892,67 +2906,6 @@ End
 
 #tag EndWindowCode
 
-#tag Events CurlInfo
-	#tag Event
-		Sub ExpandRow(row As Integer)
-		  Select Case Me.Cell(row, 0)
-		  Case "Time"
-		    CurlInfo.InsertRow(row + 1, "APPCONNECT_TIME", 1)
-		    CurlInfo.Cell(CurlInfo.LastIndex, 1) = Format(Client.GetInfo(libcURL.Info.APPCONNECT_TIME).DoubleValue, "###,###,##0.0##")
-		    
-		    CurlInfo.InsertRow(row + 1, "CONNECT_TIME", 1)
-		    CurlInfo.Cell(CurlInfo.LastIndex, 1) = Format(Client.GetInfo(libcURL.Info.CONNECT_TIME).DoubleValue, "###,###,##0.0##")
-		    
-		    CurlInfo.InsertRow(row + 1, "STARTTRANSFER_TIME", 1)
-		    CurlInfo.Cell(CurlInfo.LastIndex, 1) = Format(Client.GetInfo(libcURL.Info.STARTTRANSFER_TIME).DoubleValue, "###,###,##0.0##")
-		    
-		    CurlInfo.InsertRow(row + 1, "TOTAL_TIME", 1)
-		    CurlInfo.Cell(CurlInfo.LastIndex, 1) = Format(Client.GetInfo(libcURL.Info.TOTAL_TIME).DoubleValue, "###,###,##0.0##")
-		    
-		    CurlInfo.InsertRow(row + 1, "NAMELOOKUP_TIME", 1)
-		    CurlInfo.Cell(CurlInfo.LastIndex, 1) = Format(Client.GetInfo(libcURL.Info.NAMELOOKUP_TIME).DoubleValue, "###,###,##0.0##")
-		    
-		    CurlInfo.InsertRow(row + 1, "PRETRANSFER_TIME", 1)
-		    CurlInfo.Cell(CurlInfo.LastIndex, 1) = Format(Client.GetInfo(libcURL.Info.PRETRANSFER_TIME).DoubleValue, "###,###,##0.0##")
-		    
-		    CurlInfo.InsertRow(row + 1, "REDIRECT_TIME", 1)
-		    CurlInfo.Cell(CurlInfo.LastIndex, 1) = Format(Client.GetInfo(libcURL.Info.REDIRECT_TIME).DoubleValue, "###,###,##0.0##")
-		    
-		  Case "Content"
-		    CurlInfo.InsertRow(row + 1, "CONTENT_LENGTH_DOWNLOAD", 1)
-		    If Client.GetInfo(libcURL.Info.CONTENT_LENGTH_DOWNLOAD).DoubleValue > 0 Then
-		      CurlInfo.Cell(CurlInfo.LastIndex, 1) = FormatBytes(Client.GetInfo(libcURL.Info.CONTENT_LENGTH_DOWNLOAD).DoubleValue)
-		    Else
-		      CurlInfo.Cell(CurlInfo.LastIndex, 1) = ""
-		    End If
-		    
-		    CurlInfo.InsertRow(row + 1, "CONTENT_LENGTH_UPLOAD", 1)
-		    If Client.GetInfo(libcURL.Info.CONTENT_LENGTH_UPLOAD).DoubleValue > 0 Then
-		      CurlInfo.Cell(CurlInfo.LastIndex, 1) = FormatBytes(Client.GetInfo(libcURL.Info.CONTENT_LENGTH_UPLOAD).DoubleValue)
-		    Else
-		      CurlInfo.Cell(CurlInfo.LastIndex, 1) = ""
-		    End If
-		    
-		    CurlInfo.InsertRow(row + 1, "CONTENT_TYPE", 1)
-		    CurlInfo.Cell(CurlInfo.LastIndex, 1) = Client.GetInfo(libcURL.Info.CONTENT_TYPE).StringValue
-		    
-		  Case "Sizes"
-		    CurlInfo.InsertRow(row + 1, "HEADER_SIZE", 1)
-		    CurlInfo.Cell(CurlInfo.LastIndex, 1) = FormatBytes(Client.GetInfo(libcURL.Info.HEADER_SIZE).Int32Value)
-		    
-		    CurlInfo.InsertRow(row + 1, "REQUEST_SIZE", 1)
-		    CurlInfo.Cell(CurlInfo.LastIndex, 1) = FormatBytes(Client.GetInfo(libcURL.Info.REQUEST_SIZE).Int32Value)
-		    
-		    CurlInfo.InsertRow(row + 1, "SIZE_DOWNLOAD", 1)
-		    CurlInfo.Cell(CurlInfo.LastIndex, 1) = FormatBytes(Client.GetInfo(libcURL.Info.SIZE_DOWNLOAD).DoubleValue)
-		    
-		    CurlInfo.InsertRow(row + 1, "SIZE_UPLOAD", 1)
-		    CurlInfo.Cell(CurlInfo.LastIndex, 1) = FormatBytes(Client.GetInfo(libcURL.Info.SIZE_UPLOAD).DoubleValue)
-		    
-		  End Select
-		End Sub
-	#tag EndEvent
-#tag EndEvents
 #tag Events Debug
 	#tag Event
 		Function ConstructContextualMenu(base as MenuItem, x as Integer, y as Integer) As Boolean
