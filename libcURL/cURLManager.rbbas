@@ -250,7 +250,7 @@ Protected Class cURLManager
 
 	#tag Method, Flags = &h21
 		Private Sub QueueTransfer(URL As String, ReadFrom As Readable, WriteTo As Writeable)
-		  If Not mMultiHandle.AddItem(mEasyHandle) Then
+		  If Not mMultiHandle.AddTransfer(mEasyHandle) Then
 		    ' Most likely another transfer is already in progress.
 		    Raise New cURLException(mMultiHandle)
 		  End If
