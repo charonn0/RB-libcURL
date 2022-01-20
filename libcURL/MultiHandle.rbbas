@@ -342,7 +342,7 @@ Inherits libcURL.cURLHandle
 
 
 	#tag Hook, Flags = &h0
-		Event TransferComplete(easyitem As libcURL.EasyHandle)
+		Event TransferComplete(Transfer As libcURL.EasyHandle)
 	#tag EndHook
 
 
