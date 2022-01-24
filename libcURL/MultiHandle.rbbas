@@ -108,6 +108,20 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub Pause()
+		  ' Pauses the timer that runs transfers on the main event loop. This has the effect of
+		  ' pausing all transfers withour removing them. Calling this method has no effect if you're
+		  ' using the PerformOnce() method to run transfers on a thread (just stop calling PerformOnce
+		  ' if you want to pause.)
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.Pause
+		  
+		  If PerformTimer <> Nil Then PerformTimer.Mode = Timer.ModeOff
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub Perform()
 		  ' Calling this method will activate a timer which calls PerformOnce on the multistack until the last item is Removed.
 		  ' If the stack is not being processed, begins processing the stack. If the stack is already being processed, updates the PerformTimer
