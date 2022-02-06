@@ -400,8 +400,8 @@ Protected Module Testing
 		  Assert(m <> Nil)
 		  If Not m.AddElement("TestString", "Test Value1") Then Raise New libcURL.cURLException(m)
 		  If Not m.AddElement("TestString", "Test Value2") Then Raise New libcURL.cURLException(m)
-		  If Not m.AddElement("TestFile1", App.ExecutableFile) Then Raise New libcURL.cURLException(m)
-		  If Not m.AddElement("TestFile2", App.ExecutableFile, "application/sgml") Then Raise New libcURL.cURLException(m)
+		  If Not m.AddElement("TestFile1", libcURL.Default_CA_File) Then Raise New libcURL.cURLException(m)
+		  If Not m.AddElement("TestFile2", libcURL.Default_CA_File, "application/sgml") Then Raise New libcURL.cURLException(m)
 		  Dim test As MemoryBlock = "This is a test string!"
 		  Dim bs1 As New BinaryStream(test)
 		  Dim bs2 As New BinaryStream(test)
@@ -421,7 +421,7 @@ Protected Module Testing
 		  
 		  Dim data As MemoryBlock = m.Serialize()
 		  Assert(data <> Nil)
-		  Assert(data.Size > App.ExecutableFile.Length)
+		  Assert(data.Size > libcURL.Default_CA_File.Length)
 		  
 		  Assert(m.GetElement(0).Name = "TestString")
 		  Assert(m.GetElement(0).Contents = "Test Value1")
@@ -432,14 +432,14 @@ Protected Module Testing
 		  Assert(m.GetElement(1).Type = libcURL.FormElementType.String)
 		  
 		  Assert(m.GetElement(2).Name = "TestFile1")
-		  Assert(m.GetElement(2).Contents = App.ExecutableFile.ShellPath)
+		  Assert(m.GetElement(2).Contents = libcURL.Default_CA_File.ShellPath)
 		  #If TargetWin32 Then
 		    Assert(m.GetElement(2).ContentType = "application/x-msdownload")
 		  #endif
 		  Assert(m.GetElement(2).Type = libcURL.FormElementType.File)
 		  
 		  Assert(m.GetElement(3).Name = "TestFile2")
-		  Assert(m.GetElement(3).Contents = App.ExecutableFile.ShellPath)
+		  Assert(m.GetElement(3).Contents = libcURL.Default_CA_File.ShellPath)
 		  Assert(m.GetElement(3).ContentType = "application/sgml")
 		  Assert(m.GetElement(3).Type = libcURL.FormElementType.File)
 		  
@@ -459,10 +459,10 @@ Protected Module Testing
 		  Assert(mpe.MoreFiles = Nil)
 		  Assert(m.GetElement(6).Type = libcURL.FormElementType.FileArray)
 		  
-		  Dim m2 As libcURL.MultipartForm = New Dictionary("TestString":"Test Value1", "TestString":"Test Value2", "TestFile1":App.ExecutableFile)
+		  Dim m2 As libcURL.MultipartForm = New Dictionary("TestString":"Test Value1", "TestString":"Test Value2", "TestFile1":libcURL.Default_CA_File)
 		  data = m2.Serialize()
 		  Assert(data <> Nil)
-		  Assert(data.Size > App.ExecutableFile.Length)
+		  Assert(data.Size > libcURL.Default_CA_File.Length)
 		End Sub
 	#tag EndMethod
 
