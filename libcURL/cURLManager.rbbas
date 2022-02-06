@@ -197,7 +197,7 @@ Protected Class cURLManager
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.Pause
 		  
-		  Call EasyItem.Pause()
+		  Call EasyHandle.Pause()
 		End Sub
 	#tag EndMethod
 
@@ -250,7 +250,7 @@ Protected Class cURLManager
 
 	#tag Method, Flags = &h21
 		Private Sub QueueTransfer(URL As String, ReadFrom As Readable, WriteTo As Writeable)
-		  If Not mMultiHandle.AddItem(mEasyHandle) Then
+		  If Not mMultiHandle.AddTransfer(mEasyHandle) Then
 		    ' Most likely another transfer is already in progress.
 		    Raise New cURLException(mMultiHandle)
 		  End If
@@ -280,7 +280,7 @@ Protected Class cURLManager
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.RequestHeaders
 		  
-		  If mRequestHeaderEngine = Nil Then mRequestHeaderEngine = New RequestHeaderEngineCreator(Me.EasyItem)
+		  If mRequestHeaderEngine = Nil Then mRequestHeaderEngine = New RequestHeaderEngineCreator(Me.EasyHandle)
 		  Return mRequestHeaderEngine
 		End Function
 	#tag EndMethod
@@ -297,7 +297,7 @@ Protected Class cURLManager
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.Reset
 		  
 		  If mEasyHandle = Nil Then mEasyHandle = New libcURL.EasyHandle Else mEasyHandle.Reset
-		  Me.EasyItem = mEasyHandle
+		  Me.EasyHandle = mEasyHandle
 		  mEasyHandle.UserAgent = libcURL.Version.UserAgent
 		  mEasyHandle.Secure = True
 		  mEasyHandle.CA_ListFile = libcURL.Default_CA_File
@@ -318,7 +318,7 @@ Protected Class cURLManager
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.Pause
 		  
-		  Call EasyItem.Resume()
+		  Call EasyHandle.Resume()
 		End Sub
 	#tag EndMethod
 
@@ -504,7 +504,7 @@ Protected Class cURLManager
 			  ' See:
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.HTTPAuthenticationMethod
 			  
-			  Return EasyItem.GetAuthMethods
+			  Return EasyHandle.GetAuthMethods
 			  
 			End Get
 		#tag EndGetter
@@ -515,7 +515,7 @@ Protected Class cURLManager
 			  ' See:
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.HTTPAuthenticationMethod
 			  
-			  Call EasyItem.SetAuthMethods(value)
+			  Call EasyHandle.SetAuthMethods(value)
 			  
 			End Set
 		#tag EndSetter
@@ -526,14 +526,14 @@ Protected Class cURLManager
 		#tag Getter
 			Get
 			  ' Gets the version of HTTP to be used. Returns HTTP_VERSION_1_0, HTTP_VERSION_1_1, HTTP_VERSION_2_0, or HTTP_VERSION_NONE
-			  return EasyItem.HTTPVersion
+			  return EasyHandle.HTTPVersion
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
-			  ' Sets the version of HTTP to be used. 
+			  ' Sets the version of HTTP to be used.
 			  
-			  EasyItem.HTTPVersion = value
+			  EasyHandle.HTTPVersion = value
 			End Set
 		#tag EndSetter
 		HTTPVersion As libcURL.HTTPVersion
@@ -608,12 +608,12 @@ Protected Class cURLManager
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  Return EasyItem.Password
+			  Return EasyHandle.Password
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
-			  EasyItem.Password = value
+			  EasyHandle.Password = value
 			End Set
 		#tag EndSetter
 		Password As String
@@ -622,12 +622,12 @@ Protected Class cURLManager
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  Return EasyItem.Username
+			  Return EasyHandle.Username
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
-			  EasyItem.Username = value
+			  EasyHandle.Username = value
 			End Set
 		#tag EndSetter
 		Username As String

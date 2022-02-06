@@ -118,7 +118,7 @@ Protected Class ProxyEngine
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function SetProxyHeader(HeaderName As String, HeaderValue As String) As Boolean
+		Function SetHeader(HeaderName As String, HeaderValue As String) As Boolean
 		  ' Sets a header to send to the proxy. Not all proxy types support this feature.
 		  ' Subsequent calls to this method will append the header to the previously set headers.
 		  ' Headers will persist from transfer to transfer. Pass an empty value to clear the named
@@ -126,7 +126,7 @@ Protected Class ProxyEngine
 		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/CURLOPT_PROXYHEADER.html
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ProxyEngine.SetProxyHeader
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ProxyEngine.SetHeader
 		  
 		  If Not libcURL.Version.IsAtLeast(7, 37, 0) Then
 		    ErrorSetter(Owner).LastError = libcURL.Errors.FEATURE_UNAVAILABLE
@@ -153,6 +153,12 @@ Protected Class ProxyEngine
 		  
 		  If Not Owner.SetOption(libcURL.Opts.PROXYHEADER, mHeaders) Then Raise New cURLException(Owner)
 		  Return (mHeaders <> Nil Or HeaderName = "")
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Attributes( deprecated = "libcURL.ProxyEngine.SetHeader" )  Function SetProxyHeader(HeaderName As String, HeaderValue As String) As Boolean
+		  Return Me.SetHeader(HeaderName, HeaderValue)
 		End Function
 	#tag EndMethod
 

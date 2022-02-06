@@ -3087,6 +3087,12 @@ Protected Class OptionInfo
 
 	#tag Method, Flags = &h0
 		Function IsSet(Session As libcURL.EasyHandle) As Boolean
+		  ' Returns True if the option represented by this OptionInfo instance has
+		  ' been modified on the given instance of EasyHandle.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Opts.OptionInfo.IsSet
+		  
 		  Dim s As String = StringValue(Session)
 		  Return s = ""
 		End Function
@@ -3094,18 +3100,35 @@ Protected Class OptionInfo
 
 	#tag Method, Flags = &h0
 		Function Operator_Compare(OtherOpt As libcURL.Opts.OptionInfo) As Integer
+		  ' Compares this OptionInfo to another OptionInfo. OptionInfo instances are considered equal if
+		  ' they represent the same option number. Since the OptionInfo class automatically converts
+		  ' from an Int32, you can compare an instance of OptionInfo to a literal number using this method.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Opts.OptionInfo.Operator_Compare
+		  
 		  If OtherOpt Is Nil Then Return 1 Else Return Sign(OptionNumber - OtherOpt.OptionNumber)
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function Operator_Convert() As Int32
+		  ' This method overloads the conversion operator (=) allowing direct conversion to an Int32.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Opts.OptionInfo.Operator_Convert
+		  
 		  Return OptionNumber
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub Operator_Convert(OptionID As Int32)
+		  ' This method overloads the conversion operator (=) allowing direct conversion from an Int32.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Opts.OptionInfo.Operator_Convert
+		  
 		  If Not libcURL.IsAvailable Then Raise New PlatformNotSupportedException
 		  If System.IsFunctionAvailable("curl_easy_option_by_id", cURLLib) Then
 		    Dim opt As Ptr = curl_easy_option_by_id(OptionID)
@@ -3120,6 +3143,12 @@ Protected Class OptionInfo
 
 	#tag Method, Flags = &h0
 		Sub Operator_Convert(Name As String)
+		  ' This method overloads the conversion operator (=) allowing direct conversion from
+		  ' the name or alias of an option number.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Opts.OptionInfo.Operator_Convert
+		  
 		  If Not libcURL.IsAvailable Then Raise New PlatformNotSupportedException
 		  Name = Replace(Name, "CURLOPT_", "")
 		  Name = Replace(Name, "libcURL.Opts.", "")
@@ -3137,6 +3166,14 @@ Protected Class OptionInfo
 
 	#tag Method, Flags = &h0
 		Function StringValue(Session As libcURL.EasyHandle) As String
+		  ' A string representation, if one is available, of the current value of the option number
+		  ' for the specified EasyHandle.
+		  ' This method is useful for displaying values to the user. If no string representation
+		  ' can be provided, for example if the option hasn't been set, then an empty string is returned.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Opts.OptionInfo.StringValue
+		  
 		  Select Case Me.Type
 		  Case OptionType.Bitmask, OptionType.LargeNumber, OptionType.Number
 		    #If Target64Bit Then
@@ -3210,12 +3247,22 @@ Protected Class OptionInfo
 
 	#tag Method, Flags = &h0
 		Function Value(Session As libcURL.EasyHandle) As Variant
+		  ' Returns the current value of the option for the specified EasyHandle.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Opts.OptionInfo.Value
+		  
 		  Return Session.GetOption(OptionNumber)
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub Value(Session As libcURL.EasyHandle, Assigns NewValue As Variant)
+		  ' Sets a new value for the option on the specified EasyHandle.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Opts.OptionInfo.Value
+		  
 		  Call Session.SetOption(OptionNumber, NewValue)
 		End Sub
 	#tag EndMethod
@@ -3224,6 +3271,11 @@ Protected Class OptionInfo
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' The alias under which the option is known in Xojo. e.g. "libcURL.Opts.CUSTOMREQUEST"
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Info.InfoType.BindingAlias
+			  
 			  Dim nm As String = GetOptionName(OptionNumber)
 			  If nm = "INTERFACE" Then nm = "NETINTERFACE"
 			  If nm <> "" Then nm = "libcURL.Opts." + nm
@@ -3236,6 +3288,11 @@ Protected Class OptionInfo
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' The default value for this option. Typically a variation of 0, nil, "", etc.
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Opts.OptionInfo.DefaultValue
+			  
 			  Dim v As Variant = GetOptionDefault(OptionNumber)
 			  If IsBooleanOption(OptionNumber) Then Return v.BooleanValue
 			  Return v
@@ -3247,6 +3304,11 @@ Protected Class OptionInfo
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' The URL to the documentation for this option on the libcurl website.
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Opts.OptionInfo.DocumentationURL
+			  
 			  If Name <> "" And Not IsDeprecated Then Return "https://curl.haxx.se/libcurl/c/" + LibraryAlias + ".html"
 			End Get
 		#tag EndGetter
@@ -3256,6 +3318,10 @@ Protected Class OptionInfo
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' This property is True if this option is available at runtime.
+			  '
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Opts.OptionInfo.IsAvailable
+			  
 			  If mMinMajor = 0 Then Return True
 			  Return libcURL.Version.IsAtLeast(mMinMajor, mMinMinor, mMinPatch)
 			End Get
@@ -3266,6 +3332,11 @@ Protected Class OptionInfo
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' This property is True if this option has been deprecated.
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Opts.OptionInfo.IsDeprecated
+			  
 			  return mOpt.Flags = CURLOT_FLAG_ALIAS
 			End Get
 		#tag EndGetter
@@ -3275,6 +3346,11 @@ Protected Class OptionInfo
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' This property is True if this option may safely be set to Nil.
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Opts.OptionInfo.IsNullable
+			  
 			  return DefaultValue Is Nil
 			End Get
 		#tag EndGetter
@@ -3284,12 +3360,33 @@ Protected Class OptionInfo
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' The alias under which the option is known in libcURL (and elsewhere). e.g. "CURLOPT_CUSTOMREQUEST"
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Opts.OptionInfo.LibraryAlias
+			  
 			  Dim nm As String = GetOptionName(OptionNumber)
 			  If nm <> "" Then nm = "CURLOPT_" + nm
 			  Return nm
 			End Get
 		#tag EndGetter
 		LibraryAlias As String
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  ' Returns a string containing the first libcurl version that supports this
+			  ' option, if known. For example, "7.15.9".
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Opts.OptionInfo.MinimumVersion
+			  
+			  If mMinMajor = 0 Then Return ""
+			  Return Str(mMinMajor) + "." + Str(mMinMinor) + "." + Str(mMinPatch)
+			End Get
+		#tag EndGetter
+		MinimumVersion As String
 	#tag EndComputedProperty
 
 	#tag Property, Flags = &h21
@@ -3311,6 +3408,11 @@ Protected Class OptionInfo
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' The name of the option without prefixes. e.g. "CUSTOMREQUEST"
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Opts.OptionInfo.Name
+			  
 			  Dim mb As MemoryBlock = mOpt.Name
 			  If mb <> Nil Then
 			    Return mb.CString(0)
@@ -3325,6 +3427,11 @@ Protected Class OptionInfo
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' The numeric value of the option.
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Opts.OptionInfo.OptionNumber
+			  
 			  Return mOpt.Option
 			End Get
 		#tag EndGetter
@@ -3334,6 +3441,11 @@ Protected Class OptionInfo
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' The datatype for values of this option. e.g. OptionType.String
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Opts.OptionInfo.Type
+			  
 			  If IsBooleanOption(OptionNumber) Then Return OptionType.Boolean
 			  Return mOpt.Type
 			End Get
