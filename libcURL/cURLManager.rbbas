@@ -223,9 +223,7 @@ Protected Class cURLManager
 		  QueueTransfer(URL, ReadFrom, WriteTo)
 		  Do Until Not mMultiHandle.PerformOnce()
 		    If Yield And Rnd > 0.99 Then
-		      #If TargetDesktop Then
-		        App.SleepCurrentThread(50)
-		      #ElseIf RBVersion < 2020 Then
+		      #If RBVersion < 2020 Then
 		        App.YieldToNextThread()
 		      #Else
 		        Thread.YieldToNext()
