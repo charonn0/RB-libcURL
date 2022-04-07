@@ -347,7 +347,7 @@ Protected Class MIMEMessagePart
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MIMEMessagePart.SubPart
 			  
 			  If Me.Type <> MIMEPartType.Multipart Then Return Nil
-			  Return New MIMEMessage(Me.UserData, mOwner)
+			  Return New MIMEMessageCreator(Me.UserData, mOwner)
 			End Get
 		#tag EndGetter
 		SubPart As libcURL.MIMEMessage

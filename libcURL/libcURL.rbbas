@@ -525,6 +525,11 @@ Protected Module libcURL
 
 	#tag Method, Flags = &h1
 		Protected Function IsFeatureAvailable(Feature As libcURL.FeatureType) As Boolean
+		  ' Returns True if libcURL is available and the requested feature is available.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.IsFeatureAvailable
+		  
 		  Return IsAvailable() And BitAnd(libcURL.Version.Features, CType(Feature, Integer)) = CType(Feature, Integer)
 		End Function
 	#tag EndMethod
@@ -2126,7 +2131,7 @@ Protected Module libcURL
 
 	#tag Note, Name = Copying
 		RB-libcURL (https://github.com/charonn0/RB-libcURL)
-		Copyright (c)2014-21 Andrew Lambert, all rights reserved.
+		Copyright (c)2014-22 Andrew Lambert, all rights reserved.
 		
 		 Permission to use, copy, modify, and distribute this software for any purpose
 		 with or without fee is hereby granted, provided that the above copyright

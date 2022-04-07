@@ -172,8 +172,8 @@ Implements FormStreamGetter
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h1000
-		Sub Constructor(MessagePtr As Ptr, ParentMessage As libcURL.MIMEMessage)
+	#tag Method, Flags = &h1001
+		Protected Sub Constructor(MessagePtr As Ptr, ParentMessage As libcURL.MIMEMessage)
 		  ' Constructs a non-freeable instance of MIMEMessage which references a sub-part of the
 		  ' ParentMessage. (Used by MIMEMessagePart.SubPart)
 		  '

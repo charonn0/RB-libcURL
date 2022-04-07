@@ -7,14 +7,14 @@ The minimum supported libcURL version is [7.15.2](https://github.com/charonn0/RB
 
 ## Example
 This example performs a synchronous HTTP GET request on the calling thread. [**More examples**](https://github.com/charonn0/RB-libcURL/wiki#examples).
-```vbnet
+```xojo
   Dim curl As New cURLClient
   If curl.Get("http://www.example.com/index.html") Then 
       Dim page As String = curl.GetDownloadedData()
   End If
 ```
 ## Highlights
-* [Synchronous and asynchronous](https://github.com/charonn0/RB-libcURL/wiki/Synchronous-vs.-Asynchronous-methods) transfers 
+* Synchronous and asynchronous transfers 
 * Use any protocol supported by libcURL: DICT, FILE, FTP, FTPS, Gopher, HTTP(1.0, 1.1, and 2† ), HTTPS, IMAP, IMAPS, LDAP, LDAPS, POP3, POP3S, RTMP, RTSP, SCP, SFTP, SMTP, SMTPS, Telnet and TFTP.
 * Support for modern HTTP features like [persistent connections](https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.AutoDisconnect), [pipelining](https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.HTTPPipelining), and [multiplexing](https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.HTTPMultiplexing)†.
 * Automatic browser-like [HTTP cookie management](https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine).
