@@ -2525,7 +2525,7 @@ End
 		    Dim err As String = libcURL.Errors.Name(cURLCode) + "(" + Str(cURLCode) + "): " + libcURL.FormatError(cURLCode)
 		    Call MsgBox(err, 16, "libcURL error")
 		  Else
-		    MsgBox("Transfer completed (" + Str(BytesWritten) + " bytes written, " + Str(BytesRead) +" bytes read) with status: " + Str(Client.GetStatusCode))
+		    MsgBox("Transfer completed (" + Str(BytesWritten) + " bytes written, " + Str(BytesRead) +" bytes read) with status: " + Str(Client.LastStatusCode))
 		  End If
 		  
 		  Dim infoiterator As New libcURL.Info.InfoTypeIterator()

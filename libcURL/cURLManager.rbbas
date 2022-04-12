@@ -74,17 +74,6 @@ Protected Class cURLManager
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Function Cookies() As libcURL.CookieEngine
-		  ' Returns a reference to the CookieEngine instance
-		  '
-		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.Cookies
-		  
-		  Return mEasyHandle.CookieEngine
-		End Function
-	#tag EndMethod
-
 	#tag Method, Flags = &h21
 		Private Sub Destructor()
 		  Me.Close()
@@ -154,7 +143,9 @@ Protected Class cURLManager
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function GetStatusCode() As Integer
+		Attributes( deprecated = "libcurl.cURLManager.LastStatusCode" )  Function GetStatusCode() As Integer
+		  ' This method has been deprecated in favor of the LastStatusCode property.
+		  '
 		  ' Returns a protocol-specific status code for the most recent transfer. If the transfer
 		  ' involved several status codes (FTP anything, HTTP redirects, etc.) then only the most
 		  ' recent code is returned.
@@ -163,29 +154,6 @@ Protected Class cURLManager
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.GetStatusCode
 		  
 		  Return Me.GetInfo(libcURL.Info.RESPONSE_CODE).Int32Value
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function IsTransferComplete() As Boolean
-		  ' After a transfer is initiated this method will return False until the 
-		  ' transfer completes (successfully or not.)
-		  '
-		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.IsTransferComplete
-		  
-		  Return mIsTransferComplete
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function LastError() As Integer
-		  ' Gets the most recent cURL easy error code for the transfer.
-		  '
-		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.LastError
-		  
-		  Return mEasyHandle.LastError
 		End Function
 	#tag EndMethod
 
@@ -235,17 +203,6 @@ Protected Class cURLManager
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Function Proxy() As libcURL.ProxyEngine
-		  ' Returns a reference to a ProxyEngine instance
-		  '
-		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.Proxy
-		  
-		  Return mEasyHandle.ProxyEngine
-		End Function
-	#tag EndMethod
-
 	#tag Method, Flags = &h21
 		Private Sub QueueTransfer(URL As String, ReadFrom As Readable, WriteTo As Writeable)
 		  If Not mMultiHandle.AddTransfer(mEasyHandle) Then
@@ -269,18 +226,6 @@ Protected Class cURLManager
 		  If mEasyHandle.UseErrorBuffer Then mEasyHandle.UseErrorBuffer = True ' clears the previous buffer, if any
 		  
 		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function RequestHeaders() As libcURL.RequestHeaderEngine
-		  ' Returns a reference to a RequestHeaderEngine instance
-		  '
-		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.RequestHeaders
-		  
-		  If mRequestHeaderEngine = Nil Then mRequestHeaderEngine = New RequestHeaderEngineCreator(Me.EasyHandle)
-		  Return mRequestHeaderEngine
-		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -445,6 +390,20 @@ Protected Class cURLManager
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Returns a reference to the CookieEngine instance
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.Cookies
+			  
+			  Return mEasyHandle.CookieEngine
+			End Get
+		#tag EndGetter
+		Cookies As libcURL.CookieEngine
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
 			  return mEasyHandle
 			End Get
 		#tag EndGetter
@@ -555,6 +514,51 @@ Protected Class cURLManager
 		IsSSLCertOK As Boolean
 	#tag EndComputedProperty
 
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  ' After a transfer is initiated this method will return False until the
+			  ' transfer completes (successfully or not.)
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.IsTransferComplete
+			  
+			  Return mIsTransferComplete
+			End Get
+		#tag EndGetter
+		IsTransferComplete As Boolean
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  ' Gets the most recent cURL easy error code for the transfer.
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.LastError
+			  
+			  Return mEasyHandle.LastError
+			End Get
+		#tag EndGetter
+		LastError As Integer
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  ' Returns a protocol-specific status code for the most recent transfer. If the transfer
+			  ' involved several status codes (FTP anything, HTTP redirects, etc.) then only the most
+			  ' recent code is returned.
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.LastStatusCode
+			  
+			  Return Me.GetInfo(libcURL.Info.RESPONSE_CODE).Int32Value
+			End Get
+		#tag EndGetter
+		LastStatusCode As Int32
+	#tag EndComputedProperty
+
 	#tag Property, Flags = &h21
 		Private mAbort As Boolean
 	#tag EndProperty
@@ -615,6 +619,35 @@ Protected Class cURLManager
 			End Set
 		#tag EndSetter
 		Password As String
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  ' Returns a reference to a ProxyEngine instance
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.Proxy
+			  
+			  Return mEasyHandle.ProxyEngine
+			End Get
+		#tag EndGetter
+		Proxy As libcURL.ProxyEngine
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  ' Returns a reference to a RequestHeaderEngine instance
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.RequestHeaders
+			  
+			  If mRequestHeaderEngine = Nil Then mRequestHeaderEngine = New RequestHeaderEngineCreator(Me.EasyHandle)
+			  Return mRequestHeaderEngine
+			End Get
+		#tag EndGetter
+		RequestHeaders As libcURL.RequestHeaderEngine
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
