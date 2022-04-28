@@ -239,7 +239,7 @@ Inherits libcURL.EasyHandle
 		  Dim w As New FTPWildCard
 		  w.LocalRoot = outputdir
 		
-		  Dim c As New cURLClient(w) ' pass the FTPWildCard to cURLManager.Constructor(EasyHandle)
+		  Dim c As New cURLClient(w) ' pass the FTPWildCard to cURLSession.Constructor(EasyHandle)
 		
 		  If Not c.Get("ftp://ftp.example.com/pub/*.htm*") Then ' use a pattern in the URL
 		    MsgBox("Error: " + Str(c.LastError))

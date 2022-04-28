@@ -1,6 +1,6 @@
 #tag Class
 Class cURLClient
-Inherits libcURL.cURLManager
+Inherits libcURL.cURLSession
 	#tag Method, Flags = &h0
 		Sub Get(URL As String, WriteTo As Writeable = Nil)
 		  ' Asynchronously performs a retrieval using protocol-appropriate semantics (http GET, ftp RETR, etc.)

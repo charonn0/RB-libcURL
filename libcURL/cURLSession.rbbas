@@ -1,13 +1,13 @@
 #tag Class
-Protected Class cURLManager
+Protected Class cURLSession
 	#tag Method, Flags = &h0
 		Sub Abort()
 		  ' Aborts the current transfer by automatically returning True from the Progress event the
 		  ' next time it is raised. If no transfer is in progress or if the Progress event has been disabled
 		  ' then this method has no effect.
 		  '
-		  ' See: 
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.Abort
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.Abort
 		  
 		  If Not Me.IsTransferComplete Then mAbort = True
 		End Sub
@@ -15,11 +15,11 @@ Protected Class cURLManager
 
 	#tag Method, Flags = &h0
 		Sub Close()
-		  ' Explicitly frees the EasyHandle associated with the cURLManager instance.
+		  ' Explicitly frees the EasyHandle associated with the cURLSession instance.
 		  ' Automatically called by the Destructor.
 		  '
 		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.Close
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.Close
 		  
 		  If mMultiHandle <> Nil Then mMultiHandle.Close()
 		  If mEasyHandle <> Nil Then
@@ -51,10 +51,10 @@ Protected Class cURLManager
 
 	#tag Method, Flags = &h0
 		Sub Constructor()
-		  ' Creates a new instance of cURLManager with default options
+		  ' Creates a new instance of cURLSession with default options
 		  '
 		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.Constructor
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.Constructor
 		  
 		  mMultiHandle = New libcURL.MultiHandle
 		  AddHandler mMultiHandle.TransferComplete, WeakAddressOf _TransferCompleteHandler
@@ -64,25 +64,14 @@ Protected Class cURLManager
 
 	#tag Method, Flags = &h0
 		Sub Constructor(ExistingEasy As libcURL.EasyHandle)
-		  ' Creates a new instance of cURLManager by taking ownership of the passed EasyHandle
+		  ' Creates a new instance of cURLSession by taking ownership of the passed EasyHandle
 		  '
 		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.Constructor
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.Constructor
 		  
 		  mEasyHandle = ExistingEasy
 		  Me.Constructor()
 		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function Cookies() As libcURL.CookieEngine
-		  ' Returns a reference to the CookieEngine instance
-		  '
-		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.Cookies
-		  
-		  Return mEasyHandle.CookieEngine
-		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
@@ -94,11 +83,11 @@ Protected Class cURLManager
 
 	#tag Method, Flags = &h0
 		Function GetCookie(Name As String, Domain As String) As String
-		  ' Gets the value of the first cookie named 'Name' set for the host matching 'Domain', or the empty 
+		  ' Gets the value of the first cookie named 'Name' set for the host matching 'Domain', or the empty
 		  ' string ("") if no cookie is found. For more advanced lookups refer to the CookieEngine class.
 		  '
 		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.GetCookie
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.GetCookie
 		  
 		  Dim index As Integer = mEasyHandle.CookieEngine.Lookup(Name, Domain)
 		  If index > -1 Then Return mEasyHandle.CookieEngine.Value(index)
@@ -113,7 +102,7 @@ Protected Class cURLManager
 		  ' the Writeable object directly.
 		  '
 		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.GetDownloadedData
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.GetDownloadedData
 		  
 		  If mDownloadMB <> Nil Then Return mDownloadMB
 		  Dim data As New MemoryBlock(0)
@@ -135,7 +124,7 @@ Protected Class cURLManager
 		  ' Calls GetInfo on the EasyHandle. Refer to the EasyHandle.GetInfo documentation for details.
 		  '
 		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.GetInfo
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.GetInfo
 		  
 		  If mEasyHandle <> Nil Then Return mEasyHandle.GetInfo(InfoType)
 		End Function
@@ -147,45 +136,24 @@ Protected Class cURLManager
 		  ' during the most recent transfer. If no headers were received, returns Nil.
 		  '
 		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.GetResponseHeaders
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.GetResponseHeaders
 		  
 		  Return mHeaders
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function GetStatusCode() As Integer
+		Attributes( deprecated = "libcurl.cURLSession.LastStatusCode" )  Function GetStatusCode() As Integer
+		  ' This method has been deprecated in favor of the LastStatusCode property.
+		  '
 		  ' Returns a protocol-specific status code for the most recent transfer. If the transfer
 		  ' involved several status codes (FTP anything, HTTP redirects, etc.) then only the most
 		  ' recent code is returned.
 		  '
 		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.GetStatusCode
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.GetStatusCode
 		  
 		  Return Me.GetInfo(libcURL.Info.RESPONSE_CODE).Int32Value
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function IsTransferComplete() As Boolean
-		  ' After a transfer is initiated this method will return False until the 
-		  ' transfer completes (successfully or not.)
-		  '
-		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.IsTransferComplete
-		  
-		  Return mIsTransferComplete
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function LastError() As Integer
-		  ' Gets the most recent cURL easy error code for the transfer.
-		  '
-		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.LastError
-		  
-		  Return mEasyHandle.LastError
 		End Function
 	#tag EndMethod
 
@@ -195,7 +163,7 @@ Protected Class cURLManager
 		  ' upload and download operations; to pause them separately refer to EasyHandle.Pause.
 		  '
 		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.Pause
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.Pause
 		  
 		  Call EasyHandle.Pause()
 		End Sub
@@ -206,7 +174,7 @@ Protected Class cURLManager
 		  ' Performs the transfer on the main thread/event loop.
 		  '
 		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.Perform
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.Perform
 		  
 		  QueueTransfer(URL, ReadFrom, WriteTo)
 		  mMultiHandle.Perform()
@@ -218,7 +186,7 @@ Protected Class cURLManager
 		  ' Perform the transfer on the calling thread.
 		  '
 		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.Perform
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.Perform
 		  
 		  QueueTransfer(URL, ReadFrom, WriteTo)
 		  Do Until Not mMultiHandle.PerformOnce()
@@ -232,17 +200,6 @@ Protected Class cURLManager
 		  Loop
 		  
 		  Return mEasyHandle.LastError = 0
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function Proxy() As libcURL.ProxyEngine
-		  ' Returns a reference to a ProxyEngine instance
-		  '
-		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.Proxy
-		  
-		  Return mEasyHandle.ProxyEngine
 		End Function
 	#tag EndMethod
 
@@ -272,27 +229,15 @@ Protected Class cURLManager
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function RequestHeaders() As libcURL.RequestHeaderEngine
-		  ' Returns a reference to a RequestHeaderEngine instance
-		  '
-		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.RequestHeaders
-		  
-		  If mRequestHeaderEngine = Nil Then mRequestHeaderEngine = New RequestHeaderEngineCreator(Me.EasyHandle)
-		  Return mRequestHeaderEngine
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Sub Reset()
-		  ' Resets the cURLManager to a pristine state. All options that were previously set will be cleared and returned
+		  ' Resets the cURLSession to a pristine state. All options that were previously set will be cleared and returned
 		  ' to their default values. Existing connections, the Session ID cache, the DNS cache, cookies, and shares are
 		  ' not affected.
 		  '
 		  ' It is not necessary to call this method between transfers.
 		  '
 		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.Reset
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.Reset
 		  
 		  If mEasyHandle = Nil Then mEasyHandle = New libcURL.EasyHandle Else mEasyHandle.Reset
 		  Me.EasyHandle = mEasyHandle
@@ -314,7 +259,7 @@ Protected Class cURLManager
 		  ' upload and download operations; to resume them separately refer to EasyHandle.Resume.
 		  '
 		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.Pause
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.Pause
 		  
 		  Call EasyHandle.Resume()
 		End Sub
@@ -325,7 +270,7 @@ Protected Class cURLManager
 		  ' Sets or updates a cookie. The cookie engine must be enabled.
 		  '
 		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.SetCookie
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.SetCookie
 		  
 		  Return mEasyHandle.CookieEngine.SetCookie(Name, Value, Domain, Expires, Path, HTTPOnly)
 		End Function
@@ -336,7 +281,7 @@ Protected Class cURLManager
 		  ' Calls SetOption on the EasyHandle. Refer to the EasyHandle.SetOption documentation for details.
 		  '
 		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.SetOption
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.SetOption
 		  
 		  If mEasyHandle <> Nil Then Return mEasyHandle.SetOption(OptionNumber, NewValue)
 		End Function
@@ -349,7 +294,7 @@ Protected Class cURLManager
 		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/CURLOPT_CUSTOMREQUEST.html#DESCRIPTION
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.SetRequestMethod
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.SetRequestMethod
 		  
 		  If RequestMethod.Trim <> "" Then
 		    Return mEasyHandle.SetOption(libcURL.Opts.CUSTOMREQUEST, RequestMethod)
@@ -367,7 +312,7 @@ Protected Class cURLManager
 		  ' MemoryBlock is discarded; it does not persist between transfers.
 		  '
 		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.SetUploadData
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.SetUploadData
 		  
 		  mUploadMB = UploadData
 		  mEasyHandle.UploadMode = (mUploadMB <> Nil)
@@ -445,6 +390,20 @@ Protected Class cURLManager
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Returns a reference to the CookieEngine instance
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.Cookies
+			  
+			  Return mEasyHandle.CookieEngine
+			End Get
+		#tag EndGetter
+		Cookies As libcURL.CookieEngine
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
 			  return mEasyHandle
 			End Get
 		#tag EndGetter
@@ -453,7 +412,7 @@ Protected Class cURLManager
 			  ' Gets and sets the EasyHandle instance which will be/has been used to conduct transfers.
 			  '
 			  ' See:
-			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.EasyItem
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.EasyItem
 			  
 			  Me.Close()
 			  Try
@@ -491,7 +450,7 @@ Protected Class cURLManager
 			  Me.EasyHandle = value
 			End Set
 		#tag EndSetter
-		Attributes( deprecated = "libcURL.cURLManager.EasyHandle" ) EasyItem As libcURL.EasyHandle
+		Attributes( deprecated = "libcURL.cURLSession.EasyHandle" ) EasyItem As libcURL.EasyHandle
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
@@ -500,7 +459,7 @@ Protected Class cURLManager
 			  ' Gets the available/allowed HTTP authentication methods.
 			  '
 			  ' See:
-			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.HTTPAuthenticationMethod
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.HTTPAuthenticationMethod
 			  
 			  Return EasyHandle.GetAuthMethods
 			  
@@ -511,7 +470,7 @@ Protected Class cURLManager
 			  ' Sets the available/allowed HTTP authentication methods.
 			  '
 			  ' See:
-			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.HTTPAuthenticationMethod
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.HTTPAuthenticationMethod
 			  
 			  Call EasyHandle.SetAuthMethods(value)
 			  
@@ -546,13 +505,58 @@ Protected Class cURLManager
 			  '
 			  ' See:
 			  ' https://curl.haxx.se/libcurl/c/CURLINFO_SSL_VERIFYRESULT.html
-			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.IsSSLCertOK
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.IsSSLCertOK
 			  
 			  Dim v As Integer = Me.GetInfo(libcURL.Info.SSL_VERIFYRESULT)
 			  Return v = 0
 			End Get
 		#tag EndGetter
 		IsSSLCertOK As Boolean
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  ' After a transfer is initiated this method will return False until the
+			  ' transfer completes (successfully or not.)
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.IsTransferComplete
+			  
+			  Return mIsTransferComplete
+			End Get
+		#tag EndGetter
+		IsTransferComplete As Boolean
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  ' Gets the most recent cURL easy error code for the transfer.
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.LastError
+			  
+			  Return mEasyHandle.LastError
+			End Get
+		#tag EndGetter
+		LastError As Integer
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  ' Returns a protocol-specific status code for the most recent transfer. If the transfer
+			  ' involved several status codes (FTP anything, HTTP redirects, etc.) then only the most
+			  ' recent code is returned.
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.LastStatusCode
+			  
+			  Return Me.GetInfo(libcURL.Info.RESPONSE_CODE).Int32Value
+			End Get
+		#tag EndGetter
+		LastStatusCode As Int32
 	#tag EndComputedProperty
 
 	#tag Property, Flags = &h21
@@ -620,6 +624,35 @@ Protected Class cURLManager
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Returns a reference to a ProxyEngine instance
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.Proxy
+			  
+			  Return mEasyHandle.ProxyEngine
+			End Get
+		#tag EndGetter
+		Proxy As libcURL.ProxyEngine
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  ' Returns a reference to a RequestHeaderEngine instance
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.RequestHeaders
+			  
+			  If mRequestHeaderEngine = Nil Then mRequestHeaderEngine = New RequestHeaderEngineCreator(Me.EasyHandle)
+			  Return mRequestHeaderEngine
+			End Get
+		#tag EndGetter
+		RequestHeaders As libcURL.RequestHeaderEngine
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
 			  Return EasyHandle.Username
 			End Get
 		#tag EndGetter
@@ -650,6 +683,16 @@ Protected Class cURLManager
 			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
+			Name="IsTransferComplete"
+			Group="Behavior"
+			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="LastError"
+			Group="Behavior"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
@@ -663,6 +706,11 @@ Protected Class cURLManager
 			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
+			Name="Password"
+			Group="Behavior"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
@@ -674,6 +722,17 @@ Protected Class cURLManager
 			Group="Position"
 			InitialValue="0"
 			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Username"
+			Group="Behavior"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Yield"
+			Group="Behavior"
+			InitialValue="True"
+			Type="Boolean"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

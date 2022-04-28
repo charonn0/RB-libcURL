@@ -2525,7 +2525,7 @@ End
 		    Dim err As String = libcURL.Errors.Name(cURLCode) + "(" + Str(cURLCode) + "): " + libcURL.FormatError(cURLCode)
 		    Call MsgBox(err, 16, "libcURL error")
 		  Else
-		    MsgBox("Transfer completed (" + Str(BytesWritten) + " bytes written, " + Str(BytesRead) +" bytes read) with status: " + Str(Client.GetStatusCode))
+		    MsgBox("Transfer completed (" + Str(BytesWritten) + " bytes written, " + Str(BytesRead) +" bytes read) with status: " + Str(Client.LastStatusCode))
 		  End If
 		  
 		  Dim infoiterator As New libcURL.Info.InfoTypeIterator()
@@ -2534,25 +2534,39 @@ End
 		    Dim value As String
 		    Select Case info.Name
 		    Case "SPEED_DOWNLOAD", "SPEED_UPLOAD"
-		      value = FormatBytes(info.Value(Client.EasyHandle).DoubleValue) + "/sec"
+		      Dim number As Double = info.Value(Client.EasyHandle).DoubleValue
+		      If number < 0 Then number = 0
+		      value = FormatBytes(number) + "/sec"
 		      
 		    Case "SPEED_DOWNLOAD_T", "SPEED_UPLOAD_T"
-		      value = FormatBytes(info.Value(Client.EasyHandle).Int64Value) + "/sec"
+		      Dim number As Int64 = info.Value(Client.EasyHandle).Int64Value
+		      If number < 0 Then number = 0
+		      value = FormatBytes(number) + "/sec"
 		      
 		    Case "APPCONNECT_TIME", "CONNECT_TIME", "STARTTRANSFER_TIME", "TOTAL_TIME", "NAMELOOKUP_TIME", "PRETRANSFER_TIME", "REDIRECT_TIME"
-		      value = Format(info.Value(Client.EasyHandle).DoubleValue, "###,###,##0.0##")
+		      Dim number As Double = info.Value(Client.EasyHandle).DoubleValue
+		      If number < 0 Then number = 0
+		      value = Format(number, "###,###,##0.0##")
 		      
 		    Case "APPCONNECT_TIME_T", "CONNECT_TIME_T", "STARTTRANSFER_TIME_T", "TOTAL_TIME_T", "NAMELOOKUP_TIME_T", "PRETRANSFER_TIME_T", "REDIRECT_TIME_T"
-		      value = Format(info.Value(Client.EasyHandle).Int64Value / 1000000, "###,###,##0.0##")
+		      Dim number As Int64 = info.Value(Client.EasyHandle).Int64Value / 1000000
+		      If number < 0 Then number = 0
+		      value = Format(number, "###,###,##0.0##")
 		      
 		    Case "CONTENT_LENGTH_DOWNLOAD", "CONTENT_LENGTH_UPLOAD", "SIZE_DOWNLOAD", "SIZE_UPLOAD"
-		      value = FormatBytes(info.Value(Client.EasyHandle).DoubleValue)
+		      Dim number As Double = info.Value(Client.EasyHandle).Int64Value
+		      If number < 0 Then number = 0
+		      value = FormatBytes(number)
 		      
 		    Case "CONTENT_LENGTH_DOWNLOAD_T", "CONTENT_LENGTH_UPLOAD_T", "SIZE_DOWNLOAD_T", "SIZE_UPLOAD_T"
-		      value = FormatBytes(info.Value(Client.EasyHandle).Int64Value)
+		      Dim number As Int64 = info.Value(Client.EasyHandle).Int64Value
+		      If number < 0 Then number = 0
+		      value = FormatBytes(number)
 		      
 		    Case "HEADER_SIZE", "REQUEST_SIZE"
-		      value = FormatBytes(info.Value(Client.EasyHandle).Int32Value)
+		      Dim number As Int32 = info.Value(Client.EasyHandle).Int32Value
+		      If number < 0 Then number = 0
+		      value = FormatBytes(number)
 		      
 		    Else
 		      value = info.StringValue(Client.EasyHandle)
@@ -2560,8 +2574,6 @@ End
 		    
 		    CurlInfo.AddRow(info.Name, value)
 		  Loop Until Not infoiterator.MoveNext()
-		  
-		  
 		  
 		  Dim h As InternetHeaders = Client.GetResponseHeaders
 		  If h <> Nil Then
