@@ -249,6 +249,7 @@ Protected Class cURLSession
 		  mEasyHandle.AutoReferer = True
 		  mEasyHandle.HTTPCompression = libcURL.Version.LibZ.IsAvailable
 		  mRequestHeaderEngine = Nil
+		  mEasyHandle.UseErrorBuffer = True
 		  Me.Yield = True
 		End Sub
 	#tag EndMethod
@@ -354,6 +355,7 @@ Protected Class cURLSession
 		  End If
 		  
 		  mLastTransferError = Item.LastError
+		  mLastErrorMessage = Item.ErrorBuffer
 		  mIsTransferComplete = True
 		  If Cookies.Enabled Then Cookies.Invalidate
 		  
@@ -546,6 +548,20 @@ Protected Class cURLSession
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Returns a human-friendly description of why the previous transfer failed.
+			  ' 
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.LastErrorMessage
+			  
+			  return mLastErrorMessage
+			End Get
+		#tag EndGetter
+		LastErrorMessage As String
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
 			  ' Returns a protocol-specific status code for the most recent transfer. If the transfer
 			  ' involved several status codes (FTP anything, HTTP redirects, etc.) then only the most
 			  ' recent code is returned.
@@ -577,6 +593,10 @@ Protected Class cURLSession
 
 	#tag Property, Flags = &h21
 		Private mIsTransferComplete As Boolean
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mLastErrorMessage As String
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
