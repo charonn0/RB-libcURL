@@ -1600,6 +1600,10 @@ Inherits libcURL.cURLHandle
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
+		Private mResponseHeaderEngine As libcURL.ResponseHeaderEngine
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
 		Private mSecure As Boolean
 	#tag EndProperty
 
@@ -1763,6 +1767,16 @@ Inherits libcURL.cURLHandle
 			End Get
 		#tag EndGetter
 		RemoteIP As String
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  If mResponseHeaderEngine = Nil Then mResponseHeaderEngine = New ResponseHeaderEngineCreator(Me)
+			  return mResponseHeaderEngine
+			End Get
+		#tag EndGetter
+		ResponseHeaderEngine As libcURL.ResponseHeaderEngine
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
