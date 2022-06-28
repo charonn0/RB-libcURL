@@ -61,7 +61,15 @@ Protected Module libcURL
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Function curl_easy_header Lib cURLLib (EasyHandle As Integer, Name As CString, Index As UInt32, Origin As UInt32, Request As Int32, ByRef HeadersStruct As Ptr) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h21
 		Private Soft Declare Function curl_easy_init Lib cURLLib () As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Function curl_easy_nextheader Lib cURLLib (EasyHandle As Integer, Origin As UInt32, Request As Integer, PrevHeadersStruct As Ptr) As Ptr
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
@@ -2210,6 +2218,15 @@ Protected Module libcURL
 		Flags As UInt32
 	#tag EndStructure
 
+	#tag Structure, Name = curl_header, Flags = &h21
+		Name As Ptr
+		  Value As Ptr
+		  Amount As UInt32
+		  Index As UInt32
+		  Origin As UInt32
+		Anchor As Ptr
+	#tag EndStructure
+
 	#tag Structure, Name = timeval, Flags = &h21
 		tv_sec As Integer
 		tv_usec As Integer
@@ -2276,6 +2293,15 @@ Protected Module libcURL
 		  String
 		  File
 		FileArray
+	#tag EndEnum
+
+	#tag Enum, Name = HeaderOriginType, Type = Integer, Flags = &h1
+		Header=1
+		  Trailer=2
+		  Connect=4
+		  Intermediate_1XX=8
+		  Pseudo=16
+		Any=31
 	#tag EndEnum
 
 	#tag Enum, Name = HTTPVersion, Type = Integer, Flags = &h1

@@ -1600,6 +1600,10 @@ Inherits libcURL.cURLHandle
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
+		Private mResponseHeaderEngine As libcURL.ResponseHeaderEngine
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
 		Private mSecure As Boolean
 	#tag EndProperty
 
@@ -1746,6 +1750,11 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Returns a reference to the ProxyEngine for this instance of EasyHandle.
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.ProxyEngine
+			  
 			  If mProxyEngine = Nil Then mProxyEngine = New ProxyEngineCreator(Me)
 			  return mProxyEngine
 			End Get
@@ -1763,6 +1772,26 @@ Inherits libcURL.cURLHandle
 			End Get
 		#tag EndGetter
 		RemoteIP As String
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  ' Returns a reference to the ResponseHeaderEngine for this instance of EasyHandle.
+			  ' This feature is only available in libcURL 7.84.0 and newer.
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.ResponseHeaderEngine
+			  
+			  If Not libcURL.Version.IsAtLeast(7, 84, 0) Then
+			    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
+			    Return Nil
+			  End If
+			  If mResponseHeaderEngine = Nil Then mResponseHeaderEngine = New ResponseHeaderEngineCreator(Me)
+			  return mResponseHeaderEngine
+			End Get
+		#tag EndGetter
+		ResponseHeaderEngine As libcURL.ResponseHeaderEngine
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0

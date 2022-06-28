@@ -131,7 +131,7 @@ Protected Class cURLSession
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function GetResponseHeaders() As InternetHeaders
+		Attributes( deprecated = "libcURL.cURLSession.ResponseHeaders" )  Function GetResponseHeaders() As InternetHeaders
 		  ' Returns an InternetHeaders object containing all protocol headers received from the server
 		  ' during the most recent transfer. If no headers were received, returns Nil.
 		  '
@@ -249,6 +249,7 @@ Protected Class cURLSession
 		  mEasyHandle.AutoReferer = True
 		  mEasyHandle.HTTPCompression = libcURL.Version.LibZ.IsAvailable
 		  mRequestHeaderEngine = Nil
+		  mEasyHandle.UseErrorBuffer = True
 		  Me.Yield = True
 		End Sub
 	#tag EndMethod
@@ -354,6 +355,7 @@ Protected Class cURLSession
 		  End If
 		  
 		  mLastTransferError = Item.LastError
+		  mLastErrorMessage = Item.ErrorBuffer
 		  mIsTransferComplete = True
 		  If Cookies.Enabled Then Cookies.Invalidate
 		  
@@ -422,8 +424,10 @@ Protected Class cURLSession
 			    mRemoveDebugHandler = False
 			  End Try
 			  Try
-			    AddHandler value.HeaderReceived, WeakAddressOf _HeaderReceivedHandler
-			    mRemoveHeaderHandler = True
+			    If Not libcURL.Version.IsAtLeast(7, 84, 0) Then
+			      AddHandler value.HeaderReceived, WeakAddressOf _HeaderReceivedHandler
+			      mRemoveHeaderHandler = True
+			    End If
 			  Catch
 			    mRemoveHeaderHandler = False
 			  End Try
@@ -546,6 +550,20 @@ Protected Class cURLSession
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Returns a human-friendly description of why the previous transfer failed.
+			  ' 
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.LastErrorMessage
+			  
+			  return mLastErrorMessage
+			End Get
+		#tag EndGetter
+		LastErrorMessage As String
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
 			  ' Returns a protocol-specific status code for the most recent transfer. If the transfer
 			  ' involved several status codes (FTP anything, HTTP redirects, etc.) then only the most
 			  ' recent code is returned.
@@ -577,6 +595,10 @@ Protected Class cURLSession
 
 	#tag Property, Flags = &h21
 		Private mIsTransferComplete As Boolean
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mLastErrorMessage As String
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -648,6 +670,24 @@ Protected Class cURLSession
 			End Get
 		#tag EndGetter
 		RequestHeaders As libcURL.RequestHeaderEngine
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  ' Returns a reference to the ResponseHeaderEngine for this instance of EasyHandle.
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.ResponseHeaderEngine
+			  
+			  If Not libcURL.Version.IsAtLeast(7, 84, 0) Then
+			    Return New ResponseHeaderEngineCreator(EasyHandle, mHeaders)
+			  Else
+			    Return EasyHandle.ResponseHeaderEngine
+			  End If
+			End Get
+		#tag EndGetter
+		ResponseHeaders As libcURL.ResponseHeaderEngine
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0

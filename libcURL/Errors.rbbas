@@ -223,6 +223,13 @@ Protected Module Errors
 		    
 		  Case MIME_MANUAL_ONLY
 		    Return "MIME_MANUAL_ONLY"
+		    
+		  Case HEADER_INDEX_OUT_OF_BOUNDS
+		    Return "HEADER_INDEX_OUT_OF_BOUNDS"
+		    
+		  Case REQUEST_INDEX_OUT_OF_BOUNDS
+		    Return "REQUEST_INDEX_OUT_OF_BOUNDS"
+		    
 		  End Select
 		End Function
 	#tag EndMethod
@@ -348,6 +355,9 @@ Protected Module Errors
 	#tag Constant, Name = GOT_NOTHING, Type = Double, Dynamic = False, Default = \"52", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = HEADER_INDEX_OUT_OF_BOUNDS, Type = Double, Dynamic = False, Default = \"-13", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = HTTP2, Type = Double, Dynamic = False, Default = \"16", Scope = Protected
 	#tag EndConstant
 
@@ -454,6 +464,9 @@ Protected Module Errors
 	#tag EndConstant
 
 	#tag Constant, Name = REMOTE_FILE_NOT_FOUND, Type = Double, Dynamic = False, Default = \"78", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = REQUEST_INDEX_OUT_OF_BOUNDS, Type = Double, Dynamic = False, Default = \"-14", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = RTSP_CSEQ_ERROR, Type = Double, Dynamic = False, Default = \"85", Scope = Protected
