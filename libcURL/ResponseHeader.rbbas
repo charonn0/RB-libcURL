@@ -16,6 +16,17 @@ Protected Class ResponseHeader
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function Operator_Convert() As Pair
+		  ' Converts to a Pair of the name and value properties.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ResponseHeader.Operator_Convert
+		  
+		  Return Name:Value
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h1
 		Protected Function Owner() As libcURL.EasyHandle
 		  If mOwner <> Nil And Not (mOwner.Value Is Nil) And mOwner.Value IsA libcURL.EasyHandle Then
@@ -28,6 +39,11 @@ Protected Class ResponseHeader
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Returns the number of headers using this name
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ResponseHeader.Amount
+			  
 			  Return mHeader.Amount
 			End Get
 		#tag EndGetter
@@ -37,44 +53,42 @@ Protected Class ResponseHeader
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' There may be more than one header of the same name for a given transfer. This property is
+			  ' the index of this instance of the named header, 0 or higher.
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ResponseHeader.Index
+			  
 			  Return mHeader.Index
 			End Get
 		#tag EndGetter
 		Index As Integer
 	#tag EndComputedProperty
 
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
-			  return mLastError
-			End Get
-		#tag EndGetter
-		LastError As Int32
-	#tag EndComputedProperty
-
 	#tag Property, Flags = &h21
 		Private mHeader As curl_header
 	#tag EndProperty
 
-	#tag Property, Flags = &h21
-		Private mLastError As Int32
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private mName As String
+	#tag Property, Flags = &h1
+		Protected mName As String
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
 		Private mOwner As WeakRef
 	#tag EndProperty
 
-	#tag Property, Flags = &h21
-		Private mValue As String
+	#tag Property, Flags = &h1
+		Protected mValue As String
 	#tag EndProperty
 
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' The name of the header.
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ResponseHeader.Name
+			  
 			  Return mName
 			End Get
 		#tag EndGetter
@@ -84,7 +98,18 @@ Protected Class ResponseHeader
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  Return CType(mHeader.Origin, HeaderOriginType)
+			  ' The origin of the header. A member of the HeaderOriginType enumeration.
+			  '     HeaderOriginType.Header -> plain server header
+			  '     HeaderOriginType.Trailer -> trailing header
+			  '     HeaderOriginType.Connect -> proxy CONNECT headers
+			  '     HeaderOriginType.Intermediate_1XX -> HTTP 1xx headers
+			  '     HeaderOriginType.Pseudo -> HTTP/2 pseudo headers
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ResponseHeader.Origin
+			  
+			  Dim t As UInt16 = CType(mHeader.Origin, UInt16)
+			  Return CType(t, HeaderOriginType)
 			End Get
 		#tag EndGetter
 		Origin As libcURL.HeaderOriginType
@@ -93,36 +118,16 @@ Protected Class ResponseHeader
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' The value of the header.
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ResponseHeader.Value
+			  
 			  Return mValue
 			End Get
 		#tag EndGetter
 		Value As String
 	#tag EndComputedProperty
-
-
-	#tag Constant, Name = CURLHE_BADINDEX, Type = Double, Dynamic = False, Default = \"1", Scope = Public
-	#tag EndConstant
-
-	#tag Constant, Name = CURLHE_BAD_ARGUMENT, Type = Double, Dynamic = False, Default = \"6", Scope = Public
-	#tag EndConstant
-
-	#tag Constant, Name = CURLHE_MISSING, Type = Double, Dynamic = False, Default = \"2", Scope = Public
-	#tag EndConstant
-
-	#tag Constant, Name = CURLHE_NOHEADERS, Type = Double, Dynamic = False, Default = \"3", Scope = Public
-	#tag EndConstant
-
-	#tag Constant, Name = CURLHE_NOREQUEST, Type = Double, Dynamic = False, Default = \"4", Scope = Public
-	#tag EndConstant
-
-	#tag Constant, Name = CURLHE_NOT_BUILT_IN, Type = Double, Dynamic = False, Default = \"7", Scope = Public
-	#tag EndConstant
-
-	#tag Constant, Name = CURLHE_OK, Type = Double, Dynamic = False, Default = \"0", Scope = Public
-	#tag EndConstant
-
-	#tag Constant, Name = CURLHE_OUT_OF_MEMORY, Type = Double, Dynamic = False, Default = \"5", Scope = Public
-	#tag EndConstant
 
 
 	#tag ViewBehavior

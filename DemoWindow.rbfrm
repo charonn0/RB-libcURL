@@ -2504,12 +2504,12 @@ End
 		  PauseButton.Caption = "Pause"
 		  AbortButton.Enabled = False
 		  Dim cURLCode As Integer = Client.LastError
+		  Dim h As InternetHeaders = Client.ResponseHeaders
 		  If Not SaveToFileChkBx.Value And cURLCode = 0 Then
 		    Dim data As String = Client.GetDownloadedData()
 		    Dim enc As TextEncoding
-		    Dim headers As InternetHeaders = Client.GetResponseHeaders()
-		    If headers <> Nil And headers.NameCount("Content-Type") > 0 Then
-		      enc = ParseContentType(Client.GetResponseHeaders.CommaSeparatedValues("Content-Type"))
+		    If h <> Nil And h.NameCount("Content-Type") > 0 Then
+		      enc = ParseContentType(h.CommaSeparatedValues("Content-Type"))
 		    End If
 		    If enc <> Nil Then data = DefineEncoding(data, enc)
 		    DownloadOutput.Text = data
@@ -2575,7 +2575,6 @@ End
 		    CurlInfo.AddRow(info.Name, value)
 		  Loop Until Not infoiterator.MoveNext()
 		  
-		  Dim h As InternetHeaders = Client.GetResponseHeaders
 		  If h <> Nil Then
 		    For i As Integer = 0 To h.Count - 1
 		      Headers.AddRow(h.Name(i), h.Value(i))

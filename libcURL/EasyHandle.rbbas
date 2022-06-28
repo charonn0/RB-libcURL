@@ -1750,6 +1750,11 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Returns a reference to the ProxyEngine for this instance of EasyHandle.
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.ProxyEngine
+			  
 			  If mProxyEngine = Nil Then mProxyEngine = New ProxyEngineCreator(Me)
 			  return mProxyEngine
 			End Get
@@ -1772,6 +1777,16 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Returns a reference to the ResponseHeaderEngine for this instance of EasyHandle.
+			  ' This feature is only available in libcURL 7.84.0 and newer.
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.ResponseHeaderEngine
+			  
+			  If Not libcURL.Version.IsAtLeast(7, 84, 0) Then
+			    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
+			    Return Nil
+			  End If
 			  If mResponseHeaderEngine = Nil Then mResponseHeaderEngine = New ResponseHeaderEngineCreator(Me)
 			  return mResponseHeaderEngine
 			End Get

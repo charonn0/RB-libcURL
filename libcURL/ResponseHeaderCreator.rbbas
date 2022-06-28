@@ -12,6 +12,22 @@ Inherits libcURL.ResponseHeader
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h1000
+		Sub Constructor(Owner As libcURL.EasyHandle, Name As String, Value As String, NameIndex As Integer, NameCount As Integer)
+		  Dim h As curl_header
+		  h.Amount = NameCount
+		  h.Index = NameIndex
+		  h.Origin = CType(HeaderOriginType.Header, UInt32)
+		  
+		  // Calling the overridden superclass constructor.
+		  // Constructor(Owner As libcURL.EasyHandle, Header As curl_header) -- From ResponseHeader
+		  Super.Constructor(Owner, h)
+		  
+		  mName = Name
+		  mValue = Value
+		End Sub
+	#tag EndMethod
+
 
 	#tag ViewBehavior
 		#tag ViewProperty
