@@ -142,7 +142,7 @@ Protected Module LiveTests
 	#tag Method, Flags = &h21
 		Private Sub TestHeaderGet()
 		  If Not mSession.Get("https://nghttp2.org/httpbin/response-headers?X-Test-Header=Test%20Value") Then Return
-		  Dim h As InternetHeaders = mSession.GetResponseHeaders
+		  Dim h As InternetHeaders = mSession.ResponseHeaders
 		  Assert(h.CommaSeparatedValues("X-Test-Header").Trim = "Test Value")
 		End Sub
 	#tag EndMethod
