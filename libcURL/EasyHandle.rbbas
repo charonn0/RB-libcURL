@@ -772,8 +772,8 @@ Inherits libcURL.cURLHandle
 		  
 		  ' NewValue may be a Boolean, Integer, Ptr, String, MemoryBlock, FolderItem, libcURL.MultipartForm,
 		  ' libcURL.ListPtr, libcuRL.HTTPAuthMethods; or, a Delegate matching cURLIOCallback, cURLCloseCallback,
-		  ' cURLDebugCallback, cURLOpenCallback, or cURLProgressCallback. Passing Nil will raise an exception
-		  ' unless the option explicitly accepts NULL.
+		  ' cURLDebugCallback, cURLOpenCallback, cURLProgressCallback, or cURLInitRequestCallback. Passing Nil
+		  ' will raise an exception unless the option explicitly accepts NULL.
 		  
 		  ' If the option was set then this method returns True. If it returns False then the option was not set
 		  ' and the curl error number is stored in EasyHandle.LastError.
