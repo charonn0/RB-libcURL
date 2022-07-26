@@ -23,7 +23,7 @@ This example performs a synchronous HTTP GET request on the calling thread. [**M
 * SSL/TLS with [certificate validation](https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Secure), using any one of several SSL libraries†.
 * Transparent support for [RB/Xojo threads](https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.PerformOnce).
 * Full support for HTTP, SOCKS4, SOCKS4A, SOCKS5, and SOCKS5_HOSTNAME [proxy servers](https://github.com/charonn0/RB-libcURL/wiki/libcURL.ProxyEngine).
-* [Stream-oriented](https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLManager.Perform), using Xojo's built-in [Readable](http://docs.xojo.com/index.php/Readable) and [Writeable](http://docs.xojo.com/index.php/Writeable) interfaces. Download or upload directly to or from a file, [MemoryBlock](http://www.boredomsoft.org/string-building-in-realbasic.bs), Xojo socket, or your own custom class.
+* [Stream-oriented](https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.Perform), using Xojo's built-in [Readable](http://docs.xojo.com/index.php/Readable) and [Writeable](http://docs.xojo.com/index.php/Writeable) interfaces. Download or upload directly to or from a file, [MemoryBlock](http://www.boredomsoft.org/string-building-in-realbasic.bs), Xojo socket, or your own custom class.
 * A [consistent, high-level API](https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLClient) over [the full range of libcURL's features](https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle).
 * Interact directly with libcurl using idiomatic RB/Xojo objects, methods, and events; no shell or plugins required.
 * International domain name support†.
@@ -63,9 +63,9 @@ Every transfer is associated with an `EasyHandle`. After creating a new `EasyHan
 
 Once all the desired options have been set (e.g. URL, port, username and/or password, cookies, etc.) you are ready to begin the transfer. Depending on your specific requirements, you can do it in one of several ways. 
 
-You may call [`EasyHandle`](https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle).[`Perform`](https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Perform) directly. However, this is a blocking call; not merely synchronous: the _entire application_ blocks for the duration of the transfer. As such, it is useful only in single-threaded console applications.
+You may call [`EasyHandle.Perform`](https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Perform) directly. However, this is a blocking call; not merely synchronous: the _entire application_ blocks for the duration of the transfer. As such, it is useful only in single-threaded console applications.
 
-To perform one or more transfers in a non-blocking manner use the `MultiHandle` class. The `MultiHandle` class represents a `curl_multi` handle (AKA a "stack"). [Add](https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.AddItem) the `EasyHandle` to the multi stack and then call [`MultiHandle`](https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle).[`Perform`](https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.Perform) (or [`MultiHandle`](https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle).[`PerformOnce`](https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.PerformOnce) on a RB/Xojo thread.)
+To perform one or more transfers in a non-blocking manner use the `MultiHandle` class. The `MultiHandle` class represents a `curl_multi` handle (AKA a "stack"). [Add](https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.AddItem) the `EasyHandle` to the multi stack and then call [`MultiHandle.Perform`](https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.Perform) (or [`MultiHandle.PerformOnce`](https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.PerformOnce) on a RB/Xojo thread.)
 
 ## How to incorporate libcURL into your Realbasic/Xojo project
 ### Import the libcURL module
