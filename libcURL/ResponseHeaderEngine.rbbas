@@ -36,23 +36,35 @@ Protected Class ResponseHeaderEngine
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ResponseHeader.GetHeader
 		  
-		  Dim h() As ResponseHeader = GetHeaders(Name, Origin, RequestIndex)
-		  If Index > UBound(h) Then
-		    ErrorSetter(Owner).LastError = libcURL.Errors.HEADER_INDEX_OUT_OF_BOUNDS
+		  Dim ori As UInt32 = CType(Origin, UInt32)
+		  Dim p As Ptr
+		  Select Case curl_easy_header(Owner.Handle, Name, Index, ori, RequestIndex, p)
+		  Case 0
+		    Return New ResponseHeaderCreator(p.curl_header(0))
+		  Case CURLHE_BADINDEX, CURLHE_MISSING, CURLHE_NOHEADERS, CURLHE_NOREQUEST
+		    Return Nil
+		  Case CURLHE_OUT_OF_MEMORY
+		    ErrorSetter(Owner).LastError = libcURL.Errors.OUT_OF_MEMORY
 		    Raise New cURLException(Owner)
-		  End If
-		  
-		  For i As Integer = 0 To UBound(h)
-		    If h(i).Index = Index Then Return h(i)
-		  Next
-		  
+		    
+		  Case CURLHE_BAD_ARGUMENT
+		    ErrorSetter(Owner).LastError = libcURL.Errors.BAD_FUNCTION_ARGUMENT
+		    Raise New cURLException(Owner)
+		    
+		  Case CURLHE_NOT_BUILT_IN
+		    ErrorSetter(Owner).LastError = libcURL.Errors.NOT_BUILT_IN
+		    Raise New cURLException(Owner)
+		  Else
+		    ErrorSetter(Owner).LastError = libcURL.Errors.INCONCEIVABLE
+		    Raise New cURLException(Owner)
+		  End Select
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function GetHeaders(Name As String = "", Origin As libcURL.HeaderOriginType = libcURL.HeaderOriginType.Any, RequestIndex As Integer = - 1) As libcURL.ResponseHeader()
 		  ' Retrieves the response headers that matches all of the parameters. If a parameter
-		  ' is unspecified then all headers match it. 
+		  ' is unspecified then all headers match it.
 		  '
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ResponseHeader.GetHeaders
@@ -61,7 +73,7 @@ Protected Class ResponseHeaderEngine
 		  Dim this As Ptr = curl_easy_nextheader(Owner.Handle, ori, RequestIndex, Nil)
 		  Dim h() As ResponseHeader
 		  Do Until this = Nil
-		    Dim header As New ResponseHeaderCreator(Owner, this.curl_header(0))
+		    Dim header As New ResponseHeaderCreator(this.curl_header(0))
 		    If Name = "" Or Name = header.Name Then h.Append(header)
 		    this = curl_easy_nextheader(Owner.Handle, ori, RequestIndex, this)
 		  Loop
@@ -94,7 +106,7 @@ Protected Class ResponseHeaderEngine
 		  Dim this As Ptr = curl_easy_nextheader(Owner.Handle, ori, -1, Nil)
 		  Dim h As New InternetHeaders
 		  Do Until this = Nil
-		    Dim header As New ResponseHeaderCreator(Owner, this.curl_header(0))
+		    Dim header As New ResponseHeaderCreator(this.curl_header(0))
 		    h.AppendHeader(header.Name, header.Value)
 		    this = curl_easy_nextheader(Owner.Handle, ori, -1, this)
 		  Loop
@@ -115,6 +127,28 @@ Protected Class ResponseHeaderEngine
 	#tag Property, Flags = &h21
 		Private mOwner As WeakRef
 	#tag EndProperty
+
+
+	#tag Constant, Name = CURLHE_BADINDEX, Type = Double, Dynamic = False, Default = \"1", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURLHE_BAD_ARGUMENT, Type = Double, Dynamic = False, Default = \"6", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURLHE_MISSING, Type = Double, Dynamic = False, Default = \"2", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURLHE_NOHEADERS, Type = Double, Dynamic = False, Default = \"3", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURLHE_NOREQUEST, Type = Double, Dynamic = False, Default = \"4", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURLHE_NOT_BUILT_IN, Type = Double, Dynamic = False, Default = \"7", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURLHE_OUT_OF_MEMORY, Type = Double, Dynamic = False, Default = \"5", Scope = Protected
+	#tag EndConstant
 
 
 	#tag ViewBehavior

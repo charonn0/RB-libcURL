@@ -24,7 +24,7 @@ Inherits libcURL.ResponseHeaderEngine
 		Function GetHeader(Name As String, Index As Integer = 0, Origin As libcURL.HeaderOriginType = libcURL.HeaderOriginType.Any, RequestIndex As Integer = - 1) As libcURL.ResponseHeader
 		  If mFake = Nil Then Return Super.GetHeader(Name, Index, Origin, RequestIndex)
 		  Dim vl As String = mFake.Value(Name, Index)
-		  If vl <> "" Then Return New ResponseHeaderCreator(Owner, Name, vl, Index, Me.Count(Name, Origin, RequestIndex))
+		  If vl <> "" Then Return New ResponseHeaderCreator(Name, vl, Index, Me.Count(Name, Origin, RequestIndex))
 		End Function
 	#tag EndMethod
 
@@ -34,7 +34,7 @@ Inherits libcURL.ResponseHeaderEngine
 		  Dim h() As ResponseHeader
 		  Dim count As Integer = mFake.Count
 		  For i As Integer = 0 To count - 1
-		    If Name = "" Or Name = mFake.Name(i) Then h.Append(New ResponseHeaderCreator(Owner, mFake.Name(i), mFake.Value(i), i, count))
+		    If Name = "" Or Name = mFake.Name(i) Then h.Append(New ResponseHeaderCreator(mFake.Name(i), mFake.Value(i), i, count))
 		  Next
 		  Return h
 		End Function
