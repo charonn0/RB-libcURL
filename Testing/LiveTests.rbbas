@@ -3,8 +3,8 @@ Protected Module LiveTests
 	#tag Method, Flags = &h1
 		Protected Function RunTests() As Boolean
 		  mSession = New cURLClient
-		  mSession.EasyItem.Verbose = True
-		  mSession.EasyItem.UseErrorBuffer = True
+		  mSession.EasyHandle.Verbose = True
+		  mSession.EasyHandle.UseErrorBuffer = True
 		  TestResult = 0
 		  Try
 		    TestCookieGet()
@@ -178,7 +178,7 @@ Protected Module LiveTests
 	#tag Method, Flags = &h21
 		Private Sub TestMIMEPost()
 		  If Not libcURL.Version.IsAtLeast(7, 56, 0) Then Return
-		  Dim form As New libcURL.MIMEMessage(mSession.EasyItem)
+		  Dim form As New libcURL.MIMEMessage(mSession.EasyHandle)
 		  Assert(form.AddElement("user", "bob"))
 		  Assert(form.AddElement("password", "seekrit"))
 		  Dim tmp As FolderItem = GetTemporaryFolderItem
@@ -203,9 +203,9 @@ Protected Module LiveTests
 
 	#tag Method, Flags = &h21
 		Private Sub TestRedirect()
-		  mSession.EasyItem.MaxRedirects = 6
+		  mSession.EasyHandle.MaxRedirects = 6
 		  Assert(mSession.Get("https://nghttp2.org/httpbin/redirect/6"))
-		  Assert(mSession.EasyItem.URL = "https://nghttp2.org/httpbin/get")
+		  Assert(mSession.EasyHandle.URL = "https://nghttp2.org/httpbin/get")
 		  Assert(Not mSession.Get("https://nghttp2.org/httpbin/redirect/7"))
 		  Assert(mSession.LastError = libcURL.Errors.TOO_MANY_REDIRECTS)
 		End Sub

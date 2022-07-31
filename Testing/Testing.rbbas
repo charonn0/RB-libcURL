@@ -213,7 +213,7 @@ Protected Module Testing
 		  c.AutoDisconnect = True
 		  c.CA_ListFile = libcURL.Default_CA_File
 		  c.ConnectionTimeout = 304
-		  If libcURL.Version.SSL Then c.ConnectionType = libcURL.ConnectionType.AttemptSSL
+		  If libcURL.IsFeatureAvailable(libcURL.FeatureType.SSL) Then c.ConnectionType = libcURL.ConnectionType.AttemptSSL
 		  'c.CookieJar = GetTemporaryFolderItem
 		  c.FailOnServerError = True
 		  c.FollowRedirects = True
@@ -473,14 +473,14 @@ Protected Module Testing
 		  Dim data As New MemoryBlock(0)
 		  Dim downstream As New BinaryStream(data)
 		  c.DownloadStream = downstream
-		  If Not m.AddItem(c) Then Raise New libcURL.cURLException(m)
-		  Assert(m.HasItem(c))
+		  If Not m.AddTransfer(c) Then Raise New libcURL.cURLException(m)
+		  Assert(m.HasTransfer(c))
 		  
 		  While m.PerformOnce
 		    App.YieldToNextThread
 		  Wend
 		  downstream.Close
-		  Assert(Not m.HasItem(c))
+		  Assert(Not m.HasTransfer(c))
 		  Assert(c.GetInfo(libcURL.Info.RESPONSE_CODE) = 200)
 		  Assert(data.Size > 0)
 		  Assert(data.Size = c.GetInfo(libcURL.Info.SIZE_DOWNLOAD))
@@ -541,18 +541,18 @@ Protected Module Testing
 		  Dim data1 As New MemoryBlock(0)
 		  Dim downstream1 As New BinaryStream(data1)
 		  c1.DownloadStream = downstream1
-		  If Not s.AddItem(c1) Then Raise New libcURL.cURLException(s)
-		  Assert(s.HasItem(c1))
+		  If Not s.AddTransfer(c1) Then Raise New libcURL.cURLException(s)
+		  Assert(s.HasTransfer(c1))
 		  
 		  Dim c2 As New libcURL.EasyHandle
 		  c2.URL = "http://www.example.net/"
 		  Dim data2 As New MemoryBlock(0)
 		  Dim downstream2 As New BinaryStream(data2)
 		  c2.DownloadStream = downstream2
-		  If Not s.AddItem(c2) Then Raise New libcURL.cURLException(s)
-		  Assert(s.HasItem(c2))
+		  If Not s.AddTransfer(c2) Then Raise New libcURL.cURLException(s)
+		  Assert(s.HasTransfer(c2))
 		  
-		  Assert(Not s.AddItem(c1)) ' already added
+		  Assert(Not s.AddTransfer(c1)) ' already added
 		  
 		End Sub
 	#tag EndMethod
