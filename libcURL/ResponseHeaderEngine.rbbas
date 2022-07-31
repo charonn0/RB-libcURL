@@ -1,6 +1,32 @@
 #tag Class
 Protected Class ResponseHeaderEngine
 	#tag Method, Flags = &h1
+		Protected Function AllRequestGetHeader(Name As String, Index As Integer, Origin As libcURL.HeaderOriginType) As libcURL.ResponseHeader
+		  Dim h() As ResponseHeader = AllRequestGetHeaders(Name, Origin)
+		  If Index <= UBound(h) Then Return h(Index)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function AllRequestGetHeaders(Name As String, Origin As libcURL.HeaderOriginType) As libcURL.ResponseHeader()
+		  Dim ori As UInt32 = CType(Origin, UInt32)
+		  Dim h() As ResponseHeader
+		  Dim c As Integer = RequestCount - 1
+		  
+		  For i As Integer = 0 To c
+		    Dim this As Ptr = curl_easy_nextheader(Owner.Handle, ori, i, Nil)
+		    Do Until this = Nil
+		      Dim header As New ResponseHeaderCreator(this.curl_header(0), i)
+		      If Name = "" Or Name = header.Name Then h.Append(header)
+		      this = curl_easy_nextheader(Owner.Handle, ori, i, this)
+		    Loop
+		  Next
+		  
+		  Return h
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
 		Protected Sub Constructor(Owner As libcURL.EasyHandle)
 		  ' Creates a new instance of ResponseHeaderEngine for the EasyHandle whose response headers
 		  ' are to be queried.
@@ -36,11 +62,20 @@ Protected Class ResponseHeaderEngine
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ResponseHeaderEngine.GetHeader
 		  
+		  If RequestIndex = -2 Then Return AllRequestGetHeader(Name, Index, Origin) ' -2 is all requests
+		  Dim reqidx As Integer = RequestIndex
+		  If reqidx = -1 Then reqidx = RequestCount - 1 ' -1 is most recent request
+		  
 		  Dim ori As UInt32 = CType(Origin, UInt32)
+		  If BitAnd(ori, 16) = 16 And libcURL.Version.IsExactly(7, 84, 0) Then ' broken in this version only
+		    Dim h() As ResponseHeader = GetHeaders(Name, Origin, RequestIndex)
+		    If UBound(h) <= Index Then Return h(Index)
+		  End If
+		  
 		  Dim p As Ptr
 		  Select Case curl_easy_header(Owner.Handle, Name, Index, ori, RequestIndex, p)
 		  Case 0
-		    Return New ResponseHeaderCreator(p.curl_header(0))
+		    Return New ResponseHeaderCreator(p.curl_header(0), reqidx)
 		    
 		  Case CURLHE_BADINDEX, CURLHE_MISSING, CURLHE_NOHEADERS, CURLHE_NOREQUEST
 		    Return Nil
@@ -72,11 +107,16 @@ Protected Class ResponseHeaderEngine
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ResponseHeaderEngine.GetHeaders
 		  
+		  If RequestIndex = -2 Then Return AllRequestGetHeaders(Name, Origin) ' -2 is all requests
+		  Dim reqidx As Integer = RequestIndex
+		  If reqidx = -1 Then reqidx = RequestCount - 1 ' -1 is most recent request
+		  
 		  Dim ori As UInt32 = CType(Origin, UInt32)
 		  Dim this As Ptr = curl_easy_nextheader(Owner.Handle, ori, RequestIndex, Nil)
+		  
 		  Dim h() As ResponseHeader
 		  Do Until this = Nil
-		    Dim header As New ResponseHeaderCreator(this.curl_header(0))
+		    Dim header As New ResponseHeaderCreator(this.curl_header(0), reqidx)
 		    If Name = "" Or Name = header.Name Then h.Append(header)
 		    this = curl_easy_nextheader(Owner.Handle, ori, RequestIndex, this)
 		  Loop
@@ -93,7 +133,12 @@ Protected Class ResponseHeaderEngine
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ResponseHeaderEngine.HasHeader
 		  
-		  Dim h() As ResponseHeader = GetHeaders(Name, Origin, RequestIndex)
+		  Dim h() As ResponseHeader
+		  If RequestIndex > -2 Then
+		    h = GetHeaders(Name, Origin, RequestIndex)
+		  Else
+		    h = AllRequestGetHeaders(Name, Origin)
+		  End If
 		  Return UBound(h) > -1
 		End Function
 	#tag EndMethod
@@ -109,7 +154,7 @@ Protected Class ResponseHeaderEngine
 		  Dim this As Ptr = curl_easy_nextheader(Owner.Handle, ori, -1, Nil)
 		  Dim h As New InternetHeaders
 		  Do Until this = Nil
-		    Dim header As New ResponseHeaderCreator(this.curl_header(0))
+		    Dim header As New ResponseHeaderCreator(this.curl_header(0), 0)
 		    h.AppendHeader(header.Name, header.Value)
 		    this = curl_easy_nextheader(Owner.Handle, ori, -1, this)
 		  Loop
