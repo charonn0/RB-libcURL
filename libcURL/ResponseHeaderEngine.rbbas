@@ -37,6 +37,11 @@ Protected Class ResponseHeaderEngine
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ResponseHeaderEngine.GetHeader
 		  
 		  Dim ori As UInt32 = CType(Origin, UInt32)
+		  If BitAnd(ori, 16) = 16 And libcURL.Version.IsExactly(7, 84, 0) Then ' broken in this version only
+		    Dim h() As ResponseHeader = GetHeaders(Name, Origin, RequestIndex)
+		    If UBound(h) <= Index Then Return h(Index)
+		  End If
+		  
 		  Dim p As Ptr
 		  Select Case curl_easy_header(Owner.Handle, Name, Index, ori, RequestIndex, p)
 		  Case 0
