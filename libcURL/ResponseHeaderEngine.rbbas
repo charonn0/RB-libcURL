@@ -6,20 +6,20 @@ Protected Class ResponseHeaderEngine
 		  ' are to be queried.
 		  '
 		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ResponseHeader.Constructor
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ResponseHeaderEngine.Constructor
 		  
 		  mOwner = New WeakRef(Owner)
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Count(Name As String = "", Origin As libcURL.HeaderOriginType = libcURL.HeaderOriginType.Any, RequestIndex As Integer = - 1) As Integer
+		Function Count(Name As String = "", Origin As libcURL.HeaderOriginType = libcURL.HeaderOriginType.Any, RequestIndex As Integer = -1) As Integer
 		  ' Counts the number of response headers that match all of the parameters. If a parameter
 		  ' is unspecified then all headers match it. Hence, with no parameters specified this
 		  ' method counts the total number of all response headers.
 		  '
 		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ResponseHeader.Count
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ResponseHeaderEngine.Count
 		  
 		  Dim h() As ResponseHeader = GetHeaders(Name, Origin, RequestIndex)
 		  Return UBound(h) + 1
@@ -27,22 +27,24 @@ Protected Class ResponseHeaderEngine
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function GetHeader(Name As String, Index As Integer = 0, Origin As libcURL.HeaderOriginType = libcURL.HeaderOriginType.Any, RequestIndex As Integer = - 1) As libcURL.ResponseHeader
+		Function GetHeader(Name As String, Index As Integer = 0, Origin As libcURL.HeaderOriginType = libcURL.HeaderOriginType.Any, RequestIndex As Integer = -1) As libcURL.ResponseHeader
 		  ' Retrieves the response header that matches all of the parameters. If a parameter
 		  ' is unspecified then all headers match it. If there is more than one header that matches
 		  ' all the parameters, then specify the Index parameter to indicate which of these you
 		  ' want.
 		  '
 		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ResponseHeader.GetHeader
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ResponseHeaderEngine.GetHeader
 		  
 		  Dim ori As UInt32 = CType(Origin, UInt32)
 		  Dim p As Ptr
 		  Select Case curl_easy_header(Owner.Handle, Name, Index, ori, RequestIndex, p)
 		  Case 0
 		    Return New ResponseHeaderCreator(p.curl_header(0))
+		    
 		  Case CURLHE_BADINDEX, CURLHE_MISSING, CURLHE_NOHEADERS, CURLHE_NOREQUEST
 		    Return Nil
+		    
 		  Case CURLHE_OUT_OF_MEMORY
 		    ErrorSetter(Owner).LastError = libcURL.Errors.OUT_OF_MEMORY
 		    Raise New cURLException(Owner)
@@ -54,6 +56,7 @@ Protected Class ResponseHeaderEngine
 		  Case CURLHE_NOT_BUILT_IN
 		    ErrorSetter(Owner).LastError = libcURL.Errors.NOT_BUILT_IN
 		    Raise New cURLException(Owner)
+		    
 		  Else
 		    ErrorSetter(Owner).LastError = libcURL.Errors.INCONCEIVABLE
 		    Raise New cURLException(Owner)
@@ -62,12 +65,12 @@ Protected Class ResponseHeaderEngine
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function GetHeaders(Name As String = "", Origin As libcURL.HeaderOriginType = libcURL.HeaderOriginType.Any, RequestIndex As Integer = - 1) As libcURL.ResponseHeader()
+		Function GetHeaders(Name As String = "", Origin As libcURL.HeaderOriginType = libcURL.HeaderOriginType.Any, RequestIndex As Integer = -1) As libcURL.ResponseHeader()
 		  ' Retrieves the response headers that matches all of the parameters. If a parameter
 		  ' is unspecified then all headers match it.
 		  '
 		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ResponseHeader.GetHeaders
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ResponseHeaderEngine.GetHeaders
 		  
 		  Dim ori As UInt32 = CType(Origin, UInt32)
 		  Dim this As Ptr = curl_easy_nextheader(Owner.Handle, ori, RequestIndex, Nil)
@@ -83,12 +86,12 @@ Protected Class ResponseHeaderEngine
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function HasHeader(Name As String, Origin As libcURL.HeaderOriginType = libcURL.HeaderOriginType.Any, RequestIndex As Integer = - 1) As Boolean
+		Function HasHeader(Name As String, Origin As libcURL.HeaderOriginType = libcURL.HeaderOriginType.Any, RequestIndex As Integer = -1) As Boolean
 		  ' Returns True if at least one header exists which matches all of the parameters. If a parameter
 		  ' is unspecified then all headers match it.
 		  '
 		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ResponseHeader.HasHeader
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ResponseHeaderEngine.HasHeader
 		  
 		  Dim h() As ResponseHeader = GetHeaders(Name, Origin, RequestIndex)
 		  Return UBound(h) > -1
@@ -100,7 +103,7 @@ Protected Class ResponseHeaderEngine
 		  ' Converts the headers into an InternetHeaders object
 		  '
 		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ResponseHeader.Operator_Convert
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ResponseHeaderEngine.Operator_Convert
 		  
 		  Dim ori As UInt32 = CType(HeaderOriginType.Any, UInt32)
 		  Dim this As Ptr = curl_easy_nextheader(Owner.Handle, ori, -1, Nil)
