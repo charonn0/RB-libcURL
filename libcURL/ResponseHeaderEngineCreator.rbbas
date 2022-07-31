@@ -47,6 +47,13 @@ Inherits libcURL.ResponseHeaderEngine
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function RequestCount() As Integer
+		  If mFake = Nil Then Return Super.RequestCount()
+		  Return 1
+		End Function
+	#tag EndMethod
+
 
 	#tag Property, Flags = &h21
 		Private mFake As InternetHeaders

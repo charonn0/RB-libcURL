@@ -123,6 +123,26 @@ Protected Class ResponseHeaderEngine
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function RequestCount() As Integer
+		  ' Returns the number of requests that were made during the previous transfer, for example
+		  ' redirects or multi-stage authentication.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ResponseHeaderEngine.RequestCount
+		  
+		  Dim ori As UInt32 = CType(HeaderOriginType.Any, UInt32)
+		  Dim idx As Integer
+		  Do
+		    Dim this As Ptr = curl_easy_nextheader(Owner.Handle, ori, idx, Nil)
+		    If this = Nil Then Exit Do
+		    idx = idx + 1
+		  Loop
+		  
+		  Return idx
+		End Function
+	#tag EndMethod
+
 
 	#tag Property, Flags = &h21
 		Private mOwner As WeakRef
