@@ -1,18 +1,23 @@
 #tag Class
 Protected Class ResponseHeader
 	#tag Method, Flags = &h1
-		Protected Sub Constructor(Owner As libcURL.EasyHandle, Header As curl_header)
+		Protected Sub Constructor(Header As curl_header)
 		  ' Creates a new instance of ResponseHeader for the EasyHandle whose response headers are to be queried.
 		  '
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ResponseHeader.Constructor
 		  
-		  mOwner = New WeakRef(Owner)
-		  mHeader = Header
-		  Dim mb As MemoryBlock = mHeader.Name
+		  mAmount = Header.Amount
+		  mIndex = Header.Index
+		  Dim mb As MemoryBlock = Header.Name
 		  If mb <> Nil Then mName = mb.CString(0)
-		  mb = mHeader.Value
+		  Dim ori As UInt16 = CType(Header.Origin, UInt16)
+		  mOrigin = CType(ori, HeaderOriginType)
+		  mb = Header.Value
 		  If mb <> Nil Then mValue = mb.CString(0)
+		  
+		  
+		  
 		End Sub
 	#tag EndMethod
 
@@ -27,14 +32,6 @@ Protected Class ResponseHeader
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Function Owner() As libcURL.EasyHandle
-		  If mOwner <> Nil And Not (mOwner.Value Is Nil) And mOwner.Value IsA libcURL.EasyHandle Then
-		    Return libcURL.EasyHandle(mOwner.Value)
-		  End If
-		End Function
-	#tag EndMethod
-
 
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
@@ -44,7 +41,7 @@ Protected Class ResponseHeader
 			  ' See:
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ResponseHeader.Amount
 			  
-			  Return mHeader.Amount
+			  Return mAmount
 			End Get
 		#tag EndGetter
 		Amount As Integer
@@ -59,14 +56,18 @@ Protected Class ResponseHeader
 			  ' See:
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ResponseHeader.Index
 			  
-			  Return mHeader.Index
+			  Return mIndex
 			End Get
 		#tag EndGetter
 		Index As Integer
 	#tag EndComputedProperty
 
 	#tag Property, Flags = &h21
-		Private mHeader As curl_header
+		Private mAmount As Integer
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mIndex As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
@@ -74,7 +75,7 @@ Protected Class ResponseHeader
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private mOwner As WeakRef
+		Private mOrigin As libcURL.HeaderOriginType
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
@@ -108,8 +109,7 @@ Protected Class ResponseHeader
 			  ' See:
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ResponseHeader.Origin
 			  
-			  Dim t As UInt16 = CType(mHeader.Origin, UInt16)
-			  Return CType(t, HeaderOriginType)
+			  Return mOrigin
 			End Get
 		#tag EndGetter
 		Origin As libcURL.HeaderOriginType

@@ -370,6 +370,9 @@ Protected Module Errors
 	#tag Constant, Name = HTTP_RETURNED_ERROR, Type = Double, Dynamic = False, Default = \"22", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = INCONCEIVABLE, Type = Double, Dynamic = False, Default = \"-15", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = INIT_FAILED, Type = Double, Dynamic = False, Default = \"-3", Scope = Protected
 	#tag EndConstant
 

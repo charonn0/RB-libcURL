@@ -2301,7 +2301,7 @@ Protected Module libcURL
 		  Connect=4
 		  Intermediate_1XX=8
 		  Pseudo=16
-		Any=31
+		Any=15
 	#tag EndEnum
 
 	#tag Enum, Name = HTTPVersion, Type = Integer, Flags = &h1
