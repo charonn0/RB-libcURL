@@ -2,26 +2,26 @@
 Private Class ResponseHeaderCreator
 Inherits libcURL.ResponseHeader
 	#tag Method, Flags = &h0
-		Sub Constructor(Header As curl_header)
+		Sub Constructor(Header As curl_header, RequestIndex As Integer)
 		  ' This class exists solely to protect the superclass Constructor from being called
 		  ' from outside the libcURL module.
 		  
 		  // Calling the overridden superclass constructor.
-		  // Constructor(Header As curl_header) -- From ResponseHeader
-		  Super.Constructor(Header)
+		  // Constructor(Header As curl_header, RequestIndex As Integer) -- From ResponseHeader
+		  Super.Constructor(Header, RequestIndex)
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
-		Sub Constructor(Name As String, Value As String, NameIndex As Integer, NameCount As Integer)
+		Sub Constructor(Name As String, Value As String, NameIndex As Integer, NameCount As Integer, RequestIndex As Integer)
 		  Dim h As curl_header
 		  h.Amount = NameCount
 		  h.Index = NameIndex
 		  h.Origin = CType(HeaderOriginType.Header, UInt32)
 		  
 		  // Calling the overridden superclass constructor.
-		  // Constructor(Header As curl_header) -- From ResponseHeader
-		  Super.Constructor(h)
+		  // Constructor(Header As curl_header, RequestIndex As Integer) -- From ResponseHeader
+		  Super.Constructor(h, RequestIndex)
 		  
 		  mName = Name
 		  mValue = Value

@@ -1,7 +1,7 @@
 #tag Class
 Protected Class ResponseHeader
 	#tag Method, Flags = &h1
-		Protected Sub Constructor(Header As curl_header)
+		Protected Sub Constructor(Header As curl_header, RequestIndex As Integer)
 		  ' Creates a new instance of ResponseHeader for the EasyHandle whose response headers are to be queried.
 		  '
 		  ' See:
@@ -15,9 +15,7 @@ Protected Class ResponseHeader
 		  mOrigin = CType(ori, HeaderOriginType)
 		  mb = Header.Value
 		  If mb <> Nil Then mValue = mb.CString(0)
-		  
-		  
-		  
+		  mRequestIndex = RequestIndex
 		End Sub
 	#tag EndMethod
 
@@ -78,6 +76,10 @@ Protected Class ResponseHeader
 		Private mOrigin As libcURL.HeaderOriginType
 	#tag EndProperty
 
+	#tag Property, Flags = &h21
+		Private mRequestIndex As Integer
+	#tag EndProperty
+
 	#tag Property, Flags = &h1
 		Protected mValue As String
 	#tag EndProperty
@@ -113,6 +115,21 @@ Protected Class ResponseHeader
 			End Get
 		#tag EndGetter
 		Origin As libcURL.HeaderOriginType
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  ' A given transfer might involve more than one request (redirects, etc.) This property is
+			  ' the index of the request that this header is a response to, 0 or higher.
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ResponseHeader.RequestIndex
+			  
+			  Return mRequestIndex
+			End Get
+		#tag EndGetter
+		RequestIndex As Integer
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
@@ -173,6 +190,7 @@ Protected Class ResponseHeader
 			Name="Value"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class
