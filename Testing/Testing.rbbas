@@ -477,7 +477,11 @@ Protected Module Testing
 		  Assert(m.HasTransfer(c))
 		  
 		  While m.PerformOnce
-		    App.YieldToNextThread
+		    #If RBVersion > 2020.01
+		      Thread.YieldToNext()
+		    #Else
+		      App.YieldToNextThread()
+		    #EndIf
 		  Wend
 		  downstream.Close
 		  Assert(Not m.HasTransfer(c))
