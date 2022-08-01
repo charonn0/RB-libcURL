@@ -59,7 +59,7 @@ Begin Window DemoWindow
          AutoHideScrollbars=   True
          Bold            =   ""
          Border          =   True
-         ColumnCount     =   2
+         ColumnCount     =   3
          ColumnsResizable=   True
          ColumnWidths    =   ""
          DataField       =   ""
@@ -74,10 +74,10 @@ Begin Window DemoWindow
          HeadingIndex    =   -1
          Height          =   130
          HelpTag         =   ""
-         Hierarchical    =   ""
+         Hierarchical    =   True
          Index           =   -2147483648
          InitialParent   =   "OptionsPanel"
-         InitialValue    =   "Header name	Header value"
+         InitialValue    =   "Header	Value	Origin"
          Italic          =   ""
          Left            =   13
          LockBottom      =   False
@@ -2312,7 +2312,7 @@ Begin Window DemoWindow
       DataField       =   ""
       DataSource      =   ""
       Enabled         =   True
-      Height          =   20
+      Height          =   15
       HelpTag         =   ""
       Index           =   -2147483648
       InitialParent   =   ""
@@ -2321,7 +2321,7 @@ Begin Window DemoWindow
       LockBottom      =   ""
       LockedInPosition=   False
       LockLeft        =   True
-      LockRight       =   ""
+      LockRight       =   True
       LockTop         =   True
       Multiline       =   ""
       Scope           =   0
@@ -2334,11 +2334,11 @@ Begin Window DemoWindow
       TextFont        =   "System"
       TextSize        =   0
       TextUnit        =   0
-      Top             =   53
+      Top             =   58
       Transparent     =   True
       Underline       =   ""
       Visible         =   True
-      Width           =   312
+      Width           =   365
    End
 End
 #tag EndWindow
@@ -2504,12 +2504,12 @@ End
 		  PauseButton.Caption = "Pause"
 		  AbortButton.Enabled = False
 		  Dim cURLCode As Integer = Client.LastError
-		  Dim h As InternetHeaders = Client.ResponseHeaders
+		  
 		  If Not SaveToFileChkBx.Value And cURLCode = 0 Then
 		    Dim data As String = Client.GetDownloadedData()
 		    Dim enc As TextEncoding
-		    If h <> Nil And h.NameCount("Content-Type") > 0 Then
-		      enc = ParseContentType(h.CommaSeparatedValues("Content-Type"))
+		    If Client.ResponseHeaders.HasHeader("Content-Type") Then
+		      enc = ParseContentType(Client.ResponseHeaders.GetHeader("Content-Type").Value)
 		    End If
 		    If enc <> Nil Then data = DefineEncoding(data, enc)
 		    DownloadOutput.Text = data
@@ -2575,11 +2575,12 @@ End
 		    CurlInfo.AddRow(info.Name, value)
 		  Loop Until Not infoiterator.MoveNext()
 		  
-		  If h <> Nil Then
-		    For i As Integer = 0 To h.Count - 1
-		      Headers.AddRow(h.Name(i), h.Value(i))
-		    Next
-		  End If
+		  For i As Integer = 0 To Client.ResponseHeaders.RequestCount - 1
+		    Dim tmp() As libcURL.ResponseHeader = Client.ResponseHeaders.GetHeaders("", libcURL.HeaderOriginType.Any, i)
+		    Headers.AddFolder("Request #" + Str(i))
+		    Headers.RowTag(Headers.LastIndex) = tmp
+		  Next
+		  
 		  UpdateCookieList()
 		  Select Case Client.EasyHandle.HTTPVersion
 		  Case libcURL.HTTPVersion.HTTP1_1
@@ -2917,6 +2918,33 @@ End
 
 #tag EndWindowCode
 
+#tag Events Headers
+	#tag Event
+		Sub ExpandRow(row As Integer)
+		  Dim h() As libcURL.ResponseHeader = Me.RowTag(row)
+		  For i As Integer = UBound(h) DownTo 0
+		    Dim tmp As libcURL.ResponseHeader = h(i)
+		    Me.InsertRow(row + 1, tmp.Name, 1)
+		    Me.Cell(Me.LastIndex, 1) = tmp.Value
+		    Select Case tmp.Origin
+		    Case libcURL.HeaderOriginType.Connect
+		      Me.Cell(Me.LastIndex, 2) = "Proxy connect"
+		    Case libcURL.HeaderOriginType.Header
+		      Me.Cell(Me.LastIndex, 2) = "Normal"
+		    Case libcURL.HeaderOriginType.Intermediate_1XX
+		      Me.Cell(Me.LastIndex, 2) = "Intermediate"
+		    Case libcURL.HeaderOriginType.Pseudo
+		      Me.Cell(Me.LastIndex, 2) = "HTTP/2 pseudo"
+		    Case libcURL.HeaderOriginType.Trailer
+		      Me.Cell(Me.LastIndex, 2) = "Trailer"
+		    Else
+		      Me.Cell(Me.LastIndex, 2) = "Unknown"
+		    End Select
+		    Me.RowTag(Me.LastIndex) = tmp
+		  Next
+		End Sub
+	#tag EndEvent
+#tag EndEvents
 #tag Events Debug
 	#tag Event
 		Function ConstructContextualMenu(base as MenuItem, x as Integer, y as Integer) As Boolean
