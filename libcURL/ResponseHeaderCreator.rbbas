@@ -12,6 +12,17 @@ Inherits libcURL.ResponseHeader
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Sub Constructor(Header As curl_header64, RequestIndex As Integer)
+		  ' This class exists solely to protect the superclass Constructor from being called
+		  ' from outside the libcURL module.
+		  
+		  // Calling the overridden superclass constructor.
+		  // Constructor(Header As curl_header, RequestIndex As Integer) -- From ResponseHeader
+		  Super.Constructor(Header, RequestIndex)
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h1000
 		Sub Constructor(Name As String, Value As String, NameIndex As Integer, NameCount As Integer, RequestIndex As Integer)
 		  Dim h As curl_header

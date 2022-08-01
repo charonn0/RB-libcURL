@@ -16,7 +16,11 @@ Protected Class ResponseHeaderEngine
 		  For i As Integer = 0 To c
 		    Dim this As Ptr = curl_easy_nextheader(Owner.Handle, ori, i, Nil)
 		    Do Until this = Nil
-		      Dim header As New ResponseHeaderCreator(this.curl_header(0), i)
+		      #If Target64Bit Then
+		        Dim header As New ResponseHeaderCreator(this.curl_header64(0), i)
+		      #Else
+		        Dim header As New ResponseHeaderCreator(this.curl_header(0), i)
+		      #EndIf
 		      If Name = "" Or Name = header.Name Then h.Append(header)
 		      this = curl_easy_nextheader(Owner.Handle, ori, i, this)
 		    Loop
@@ -75,7 +79,11 @@ Protected Class ResponseHeaderEngine
 		  Dim p As Ptr
 		  Select Case curl_easy_header(Owner.Handle, Name, Index, ori, RequestIndex, p)
 		  Case 0
-		    Return New ResponseHeaderCreator(p.curl_header(0), reqidx)
+		    #If Target64Bit Then
+		      Return New ResponseHeaderCreator(p.curl_header64(0), reqidx)
+		    #Else
+		      Return New ResponseHeaderCreator(p.curl_header(0), reqidx)
+		    #EndIf
 		    
 		  Case CURLHE_BADINDEX, CURLHE_MISSING, CURLHE_NOHEADERS, CURLHE_NOREQUEST
 		    Return Nil
@@ -116,7 +124,12 @@ Protected Class ResponseHeaderEngine
 		  
 		  Dim h() As ResponseHeader
 		  Do Until this = Nil
-		    Dim header As New ResponseHeaderCreator(this.curl_header(0), reqidx)
+		    #If Target64Bit Then
+		      Dim header As New ResponseHeaderCreator(this.curl_header64(0), reqidx)
+		    #Else
+		      Dim header As New ResponseHeaderCreator(this.curl_header(0), reqidx)
+		    #EndIf
+		    
 		    If Name = "" Or Name = header.Name Then h.Append(header)
 		    this = curl_easy_nextheader(Owner.Handle, ori, RequestIndex, this)
 		  Loop
@@ -154,7 +167,11 @@ Protected Class ResponseHeaderEngine
 		  Dim this As Ptr = curl_easy_nextheader(Owner.Handle, ori, -1, Nil)
 		  Dim h As New InternetHeaders
 		  Do Until this = Nil
-		    Dim header As New ResponseHeaderCreator(this.curl_header(0), 0)
+		    #If Target64Bit Then
+		      Dim header As New ResponseHeaderCreator(this.curl_header64(0), 0)
+		    #Else
+		      Dim header As New ResponseHeaderCreator(this.curl_header(0), 0)
+		    #EndIf
 		    h.AppendHeader(header.Name, header.Value)
 		    this = curl_easy_nextheader(Owner.Handle, ori, -1, this)
 		  Loop

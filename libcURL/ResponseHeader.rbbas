@@ -19,6 +19,25 @@ Protected Class ResponseHeader
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h1
+		Protected Sub Constructor(Header As curl_header64, RequestIndex As Integer)
+		  ' Creates a new instance of ResponseHeader for the EasyHandle whose response headers are to be queried.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ResponseHeader.Constructor
+		  
+		  mAmount = Header.Amount
+		  mIndex = Header.Index
+		  Dim mb As MemoryBlock = Header.Name
+		  If mb <> Nil Then mName = mb.CString(0)
+		  Dim ori As UInt16 = CType(Header.Origin, UInt16)
+		  mOrigin = CType(ori, HeaderOriginType)
+		  mb = Header.Value
+		  If mb <> Nil Then mValue = mb.CString(0)
+		  mRequestIndex = RequestIndex
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Function Operator_Convert() As Pair
 		  ' Converts to a Pair of the name and value properties.
