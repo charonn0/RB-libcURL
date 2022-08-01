@@ -166,9 +166,6 @@ Protected Module LiveTests
 		    totl = totl + c
 		  Next
 		  Assert(totl = cnt)
-		  
-		  
-		  Break
 		End Sub
 	#tag EndMethod
 
