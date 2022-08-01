@@ -6,22 +6,23 @@ Protected Module LiveTests
 		  mSession.EasyHandle.Verbose = True
 		  mSession.EasyHandle.UseErrorBuffer = True
 		  TestResult = 0
+		  
 		  Try
-		    TestCookieGet()
+		    TestHeaderGet()
 		  Catch
 		    TestResult = 11
 		    Return False
 		  End Try
 		  
 		  Try
-		    TestCookieSet
+		    TestCookieGet()
 		  Catch
 		    TestResult = 12
 		    Return False
 		  End Try
 		  
 		  Try
-		    TestHeaderGet()
+		    TestCookieSet
 		  Catch
 		    TestResult = 13
 		    Return False
@@ -144,6 +145,30 @@ Protected Module LiveTests
 		  If Not mSession.Get("https://nghttp2.org/httpbin/response-headers?X-Test-Header=Test%20Value") Then Return
 		  Dim h As InternetHeaders = mSession.ResponseHeaders
 		  Assert(h.CommaSeparatedValues("X-Test-Header").Trim = "Test Value")
+		  
+		  If Not mSession.Get("https://nghttp2.org/httpbin/redirect/4") Then Return
+		  If libcURL.Version.IsAtLeast(7, 84, 0) Then Assert(mSession.ResponseHeaders.RequestCount = 5)
+		  
+		  Dim tmp() As libcURL.ResponseHeader = mSession.ResponseHeaders.GetHeaders("", libcURL.HeaderOriginType.Any, -2)
+		  Dim cnt As Integer = mSession.ResponseHeaders.Count("", libcURL.HeaderOriginType.Any, -2)
+		  Assert(UBound(tmp) + 1 = cnt)
+		  Dim header As libcURL.ResponseHeader = mSession.ResponseHeaders.GetHeader(tmp(UBound(tmp)).Name)
+		  Assert(header <> Nil)
+		  header = mSession.ResponseHeaders.GetHeader(header.Name, header.Index, header.Origin, header.RequestIndex)
+		  Assert(header <> Nil)
+		  Assert(mSession.ResponseHeaders.HasHeader(header.Name))
+		  
+		  Dim totl As Integer
+		  For i As Integer = 0 To mSession.ResponseHeaders.RequestCount - 1
+		    tmp = mSession.ResponseHeaders.GetHeaders("", libcURL.HeaderOriginType.Any, i)
+		    Dim c As Integer = mSession.ResponseHeaders.Count("", libcURL.HeaderOriginType.Any, i)
+		    Assert(UBound(tmp) + 1 = c)
+		    totl = totl + c
+		  Next
+		  Assert(totl = cnt)
+		  
+		  
+		  Break
 		End Sub
 	#tag EndMethod
 
