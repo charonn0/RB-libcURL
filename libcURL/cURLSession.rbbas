@@ -248,7 +248,6 @@ Protected Class cURLSession
 		  mEasyHandle.FollowRedirects = True
 		  mEasyHandle.AutoReferer = True
 		  mEasyHandle.HTTPCompression = libcURL.Version.LibZ.IsAvailable
-		  mRequestHeaderEngine = Nil
 		  mEasyHandle.UseErrorBuffer = True
 		  Me.Yield = True
 		End Sub
@@ -622,10 +621,6 @@ Protected Class cURLSession
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private mRequestHeaderEngine As libcURL.RequestHeaderEngine
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
 		Private mUploadMB As MemoryBlock
 	#tag EndProperty
 
@@ -665,8 +660,7 @@ Protected Class cURLSession
 			  ' See:
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.RequestHeaders
 			  
-			  If mRequestHeaderEngine = Nil Then mRequestHeaderEngine = New RequestHeaderEngineCreator(Me.EasyHandle)
-			  Return mRequestHeaderEngine
+			  Return EasyHandle.RequestHeaderEngine
 			End Get
 		#tag EndGetter
 		RequestHeaders As libcURL.RequestHeaderEngine
