@@ -3949,8 +3949,10 @@ End
 		  ResetButton.Enabled = False
 		  AbortButton.Enabled = True
 		  Dim f As FolderItem = GetOpenFolderItem("")
-		  Dim bs As BinaryStream = BinaryStream.Open(f)
-		  Client.Put(URLField.Text, bs)
+		  If f <> Nil Then
+		    Dim bs As BinaryStream = BinaryStream.Open(f)
+		    Client.Put(URLField.Text, bs)
+		  End If
 		End Sub
 	#tag EndEvent
 #tag EndEvents
@@ -3961,11 +3963,12 @@ End
 		  ResetButton.Enabled = False
 		  AbortButton.Enabled = True
 		  mPutTarget = GetOpenFolderItem("")
-		  mURL = URLField.Text
-		  mWorker = New Thread
-		  AddHandler mWorker.Run, WeakAddressOf RunPut
-		  mWorker.Run
-		  
+		  If mPutTarget <> Nil Then
+		    mURL = URLField.Text
+		    mWorker = New Thread
+		    AddHandler mWorker.Run, WeakAddressOf RunPut
+		    mWorker.Run
+		  End If
 		End Sub
 	#tag EndEvent
 #tag EndEvents
