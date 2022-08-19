@@ -675,6 +675,7 @@ Protected Class cURLSession
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.ResponseHeaderEngine
 			  
 			  If Not libcURL.Version.IsAtLeast(7, 84, 0) Then
+			    If mHeaders = Nil Then mHeaders = New InternetHeaders
 			    Return New ResponseHeaderEngineCreator(EasyHandle, mHeaders)
 			  Else
 			    Return EasyHandle.ResponseHeaderEngine
