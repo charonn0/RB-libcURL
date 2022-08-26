@@ -3093,8 +3093,7 @@ Protected Class OptionInfo
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Opts.OptionInfo.IsSet
 		  
-		  Dim s As String = StringValue(Session)
-		  Return s = ""
+		  Return Me.Value(Session) <> Me.DefaultValue
 		End Function
 	#tag EndMethod
 

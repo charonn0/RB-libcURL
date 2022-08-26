@@ -131,6 +131,20 @@ Protected Class cURLSession
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function GetOption(OptionNumber As Integer, DefaultValue As Variant = Nil) As Variant
+		  ' This method complements the SetOption method. You can use this method to retrieve any previously-set
+		  ' option value. If the OptionNumber has not been set then the DefaultValue parameter is returned.
+		  '
+		  ' This method cannot retrieve option values which were set using the SetOptionPtr method.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.GetOption
+		  
+		  Return EasyHandle.GetOption(OptionNumber, DefaultValue)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Attributes( deprecated = "libcURL.cURLSession.ResponseHeaders" )  Function GetResponseHeaders() As InternetHeaders
 		  ' Returns an InternetHeaders object containing all protocol headers received from the server
 		  ' during the most recent transfer. If no headers were received, returns Nil.
@@ -154,6 +168,19 @@ Protected Class cURLSession
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.GetStatusCode
 		  
 		  Return Me.GetInfo(libcURL.Info.RESPONSE_CODE).Int32Value
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function IsOptionSet(OptionNumber As Integer) As Boolean
+		  ' This method returns True if the OptionNumber has already been set on the EasyHandle. This method doesn't
+		  ' know about option values which were set using the SetOptionPtr method.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.IsOptionSet
+		  
+		  Dim opt As libcURL.Opts.OptionInfo = OptionNumber
+		  Return opt.IsSet(EasyHandle)
 		End Function
 	#tag EndMethod
 
