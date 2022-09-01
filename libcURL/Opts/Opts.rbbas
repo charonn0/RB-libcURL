@@ -563,6 +563,9 @@ Protected Module Opts
 	#tag Constant, Name = PROTOCOLS, Type = Double, Dynamic = False, Default = \"181", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = PROTOCOLS_STR, Type = Double, Dynamic = False, Default = \"10318", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = PROXY, Type = Double, Dynamic = False, Default = \"10004", Scope = Protected
 	#tag EndConstant
 
@@ -681,6 +684,9 @@ Protected Module Opts
 	#tag EndConstant
 
 	#tag Constant, Name = REDIR_PROTOCOLS, Type = Double, Dynamic = False, Default = \"182", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = REDIR_PROTOCOLS_STR, Type = Double, Dynamic = False, Default = \"10319", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = REFERER, Type = Double, Dynamic = False, Default = \"10016", Scope = Protected
