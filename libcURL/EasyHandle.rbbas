@@ -668,6 +668,7 @@ Inherits libcURL.cURLHandle
 		  mUseProgressEvent = True
 		  mUsername = ""
 		  Verbose = mVerbose
+		  mRequestHeaderEngine = Nil
 		  InitCallbacks()
 		  mLastError = 0
 		End Sub
@@ -817,7 +818,7 @@ Inherits libcURL.cURLHandle
 		    #Else
 		  Case Variant.TypeLong
 		    mLastError= curl_easy_setopt_long(mHandle, OptionNumber, NewValue)
-		    If mLastError = 0 Then 
+		    If mLastError = 0 Then
 		      mOptions.Value(OptionNumber) = NewValue
 		      Return True
 		    Else
@@ -1600,6 +1601,10 @@ Inherits libcURL.cURLHandle
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
+		Private mRequestHeaderEngine As libcURL.RequestHeaderEngine
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
 		Private mResponseHeaderEngine As libcURL.ResponseHeaderEngine
 	#tag EndProperty
 
@@ -1772,6 +1777,21 @@ Inherits libcURL.cURLHandle
 			End Get
 		#tag EndGetter
 		RemoteIP As String
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  ' Returns a reference to the RequestHeaderEngine for this instance of EasyHandle.
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.RequestHeaderEngine
+			  
+			  If mRequestHeaderEngine = Nil Then mRequestHeaderEngine = New RequestHeaderEngineCreator(Me)
+			  return mRequestHeaderEngine
+			End Get
+		#tag EndGetter
+		RequestHeaderEngine As libcURL.RequestHeaderEngine
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0

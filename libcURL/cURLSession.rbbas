@@ -131,6 +131,20 @@ Protected Class cURLSession
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function GetOption(OptionNumber As Integer, DefaultValue As Variant = Nil) As Variant
+		  ' This method complements the SetOption method. You can use this method to retrieve any previously-set
+		  ' option value. If the OptionNumber has not been set then the DefaultValue parameter is returned.
+		  '
+		  ' This method cannot retrieve option values which were set using the SetOptionPtr method.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.GetOption
+		  
+		  Return EasyHandle.GetOption(OptionNumber, DefaultValue)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Attributes( deprecated = "libcURL.cURLSession.ResponseHeaders" )  Function GetResponseHeaders() As InternetHeaders
 		  ' Returns an InternetHeaders object containing all protocol headers received from the server
 		  ' during the most recent transfer. If no headers were received, returns Nil.
@@ -154,6 +168,19 @@ Protected Class cURLSession
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.GetStatusCode
 		  
 		  Return Me.GetInfo(libcURL.Info.RESPONSE_CODE).Int32Value
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function IsOptionSet(OptionNumber As Integer) As Boolean
+		  ' This method returns True if the OptionNumber has already been set on the EasyHandle. This method doesn't
+		  ' know about option values which were set using the SetOptionPtr method.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.IsOptionSet
+		  
+		  Dim opt As libcURL.Opts.OptionInfo = OptionNumber
+		  Return opt.IsSet(EasyHandle)
 		End Function
 	#tag EndMethod
 
@@ -248,7 +275,6 @@ Protected Class cURLSession
 		  mEasyHandle.FollowRedirects = True
 		  mEasyHandle.AutoReferer = True
 		  mEasyHandle.HTTPCompression = libcURL.Version.LibZ.IsAvailable
-		  mRequestHeaderEngine = Nil
 		  mEasyHandle.UseErrorBuffer = True
 		  Me.Yield = True
 		End Sub
@@ -622,10 +648,6 @@ Protected Class cURLSession
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private mRequestHeaderEngine As libcURL.RequestHeaderEngine
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
 		Private mUploadMB As MemoryBlock
 	#tag EndProperty
 
@@ -665,8 +687,7 @@ Protected Class cURLSession
 			  ' See:
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.RequestHeaders
 			  
-			  If mRequestHeaderEngine = Nil Then mRequestHeaderEngine = New RequestHeaderEngineCreator(Me.EasyHandle)
-			  Return mRequestHeaderEngine
+			  Return EasyHandle.RequestHeaderEngine
 			End Get
 		#tag EndGetter
 		RequestHeaders As libcURL.RequestHeaderEngine
@@ -681,6 +702,7 @@ Protected Class cURLSession
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.ResponseHeaderEngine
 			  
 			  If Not libcURL.Version.IsAtLeast(7, 84, 0) Then
+			    If mHeaders = Nil Then mHeaders = New InternetHeaders
 			    Return New ResponseHeaderEngineCreator(EasyHandle, mHeaders)
 			  Else
 			    Return EasyHandle.ResponseHeaderEngine
