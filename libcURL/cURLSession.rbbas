@@ -81,6 +81,22 @@ Protected Class cURLSession
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h21
+		Private Function DoPerform() As Boolean
+		  Do Until Not mMultiHandle.PerformOnce()
+		    If Yield And Rnd > 0.99 Then
+		      #If RBVersion < 2020 Then
+		        App.YieldToNextThread()
+		      #Else
+		        Thread.YieldToNext()
+		      #EndIf
+		    End If
+		  Loop
+		  
+		  Return mEasyHandle.LastError = 0
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Function GetCookie(Name As String, Domain As String) As String
 		  ' Gets the value of the first cookie named 'Name' set for the host matching 'Domain', or the empty
@@ -197,6 +213,30 @@ Protected Class cURLSession
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub Perform(URL As libcURL.URLParser, ReadFrom As Readable, WriteTo As Writeable)
+		  ' Performs the transfer on the main thread/event loop.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.Perform
+		  
+		  QueueTransfer(URL, ReadFrom, WriteTo)
+		  mMultiHandle.Perform()
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Perform(URL As libcURL.URLParser, ReadFrom As Readable, WriteTo As Writeable) As Boolean
+		  ' Perform the transfer on the calling thread.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.Perform
+		  
+		  QueueTransfer(URL, ReadFrom, WriteTo)
+		  Return DoPerform()
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub Perform(URL As String, ReadFrom As Readable, WriteTo As Writeable)
 		  ' Performs the transfer on the main thread/event loop.
 		  '
@@ -216,22 +256,12 @@ Protected Class cURLSession
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.Perform
 		  
 		  QueueTransfer(URL, ReadFrom, WriteTo)
-		  Do Until Not mMultiHandle.PerformOnce()
-		    If Yield And Rnd > 0.99 Then
-		      #If RBVersion < 2020 Then
-		        App.YieldToNextThread()
-		      #Else
-		        Thread.YieldToNext()
-		      #EndIf
-		    End If
-		  Loop
-		  
-		  Return mEasyHandle.LastError = 0
+		  Return DoPerform()
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Sub QueueTransfer(URL As String, ReadFrom As Readable, WriteTo As Writeable)
+		Private Sub QueueStreams(ReadFrom As Readable, WriteTo As Writeable)
 		  If Not mMultiHandle.AddTransfer(mEasyHandle) Then
 		    ' Most likely another transfer is already in progress.
 		    Raise New cURLException(mMultiHandle)
@@ -239,7 +269,6 @@ Protected Class cURLSession
 		  
 		  mIsTransferComplete = False
 		  mAbort = False
-		  If URL.Trim <> "" Then mEasyHandle.URL = URL
 		  mHeaders = Nil
 		  If WriteTo = Nil Then
 		    mDownloadMB = New MemoryBlock(0)
@@ -252,6 +281,20 @@ Protected Class cURLSession
 		  mEasyHandle.UploadStream = ReadFrom
 		  If mEasyHandle.UseErrorBuffer Then mEasyHandle.UseErrorBuffer = True ' clears the previous buffer, if any
 		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub QueueTransfer(URL As libcURL.URLParser, ReadFrom As Readable, WriteTo As Writeable)
+		  QueueStreams(ReadFrom, WriteTo)
+		  If URL <> Nil And Not mEasyHandle.SetOption(libcURL.Opts.URL, URL) Then Raise New cURLException(mEasyHandle)
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub QueueTransfer(URL As String, ReadFrom As Readable, WriteTo As Writeable)
+		  QueueStreams(ReadFrom, WriteTo)
+		  If URL.Trim <> "" Then mEasyHandle.URL = URL
 		End Sub
 	#tag EndMethod
 
