@@ -336,6 +336,8 @@ Protected Class OptionInfo
 		    Return PROGRESSFUNCTION
 		  Case "PROTOCOLS"
 		    Return PROTOCOLS
+		  Case "PROTOCOLS_STR"
+		    Return PROTOCOLS_STR
 		  Case "PROXY"
 		    Return PROXY
 		  Case "PROXYAUTH"
@@ -416,6 +418,8 @@ Protected Class OptionInfo
 		    Return READFUNCTION
 		  Case "REDIR_PROTOCOLS"
 		    Return REDIR_PROTOCOLS
+		  Case "REDIR_PROTOCOLS_STR"
+		    Return REDIR_PROTOCOLS_STR
 		  Case "REFERER"
 		    Return REFERER
 		  Case "REQUEST_TARGET"
@@ -949,6 +953,8 @@ Protected Class OptionInfo
 		    Return Nil
 		  Case PROTOCOLS
 		    Return 0
+		  Case PROTOCOLS_STR
+		    Return ""
 		  Case PROXY
 		    Return Nil
 		  Case PROXYAUTH
@@ -1027,6 +1033,8 @@ Protected Class OptionInfo
 		    Return Nil
 		  Case REDIR_PROTOCOLS
 		    Return libcURL.Protocols.HTTP Or libcURL.Protocols.HTTPS Or libcURL.Protocols.FTP Or libcURL.Protocols.FTPS
+		  Case REDIR_PROTOCOLS_STR
+		    Return "http,https,ftp,ftps"
 		  Case REFERER
 		    Return Nil
 		  Case REQUEST_TARGET
@@ -1543,6 +1551,8 @@ Protected Class OptionInfo
 		    tmp = "7.1"
 		  Case PROTOCOLS
 		    tmp = "7.19.4"
+		  Case PROTOCOLS_STR
+		    tmp = "7.85.0"
 		  Case PROXY
 		    tmp = "7.1"
 		  Case PROXYAUTH
@@ -1623,6 +1633,8 @@ Protected Class OptionInfo
 		    tmp = "7.1"
 		  Case REDIR_PROTOCOLS
 		    tmp = "7.19.4"
+		  Case REDIR_PROTOCOLS_STR
+		    tmp = "7.85.0"
 		  Case REFERER
 		    tmp = "7.1"
 		  Case REQUEST_TARGET
@@ -2157,6 +2169,8 @@ Protected Class OptionInfo
 		    Return "XFERINFOFUNCTION"
 		  Case PROTOCOLS
 		    Return "PROTOCOLS"
+		  Case PROTOCOLS_STR
+		    Return "PROTOCOLS_STR"
 		  Case PROXY
 		    Return "PROXY"
 		  Case PROXYAUTH
@@ -2237,6 +2251,8 @@ Protected Class OptionInfo
 		    Return "READFUNCTION"
 		  Case REDIR_PROTOCOLS
 		    Return "REDIR_PROTOCOLS"
+		  Case REDIR_PROTOCOLS_STR
+		    Return "REDIR_PROTOCOLS_STR"
 		  Case REFERER
 		    Return "REFERER"
 		  Case REQUEST_TARGET
@@ -2778,6 +2794,8 @@ Protected Class OptionInfo
 		    Return OptionType.Subroutine
 		  Case PROTOCOLS
 		    Return OptionType.Number
+		  Case PROTOCOLS_STR
+		    Return OptionType.String
 		  Case PROXY
 		    Return OptionType.String
 		  Case PROXYAUTH
@@ -2858,6 +2876,8 @@ Protected Class OptionInfo
 		    Return OptionType.Subroutine
 		  Case REDIR_PROTOCOLS
 		    Return OptionType.Number
+		  Case REDIR_PROTOCOLS_STR
+		    Return OptionType.String
 		  Case REFERER
 		    Return OptionType.String
 		  Case REQUEST_TARGET
