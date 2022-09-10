@@ -100,6 +100,45 @@ Protected Module LiveTests
 		  Assert(d.Count = 2)
 		  Assert(d.Value("k2") = "v2")
 		  Assert(d.Value("k1") = "v1")
+		  
+		  If libcURL.URLParser.IsAvailable Then
+		    Dim url As New libcURL.URLParser("https://nghttp2.org/httpbin/cookies/set?k2=v2&k1=v1")
+		    If Not mSession.Get(url) Then Return
+		    Assert(mSession.IsSSLCertOK)
+		    Assert(mSession.Cookies.Count = 2)
+		    Assert(mSession.GetCookie("k2", "nghttp2.org") = "v2")
+		    Assert(mSession.GetCookie("k1", "nghttp2.org") = "v1")
+		    Assert(mSession.GetCookie("k2", "") = "v2")
+		    Assert(mSession.GetCookie("k1", "") = "v1")
+		    Assert(mSession.GetCookie("invalid", "nghttp2.org") = "")
+		    Assert(mSession.GetCookie("invalid", "") = "")
+		    
+		    d = New Dictionary
+		    i = -1
+		    Do
+		      i = mSession.Cookies.Lookup("", "nghttp2.org", i + 1)
+		      If i > -1 Then
+		        d.Value(mSession.Cookies.Name(i)) = mSession.Cookies.Value(i)
+		      End If
+		    Loop Until i < 0
+		    
+		    Assert(d.Count = 2)
+		    Assert(d.Value("k2") = "v2")
+		    Assert(d.Value("k1") = "v1")
+		    
+		    d = New Dictionary
+		    i = -1
+		    Do
+		      i = mSession.Cookies.Lookup("", "", i + 1)
+		      If i > -1 Then
+		        d.Value(mSession.Cookies.Name(i)) = mSession.Cookies.Value(i)
+		      End If
+		    Loop Until i < 0
+		    
+		    Assert(d.Count = 2)
+		    Assert(d.Value("k2") = "v2")
+		    Assert(d.Value("k1") = "v1")
+		  End If
 		End Sub
 	#tag EndMethod
 
@@ -113,7 +152,14 @@ Protected Module LiveTests
 		  js = js.Value("cookies")
 		  Assert(js.Value("TestCookie") = "TestValue")
 		  
-		  
+		  If libcURL.URLParser.IsAvailable Then
+		    Dim url As New libcURL.URLParser("https://nghttp2.org/httpbin/cookies")
+		    Assert(mSession.Get(url))
+		    js = New JSONItem(mSession.GetDownloadedData)
+		    Assert(js.HasName("cookies"))
+		    js = js.Value("cookies")
+		    Assert(js.Value("TestCookie") = "TestValue")
+		  End If
 		End Sub
 	#tag EndMethod
 
@@ -137,6 +183,18 @@ Protected Module LiveTests
 		  files = js.Value("form")
 		  Assert(files.Value("user") = "bob")
 		  Assert(files.Value("password") = "seekrit")
+		  
+		  If libcURL.URLParser.IsAvailable Then
+		    Dim url As New libcURL.URLParser("https://nghttp2.org/httpbin/post")
+		    Assert(mSession.Post(url, form))
+		    js = New JSONItem(mSession.GetDownloadedData)
+		    files = js.Value("files")
+		    Assert(files.Count = 1)
+		    Assert(files.Value("upload") = "Hello, world!")
+		    files = js.Value("form")
+		    Assert(files.Value("user") = "bob")
+		    Assert(files.Value("password") = "seekrit")
+		  End If
 		End Sub
 	#tag EndMethod
 
@@ -166,6 +224,31 @@ Protected Module LiveTests
 		    totl = totl + c
 		  Next
 		  Assert(totl = cnt)
+		  
+		  If libcURL.URLParser.IsAvailable Then
+		    Dim url As New libcURL.URLParser("https://nghttp2.org/httpbin/redirect/4")
+		    If Not mSession.Get(url) Then Return
+		    If libcURL.Version.IsAtLeast(7, 84, 0) Then Assert(mSession.ResponseHeaders.RequestCount = 5)
+		    
+		    tmp() = mSession.ResponseHeaders.GetHeaders("", libcURL.HeaderOriginType.Any, -2)
+		    cnt = mSession.ResponseHeaders.Count("", libcURL.HeaderOriginType.Any, -2)
+		    Assert(UBound(tmp) + 1 = cnt)
+		    header = mSession.ResponseHeaders.GetHeader(tmp(UBound(tmp)).Name)
+		    Assert(header <> Nil)
+		    header = mSession.ResponseHeaders.GetHeader(header.Name, header.Index, header.Origin, header.RequestIndex)
+		    Assert(header <> Nil)
+		    Assert(mSession.ResponseHeaders.HasHeader(header.Name))
+		    
+		    totl = 0
+		    For i As Integer = 0 To mSession.ResponseHeaders.RequestCount - 1
+		      tmp = mSession.ResponseHeaders.GetHeaders("", libcURL.HeaderOriginType.Any, i)
+		      Dim c As Integer = mSession.ResponseHeaders.Count("", libcURL.HeaderOriginType.Any, i)
+		      Assert(UBound(tmp) + 1 = c)
+		      totl = totl + c
+		    Next
+		    
+		    Assert(totl = cnt)
+		  End If
 		End Sub
 	#tag EndMethod
 
@@ -191,9 +274,24 @@ Protected Module LiveTests
 		  Assert(js.HasName("X-Test-Header4"))
 		  Assert(js.Value("X-Test-Header4") = "TestValue4")
 		  
-		  
-		  
-		  
+		  If libcURL.URLParser.IsAvailable Then
+		    Dim url As New libcURL.URLParser("https://nghttp2.org/httpbin/headers")
+		    Assert(mSession.Get(url))
+		    js = New JSONItem(mSession.GetDownloadedData)
+		    js = js.Value("headers")
+		    
+		    Assert(js.HasName("X-Test-Header1"))
+		    Assert(js.Value("X-Test-Header1") = "TestValue1")
+		    
+		    Assert(js.HasName("X-Test-Header2"))
+		    Assert(js.Value("X-Test-Header2") = "TestValue2")
+		    
+		    Assert(js.HasName("X-Test-Header3"))
+		    Assert(js.Value("X-Test-Header3") = "TestValue3")
+		    
+		    Assert(js.HasName("X-Test-Header4"))
+		    Assert(js.Value("X-Test-Header4") = "TestValue4")
+		  End If
 		End Sub
 	#tag EndMethod
 
@@ -220,6 +318,20 @@ Protected Module LiveTests
 		  files = js.Value("form")
 		  Assert(files.Value("user") = "bob")
 		  Assert(files.Value("password") = "seekrit")
+		  
+		  If libcURL.URLParser.IsAvailable Then
+		    Dim url As New libcURL.URLParser("https://nghttp2.org/httpbin/post")
+		    Assert(mSession.Post(url, form))
+		    js = New JSONItem(mSession.GetDownloadedData)
+		    files = js.Value("files")
+		    Assert(files.Count = 2)
+		    Assert(files.Value("upload") = "Hello, world!")
+		    Assert(files.Value("stream") = "Hello, world!")
+		    
+		    files = js.Value("form")
+		    Assert(files.Value("user") = "bob")
+		    Assert(files.Value("password") = "seekrit")
+		  End If
 		End Sub
 	#tag EndMethod
 
@@ -230,6 +342,15 @@ Protected Module LiveTests
 		  Assert(mSession.EasyHandle.URL = "https://nghttp2.org/httpbin/get")
 		  Assert(Not mSession.Get("https://nghttp2.org/httpbin/redirect/7"))
 		  Assert(mSession.LastError = libcURL.Errors.TOO_MANY_REDIRECTS)
+		  
+		  If libcURL.URLParser.IsAvailable Then
+		    Dim url As New libcURL.URLParser("https://nghttp2.org/httpbin/redirect/6")
+		    Assert(mSession.Get(url))
+		    Assert(mSession.EasyHandle.URL = "https://nghttp2.org/httpbin/get")
+		    url.StringValue = "https://nghttp2.org/httpbin/redirect/7"
+		    Assert(Not mSession.Get(url))
+		    Assert(mSession.LastError = libcURL.Errors.TOO_MANY_REDIRECTS)
+		  End If
 		End Sub
 	#tag EndMethod
 
