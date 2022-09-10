@@ -198,11 +198,9 @@ Protected Class ResponseHeaderEngine
 		  
 		  Dim ori As UInt32 = CType(HeaderOriginType.Any, UInt32)
 		  Dim idx As Integer
-		  Do
-		    Dim this As Ptr = curl_easy_nextheader(Owner.Handle, ori, idx, Nil)
-		    If this = Nil Then Exit Do
+		  While curl_easy_nextheader(Owner.Handle, ori, idx, Nil) <> Nil
 		    idx = idx + 1
-		  Loop
+		  Wend
 		  
 		  Return idx
 		End Function
