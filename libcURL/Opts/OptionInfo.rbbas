@@ -482,6 +482,10 @@ Protected Class OptionInfo
 		    Return SSH_HOST_PUBLIC_KEY_MD5
 		  Case "SSH_HOST_PUBLIC_KEY_SHA256"
 		    Return SSH_HOST_PUBLIC_KEY_SHA256
+		  Case "SSH_HOSTKEYDATA"
+		    Return SSH_HOSTKEYDATA
+		  Case "SSH_HOSTKEYFUNCTION"
+		    Return SSH_HOSTKEYFUNCTION
 		  Case "SSH_KEYDATA"
 		    Return SSH_KEYDATA
 		  Case "SSH_KEYFUNCTION"
@@ -614,6 +618,8 @@ Protected Class OptionInfo
 		    Return WRITEDATA
 		  Case "WRITEFUNCTION"
 		    Return WRITEFUNCTION
+		  Case "WS_OPTIONS"
+		    Return WS_OPTIONS
 		  Case "XFERINFODATA"
 		    Return XFERINFODATA
 		  Case "XFERINFOFUNCTION"
@@ -1091,6 +1097,10 @@ Protected Class OptionInfo
 		    Return Nil
 		  Case SSH_HOST_PUBLIC_KEY_SHA256
 		    Return Nil
+		  Case SSH_HOSTKEYDATA
+		    Return Nil
+		  Case SSH_HOSTKEYFUNCTION
+		    Return Nil
 		  Case SSH_KEYDATA
 		    Return Nil
 		  Case SSH_KEYFUNCTION
@@ -1221,6 +1231,8 @@ Protected Class OptionInfo
 		    Return Nil
 		  Case WRITEFUNCTION
 		    Return Nil
+		  Case WS_OPTIONS
+		    Return 0
 		  Case XFERINFODATA
 		    Return Nil
 		  Case XFERINFOFUNCTION
@@ -1691,6 +1703,10 @@ Protected Class OptionInfo
 		    tmp = "7.17.1"
 		  Case SSH_HOST_PUBLIC_KEY_SHA256
 		    tmp = "7.80.0"
+		  Case SSH_HOSTKEYDATA
+		    tmp = "7.84.0"
+		  Case SSH_HOSTKEYFUNCTION
+		    tmp = "7.84.0"
 		  Case SSH_KEYDATA
 		    tmp = "7.19.6"
 		  Case SSH_KEYFUNCTION
@@ -1825,6 +1841,8 @@ Protected Class OptionInfo
 		    tmp = "7.9.7"
 		  Case WRITEFUNCTION
 		    tmp = "7.1"
+		  Case WS_OPTIONS
+		    tmp = "7.86.0"
 		  Case XFERINFODATA
 		    tmp = "7.32.0"
 		  Case XFERINFOFUNCTION
@@ -2315,6 +2333,10 @@ Protected Class OptionInfo
 		    Return "SSH_HOST_PUBLIC_KEY_MD5"
 		  Case SSH_HOST_PUBLIC_KEY_SHA256
 		    Return "SSH_HOST_PUBLIC_KEY_SHA256"
+		  Case SSH_HOSTKEYDATA
+		    Return "SSH_HOSTKEYDATA"
+		  Case SSH_HOSTKEYFUNCTION
+		    Return "SSH_HOSTKEYFUNCTION"
 		  Case SSH_KEYDATA
 		    Return "SSH_KEYDATA"
 		  Case SSH_KEYFUNCTION
@@ -2447,6 +2469,8 @@ Protected Class OptionInfo
 		    Return "WRITEDATA"
 		  Case WRITEFUNCTION
 		    Return "WRITEFUNCTION"
+		  Case WS_OPTIONS
+		    Return "WS_OPTIONS"
 		  Case XFERINFODATA
 		    Return "XFERINFODATA"
 		  Case XFERINFOFUNCTION
@@ -2938,6 +2962,10 @@ Protected Class OptionInfo
 		    Return OptionType.String
 		  Case SSH_HOST_PUBLIC_KEY_SHA256
 		    Return OptionType.String
+		  Case SSH_HOSTKEYDATA
+		    Return OptionType.Opaque
+		  Case SSH_HOSTKEYFUNCTION
+		    Return OptionType.Subroutine
 		  Case SSH_KEYDATA
 		    Return OptionType.Opaque
 		  Case SSH_KEYFUNCTION
@@ -3074,6 +3102,8 @@ Protected Class OptionInfo
 		    Return OptionType.Opaque
 		  Case WRITEFUNCTION
 		    Return OptionType.Subroutine
+		  Case WS_OPTIONS
+		    Return OptionType.Bitmask
 		  Case HEADERDATA
 		    Return OptionType.Opaque
 		  Case XFERINFODATA
