@@ -46,7 +46,7 @@ Protected Class ResponseHeaderEngine
 		Function Count(Name As String = "", Origin As libcURL.HeaderOriginType = libcURL.HeaderOriginType.Any, RequestIndex As Integer = -1) As Integer
 		  ' Counts the number of response headers that match all of the parameters. If a parameter
 		  ' is unspecified then all headers match it. Hence, with no parameters specified this
-		  ' method counts the total number of all response headers.
+		  ' method counts the number of response headers to the final request in the transfer.
 		  '
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ResponseHeaderEngine.Count
