@@ -3188,11 +3188,23 @@ Protected Class OptionInfo
 		  If Not libcURL.IsAvailable Then Raise New PlatformNotSupportedException
 		  If System.IsFunctionAvailable("curl_easy_option_by_id", cURLLib) Then
 		    Dim opt As Ptr = curl_easy_option_by_id(OptionID)
-		    If opt <> Nil Then Me.Constructor(opt.curl_easyoption)
+		    If opt <> Nil Then
+		      Me.Constructor(opt.curl_easyoption)
+		    Else
+		      Dim err As New cURLException(Nil)
+		      err.ErrorNumber = -libcURL.Errors.UNKNOWN_OPTION
+		      err.Message = "Invalid option ID number."
+		      Raise err
+		    End If
 		  Else
 		    mOpt.Option = OptionID
 		    mOpt.Type = GetOptionType(OptionID)
-		    Call GetOptionFirstVersion(OptionNumber, mMinMajor, mMinMinor, mMinPatch)
+		    If Not GetOptionFirstVersion(OptionNumber, mMinMajor, mMinMinor, mMinPatch) Then
+		      Dim err As New cURLException(Nil)
+		      err.ErrorNumber = -libcURL.Errors.UNKNOWN_OPTION
+		      err.Message = "Invalid option ID number."
+		      Raise err
+		    End If
 		  End If
 		End Sub
 	#tag EndMethod
@@ -3211,11 +3223,23 @@ Protected Class OptionInfo
 		  Name = Name.Uppercase()
 		  If System.IsFunctionAvailable("curl_easy_option_by_name", cURLLib) Then
 		    Dim opt As Ptr = curl_easy_option_by_name(Name)
-		    If opt <> Nil Then Me.Constructor(opt.curl_easyoption)
+		    If opt <> Nil Then
+		      Me.Constructor(opt.curl_easyoption)
+		    Else
+		      Dim err As New cURLException(Nil)
+		      err.ErrorNumber = -libcURL.Errors.UNKNOWN_OPTION
+		      err.Message = "Invalid option name or alias."
+		      Raise err
+		    End If
 		  Else
 		    mOpt.Option = GetOptionByName(Name)
 		    mOpt.Type = GetOptionType(OptionNumber)
-		    Call GetOptionFirstVersion(OptionNumber, mMinMajor, mMinMinor, mMinPatch)
+		    If Not GetOptionFirstVersion(OptionNumber, mMinMajor, mMinMinor, mMinPatch) Then
+		      Dim err As New cURLException(Nil)
+		      err.ErrorNumber = -libcURL.Errors.UNKNOWN_OPTION
+		      err.Message = "Invalid option name or alias."
+		      Raise err
+		    End If
 		  End If
 		End Sub
 	#tag EndMethod
@@ -3379,6 +3403,7 @@ Protected Class OptionInfo
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Opts.OptionInfo.IsAvailable
 			  
 			  If mMinMajor = 0 Then Return True
+			  If mMinMajor = -1 Then Return False
 			  Return libcURL.Version.IsAtLeast(mMinMajor, mMinMinor, mMinPatch)
 			End Get
 		#tag EndGetter
