@@ -1850,11 +1850,18 @@ Protected Class OptionInfo
 		  Case XOAUTH2_BEARER
 		    tmp = "7.33.0"
 		  End Select
-		  If tmp = "" Then Return False
-		  Major = Val(NthField(tmp, ".", 1))
-		  Minor = Val(NthField(tmp, ".", 2))
-		  Patch = Val(NthField(tmp, ".", 3))
-		  Return True
+		  If tmp <> "" Then
+		    Major = Val(NthField(tmp, ".", 1))
+		    Minor = Val(NthField(tmp, ".", 2))
+		    Patch = Val(NthField(tmp, ".", 3))
+		    Return True
+		  Else
+		    Major = -1
+		    Minor = -1
+		    Patch = -1
+		    Return False
+		  End If
+		  
 		  
 		  
 		End Function
