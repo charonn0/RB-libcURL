@@ -2764,7 +2764,9 @@ End
 	#tag Method, Flags = &h21
 		Private Sub RunGet(Sender As Thread)
 		  #pragma Unused Sender
-		  If Not Client.Get(mURL, ThreadStream) Then System.DebugLog("Failed")
+		  If Not Client.Get(mURL, ThreadStream) Then
+		    //meh 
+		  End If
 		End Sub
 	#tag EndMethod
 
@@ -2772,7 +2774,7 @@ End
 		Private Sub RunHead(Sender As Thread)
 		  #pragma Unused Sender
 		  If Not Client.Head(mURL) Then
-		    Break
+		    //meh
 		  End If
 		End Sub
 	#tag EndMethod
@@ -2810,7 +2812,7 @@ End
 		  If mPutTarget <> Nil Then
 		    Dim bs As BinaryStream = BinaryStream.Open(mPutTarget)
 		    If Not Client.Put(mURL, bs) Then
-		      Break
+		      //meh
 		    End If
 		    bs.Close
 		  End If

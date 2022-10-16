@@ -864,7 +864,7 @@ Inherits libcURL.cURLHandle
 		      Return Me.SetOption(OptionNumber, auth.Mask)
 		      
 		    Case IsA libcURL.cURLHandle
-		      If NewValue IsA URLParser Then Return SetOption(OptionNumber, URLParser(NewValue).StringValue)
+		      If OptionNumber = libcURL.Opts.URL And NewValue IsA URLParser Then OptionNumber = libcURL.Opts.CURLU
 		      Dim cURL As libcURL.cURLHandle = NewValue
 		      If Not Me.SetOption(OptionNumber, cURL.Handle) Then Return False
 		      mOptions.Value(OptionNumber) = New WeakRef(cURL)
