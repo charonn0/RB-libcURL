@@ -1014,7 +1014,7 @@ Protected Module Opts
 	#tag Structure, Name = curl_easyoption, Flags = &h21
 		Name As Ptr
 		  Option As Int32
-		  Type As OptionType
+		  Type As Int32
 		Flags As UInt32
 	#tag EndStructure
 

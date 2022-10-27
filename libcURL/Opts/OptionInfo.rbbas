@@ -3198,7 +3198,7 @@ Protected Class OptionInfo
 		    End If
 		  Else
 		    mOpt.Option = OptionID
-		    mOpt.Type = GetOptionType(OptionID)
+		    mOpt.Type = CType(GetOptionType(OptionID), Int32)
 		    If Not GetOptionFirstVersion(OptionNumber, mMinMajor, mMinMinor, mMinPatch) Then
 		      Dim err As New cURLException(Nil)
 		      err.ErrorNumber = -libcURL.Errors.UNKNOWN_OPTION
@@ -3233,7 +3233,7 @@ Protected Class OptionInfo
 		    End If
 		  Else
 		    mOpt.Option = GetOptionByName(Name)
-		    mOpt.Type = GetOptionType(OptionNumber)
+		    mOpt.Type = CType(GetOptionType(OptionNumber), Int32)
 		    If Not GetOptionFirstVersion(OptionNumber, mMinMajor, mMinMinor, mMinPatch) Then
 		      Dim err As New cURLException(Nil)
 		      err.ErrorNumber = -libcURL.Errors.UNKNOWN_OPTION
@@ -3528,7 +3528,7 @@ Protected Class OptionInfo
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Opts.OptionInfo.Type
 			  
 			  If IsBooleanOption(OptionNumber) Then Return OptionType.Boolean
-			  Return mOpt.Type
+			  Return CType(mOpt.Type, OptionType)
 			End Get
 		#tag EndGetter
 		Type As libcURL.OptionType
