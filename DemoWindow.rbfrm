@@ -51,7 +51,7 @@ Begin Window DemoWindow
       TextUnit        =   0
       Top             =   119
       Underline       =   ""
-      Value           =   4
+      Value           =   0
       Visible         =   True
       Width           =   636
       Begin Listbox Headers
@@ -108,9 +108,9 @@ Begin Window DemoWindow
          AutoHideScrollbars=   True
          Bold            =   ""
          Border          =   True
-         ColumnCount     =   2
+         ColumnCount     =   3
          ColumnsResizable=   True
-         ColumnWidths    =   "40%"
+         ColumnWidths    =   "40%,20%,40%"
          DataField       =   ""
          DataSource      =   ""
          DefaultRowHeight=   -1
@@ -126,7 +126,7 @@ Begin Window DemoWindow
          Hierarchical    =   False
          Index           =   -2147483648
          InitialParent   =   "OptionsPanel"
-         InitialValue    =   "Info Name	Last request Value"
+         InitialValue    =   "Info Name	Type	Last request Value"
          Italic          =   ""
          Left            =   13
          LockBottom      =   False
@@ -2572,7 +2572,7 @@ End
 		      value = info.StringValue(Client.EasyHandle)
 		    End Select
 		    
-		    CurlInfo.AddRow(info.Name, value)
+		    CurlInfo.AddRow(info.Name, VarTypeName(info.Type), value)
 		  Loop Until Not infoiterator.MoveNext()
 		  
 		  For i As Integer = 0 To Client.ResponseHeaders.RequestCount - 1
@@ -2854,6 +2854,56 @@ End
 		    CookiesShown.Text = "Cookies shown: " + Format(CookieList.ListCount, "###,###,##0")
 		  End If
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Function VarTypeName(TypeNumber As Integer) As String
+		  Select Case TypeNumber
+		  Case 0
+		    Return "Nil"
+		  Case 2
+		    Return "Integer"
+		  Case 3
+		    Return "Long"
+		  Case 4
+		    Return "Single"
+		  Case 5
+		    Return "Double"
+		  Case 6
+		    Return "Currency"
+		  Case 7
+		    Return "Date"
+		  Case 8
+		    Return "String"
+		  Case 9
+		    Return "Object"
+		  Case 11
+		    Return "Boolean"
+		  Case 16
+		    Return "Color"
+		  Case 18
+		    Return "CString"
+		  Case 19
+		    Return "WString"
+		  Case 20
+		    Return "PString"
+		  Case 21
+		    Return "CFStringRef"
+		  Case 22
+		    Return "WindowPtr"
+		  Case 23
+		    Return "OSType"
+		  Case 26
+		    Return "Ptr"
+		  Case 36
+		    Return "Structure"
+		  Case Is = 4096
+		    Return "String()"
+		  Case Is > 4096
+		    Return VarTypeName(TypeNumber Xor 4096) + "()"
+		  End Select
+		  
+		End Function
 	#tag EndMethod
 
 
