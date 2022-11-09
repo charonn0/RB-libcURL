@@ -483,10 +483,10 @@ Protected Class InfoType
 		    libcURL.Info.PROXY_SSL_VERIFYRESULT, libcURL.Info.ACTIVESOCKET
 		    Return Variant.TypeInteger
 		    
-		  Case libcURL.Info.PROXY_ERROR
+		  Case libcURL.Info.PROXY_ERROR, libcURL.Info.RETRY_AFTER
 		    Return Variant.TypeInteger
 		    
-		  Case libcURL.Info.FILETIME
+		  Case libcURL.Info.FILETIME, libcURL.Info.FILETIME_T
 		    Return Variant.TypeDate
 		    
 		  Case libcurl.Info.PROXYAUTH_AVAIL, libcURL.Info.HTTPAUTH_AVAIL
@@ -507,7 +507,7 @@ Protected Class InfoType
 		    Return Variant.TypeArray
 		    
 		  Else
-		    Return Variant.TypeNil
+		    Return Variant.TypePtr
 		  End Select
 		End Function
 	#tag EndMethod
