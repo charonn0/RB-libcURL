@@ -3389,7 +3389,11 @@ Protected Class OptionInfo
 			  ' See:
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Opts.OptionInfo.DocumentationURL
 			  
-			  If Name <> "" And Not IsDeprecated Then Return "https://curl.haxx.se/libcurl/c/" + LibraryAlias + ".html"
+			  If Name <> "" And Not IsDeprecated Then
+			    Dim docname As String = LibraryAlias
+			    If docname = "CURLOPT_PRIVATE_" Then docname = "CURLOPT_PRIVATE"
+			    Return "https://curl.haxx.se/libcurl/c/" + docname + ".html"
+			  End If
 			End Get
 		#tag EndGetter
 		DocumentationURL As String
