@@ -7,7 +7,7 @@ The minimum supported libcURL version is [7.15.2](https://github.com/charonn0/RB
 
 ## Example
 This example performs a synchronous HTTP GET request on the calling thread. [**More examples**](https://github.com/charonn0/RB-libcURL/wiki#examples).
-```xojo
+```realbasic
   Dim curl As New cURLClient
   If curl.Get("http://www.example.com/index.html") Then 
       Dim page As String = curl.GetDownloadedData()
