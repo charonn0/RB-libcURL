@@ -39,6 +39,77 @@ This example performs a synchronous HTTP GET request on the calling thread. [**M
 ***
 It is strongly recommended that you familiarize yourself with [libcURL](http://curl.haxx.se/libcurl/c/libcurl-tutorial.html), as this project preserves the semantics of libcURL's API in an object-oriented, Xojo-flavored wrapper. 
 
+**For a simplified client interface that is appropriate for most types of transfers, you should use the [`cURLClient`](https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLClient) class. Refer to the [examples](https://github.com/charonn0/RB-libcURL/wiki#examples) below for demonstrations of `cURLClient`.**
+
+For more thorough documentation of individual classes and methods refer to the [wiki](https://github.com/charonn0/RB-libcURL/wiki).
+
+***
+
+Each libcURL [handle](https://en.wikipedia.org/wiki/Handle_%28computing%29) or handle equivalent is managed by an object class. These handle-managing classes all descend from a common ancestor, the abstract [`cURLHandle`](https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLHandle) class. 
+
+libcURL uses several different handle types or equivalents:
+
+|Handle Type|Object Class|Comment|
+|-----------|------------|-------|
+|[`curl_easy`](http://curl.haxx.se/libcurl/c/libcurl-easy.html)|[`EasyHandle`](https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle)|A persistent collection of sockets, caches, and options which together will be used when libcURL is told to perform a transfer.| 
+|[`curl_multi`](http://curl.haxx.se/libcurl/c/libcurl-multi.html)|[`MultiHandle`](https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle)|A set of one or more `curl_easy` handles whose transfers will be performed simultaneously.|
+|[`curl_share`](http://curl.haxx.se/libcurl/c/libcurl-share.html)|[`ShareHandle`](https://github.com/charonn0/RB-libcURL/wiki/libcURL.ShareHandle)|A set of one or more `curl_easy` handles that will share SSL session data, DNS caches, and/or HTTP cookies.|
+|[`slist`](http://curl.haxx.se/libcurl/c/curl_slist_append.html)|[`ListPtr`](https://github.com/charonn0/RB-libcURL/wiki/libcURL.ListPtr)|A linked list of string values.|
+|[`form`](http://curl.haxx.se/libcurl/c/curl_formadd.html)|[`MultipartForm`](https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultipartForm)|An HTTP form which libcURL will encode as `multipart/form-data`.|
+|[`mime`](https://curl.haxx.se/libcurl/c/curl_mime_init.html)|[`MIMEMessage`](https://github.com/charonn0/RB-libcURL/wiki/libcURL.MIMEMessage)|A MIME message (HTTP form, email message, etc.) (libcURL 7.56.0 or later)|
+|[`url`](https://curl.haxx.se/libcurl/c/curl_url.html)|[`URLParser`](https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLParser)|An interface to libcurl's URL parser (libcURL 7.62.0 or later)|
+
+Every transfer is associated with an `EasyHandle`. After creating a new `EasyHandle` instance, you can set various options for the handle by calling the [`SetOption`](https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.SetOption) method with the desired [cURL option number](http://curl.haxx.se/libcurl/c/curl_easy_setopt.html) and its new value. Options will persist until they are overwritten or reset.
+
+Once all the desired options have been set (e.g. URL, port, username and/or password, cookies, etc.) you are ready to begin the transfer. Depending on your specific requirements, you can do it in one of several ways. 
+
+You may call [`EasyHandle.Perform`](https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Perform) directly. However, this is a blocking call; not merely synchronous: the _entire application_ blocks for the duration of the transfer. As such, it is useful only in single-threaded console applications.
+
+To perform one or more transfers in a non-blocking manner use the `MultiHandle` class. The `MultiHandle` class represents a `curl_multi` handle (AKA a "stack"). [Add](https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.AddItem) the `EasyHandle` to the multi stack and then call [`MultiHandle.Perform`](https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.Perform) (or [`MultiHandle.PerformOnce`](https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.PerformOnce) on a RB/Xojo thread.)
+
+## How to incorporate libcURL into your Realbasic/Xojo project
+### Import the libcURL module
+1. Download the RB-libcURL project either in [ZIP archive format](https://github.com/charonn0/RB-libcURL/archive/master.zip) or by cloning the repository with your Git client.
+2. Open the RB-libcURL project in REALstudio or Xojo. Open your project in a separate window.
+3. Copy the libcURL module and the DEFAULT_CA_INFO_PEM file into your project and save.
+
+### Ensure the libcURL shared library is installed
+libcURL is installed by default on most Unix-like operating systems, including OS X and most Linux distributions. 
+
+Windows does not have it installed by default, you will need to ship all the necessary DLLs with your application. You can use pre-built DLLs available [here](https://curl.haxx.se/download.html), or you can [build them yourself from source](https://github.com/blackrosezy/build-libcurl-windows). 
+
+Depending on compile-time options, you may need to include additional DLLs for other libraries like OpenSSL or ZLib. Newly added features like HTTP/2 support may require building the latest version from source with special build flags and additional libraries. Review the libcURL documentation for the feature you're interested in.
+
+RB-libcURL will raise a PlatformNotSupportedException when used if all required DLLs/SOs/DyLibs are not available at runtime. 
+
+## Examples
+* [HTTP GET](https://github.com/charonn0/RB-libcURL/wiki/HTTP-GET-Example)
+* [HTTP GET with a persistent connection](https://github.com/charonn0/RB-libcURL/wiki/HTTP-persistent-connection-example)
+* [HTTP GET with pipelining](https://github.com/charonn0/RB-libcURL/wiki/HTTP-Pipelining-Example)
+* [HTTP HEAD](https://github.com/charonn0/RB-libcURL/wiki/HTTP-HEAD-Example)
+* [HTTP POST](https://github.com/charonn0/RB-libcURL/wiki/HTTP-POST-Example)
+* [HTTP TRACE](https://github.com/charonn0/RB-libcURL/wiki/HTTP-TRACE-Example)
+* [HTTP Cookies](https://github.com/charonn0/RB-libcURL/wiki/HTTP-Cookies-Example)
+* [Using a proxy](https://github.com/charonn0/RB-libcURL/wiki/Proxying-Example)
+* [FTP Download](https://github.com/charonn0/RB-libcURL/wiki/FTP-Download-Example)
+* [FTP Upload](https://github.com/charonn0/RB-libcURL/wiki/FTP-Upload-Example)
+* [FTP custom commands](https://github.com/charonn0/RB-libcURL/wiki/FTP-custom-commands)
+* [FTP directory listing](https://github.com/charonn0/RB-libcURL/wiki/FTP-Directory-Listing-Example)
+* [SMTP Send](https://github.com/charonn0/RB-libcURL/wiki/SMTP-Example)
+* [POP3 examples](https://github.com/charonn0/RB-libcURL/wiki/POP3-Examples)
+* [DNS control](https://github.com/charonn0/RB-libcURL/wiki/DNS-Example)
+* [DICT lookup example](https://github.com/charonn0/RB-libcURL/wiki/DICT-example)
+* [FILE protocol example](https://github.com/charonn0/RB-libcURL/wiki/FILE-protocol-example)
+* [Multiple Simultaneous Transfers](https://github.com/charonn0/RB-libcURL/wiki/Multiple-Simultaneous-Transfers)
+* [Query the server for protocol-specific metadata](https://github.com/charonn0/RB-libcURL/wiki/Query-URL-metadata-example)
+
+![Powered by libcURL](https://raw.githubusercontent.com/wiki/charonn0/RB-libcURL/powered_by_curl7.gif)
+
+## Synopsis
+
+***
+It is strongly recommended that you familiarize yourself with [libcURL](http://curl.haxx.se/libcurl/c/libcurl-tutorial.html), as this project preserves the semantics of libcURL's API in an object-oriented, Xojo-flavored wrapper. 
+
 **For a simplified client interface that is appropriate for most types of transfers, you should use the [`cURLClient`](https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLClient) class. Refer to the [examples](https://github.com/charonn0/RB-libcURL/wiki/Home#examples) below for demonstrations of `cURLClient`.**
 
 For more thorough documentation of individual classes and methods refer to the [wiki](https://github.com/charonn0/RB-libcURL/wiki).
