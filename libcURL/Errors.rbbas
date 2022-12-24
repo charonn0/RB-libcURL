@@ -230,6 +230,12 @@ Protected Module Errors
 		  Case REQUEST_INDEX_OUT_OF_BOUNDS
 		    Return "REQUEST_INDEX_OUT_OF_BOUNDS"
 		    
+		  Case NO_SUCH_HEADER
+		    Return "NO_SUCH_HEADER"
+		    
+		  Case NO_HEADERS
+		    Return "NO_HEADERS"
+		    
 		  End Select
 		End Function
 	#tag EndMethod
@@ -422,6 +428,12 @@ Protected Module Errors
 	#tag EndConstant
 
 	#tag Constant, Name = NO_COOKIEJAR, Type = Double, Dynamic = False, Default = \"-7", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = NO_HEADERS, Type = Double, Dynamic = False, Default = \"-17", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = NO_SUCH_HEADER, Type = Double, Dynamic = False, Default = \"-16", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = NO_TARGET, Type = Double, Dynamic = False, Default = \"-2", Scope = Protected
