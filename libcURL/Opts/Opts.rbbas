@@ -668,6 +668,9 @@ Protected Module Opts
 	#tag Constant, Name = PUT, Type = Double, Dynamic = False, Default = \"54", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = QUICK_EXIT, Type = Double, Dynamic = False, Default = \"322", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = QUOTE, Type = Double, Dynamic = False, Default = \"10028", Scope = Protected
 	#tag EndConstant
 

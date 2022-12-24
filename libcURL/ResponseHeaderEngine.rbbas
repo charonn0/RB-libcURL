@@ -85,7 +85,20 @@ Protected Class ResponseHeaderEngine
 		      Return New ResponseHeaderCreator(p.curl_header(0), reqidx)
 		    #EndIf
 		    
-		  Case CURLHE_BADINDEX, CURLHE_MISSING, CURLHE_NOHEADERS, CURLHE_NOREQUEST
+		  Case CURLHE_BADINDEX
+		    ErrorSetter(Owner).LastError = libcURL.Errors.HEADER_INDEX_OUT_OF_BOUNDS
+		    Return Nil
+		    
+		  Case CURLHE_NOREQUEST
+		    ErrorSetter(Owner).LastError = libcURL.Errors.REQUEST_INDEX_OUT_OF_BOUNDS
+		    Return Nil
+		    
+		  Case CURLHE_MISSING
+		    ErrorSetter(Owner).LastError = libcURL.Errors.NO_SUCH_HEADER
+		    Return Nil
+		    
+		  Case CURLHE_NOHEADERS
+		    ErrorSetter(Owner).LastError = libcURL.Errors.NO_HEADERS
 		    Return Nil
 		    
 		  Case CURLHE_OUT_OF_MEMORY

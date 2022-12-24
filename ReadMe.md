@@ -7,7 +7,7 @@ The minimum supported libcURL version is [7.15.2](https://github.com/charonn0/RB
 
 ## Example
 This example performs a synchronous HTTP GET request on the calling thread. [**More examples**](https://github.com/charonn0/RB-libcURL/wiki#examples).
-```xojo
+```realbasic
   Dim curl As New cURLClient
   If curl.Get("http://www.example.com/index.html") Then 
       Dim page As String = curl.GetDownloadedData()
@@ -39,7 +39,7 @@ This example performs a synchronous HTTP GET request on the calling thread. [**M
 ***
 It is strongly recommended that you familiarize yourself with [libcURL](http://curl.haxx.se/libcurl/c/libcurl-tutorial.html), as this project preserves the semantics of libcURL's API in an object-oriented, Xojo-flavored wrapper. 
 
-**For a simplified client interface that is appropriate for most types of transfers, you should use the [`cURLClient`](https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLClient) class. Refer to the [examples](https://github.com/charonn0/RB-libcURL/wiki/Home#examples) below for demonstrations of `cURLClient`.**
+**For a simplified client interface that is appropriate for most types of transfers, you should use the [`cURLClient`](https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLClient) class. Refer to the [examples](https://github.com/charonn0/RB-libcURL/wiki#examples) below for demonstrations of `cURLClient`.**
 
 For more thorough documentation of individual classes and methods refer to the [wiki](https://github.com/charonn0/RB-libcURL/wiki).
 
