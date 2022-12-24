@@ -3366,7 +3366,7 @@ Protected Class OptionInfo
 			  ' See:
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Info.InfoType.BindingAlias
 			  
-			  Dim nm As String = GetOptionName(OptionNumber)
+			  Dim nm As String = Me.Name
 			  If nm = "INTERFACE" Then nm = "NETINTERFACE"
 			  If nm <> "" Then nm = "libcURL.Opts." + nm
 			  Return nm
@@ -3460,7 +3460,7 @@ Protected Class OptionInfo
 			  ' See:
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Opts.OptionInfo.LibraryAlias
 			  
-			  Dim nm As String = GetOptionName(OptionNumber)
+			  Dim nm As String = Me.Name
 			  If nm <> "" Then nm = "CURLOPT_" + nm
 			  Return nm
 			End Get
