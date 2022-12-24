@@ -406,6 +406,8 @@ Protected Class OptionInfo
 		    Return PROXY_TRANSFER_MODE
 		  Case "PUT"
 		    Return PUT
+		  Case "QUICK_EXIT"
+		    Return QUICK_EXIT
 		  Case "QUOTE"
 		    Return QUOTE
 		  Case "RANDOM_FILE"
@@ -1027,6 +1029,8 @@ Protected Class OptionInfo
 		    Return 0
 		  Case PUT
 		    Return 0
+		  Case QUICK_EXIT
+		    Return 0
 		  Case QUOTE
 		    Return Nil
 		  Case RANDOM_FILE
@@ -1633,6 +1637,8 @@ Protected Class OptionInfo
 		    tmp = "7.18.0"
 		  Case PUT
 		    tmp = "7.1"
+		  Case QUICK_EXIT
+		    tmp = "7.87.0"
 		  Case QUOTE
 		    tmp = "7.1"
 		  Case RANDOM_FILE
@@ -2264,6 +2270,8 @@ Protected Class OptionInfo
 		    Return "PROXY_TRANSFER_MODE"
 		  Case PUT
 		    Return "PUT"
+		  Case QUICK_EXIT
+		    Return "QUICK_EXIT"
 		  Case QUOTE
 		    Return "QUOTE"
 		  Case RANDOM_FILE
@@ -2895,6 +2903,8 @@ Protected Class OptionInfo
 		    Return OptionType.Number
 		  Case PUT
 		    Return OptionType.Number
+		  Case QUICK_EXIT
+		    Return OptionType.Boolean
 		  Case QUOTE
 		    Return OptionType.List
 		  Case RANDOM_FILE
