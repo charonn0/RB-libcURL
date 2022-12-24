@@ -3136,22 +3136,6 @@ Protected Class OptionInfo
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Shared Function IsBooleanOption(OptionID As Int32) As Boolean
-		  Select Case OptionID
-		  Case APPEND, AUTOREFERER, CONNECT_ONLY, COOKIESESSION, DIRLISTONLY, DISALLOW_USERNAME_IN_URL, DNS_SHUFFLE_ADDRESSES, _
-		    DNS_USE_GLOBAL_CACHE, FAILONERROR, FILETIME, FOLLOWLOCATION, FORBID_REUSE, FRESH_CONNECT, FTP_CREATE_MISSING_DIRS, _
-		    FTP_SKIP_PASV_IP, FTP_USE_EPRT, FTP_USE_EPSV, FTP_USE_PRET, HAPROXYPROTOCOL, HEADER, HTTP09_ALLOWED, HTTPGET, HTTPPROXYTUNNEL, _
-		    HTTP_CONTENT_DECODING, HTTP_TRANSFER_DECODING, IGNORE_CONTENT_LENGTH, KEEP_SENDING_ON_ERROR, MAIL_RCPT_ALLLOWFAILS, NOBODY, _
-		    NOPROGRESS, NOSIGNAL, PATH_AS_IS, PIPEWAIT, POST, PROXY_TRANSFER_MODE, PUT, SASL_IR, SOCKS5_GSSAPI_NEC, SSH_COMPRESSION, _
-		    SSLENGINE_DEFAULT, SSL_ENABLE_ALPN, SSL_ENABLE_NPN, SSL_FALSESTART, SSL_SESSIONID_CACHE, SSL_VERIFYPEER, SSL_VERIFYSTATUS, _
-		    SUPPRESS_CONNECT_HEADERS, TCP_FASTOPEN, TCP_KEEPALIVE, TCP_NODELAY, TFTP_NO_OPTIONS, TRANSFER_ENCODING, TRANSFERTEXT, _
-		    UNRESTRICTED_AUTH, UPLOAD, VERBOSE, WILDCARDMATCH
-		    Return True
-		  End Select
-		End Function
-	#tag EndMethod
-
 	#tag Method, Flags = &h0
 		Function IsSet(Session As libcURL.EasyHandle) As Boolean
 		  ' Returns True if the option represented by this OptionInfo instance has
@@ -3384,7 +3368,7 @@ Protected Class OptionInfo
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Opts.OptionInfo.DefaultValue
 			  
 			  Dim v As Variant = GetOptionDefault(OptionNumber)
-			  If IsBooleanOption(OptionNumber) Then Return v.BooleanValue
+			  If GetOptionType(OptionNumber) = OptionType.Boolean Then Return v.BooleanValue
 			  Return v
 			End Get
 		#tag EndGetter
@@ -3541,7 +3525,7 @@ Protected Class OptionInfo
 			  ' See:
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Opts.OptionInfo.Type
 			  
-			  If IsBooleanOption(OptionNumber) Then Return OptionType.Boolean
+			  If GetOptionType(OptionNumber) = OptionType.Boolean Then Return OptionType.Boolean
 			  Return CType(mOpt.Type, OptionType)
 			End Get
 		#tag EndGetter
