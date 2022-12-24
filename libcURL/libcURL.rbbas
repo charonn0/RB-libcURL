@@ -2208,6 +2208,9 @@ Protected Module libcURL
 	#tag Constant, Name = CURL_READFUNC_PAUSE, Type = Double, Dynamic = False, Default = \"&h10000001", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = CURL_WRITEFUNC_ERROR, Type = Double, Dynamic = False, Default = \"&hFFFFFFF", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = CURL_WRITEFUNC_PAUSE, Type = Double, Dynamic = False, Default = \"CURL_READFUNC_PAUSE", Scope = Protected
 	#tag EndConstant
 
