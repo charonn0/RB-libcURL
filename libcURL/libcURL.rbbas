@@ -330,7 +330,12 @@ Protected Module libcURL
 		  
 		  Static CA_File As FolderItem
 		  If CA_File = Nil Then
-		    CA_File = GetTemporaryFolderItem()
+		    #If RBVersion > 2019.1 then
+		      CA_File = FolderItem.TemporaryFile
+		    #Else
+		      ' This item was deprecated in version 2019r2. Please use FolderItem.TemporaryFile as a replacement.
+		      CA_File = GetTemporaryFolderItem
+		    #EndIf
 		    Dim bs As BinaryStream = BinaryStream.Open(CA_File, True)
 		    bs.Write(DEFAULT_CA_INFO_PEM)
 		    bs.Close
