@@ -649,6 +649,7 @@ Inherits libcURL.cURLHandle
 		  mAutoDisconnect = False
 		  mAutoReferer = False
 		  mCA_ListFile = Nil
+		  mCA_List = Nil
 		  mConnectionTimeout = 300
 		  mConnectionType = libcURL.ConnectionType.NoSSL
 		  mErrorBuffer = Nil
@@ -1142,22 +1143,39 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  ' Gets the memory block containing one or more certificate authorities libcURL will trust to
-			  ' verify the peer with. If no memoryblock is specified (default) then returns Nil.
-			  ' This feature was added in libcurl 7.77.0 and might not be available from all supported
-			  ' TLS backends. If set then this property overrides CA_ListFile.
+			  ' Gets the previously-set memoryblock containing one or more certificate
+			  ' authorities libcURL will trust to verify the peer with. 
+			  ' 
+			  ' EasyHandle.Secure must be set to True to enable certificate verification.
+			  '
+			  ' This feature was added in libcurl 7.77.0 and might not be available from all
+			  ' supported TLS backends.
+			  '
+			  ' See:
+			  ' https://curl.se/libcurl/c/CURLOPT_CAINFO_BLOB.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.CA_List
 			  
 			  return mCA_List
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
-			  ' Sets the memoryblock containing one or more certificate authorities libcURL should trust
-			  ' to verify the peer with. Set this to DEFAULT_CA_INFO_PEM to use the default CA list for
-			  ' Mozilla products. Set this to Nil to unset the current list. This feature was added in libcurl
-			  ' 7.77.0 and might not be available from all supported TLS backends.If set then this property 
-			  ' overrides CA_ListFile. EasyHandle.Secure must be set to True to enable certificate verification.
+			  ' Sets a memoryblock containing one or more certificate authorities libcURL
+			  ' should trust to verify the peer with. Set this to DEFAULT_CA_INFO_PEM to use
+			  ' the default CA list for Mozilla products. Set this to Nil to unset the current
+			  ' list.
+			  ' 
+			  ' If set then this property overrides the CA_ListFile.
+			  ' 
+			  ' EasyHandle.Secure must be set to True to enable certificate verification.
 			  '
+			  ' If you intend to use the same CA list with multiple instances of EasyHandle
+			  ' simultaneously then you ought to use same MemoryBlock reference for all instances
+			  ' to avoid duplicating the CA list data in memory.
+			  '
+			  ' This feature was added in libcurl 7.77.0 and might not be available from all
+			  ' supported TLS backends.
+			  ' 
 			  ' See:
 			  ' https://curl.se/libcurl/c/CURLOPT_CAINFO_BLOB.html
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.CA_List

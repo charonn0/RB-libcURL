@@ -313,7 +313,12 @@ Protected Class cURLSession
 		  Me.EasyHandle = mEasyHandle
 		  mEasyHandle.UserAgent = libcURL.Version.UserAgent
 		  mEasyHandle.Secure = True
-		  mEasyHandle.CA_ListFile = libcURL.Default_CA_File
+		  If libcURL.Version.IsAtLeast(7, 77, 0) Then
+		    Static CALIST As MemoryBlock = DEFAULT_CA_INFO_PEM
+		    mEasyHandle.CA_List = CALIST
+		  Else
+		    mEasyHandle.CA_ListFile = libcURL.Default_CA_File
+		  End If
 		  mEasyHandle.FailOnServerError = True
 		  mEasyHandle.FollowRedirects = True
 		  mEasyHandle.AutoReferer = True
