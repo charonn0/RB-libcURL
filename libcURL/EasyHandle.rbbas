@@ -925,10 +925,15 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Function SetRequestHeader(Optional List As libcURL.ListPtr, Name As String, Value As String) As libcURL.ListPtr
-		  ' Subsequent calls to this method will append the headers to the List parameter. You must maintain a reference to the List until
-		  ' it is no longer in use by libcURL. Pass the List reference back to this function when adding subsequent headers.
-		  ' If Name is "" (empty string), then any previously set headers will be cleared and this function returns Nil. The List may then
-		  ' be safely destroyed. If List is not specified then a new List is returned.
+		  ' NOTE: This method provides a low-level interface to the request header API. For
+		  ' a high-level interface refer to the RequestHeaderEngine property.
+		  '
+		  ' Subsequent calls to this method will append the headers to the List parameter.
+		  ' You must maintain a reference to the List until it is no longer in use by libcURL.
+		  ' Pass the List reference back to this function when adding subsequent headers. If
+		  ' Name is "" (empty string), then any previously set headers will be cleared and this
+		  ' function returns Nil. The List may then be safely destroyed. If List is not specified
+		  ' then a new List is returned.
 		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/CURLOPT_HTTPHEADER.html
@@ -1207,17 +1212,24 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  ' Gets the PEM file (or a directory of PEM files) containing one or more certificate authorities libcURL
-			  ' will trust to verify the peer with. If no file/folder is specified (default) then returns Nil.
+			  ' Gets the PEM file (or a directory of PEM files) containing one or more
+			  ' certificate authorities libcURL will trust to verify the peer with. If
+			  ' no file/folder is specified (default) then returns Nil.
+			  '
+			  ' See:
+			  ' http://curl.haxx.se/libcurl/c/CURLOPT_CAINFO.html
+			  ' http://curl.haxx.se/libcurl/c/CURLOPT_CAPATH.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.CA_ListFile
 			  
 			  return mCA_ListFile
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
-			  ' Sets the PEM file (or a directory of PEM files) containing one or more certificate authorities libcURL
-			  ' should trust to verify the peer with. Set this to libcURL.Default_CA_File to use the default CA list for
-			  ' Mozilla products. Set this to Nil to unset the current file/folder.
+			  ' Sets the PEM file (or a directory of PEM files) containing one or more
+			  ' certificate authorities libcURL should trust to verify the peer with. Set
+			  ' this to libcURL.Default_CA_File to use the default CA list for Mozilla
+			  ' products. Set this to Nil to unset the current file/folder.
 			  ' EasyHandle.Secure must be set to True to enable certificate verification.
 			  '
 			  ' See:
@@ -1251,14 +1263,24 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Gets the connection timeout in seconds. libcURL will abort the attempt if no
+			  ' connection is established before time expires. If a connection is aborted due
+			  ' to the timeout elapsing EasyHandle.LastError will be libcURL.Errors.TIMEOUT (28).
+			  ' The default is 300 seconds.
+			  '
+			  ' See:
+			  ' http://curl.haxx.se/libcurl/c/CURLOPT_CONNECTTIMEOUT.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.ConnectionTimeout
+			  
 			  return mConnectionTimeout
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
-			  ' Sets the connection timeout in seconds. libcURL will abort the attempt if no connection is established before
-			  ' time expires. If a connection is aborted due to the timeout elapsing EasyHandle.LastError will be
-			  ' libcURL.Errors.TIMEOUT (28). The default is 300 seconds.
+			  ' Sets the connection timeout in seconds. libcURL will abort the attempt if no
+			  ' connection is established before time expires. If a connection is aborted due
+			  ' to the timeout elapsing EasyHandle.LastError will be libcURL.Errors.TIMEOUT (28).
+			  ' The default is 300 seconds.
 			  '
 			  ' See:
 			  ' http://curl.haxx.se/libcurl/c/CURLOPT_CONNECTTIMEOUT.html
@@ -1275,6 +1297,10 @@ Inherits libcURL.cURLHandle
 		#tag Getter
 			Get
 			  ' Gets whether SSL will be requested. Returns one of the libcURL.Opts.USE_SSL_* values.
+			  '
+			  ' See:
+			  ' http://curl.haxx.se/libcurl/c/CURLOPT_USE_SSL.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.ConnectionType
 			  
 			  return mConnectionType
 			End Get
@@ -1297,6 +1323,11 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Returns a reference to the CookieEngine for this instance of EasyHandle.
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.CookieEngine
+			  
 			  If mCookieEngine = Nil Then mCookieEngine = New CookieEngineCreator(Me)
 			  return mCookieEngine
 			End Get
@@ -1308,6 +1339,7 @@ Inherits libcURL.cURLHandle
 		#tag Getter
 			Get
 			  ' Gets the method libcURL will use to traverse the remote directory tree.
+			  ' 
 			  ' See:
 			  ' https://curl.haxx.se/libcurl/c/CURLOPT_FTP_FILEMETHOD.html
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.CWDMethod
@@ -1331,20 +1363,56 @@ Inherits libcURL.cURLHandle
 	#tag EndComputedProperty
 
 	#tag Property, Flags = &h0
+		#tag Note
+			Gets and sets a Writeable object to which all downloaded data will be written. If this
+			property is set (i.e. not Nil) then the DataAvailable event will not be raised.
+			
+			You must explicitly set this property to Nil after closing the stream. Failing
+			to do so will cause any subsequently received data to be silently discarded.
+			
+			See:
+			https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.DownloadStream
+		#tag EndNote
 		DownloadStream As Writeable
 	#tag EndProperty
 
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  ' Gets whether HTTP error codes constitute a failure condition. The default is False.
+			  ' Gets whether HTTP error codes, for example 404 Not Found, constitute a failure
+			  ' condition. The libcURL error code for such a failed transfer will be
+			  ' CURLE_HTTP_RETURNED_ERROR (22). Use libcURL.Info.RESPONSE_CODE as the Infotype
+			  ' parameter to the GetInfo() method to retrieve the HTTP status code. Refer to the
+			  ' ErrorBuffer for extended error details.
+			  '
+			  ' When this is set to True, the Perform() method will return False on HTTP requests
+			  ' that return a status code that is >=400. In addition, any downloaded data (such as
+			  ' an HTML error page) is discarded and the connection is terminated.
+			  '
+			  ' This property is False by default, but be aware that the cURLClient class
+			  ' initializes it to True.
+			  '
+			  ' See:
+			  ' http://curl.haxx.se/libcurl/c/CURLOPT_FAILONERROR.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.FailOnServerError
 			  
 			  return mFailOnServerError
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
-			  ' Sets whether HTTP error codes constitute a failure condition. The default is False.
+			  ' Sets whether HTTP error codes, for example 404 Not Found, constitute a failure
+			  ' condition. The libcURL error code for such a failed transfer will be
+			  ' CURLE_HTTP_RETURNED_ERROR (22). Use libcURL.Info.RESPONSE_CODE as the Infotype
+			  ' parameter to the GetInfo() method to retrieve the HTTP status code. Refer to the
+			  ' ErrorBuffer for extended error details.
+			  ' 
+			  ' When this is set to True, the Perform() method will return False on HTTP requests
+			  ' that return a status code that is >=400. In addition, any downloaded data (such as
+			  ' an HTML error page) is discarded and the connection is terminated.
+			  ' 
+			  ' This property is False by default, but be aware that the cURLClient class
+			  ' initializes it to True.
 			  '
 			  ' See:
 			  ' http://curl.haxx.se/libcurl/c/CURLOPT_FAILONERROR.html
@@ -1360,14 +1428,24 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  ' Gets whether libcURL will follow HTTP redirection. The default is False
+			  ' Sets whether libcURL will follow HTTP redirection. If set to True then libcURL
+			  ' will automatically follow the Location: header, if present, in HTTP 3xx
+			  ' responses. If set to False (default) then redirects are not followed but the
+			  ' transfer is considered successful.
+			  '
+			  ' See:
+			  ' http://curl.haxx.se/libcurl/c/CURLOPT_FOLLOWLOCATION.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.FollowRedirects
 			  
 			  Return mFollowRedirects
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
-			  ' Sets whether libcURL will follow HTTP redirection. The default is False
+			  ' Sets whether libcURL will follow HTTP redirection. If set to True then libcURL
+			  ' will automatically follow the Location: header, if present, in HTTP 3xx
+			  ' responses. If set to False (default) then redirects are not followed but the
+			  ' transfer is considered successful.
 			  '
 			  ' See:
 			  ' http://curl.haxx.se/libcurl/c/CURLOPT_FOLLOWLOCATION.html
@@ -1383,11 +1461,27 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Gets whether libcurl will request HTTP compression. Setting this to True will
+			  ' enable/request all forms of compression that libcurl was built to use (zlib,
+			  ' bzip2, brotli, ZStd, etc.)
+			  '
+			  ' See:
+			  ' https://curl.se/libcurl/c/CURLOPT_ACCEPT_ENCODING.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.HTTPCompression
+			  
 			  return mHTTPCompression
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
+			  ' Sets whether libcurl will request HTTP compression. Setting this to True will
+			  ' enable/request all forms of compression that libcurl was built to use (zlib,
+			  ' bzip2, brotli, ZStd, etc.)
+			  '
+			  ' See:
+			  ' https://curl.se/libcurl/c/CURLOPT_ACCEPT_ENCODING.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.HTTPCompression
+			  
 			  If libcURL.Version.LibZ.IsAvailable Then
 			    If value Then
 			      If Not Me.SetOption(libcURL.Opts.ACCEPT_ENCODING, "") Then Raise New cURLException(Me)
@@ -1406,11 +1500,33 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Gets whether libcurl will automatically convert POST requests into GET
+			  ' requests when automatically following HTTP 301, 302, or 303 redirect
+			  ' responses. The default is False, which means auto-conversion is enabled.
+			  ' 
+			  ' The 307 and 308 redirect responses explicitly forbid converting the
+			  ' request method, and so are not affected by this property.
+			  '
+			  ' See:
+			  ' http://curl.haxx.se/libcurl/c/CURLOPT_POSTREDIR.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.HTTPPreserveMethod
+			  
 			  return mHTTPPreserveMethod
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
+			  ' Sets whether libcurl will automatically convert POST requests into GET
+			  ' requests when automatically following HTTP 301, 302, or 303 redirect
+			  ' responses. The default is False, which means auto-conversion is enabled.
+			  '
+			  ' The 307 and 308 redirect responses explicitly forbid converting the
+			  ' request method, and so are not affected by this property.
+			  '
+			  ' See:
+			  ' http://curl.haxx.se/libcurl/c/CURLOPT_POSTREDIR.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.HTTPPreserveMethod
+			  
 			  If Not libcURL.Version.IsAtLeast(7, 17, 1) Then
 			    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
 			    Return
@@ -1428,13 +1544,32 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  ' Gets the version of HTTP to be used. Returns HTTPVersion.HTTP1_0, HTTPVersion.HTTP1_1, HTTPVersion.HTTP2, or HTTPVersion.None
+			  ' Gets the version of HTTP to be used. Pass a member of the HTTPVersion enum.
+			  '
+			  ' If libcURL was built without HTTP support then setting this option will raise
+			  ' an exception with libcURL.Errors.UNKNOWN_OPTION (48) as the error number.
+			  '
+			  ' Note that HTTP/2 is not available except in very recent versions of libcurl.
+			  ' If HTTP/2 is not built-in then setting this property to HTTP/2 will raise an
+			  ' exception with libcURL.Errors.UNSUPPORTED_PROTOCOL(1) as the error number.
+			  '
+			  ' See:
+			  ' http://curl.haxx.se/libcurl/c/CURLOPT_HTTP_VERSION.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.HTTPVersion
+			  
 			  return mHTTPVersion
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
-			  ' Sets the version of HTTP to be used. Pass a member of the HTTPVersion enumeration.
+			  ' Sets the version of HTTP to be used. Pass a member of the HTTPVersion enum.
+			  ' 
+			  ' If libcURL was built without HTTP support then setting this option will raise
+			  ' an exception with libcURL.Errors.UNKNOWN_OPTION (48) as the error number.
+			  ' 
+			  ' Note that HTTP/2 is not available except in very recent versions of libcurl.
+			  ' If HTTP/2 is not built-in then setting this property to HTTP/2 will raise an
+			  ' exception with libcURL.Errors.UNSUPPORTED_PROTOCOL(1) as the error number.
 			  '
 			  ' See:
 			  ' http://curl.haxx.se/libcurl/c/CURLOPT_HTTP_VERSION.html
@@ -1461,7 +1596,11 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  ' Gets the version of IP to be used. Returns IPVersion.V4, IPVersion.V6, or IPVersion.Whatever
+			  ' Gets the IP version to be used. Pass a member of the libcURL.IPVersion enum
+			  '
+			  ' See:
+			  ' https://curl.haxx.se/libcurl/c/CURLOPT_IPRESOLVE.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.IPVersion
 			  
 			  return mIPVersion
 			End Get
@@ -1484,14 +1623,18 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  ' The local port used to make the most recent connection. This is decided upon by libcurl and the OS's network stack
+			  ' Gets the local port used by the previous transfer.
+			  ' 
+			  ' See:
+			  ' http://curl.haxx.se/libcurl/c/CURLINFO_LOCAL_PORT.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.LocalPort
 			  
 			  Return Me.GetInfo(libcURL.Info.LOCAL_PORT)
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
-			  ' Sets the local port to use for the next connection
+			  ' Sets the local port to use for the next transfer.
 			  '
 			  ' See:
 			  ' http://curl.haxx.se/libcurl/c/CURLOPT_LOCALPORT.html
@@ -1518,11 +1661,25 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Gets the maximum number of redirects to follow automatically. The default
+			  ' is -1, which means unlimited.
+			  '
+			  ' See:
+			  ' http://curl.haxx.se/libcurl/c/CURLOPT_MAXREDIRS.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.MaxRedirects
+			  
 			  return mMaxRedirects
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
+			  ' Sets the maximum number of redirects to follow automatically. The default
+			  ' is -1, which means unlimited.
+			  '
+			  ' See:
+			  ' http://curl.haxx.se/libcurl/c/CURLOPT_MAXREDIRS.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.MaxRedirects
+			  
 			  If Not Me.SetOption(libcURL.Opts.MAXREDIRS, value) Then Raise New cURLException(Me)
 			  mMaxRedirects = value
 			End Set
@@ -1661,12 +1818,12 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  ' Returns the local network connection used to perform the most recent transfer
+			  ' Returns the local network interface used to perform the most recent transfer
 			  '
 			  ' See:
 			  ' http://curl.haxx.se/libcurl/c/curl_easy_getinfo.html#CURLINFOLOCALIP
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.NetworkInterface
-			  ' http://docs.xojo.com/index.php/NetworkInterface
+			  ' https://documentation.xojo.com/api/networking/networkinterface.html#networkinterface
 			  
 			  
 			  Dim ip As String = Me.GetInfo(libcURL.Info.LOCAL_IP)
@@ -1681,7 +1838,7 @@ Inherits libcURL.cURLHandle
 		#tag EndGetter
 		#tag Setter
 			Set
-			  ' Sets the local network interface to be used for the next connection.
+			  ' Sets the local network interface to be used for the next transfer.
 			  '
 			  ' See:
 			  ' http://curl.haxx.se/libcurl/c/CURLOPT_INTERFACE.html
@@ -1701,12 +1858,20 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Gets the password to be supplied to the remote host if the underlying protocol
+			  ' requires/allows users to log on.
+			  '
+			  ' See:
+			  ' http://curl.haxx.se/libcurl/c/CURLOPT_PASSWORD.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Password
+			  
 			  Return mPassword
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
-			  ' The password to be supplied to the remote host if the underlying protocol requires/allows users to log on.
+			  ' Sets the password to be supplied to the remote host if the underlying protocol
+			  ' requires/allows users to log on.
 			  '
 			  ' See:
 			  ' http://curl.haxx.se/libcurl/c/CURLOPT_PASSWORD.html
@@ -1722,6 +1887,12 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Sets whether libcURL will prefer to wait for a pipelined connection.
+			  '
+			  ' See:
+			  ' https://curl.haxx.se/libcurl/c/CURLOPT_PIPEWAIT.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.PipeWait
+			  
 			  return mPipeWait
 			End Get
 		#tag EndGetter
@@ -1746,24 +1917,28 @@ Inherits libcURL.cURLHandle
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
-		#tag Note
-			SocketCore.Port workalike.
-			See: http://docs.xojo.com/index.php/SocketCore.Port
-			
-			Prior to connecting, you may set this value to the remote port to connect to. If the port is not specified
-			libcURL will select the default port for the inferred protocol (e.g. HTTP=80; HTTPS=443)
-			
-			Once connected, you may get this value to read the actual remote port number that is connected to.
-		#tag EndNote
 		#tag Getter
 			Get
-			  //Remote port
+			  ' Gets the actual remote port number that is/was connected to.
+			  ' 
+			  ' See:
+			  ' http://curl.haxx.se/libcurl/c/CURLINFO_PRIMARY_PORT.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Port
+			  
+			  
 			  Return Me.GetInfo(libcURL.Info.PRIMARY_PORT)
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
-			  //remote port.
+			  ' Sets the remote port to connect to for the next transfer. If the port is not
+			  ' specified libcURL will select the default port for the inferred protocol (e.g.
+			  ' HTTP=80; HTTPS=443). 
+			  '
+			  ' See:
+			  ' http://curl.haxx.se/libcurl/c/CURLOPT_PORT.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Port
+			  
 			  If Not Me.SetOption(libcURL.Opts.PORT, value) Then Raise New cURLException(Me)
 			End Set
 		#tag EndSetter
@@ -1788,8 +1963,12 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  ' Prior to connecting this value will be empty. Once connected, this value will contain the
-			  ' IP address of the remote server.
+			  ' Gets the IP address for the remote host. Prior to the first connection this
+			  ' value will be empty.
+			  ' 
+			  ' See:
+			  ' http://curl.haxx.se/libcurl/c/curl_easy_getinfo.html#CURLINFOPRIMARYIP
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.RemoteIP
 			  
 			  Return Me.GetInfo(libcURL.Info.PRIMARY_IP)
 			End Get
@@ -1835,14 +2014,48 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Gets whether libcURL validates SSL/TLS certificates when establishing an
+			  ' SSL/TLS connection.
+			  '
+			  ' If set to True (the default), libcURL will verify that certificates are
+			  ' both valid for the remote server and signed by an authority listed in
+			  ' CA_List or CA_ListFile; if neither CA_List nor CA_ListFile are set then
+			  ' all SSL/TLS connections will fail.
+			  '
+			  ' If the remote hostname does not match the hostname on the certificate, then
+			  ' the error code for the transfer will be CURLE_PEER_FAILED_VERIFICATION(51).
+			  ' If the certificate is not signed by a trusted certificate authority then the
+			  ' error code will be CURLE_SSL_CACERT (60).
+			  '
+			  ' If set to False then libcURL will not verify SSL/TLS certificates when
+			  ' establishing an SSL/TLS connection.
+			  '
+			  ' See:
+			  ' http://curl.haxx.se/libcurl/c/CURLOPT_SSL_VERIFYHOST.html
+			  ' http://curl.haxx.se/libcurl/c/CURLOPT_SSL_VERIFYPEER.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Secure
+			  
 			  Return mSecure
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
-			  ' If True, libcURL will verify any SSL certificates presented by a server. This does not
-			  ' tell libcURL to use SSL, only to verify certs if SSL is used. Use EasyHandle.CA_ListFile to
-			  ' specify a list of certificate authorities to be trusted.
+			  ' Sets whether libcURL validates SSL/TLS certificates when establishing an
+			  ' SSL/TLS connection. It does not affect whether SSL/TLS will be used in the
+			  ' first place (use ConnectionType for that).
+			  ' 
+			  ' If set to True (the default), libcURL will verify that certificates are
+			  ' both valid for the remote server and signed by an authority listed in
+			  ' CA_List or CA_ListFile; if neither CA_List nor CA_ListFile are set then
+			  ' all SSL/TLS connections will fail.
+			  ' 
+			  ' If the remote hostname does not match the hostname on the certificate, then
+			  ' the error code for the transfer will be CURLE_PEER_FAILED_VERIFICATION(51).
+			  ' If the certificate is not signed by a trusted certificate authority then the
+			  ' error code will be CURLE_SSL_CACERT (60).
+			  ' 
+			  ' If set to False then libcURL will not verify SSL/TLS certificates when
+			  ' establishing an SSL/TLS connection.
 			  '
 			  ' See:
 			  ' http://curl.haxx.se/libcurl/c/CURLOPT_SSL_VERIFYHOST.html
@@ -1866,13 +2079,23 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  ' Gets the version of SSL/TLS to be used.
+			  ' Gets the version of SSL/TLS to be used. The default is to let libcurl decide.
+			  '
+			  ' See:
+			  ' http://curl.haxx.se/libcurl/c/CURLOPT_SSLVERSION.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.SSLVersion
+			  
 			  return mSSLVersion
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
-			  ' Sets the version of SSL/TLS to be used.
+			  ' Sets the version of SSL/TLS to be used. The default is to let libcurl decide.
+			  ' 
+			  ' See:
+			  ' http://curl.haxx.se/libcurl/c/CURLOPT_SSLVERSION.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.SSLVersion
+			  
 			  If value = libcURL.SSLVersion.Max_Default Then
 			    If libcURL.Version.IsAtLeast(7, 61, 0) Then
 			      value = libcURL.SSLVersion.Max_TLSv1_2
@@ -1890,15 +2113,26 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Gets the timeout period, in seconds, for the entire transfer (including time
+			  ' spent establishing the connection.) libcURL will abort the if the transfer has
+			  ' not completed before time expires. If a transfer is aborted due to the timeout
+			  ' elapsing EasyHandle.LastError will be libcURL.Errors.TIMEOUT (28). A timeout of
+			  ' zero means no timeout (wait forever) and is the default.
+			  '
+			  ' See:
+			  ' http://curl.haxx.se/libcurl/c/CURLOPT_TIMEOUT.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Timeout
+			  
 			  return mTimeOut
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
-			  ' Sets the timeout period, in seconds, for the entire transfer (including time spent establishing the
-			  ' connection.) libcURL will abort the if the transfer has not completed before time expires. If a
-			  ' transfer is aborted due to the timeout elapsing EasyHandle.LastError will be libcURL.Errors.TIMEOUT (28).
-			  ' A timeout of zero means no timeout (wait forever) and is the default.
+			  ' Sets the timeout period, in seconds, for the entire transfer (including time
+			  ' spent establishing the connection.) libcURL will abort the if the transfer has
+			  ' not completed before time expires. If a transfer is aborted due to the timeout
+			  ' elapsing EasyHandle.LastError will be libcURL.Errors.TIMEOUT (28). A timeout of
+			  ' zero means no timeout (wait forever) and is the default.
 			  '
 			  ' See:
 			  ' http://curl.haxx.se/libcurl/c/CURLOPT_TIMEOUT.html
@@ -1914,12 +2148,18 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Gets whether the next transfer is an upload operation. The default is False.
+			  '
+			  ' See:
+			  ' http://curl.haxx.se/libcurl/c/CURLOPT_UPLOAD.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.UploadMode
+			  
 			  return mUploadMode
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
-			  ' If True, the next transfer is an upload operation.
+			  ' Sets whether the next transfer is an upload operation. The default is False.
 			  '
 			  ' See:
 			  ' http://curl.haxx.se/libcurl/c/CURLOPT_UPLOAD.html
@@ -1933,13 +2173,26 @@ Inherits libcURL.cURLHandle
 	#tag EndComputedProperty
 
 	#tag Property, Flags = &h0
+		#tag Note
+			Gets and sets a Readable object from which all uploaded data will be read. If this
+			property is set (i.e. not Nil) then the DataNeeded event will not be raised.
+			
+			You must explicitly set this property to Nil after closing the stream. Failing
+			to do so will cause any subsequently received data to be silently discarded.
+			
+			See:
+			https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.UploadStream
+		#tag EndNote
 		UploadStream As Readable
 	#tag EndProperty
 
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  ' Returns the last effective URL, if any
+			  ' Gets the effective URL of the most recent transfer. This means the final URL
+			  ' after all redirects, etc. have completed and may not correspond to the original
+			  ' URL.
+			  ' 
 			  ' See:
 			  ' http://curl.haxx.se/libcurl/c/curl_easy_getinfo.html#CURLINFOEFFECTIVEURL
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.URL
@@ -1949,7 +2202,7 @@ Inherits libcURL.cURLHandle
 		#tag EndGetter
 		#tag Setter
 			Set
-			  ' Sets the URL for the next request.
+			  ' Sets the URL for the next transfer.
 			  '
 			  ' See:
 			  ' http://curl.haxx.se/libcurl/c/curl_easy_setopt.html#CURLOPTURL
@@ -1964,6 +2217,13 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Gets whether libcURL will write additional debug info to an application-provided buffer.
+			  '
+			  ' See:
+			  ' http://curl.haxx.se/libcurl/c/CURLOPT_ERRORBUFFER.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.UseErrorBuffer
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.ErrorBuffer
+			  
 			  Return mErrorBuffer <> Nil And mErrorBuffer.Size > 0
 			End Get
 		#tag EndGetter
@@ -1990,14 +2250,24 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Gets whether to enable or disable the Progress event. The progress event is
+			  ' called very frequently, so if you aren't handling it then you may see a
+			  ' performance boost by disabling the event entirely. This can be toggled on and
+			  ' off at any time.
+			  '
+			  ' See:
+			  ' https://curl.haxx.se/libcurl/c/CURLOPT_NOPROGRESS.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.UseProgressEvent
+			  
 			  return mUseProgressEvent
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
-			  ' Enables and disables the Progress event. The progress event is called very frequently, so if
-			  ' you aren't handling it then you may see a performance boost by disabling the event entirely.
-			  ' This can be toggled on and off at any time.
+			  ' Sets whether to enable or disable the Progress event. The progress event is
+			  ' called very frequently, so if you aren't handling it then you may see a
+			  ' performance boost by disabling the event entirely. This can be toggled on and
+			  ' off at any time.
 			  '
 			  ' See:
 			  ' https://curl.haxx.se/libcurl/c/CURLOPT_NOPROGRESS.html
@@ -2017,6 +2287,13 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Gets the previously set User-Agent string to be used by libcURL for protocols
+			  ' which support that feature.
+			  '
+			  ' See:
+			  ' http://curl.haxx.se/libcurl/c/CURLOPT_USERAGENT.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.UserAgent
+			  
 			  Return mUserAgent
 			End Get
 		#tag EndGetter
@@ -2038,12 +2315,20 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Gets the username to be supplied to the remote host if the underlying protocol
+			  ' requires/allows users to log on.
+			  '
+			  ' See:
+			  ' http://curl.haxx.se/libcurl/c/CURLOPT_USERNAME.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.UserName
+			  
 			  Return mUsername
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
-			  ' The username to be supplied to the remote host if the underlying protocol requires/allows users to log on.
+			  ' Sets the username to be supplied to the remote host if the underlying protocol
+			  ' requires/allows users to log on.
 			  '
 			  ' See:
 			  ' http://curl.haxx.se/libcurl/c/CURLOPT_USERNAME.html
@@ -2059,12 +2344,21 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Gets whether libcurl will raise the DebugMessage event. Defaults to True
+			  ' when running in the debugger and False when not.
+			  '
+			  ' See:
+			  ' http://curl.haxx.se/libcurl/c/curl_easy_setopt.html#CURLOPTVERBOSE
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Verbose
+			  
 			  Return mVerbose
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
-			  ' Pass True to receive the DebugMessage event. The default is False
+			  ' Sets whether libcurl will raise the DebugMessage event. Defaults to True when
+			  ' running in the debugger and False when not.
+			  ' 
 			  ' See:
 			  ' http://curl.haxx.se/libcurl/c/curl_easy_setopt.html#CURLOPTVERBOSE
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Verbose
