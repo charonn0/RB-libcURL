@@ -3215,6 +3215,8 @@ Protected Class OptionInfo
 		  Name = Replace(Name, "CURLOPT_", "")
 		  Name = Replace(Name, "libcURL.Opts.", "")
 		  Name = Name.Uppercase()
+		  If Name = "NETINTERFACE" Then Name = "INTERFACE"
+		  If Name = "PRIVATE_" Then Name = "PRIVATE"
 		  If System.IsFunctionAvailable("curl_easy_option_by_name", cURLLib) Then
 		    Dim opt As Ptr = curl_easy_option_by_name(Name)
 		    If opt <> Nil Then
