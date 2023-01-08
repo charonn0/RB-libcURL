@@ -2,9 +2,9 @@
 Protected Class cURLSession
 	#tag Method, Flags = &h0
 		Sub Abort()
-		  ' Aborts the current transfer by automatically returning True from the Progress event the
-		  ' next time it is raised. If no transfer is in progress or if the Progress event has been disabled
-		  ' then this method has no effect.
+		  ' Aborts the current transfer by automatically returning True from the Progress()
+		  ' event the next time it is raised. If no transfer is in progress or if the
+		  ' Progress() event has been disabled then this method has no effect.
 		  '
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.Abort
@@ -99,8 +99,9 @@ Protected Class cURLSession
 
 	#tag Method, Flags = &h0
 		Function GetCookie(Name As String, Domain As String) As String
-		  ' Gets the value of the first cookie named 'Name' set for the host matching 'Domain', or the empty
-		  ' string ("") if no cookie is found. For more advanced lookups refer to the CookieEngine class.
+		  ' Gets the value of the first cookie named 'Name' set for the host matching 'Domain',
+		  ' or the empty string ("") if no cookie is found. For more advanced lookups refer to
+		  ' the CookieEngine class.
 		  '
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.GetCookie
@@ -112,10 +113,10 @@ Protected Class cURLSession
 
 	#tag Method, Flags = &h0
 		Function GetDownloadedData() As MemoryBlock
-		  ' Returns a MemoryBlock containing all data which was downloaded during the most recent transfer.
-		  ' If you passed a Writeable object to any of the transfer methods (get, post, put, perform) then this
-		  ' method will return an empty MemoryBlock (not Nil) as the data will have been downloaded into
-		  ' the Writeable object directly.
+		  ' Returns a MemoryBlock containing all data which was downloaded during the most recent
+		  ' transfer. If you passed a Writeable object to any of the transfer methods (get, post,
+		  ' put, perform) then this method will return an empty MemoryBlock (not Nil) as the data
+		  ' will have been downloaded into the Writeable object directly.
 		  '
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.GetDownloadedData
@@ -137,7 +138,8 @@ Protected Class cURLSession
 
 	#tag Method, Flags = &h0
 		Function GetInfo(InfoType As Integer) As Variant
-		  ' Calls GetInfo on the EasyHandle. Refer to the EasyHandle.GetInfo documentation for details.
+		  ' Calls GetInfo() on the EasyHandle. Refer to the EasyHandle.GetInfo documentation
+		  ' for details.
 		  '
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.GetInfo
@@ -148,10 +150,11 @@ Protected Class cURLSession
 
 	#tag Method, Flags = &h0
 		Function GetOption(OptionNumber As Integer, DefaultValue As Variant = Nil) As Variant
-		  ' This method complements the SetOption method. You can use this method to retrieve any previously-set
-		  ' option value. If the OptionNumber has not been set then the DefaultValue parameter is returned.
+		  ' This method complements the SetOption() method. You can use this method to retrieve
+		  ' any previously-set option value. If the OptionNumber has not been set then the
+		  ' DefaultValue parameter is returned.
 		  '
-		  ' This method cannot retrieve option values which were set using the SetOptionPtr method.
+		  ' This method cannot retrieve option values which were set using the SetOptionPtr() method.
 		  '
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.GetOption
@@ -189,8 +192,9 @@ Protected Class cURLSession
 
 	#tag Method, Flags = &h0
 		Function IsOptionSet(OptionNumber As Integer) As Boolean
-		  ' This method returns True if the OptionNumber has already been set on the EasyHandle. This method doesn't
-		  ' know about option values which were set using the SetOptionPtr method.
+		  ' This method returns True if the OptionNumber has already been set on the EasyHandle.
+		  ' This method doesn't know about option values which were set using the SetOptionPtr
+		  ' method.
 		  '
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.IsOptionSet
@@ -203,7 +207,7 @@ Protected Class cURLSession
 	#tag Method, Flags = &h0
 		Sub Pause()
 		  ' Pauses the current transfer if one exists and is not paused. This method pauses both
-		  ' upload and download operations; to pause them separately refer to EasyHandle.Pause.
+		  ' upload and download operations; to pause them separately refer to EasyHandle.Pause().
 		  '
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.Pause
@@ -214,7 +218,22 @@ Protected Class cURLSession
 
 	#tag Method, Flags = &h0
 		Sub Perform(URL As libcURL.URLParser, ReadFrom As Readable, WriteTo As Writeable)
-		  ' Performs the transfer on the main thread/event loop.
+		  ' This method initiates a generic request against the specified URL. The request will
+		  ' run asynchronously on the main thread/event loop. Details such as the request method,
+		  ' headers, etc. must already have been set. Retrieval semantics will be inferred unless
+		  ' the transfer has been configured otherwise.
+		  ' 
+		  ' If the URL parameter is empty ("") then the previous URL is reused; if there is no
+		  ' previous URL then the transfer will fail with error code CURLE_URL_MALFORMAT(3). If
+		  ' the previous transfer involved any sort of redirection then the "previous URL" is the
+		  ' URL enclosed in the final redirect.
+		  ' 
+		  ' ReadFrom and/or WriteTo may be Nil. Beware that the status of being Nil has important
+		  ' implications for these streams:
+		  '    * If WriteTo is Nil and data is received then this data will be buffered in memory,
+		  '      and may be retrieved by calling GetDownloadedData after the transfer completes.
+		  '    * If ReadFrom is Nil and data is requested then the transfer will fail with error
+		  '      code CURLE_ABORTED_BY_CALLBACK(42).
 		  '
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.Perform
@@ -226,7 +245,22 @@ Protected Class cURLSession
 
 	#tag Method, Flags = &h0
 		Function Perform(URL As libcURL.URLParser, ReadFrom As Readable, WriteTo As Writeable) As Boolean
-		  ' Perform the transfer on the calling thread.
+		  ' This method initiates a generic request against the specified URL. The request will
+		  ' run synchronously on the calling thread. Details such as the request method, headers,
+		  ' etc. must already have been set. Retrieval semantics will be inferred unless the
+		  ' transfer has been configured otherwise.
+		  '
+		  ' If the URL parameter is empty ("") then the previous URL is reused; if there is no
+		  ' previous URL then the transfer will fail with error code CURLE_URL_MALFORMAT(3). If
+		  ' the previous transfer involved any sort of redirection then the "previous URL" is
+		  ' the URL enclosed in the final redirect.
+		  '
+		  ' ReadFrom and/or WriteTo may be Nil. Beware that the status of being Nil has important
+		  ' implications for these streams:
+		  '    * If WriteTo is Nil and data is received then this data will be buffered in memory,
+		  '      and may be retrieved by calling GetDownloadedData after the transfer completes.
+		  '    * If ReadFrom is Nil and data is requested then the transfer will fail with error
+		  '      code CURLE_ABORTED_BY_CALLBACK(42).
 		  '
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.Perform
@@ -250,7 +284,22 @@ Protected Class cURLSession
 
 	#tag Method, Flags = &h0
 		Function Perform(URL As String, ReadFrom As Readable, WriteTo As Writeable) As Boolean
-		  ' Perform the transfer on the calling thread.
+		  ' This method initiates a generic request against the specified URL. The request will
+		  ' run synchronously on the calling thread. Details such as the request method, headers,
+		  ' etc. must already have been set. Retrieval semantics will be inferred unless the
+		  ' transfer has been configured otherwise.
+		  '
+		  ' If the URL parameter is empty ("") then the previous URL is reused; if there is no
+		  ' previous URL then the transfer will fail with error code CURLE_URL_MALFORMAT(3). If
+		  ' the previous transfer involved any sort of redirection then the "previous URL" is
+		  ' the URL enclosed in the final redirect.
+		  '
+		  ' ReadFrom and/or WriteTo may be Nil. Beware that the status of being Nil has important
+		  ' implications for these streams:
+		  '    * If WriteTo is Nil and data is received then this data will be buffered in memory,
+		  '      and may be retrieved by calling GetDownloadedData after the transfer completes.
+		  '    * If ReadFrom is Nil and data is requested then the transfer will fail with error
+		  '      code CURLE_ABORTED_BY_CALLBACK(42).
 		  '
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.Perform
@@ -300,9 +349,9 @@ Protected Class cURLSession
 
 	#tag Method, Flags = &h0
 		Sub Reset()
-		  ' Resets the cURLSession to a pristine state. All options that were previously set will be cleared and returned
-		  ' to their default values. Existing connections, the Session ID cache, the DNS cache, cookies, and shares are
-		  ' not affected.
+		  ' Resets the cURLSession to a pristine state. All options that were previously set will
+		  ' be cleared and returned to their default values. Existing connections, the Session ID
+		  ' cache, the DNS cache, cookies, and shares are not affected.
 		  '
 		  ' It is not necessary to call this method between transfers.
 		  '
@@ -334,7 +383,7 @@ Protected Class cURLSession
 		  ' upload and download operations; to resume them separately refer to EasyHandle.Resume.
 		  '
 		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.Pause
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.Resume
 		  
 		  Call EasyHandle.Resume()
 		End Sub
@@ -353,7 +402,8 @@ Protected Class cURLSession
 
 	#tag Method, Flags = &h0
 		Function SetOption(OptionNumber As Integer, NewValue As Variant) As Boolean
-		  ' Calls SetOption on the EasyHandle. Refer to the EasyHandle.SetOption documentation for details.
+		  ' Calls SetOption on the EasyHandle. Refer to the EasyHandle.SetOption() documentation
+		  ' for details.
 		  '
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.SetOption
@@ -364,8 +414,9 @@ Protected Class cURLSession
 
 	#tag Method, Flags = &h0
 		Function SetRequestMethod(RequestMethod As String) As Boolean
-		  ' Overrides the request method used by libcurl. The behavior of this feature depends on which protocol
-		  ' is being used, and not all protocols are supported. Pass the empty string to reset.
+		  ' Overrides the request method used by libcurl. The behavior of this feature depends on
+		  ' which protocol is being used, and not all protocols are supported. Pass the empty
+		  ' string to reset.
 		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/CURLOPT_CUSTOMREQUEST.html#DESCRIPTION
@@ -480,15 +531,20 @@ Protected Class cURLSession
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Gets the EasyHandle instance which will be/has been used to conduct transfers.
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.EasyHandle
+			  
 			  return mEasyHandle
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
-			  ' Gets and sets the EasyHandle instance which will be/has been used to conduct transfers.
+			  ' Sets the EasyHandle instance which will be used to conduct transfers.
 			  '
 			  ' See:
-			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.EasyItem
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.EasyHandle
 			  
 			  Me.Close()
 			  Try
@@ -560,13 +616,22 @@ Protected Class cURLSession
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  ' Gets the version of HTTP to be used. Returns HTTP_VERSION_1_0, HTTP_VERSION_1_1, HTTP_VERSION_2_0, or HTTP_VERSION_NONE
+			  ' Gets the version of HTTP to be used. Returns a member of the HTTPVersion enum.
+			  '
+			  ' See:
+			  '
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.HTTPVersion
+			  
 			  return EasyHandle.HTTPVersion
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
-			  ' Sets the version of HTTP to be used.
+			  ' Sets the version of HTTP to be used. Pass a member of the HTTPVersion enum.
+			  ' 
+			  ' See:
+			  ' 
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.HTTPVersion
 			  
 			  EasyHandle.HTTPVersion = value
 			End Set
@@ -595,8 +660,8 @@ Protected Class cURLSession
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  ' After a transfer is initiated this method will return False until the
-			  ' transfer completes (successfully or not.)
+			  ' After a transfer is initiated this method will return False until the transfer
+			  ' completes (successfully or not.)
 			  '
 			  ' See:
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.IsTransferComplete
@@ -625,7 +690,7 @@ Protected Class cURLSession
 		#tag Getter
 			Get
 			  ' Returns a human-friendly description of why the previous transfer failed.
-			  ' 
+			  '
 			  ' See:
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.LastErrorMessage
 			  
@@ -702,11 +767,21 @@ Protected Class cURLSession
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Gets the password for protocols which allow or require login.
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.Password
+			  
 			  Return EasyHandle.Password
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
+			  ' Sets the password for protocols which allow or require login.
+			  ' 
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.Password
+			  
 			  EasyHandle.Password = value
 			End Set
 		#tag EndSetter
@@ -716,7 +791,7 @@ Protected Class cURLSession
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  ' Returns a reference to a ProxyEngine instance
+			  ' Returns a reference to a ProxyEngine instance.
 			  '
 			  ' See:
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.Proxy
@@ -730,7 +805,7 @@ Protected Class cURLSession
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  ' Returns a reference to a RequestHeaderEngine instance
+			  ' Returns a reference to a RequestHeaderEngine instance.
 			  '
 			  ' See:
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.RequestHeaders
@@ -763,11 +838,21 @@ Protected Class cURLSession
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Gets the username for protocols which allow or require login.
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.Username
+			  
 			  Return EasyHandle.Username
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
+			  ' Sets the username for protocols which allow or require login.
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.Username
+			  
 			  EasyHandle.Username = value
 			End Set
 		#tag EndSetter
@@ -775,6 +860,14 @@ Protected Class cURLSession
 	#tag EndComputedProperty
 
 	#tag Property, Flags = &h0
+		#tag Note
+			When set to True (default), synchronous transfers will periodically yield to other
+			threads. Setting this to False can noticeably increase transfer speed at the expense
+			of locking up the app/thread.
+			
+			See:
+			https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.Yield
+		#tag EndNote
 		Yield As Boolean = True
 	#tag EndProperty
 
