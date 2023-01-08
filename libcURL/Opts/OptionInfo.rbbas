@@ -3352,6 +3352,7 @@ Protected Class OptionInfo
 			  
 			  Dim nm As String = Me.Name
 			  If nm = "INTERFACE" Then nm = "NETINTERFACE"
+			  If nm = "PRIVATE" Then nm = "PRIVATE_"
 			  If nm <> "" Then nm = "libcURL.Opts." + nm
 			  Return nm
 			End Get
@@ -3385,7 +3386,6 @@ Protected Class OptionInfo
 			  
 			  If Name <> "" And Not IsDeprecated Then
 			    Dim docname As String = LibraryAlias
-			    If docname = "CURLOPT_PRIVATE_" Then docname = "CURLOPT_PRIVATE"
 			    Return "https://curl.haxx.se/libcurl/c/" + docname + ".html"
 			  End If
 			End Get
@@ -3446,6 +3446,8 @@ Protected Class OptionInfo
 			  
 			  Dim nm As String = Me.Name
 			  If nm <> "" Then nm = "CURLOPT_" + nm
+			  If nm = "CURLOPT_PRIVATE_" Then nm = "CURLOPT_PRIVATE"
+			  
 			  Return nm
 			End Get
 		#tag EndGetter
