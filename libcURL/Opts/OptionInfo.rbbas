@@ -328,7 +328,7 @@ Protected Class OptionInfo
 		    Return PREQUOTE
 		  Case "PRE_PROXY"
 		    Return PRE_PROXY
-		  Case "PRIVATE_"
+		  Case "PRIVATE_", "PRIVATE"
 		    Return PRIVATE_
 		  Case "PROGRESSDATA"
 		    Return PROGRESSDATA
