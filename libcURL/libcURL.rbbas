@@ -101,7 +101,7 @@ Protected Module libcURL
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Function curl_easy_setopt_long Lib cURLLib Alias "curl_easy_setopt" (EasyHandle As Integer, Option As Integer, Value As Ptr) As Integer
+		Private Soft Declare Function curl_easy_setopt_UInt64 Lib cURLLib Alias "curl_easy_setopt" (EasyHandle As Integer, Option As Integer, Value As UInt64) As Integer
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21

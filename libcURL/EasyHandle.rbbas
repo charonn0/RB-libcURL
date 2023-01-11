@@ -22,6 +22,7 @@ Inherits libcURL.cURLHandle
 		  mForm = Nil
 		  mMIMEMessage = Nil
 		  mUploadMode = False
+		  mUploadLength = -1
 		  If Not Me.SetOption(libcURL.Opts.HTTPGET, True) Then Raise New cURLException(Me)
 		  
 		End Sub
@@ -109,6 +110,7 @@ Inherits libcURL.cURLHandle
 		  mSecure = CopyOpts.Secure
 		  If CopyOpts.SSLVersion <> libcURL.SSLVersion.Default Then mSSLVersion = CopyOpts.SSLVersion
 		  mTimeOut = CopyOpts.TimeOut
+		  mUploadLength = CopyOpts.mUploadLength
 		  mUploadMode = CopyOpts.UploadMode
 		  mUserAgent = CopyOpts.UserAgent
 		  mUsername = CopyOpts.Username
@@ -664,6 +666,7 @@ Inherits libcURL.cURLHandle
 		  mSecure = True
 		  mSSLVersion = libcURL.SSLVersion.Default
 		  mTimeOut = 0
+		  mUploadLength = -1
 		  mUploadMode = False
 		  mUserAgent = ""
 		  mUseProgressEvent = True
@@ -818,7 +821,7 @@ Inherits libcURL.cURLHandle
 		    Return Me.SetOptionPtr(OptionNumber, NewValue.PtrValue)
 		    #Else
 		  Case Variant.TypeLong
-		    mLastError= curl_easy_setopt_long(mHandle, OptionNumber, NewValue)
+		    mLastError= curl_easy_setopt_UInt64(mHandle, OptionNumber, NewValue.UInt64Value)
 		    If mLastError = 0 Then
 		      mOptions.Value(OptionNumber) = NewValue
 		      Return True
@@ -1132,7 +1135,6 @@ Inherits libcURL.cURLHandle
 			Set
 			  ' Set preferred upload buffer size (in bytes). With some protocols and environments,
 			  ' enlarging the upload buffer may produce significant performance gains.
-			  ' 
 			  '
 			  ' Default is 64KB, minimum is 16KB, maximum is 2MB.
 			  '
@@ -1804,6 +1806,10 @@ Inherits libcURL.cURLHandle
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
+		Private mUploadLength As Int64 = -1
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
 		Private mUploadMode As Boolean
 	#tag EndProperty
 
@@ -2151,6 +2157,45 @@ Inherits libcURL.cURLHandle
 			End Set
 		#tag EndSetter
 		TimeOut As Integer
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  return mUploadLength
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  ' Sets the size of the upload if the next transfer is an upload. This is (usually)
+			  ' optional, and the effect of setting this property will vary, depending on which
+			  ' protocol is being used. The default is -1, which means unspecified.
+			  '
+			  ' See:
+			  ' https://curl.haxx.se/libcurl/c/CURLOPT_INFILESIZE.html
+			  ' https://curl.haxx.se/libcurl/c/CURLOPT_INFILESIZE_LARGE.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.UploadLength
+			  
+			  Select Case value
+			  Case 0 To 2^31
+			    If Not Me.SetOption(libcURL.Opts.INFILESIZE, value) Then Raise New cURLException(Me)
+			  Case 2^31 + 1 To 2^32
+			    If Not Me.SetOption(libcURL.Opts.INFILESIZE_LARGE, value) Then Raise New cURLException(Me)
+			  Case Is > 2^32
+			    #If Target32Bit Then
+			      Raise New PlatformNotSupportedException
+			    #Else
+			      If Not Me.SetOption(libcURL.Opts.INFILESIZE_LARGE, value) Then Raise New cURLException(Me)
+			    #EndIf
+			    
+			  Else
+			    If Not Me.SetOption(libcURL.Opts.INFILESIZE, -1) Then Raise New cURLException(Me)
+			    If Not Me.SetOption(libcURL.Opts.INFILESIZE_LARGE, -1) Then Raise New cURLException(Me)
+			  End Select
+			  mUploadLength = value
+			End Set
+		#tag EndSetter
+		UploadLength As Int64
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
