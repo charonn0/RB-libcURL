@@ -1126,7 +1126,10 @@ Inherits libcURL.cURLHandle
 		#tag EndGetter
 		#tag Setter
 			Set
-			  ' Set preferred send buffer size (in bytes). 
+			  ' Set preferred upload buffer size (in bytes). With some protocols and environments,
+			  ' enlarging the upload buffer may produce significant performance gains.
+			  ' 
+			  ' Default is 64KB, miminum is 16KB, maximum is 2MB. 
 			  '
 			  ' See:
 			  ' https://curl.haxx.se/libcurl/c/CURLOPT_UPLOAD_BUFFERSIZE.html
