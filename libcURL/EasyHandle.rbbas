@@ -1059,6 +1059,7 @@ Inherits libcURL.cURLHandle
 		#tag Setter
 			Set
 			  ' If true, libcURL will close sockets immediately after the transfer completes.
+			  ' The default is False.
 			  '
 			  ' See:
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.AutoDisconnect
@@ -1079,8 +1080,8 @@ Inherits libcURL.cURLHandle
 		#tag EndGetter
 		#tag Setter
 			Set
-			  ' If true, libcURL will automatically set the HTTP referer header when following a redirect.
-			  ' The default is False.
+			  ' If true, libcURL will automatically set the HTTP referer header when following
+			  ' a redirect. The default is False.
 			  '
 			  ' See:
 			  ' http://curl.haxx.se/libcurl/c/CURLOPT_AUTOREFERER.html
@@ -1101,10 +1102,13 @@ Inherits libcURL.cURLHandle
 		#tag EndGetter
 		#tag Setter
 			Set
-			  ' Set preferred receive buffer size (in bytes). The main point of this would be that the DataAvailable event
-			  ' gets called more often and with smaller chunks. Secondly, for some protocols, there's a benefit of having
-			  ' a larger buffer for performance. This is just treated as a request, not an order. You cannot be guaranteed
-			  ' to actually get the given size.
+			  ' Set preferred receive buffer size (in bytes). The main point of this would be
+			  ' that the DataAvailable() event gets called more often and with smaller chunks.
+			  ' Secondly, for some protocols, there's a benefit of having a larger buffer for
+			  ' performance. This is just treated as a request, not an order. You cannot be
+			  ' guaranteed to actually get the given size.
+			  '
+			  ' Default is 16KB, minimum is 1KB, maximum is 10MB.
 			  '
 			  ' See:
 			  ' https://curl.haxx.se/libcurl/c/CURLOPT_BUFFERSIZE.html
@@ -1129,7 +1133,8 @@ Inherits libcURL.cURLHandle
 			  ' Set preferred upload buffer size (in bytes). With some protocols and environments,
 			  ' enlarging the upload buffer may produce significant performance gains.
 			  ' 
-			  ' Default is 64KB, miminum is 16KB, maximum is 2MB. 
+			  '
+			  ' Default is 64KB, minimum is 16KB, maximum is 2MB.
 			  '
 			  ' See:
 			  ' https://curl.haxx.se/libcurl/c/CURLOPT_UPLOAD_BUFFERSIZE.html
