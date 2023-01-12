@@ -222,12 +222,12 @@ Protected Class cURLSession
 		  ' run asynchronously on the main thread/event loop. Details such as the request method,
 		  ' headers, etc. must already have been set. Retrieval semantics will be inferred unless
 		  ' the transfer has been configured otherwise.
-		  ' 
-		  ' If the URL parameter is empty ("") then the previous URL is reused; if there is no
-		  ' previous URL then the transfer will fail with error code CURLE_URL_MALFORMAT(3). If
-		  ' the previous transfer involved any sort of redirection then the "previous URL" is the
-		  ' URL enclosed in the final redirect.
-		  ' 
+		  '
+		  ' The URL parameter may not be a literal Nil. If you pass a Nil reference of type URLParser
+		  ' then the previous URL is reused; if there is no previous URL then the transfer will
+		  ' fail with error code CURLE_URL_MALFORMAT(3). If the previous transfer involved any
+		  ' sort of redirection then the "previous URL" is the URL enclosed in the final redirect.
+		  '
 		  ' ReadFrom and/or WriteTo may be Nil. Beware that the status of being Nil has important
 		  ' implications for these streams:
 		  '    * If WriteTo is Nil and data is received then this data will be buffered in memory,
@@ -250,10 +250,10 @@ Protected Class cURLSession
 		  ' etc. must already have been set. Retrieval semantics will be inferred unless the
 		  ' transfer has been configured otherwise.
 		  '
-		  ' If the URL parameter is empty ("") then the previous URL is reused; if there is no
-		  ' previous URL then the transfer will fail with error code CURLE_URL_MALFORMAT(3). If
-		  ' the previous transfer involved any sort of redirection then the "previous URL" is
-		  ' the URL enclosed in the final redirect.
+		  ' The URL parameter may not be a literal Nil. If you pass a Nil reference of type URLParser
+		  ' then the previous URL is reused; if there is no previous URL then the transfer will
+		  ' fail with error code CURLE_URL_MALFORMAT(3). If the previous transfer involved any
+		  ' sort of redirection then the "previous URL" is the URL enclosed in the final redirect.
 		  '
 		  ' ReadFrom and/or WriteTo may be Nil. Beware that the status of being Nil has important
 		  ' implications for these streams:
@@ -272,7 +272,22 @@ Protected Class cURLSession
 
 	#tag Method, Flags = &h0
 		Sub Perform(URL As String, ReadFrom As Readable, WriteTo As Writeable)
-		  ' Performs the transfer on the main thread/event loop.
+		  ' This method initiates a generic request against the specified URL. The request will
+		  ' run asynchronously on the main thread/event loop. Details such as the request method,
+		  ' headers, etc. must already have been set. Retrieval semantics will be inferred unless
+		  ' the transfer has been configured otherwise.
+		  '
+		  ' If the URL parameter is empty ("") then the previous URL is reused; if there is no
+		  ' previous URL then the transfer will fail with error code CURLE_URL_MALFORMAT(3). If
+		  ' the previous transfer involved any sort of redirection then the "previous URL" is the
+		  ' URL enclosed in the final redirect.
+		  '
+		  ' ReadFrom and/or WriteTo may be Nil. Beware that the status of being Nil has important
+		  ' implications for these streams:
+		  '    * If WriteTo is Nil and data is received then this data will be buffered in memory,
+		  '      and may be retrieved by calling GetDownloadedData after the transfer completes.
+		  '    * If ReadFrom is Nil and data is requested then the transfer will fail with error
+		  '      code CURLE_ABORTED_BY_CALLBACK(42).
 		  '
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.Perform
