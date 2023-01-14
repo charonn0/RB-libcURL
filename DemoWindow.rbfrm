@@ -3217,7 +3217,7 @@ End
 #tag Events NewCookieSessionButton
 	#tag Event
 		Sub Action()
-		  If Not Client.Cookies.NewSession Then Raise New libcURL.cURLException(Client.EasyHandle)
+		  Client.Cookies.NewSession()
 		  UpdateCookieList()
 		End Sub
 	#tag EndEvent

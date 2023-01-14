@@ -24,7 +24,7 @@ Protected Class CookieEngine
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function DeleteAll() As Boolean
+		Sub DeleteAll()
 		  ' Clears all cookies held in memory, expired or not.
 		  '
 		  ' See:
@@ -32,8 +32,8 @@ Protected Class CookieEngine
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.CookieEngine.DeleteAll
 		  
 		  Me.Invalidate
-		  Return Owner.SetOption(libcURL.Opts.COOKIELIST, "ALL")
-		End Function
+		  If Not Owner.SetOption(libcURL.Opts.COOKIELIST, "ALL") Then Raise New cURLException(Owner)
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -154,7 +154,7 @@ Protected Class CookieEngine
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function NewSession() As Boolean
+		Sub NewSession()
 		  ' Begins a new cookie session. All session cookies held in memory are deleted. This also prevents
 		  ' libcurl from loading session cookies from a cookie file.
 		  '
@@ -168,8 +168,8 @@ Protected Class CookieEngine
 		  If OK And libcURL.Version.IsAtLeast(7, 17, 1) Then
 		    OK = Owner.SetOption(libcURL.Opts.COOKIELIST, "SESS")
 		  End If
-		  Return OK
-		End Function
+		  If Not OK Then Raise New cURLException(Owner)
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
@@ -206,7 +206,7 @@ Protected Class CookieEngine
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Reload() As Boolean
+		Sub Reload()
 		  ' Reloads the cookie list from the previously-set CookieFile(s).
 		  '
 		  ' See:
@@ -214,14 +214,10 @@ Protected Class CookieEngine
 		  
 		  If Not libcURL.Version.IsAtLeast(7, 39, 0) Then
 		    ErrorSetter(Owner).LastError = libcURL.Errors.FEATURE_UNAVAILABLE
-		    Return False
-		    
 		  ElseIf Owner.SetOption(libcURL.Opts.COOKIELIST, "RELOAD") Then
 		    Me.Invalidate
-		    Return True
-		    
 		  End If
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
