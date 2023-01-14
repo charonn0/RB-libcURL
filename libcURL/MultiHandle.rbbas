@@ -2,13 +2,7 @@
 Protected Class MultiHandle
 Inherits libcURL.cURLHandle
 	#tag Method, Flags = &h0
-		Attributes( deprecated = "libcURL.MultiHandle.AddTransfer" )  Function AddItem(Item As libcURL.EasyHandle) As Boolean
-		  Return AddTransfer(Item)
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function AddTransfer(Transfer As libcURL.EasyHandle) As Boolean
+		Sub AddTransfer(Transfer As libcURL.EasyHandle)
 		  ' Add a EasyHandle to the multistack. The EasyHandle should have all of its options already set and ready to go.
 		  ' A EasyHandle may belong to only one MultiHandle object at a time. Passing an owned EasyHandle will fail.
 		  '
@@ -25,8 +19,9 @@ Inherits libcURL.cURLHandle
 		    mLastError = curl_multi_add_handle(mHandle, Transfer.Handle)
 		    If mLastError = 0 Then Instances.Value(Transfer.Handle) = Transfer
 		  End If
-		  Return mLastError = 0
-		End Function
+		  
+		  If mLastError <> 0 Then Raise New cURLException(Me)
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -243,13 +238,7 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Attributes( deprecated = "libcURL.MultiHandle.RemoveTransfer" )  Function RemoveItem(Item As libcURL.EasyHandle) As Boolean
-		  Return RemoveTransfer(Item)
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function RemoveTransfer(Transfer As libcURL.EasyHandle) As Boolean
+		Sub RemoveTransfer(Transfer As libcURL.EasyHandle)
 		  ' Removes the passed EasyHandle from the multihandle. If there no more EasyHandles then turns off the PerformTimer.
 		  '
 		  ' See:
@@ -259,8 +248,9 @@ Inherits libcURL.cURLHandle
 		  mLastError = curl_multi_remove_handle(mHandle, Transfer.Handle)
 		  If Instances.HasKey(Transfer.Handle) Then Instances.Remove(Transfer.Handle)
 		  If Instances.Count = 0 And PerformTimer <> Nil Then PerformTimer.Mode = Timer.ModeOff
-		  Return mLastError = 0
-		End Function
+		  
+		  If mLastError <> 0 Then Raise New cURLException(Me)
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0

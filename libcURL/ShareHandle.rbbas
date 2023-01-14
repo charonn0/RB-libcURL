@@ -2,13 +2,7 @@
 Protected Class ShareHandle
 Inherits libcURL.cURLHandle
 	#tag Method, Flags = &h0
-		Attributes( deprecated = "libcURL.ShareHandle.AddTransfer" )  Function AddItem(Item As libcURL.EasyHandle) As Boolean
-		  Return AddTransfer(Item)
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function AddTransfer(Transfer As libcURL.EasyHandle) As Boolean
+		Sub AddTransfer(Transfer As libcURL.EasyHandle)
 		  ' Add an easy handle to share handle
 		  '
 		  ' See:
@@ -17,12 +11,11 @@ Inherits libcURL.cURLHandle
 		  
 		  If Not Me.HasTransfer(Transfer) And Transfer.SetOption(libcURL.Opts.SHARE, Me) Then
 		    SharedHandles.Value(Transfer.Handle) = Transfer
-		    Return True
 		  Else
 		    mLastError = Transfer.LastError
-		    Return False
+		    Raise New cURLException(Me)
 		  End If
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -106,26 +99,18 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Attributes( deprecated = "libcURL.ShareHandle.RemoveTransfer" )  Function RemoveItem(Item As libcURL.EasyHandle) As Boolean
-		  Return RemoveTransfer(Item)
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function RemoveTransfer(Transfer As libcURL.EasyHandle) As Boolean
+		Sub RemoveTransfer(Transfer As libcURL.EasyHandle)
 		  ' Remove an easy handle from share handle.
 		  '
-		  ' See: 
+		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/CURLOPT_SHARE.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ShareHandle.RemoveTransfer
 		  
 		  If SharedHandles.HasKey(Transfer.Handle) And Transfer.SetOption(libcURL.Opts.SHARE, Nil) Then
 		    SharedHandles.Remove(Transfer.Handle)
-		    Return True
 		  End If
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0

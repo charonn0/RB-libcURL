@@ -326,10 +326,7 @@ Protected Class cURLSession
 
 	#tag Method, Flags = &h21
 		Private Sub QueueStreams(ReadFrom As Readable, WriteTo As Writeable)
-		  If Not mMultiHandle.AddTransfer(mEasyHandle) Then
-		    ' Most likely another transfer is already in progress.
-		    Raise New cURLException(mMultiHandle)
-		  End If
+		  mMultiHandle.AddTransfer(mEasyHandle)
 		  
 		  mIsTransferComplete = False
 		  mAbort = False
