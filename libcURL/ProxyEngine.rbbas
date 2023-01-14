@@ -10,6 +10,7 @@ Protected Class ProxyEngine
 		  mOwner = New WeakRef(Owner)
 		  mUnifiedHeaders = Not libcURL.Version.IsAtLeast(7, 42, 1) ' as of libcurl 7.42.1 this defaults to True
 		  If Owner.CA_ListFile <> Nil Then CA_ListFile = Owner.CA_ListFile
+		  If Owner.CA_List <> Nil Then CA_List = Owner.CA_List
 		End Sub
 	#tag EndMethod
 
@@ -194,6 +195,69 @@ Protected Class ProxyEngine
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Gets the previously-set memoryblock containing one or more certificate
+			  ' authorities libcURL will trust to verify the proxy with.
+			  '
+			  ' ProxyEngine.Secure must be set to True to enable certificate verification.
+			  '
+			  ' This feature was added in libcurl 7.77.0 and might not be available from all
+			  ' supported TLS backends.
+			  '
+			  ' See:
+			  ' https://curl.se/libcurl/c/CURLOPT_PROXY_CAINFO_BLOB.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ProxyEngine.CA_List
+			  
+			  return mCA_List
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  ' Sets a memoryblock containing one or more certificate authorities libcURL
+			  ' will trust to verify the proxy with.
+			  '
+			  ' ProxyEngine.Secure must be set to True to enable certificate verification.
+			  '
+			  ' This feature was added in libcurl 7.77.0 and might not be available from all
+			  ' supported TLS backends.
+			  '
+			  ' If you intend to use the same CA list with multiple instances of ProxyEngine
+			  ' simultaneously then you ought to use same MemoryBlock reference for all instances
+			  ' to avoid duplicating the CA list data in memory.
+			  '
+			  ' This feature was added in libcurl 7.77.0 and might not be available from all
+			  ' supported TLS backends.
+			  '
+			  ' See:
+			  ' https://curl.se/libcurl/c/CURLOPT_PROXY_CAINFO_BLOB.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ProxyEngine.CA_List
+			  
+			  If Not libcURL.Version.IsAtLeast(7, 77, 0) Then
+			    ErrorSetter(Owner).LastError = libcURL.Errors.FEATURE_UNAVAILABLE
+			    Raise New cURLException(Owner)
+			  End If
+			  
+			  Select Case True
+			  Case value = Nil
+			    If Not Owner.SetOption(libcURL.Opts.CAINFO_BLOB, Nil) Then Raise New cURLException(Owner)
+			    mCA_List = Nil
+			    
+			  Else
+			    Dim blob As curl_blob
+			    blob.Data = value
+			    blob.Length = value.Size
+			    blob.Flags = CURL_BLOB_NOCOPY
+			    If Not Owner.SetOption(libcURL.Opts.PROXY_CAINFO_BLOB, blob) Then Raise New cURLException(Owner)
+			    mCA_List = value
+			    
+			  End Select
+			End Set
+		#tag EndSetter
+		CA_List As MemoryBlock
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
 			  ' Gets the PEM file (or a directory of PEM files) containing one or more certificate authorities libcURL
 			  ' will trust to verify the proxy with. If no file/folder is specified (default) then returns Nil.
 			  
@@ -260,6 +324,10 @@ Protected Class ProxyEngine
 
 	#tag Property, Flags = &h21
 		Private mAuthMethods As libcURL.HTTPAuthMethods
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mCA_List As MemoryBlock
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
