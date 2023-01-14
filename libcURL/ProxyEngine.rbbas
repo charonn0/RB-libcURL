@@ -238,7 +238,7 @@ Protected Class ProxyEngine
 			  
 			  Select Case True
 			  Case value = Nil
-			    If Not Owner.SetOption(libcURL.Opts.CAINFO_BLOB, Nil) Then Raise New cURLException(Owner)
+			    If Not Owner.SetOption(libcURL.Opts.PROXY_CAINFO_BLOB, Nil) Then Raise New cURLException(Owner)
 			    mCA_List = Nil
 			    
 			  Else
