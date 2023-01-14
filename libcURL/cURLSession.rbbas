@@ -405,14 +405,16 @@ Protected Class cURLSession
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function SetCookie(Name As String, Value As String, Domain As String, Expires As Date = Nil, Path As String = "", HTTPOnly As Boolean = False) As Boolean
+		Sub SetCookie(Name As String, Value As String, Domain As String, Expires As Date = Nil, Path As String = "", HTTPOnly As Boolean = False)
 		  ' Sets or updates a cookie. The cookie engine must be enabled.
 		  '
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.SetCookie
 		  
-		  Return mEasyHandle.CookieEngine.SetCookie(Name, Value, Domain, Expires, Path, HTTPOnly)
-		End Function
+		  If Not mEasyHandle.CookieEngine.SetCookie(Name, Value, Domain, Expires, Path, HTTPOnly) Then
+		    Raise New cURLException(EasyHandle)
+		  End If
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -428,7 +430,7 @@ Protected Class cURLSession
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function SetRequestMethod(RequestMethod As String) As Boolean
+		Sub SetRequestMethod(RequestMethod As String)
 		  ' Overrides the request method used by libcurl. The behavior of this feature depends on
 		  ' which protocol is being used, and not all protocols are supported. Pass the empty
 		  ' string to reset.
@@ -438,11 +440,11 @@ Protected Class cURLSession
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.SetRequestMethod
 		  
 		  If RequestMethod.Trim <> "" Then
-		    Return mEasyHandle.SetOption(libcURL.Opts.CUSTOMREQUEST, RequestMethod)
+		    If Not mEasyHandle.SetOption(libcURL.Opts.CUSTOMREQUEST, RequestMethod) Then Raise New cURLException(EasyHandle)
 		  Else
-		    Return mEasyHandle.SetOption(libcURL.Opts.CUSTOMREQUEST, Nil)
+		    If Not mEasyHandle.SetOption(libcURL.Opts.CUSTOMREQUEST, Nil) Then Raise New cURLException(EasyHandle)
 		  End If
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
