@@ -2,6 +2,20 @@
 Protected Class ListPtr
 Inherits libcURL.cURLHandle
 	#tag Method, Flags = &h0
+		Sub Append(s As String)
+		  ' Appends the passed string to the list. If the List is NULL it will be created.
+		  ' See:
+		  ' http://curl.haxx.se/libcurl/c/curl_slist_append.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ListPtr.Append
+		  
+		  If Not Me.Append(s) Then
+		    mLastError = libcURL.Errors.INIT_FAILED
+		    Raise New cURLException(Me)
+		  End If
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function Append(s As String) As Boolean
 		  ' Appends the passed string to the list. If the List is NULL it will be created.
 		  ' See:
@@ -163,7 +177,7 @@ Inherits libcURL.cURLHandle
 		    Me.Destructor()
 		  End If
 		  For i As Integer = 0 To UBound(From)
-		    If Not Me.Append(From(i)) Then Raise New cURLException(Me)
+		    Me.Append(From(i))
 		  Next
 		End Sub
 	#tag EndMethod

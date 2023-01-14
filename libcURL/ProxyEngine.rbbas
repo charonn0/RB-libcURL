@@ -144,7 +144,7 @@ Protected Class ProxyEngine
 		      If NthField(s(i), ":", 1).Trim = HeaderName Then s.Remove(i)
 		    Next
 		    mHeaders = s
-		    If Not mHeaders.Append(HeaderName + ": " + HeaderValue) Then Raise New cURLException(mHeaders)
+		    mHeaders.Append(HeaderName + ": " + HeaderValue)
 		    
 		  Else' clear all headers
 		    mHeaders = Nil

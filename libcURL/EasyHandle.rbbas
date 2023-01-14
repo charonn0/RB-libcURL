@@ -953,7 +953,7 @@ Inherits libcURL.cURLHandle
 		      If NthField(s(i), ":", 1).Trim = Name Then s.Remove(i)
 		    Next
 		    List = s
-		    If Not List.Append(Name + ": " + Value) Then Raise New cURLException(List)
+		    List.Append(Name + ": " + Value)
 		    
 		  Else' clear all headers
 		    List = Nil
