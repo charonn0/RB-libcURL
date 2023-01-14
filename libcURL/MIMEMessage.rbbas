@@ -3,32 +3,31 @@ Protected Class MIMEMessage
 Inherits libcURL.cURLHandle
 Implements FormStreamGetter
 	#tag Method, Flags = &h0
-		Function AddElement(Name As String, Value As FolderItem, FileName As String = "", ContentType As String = "", AdditionalHeaders As libcURL.ListPtr = Nil, Encoding As libcURL.TransferEncoding = libcURL.TransferEncoding.Binary) As Boolean
+		Sub AddElement(Name As String, Value As FolderItem, FileName As String = "", ContentType As String = "", AdditionalHeaders As libcURL.ListPtr = Nil, Encoding As libcURL.TransferEncoding = libcURL.TransferEncoding.Binary)
 		  ' Adds the passed file to the form using the specified name.
 		  '
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MIMEMessage.AddElement
 		  
 		  Dim part As Ptr = AddPart()
-		  If Not SetPartName(part, Name) Then Return False
-		  If Not SetPartFile(part, Value) Then Return False
-		  If FileName <> "" And Not SetPartFileName(part, FileName) Then Return False
+		  If Not SetPartName(part, Name) Then Raise New cURLException(Me)
+		  If Not SetPartFile(part, Value) Then Raise New cURLException(Me)
+		  If FileName <> "" And Not SetPartFileName(part, FileName) Then Raise New cURLException(Me)
 		  If ContentType = "" Then ContentType = MIMEType(Value)
 		  If ContentType <> "" Then
-		    If Not SetPartType(part, ContentType) Then Return False
+		    If Not SetPartType(part, ContentType) Then Raise New cURLException(Me)
 		  End If
 		  If AdditionalHeaders <> Nil Then
-		    If Not SetPartHeaders(part, AdditionalHeaders) Then Return False
+		    If Not SetPartHeaders(part, AdditionalHeaders) Then Raise New cURLException(Me)
 		  End If
 		  If Encoding <> TransferEncoding.Binary Then
-		    If Not SetPartEncoding(part, encoding) Then Return False
+		    If Not SetPartEncoding(part, encoding) Then Raise New cURLException(Me)
 		  End If
-		  Return mLastError = 0
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function AddElement(Name As String, Value As libcURL.MIMEMessage, AdditionalHeaders As libcURL.ListPtr = Nil) As Boolean
+		Sub AddElement(Name As String, Value As libcURL.MIMEMessage, AdditionalHeaders As libcURL.ListPtr = Nil)
 		  ' Adds the passed MIME message to the form as a subpart using the specified name.
 		  '
 		  ' See:
@@ -40,66 +39,68 @@ Implements FormStreamGetter
 		  End If
 		  
 		  Dim part As Ptr = AddPart()
-		  If Not SetPartName(part, Name) Then Return False
-		  If Not SetPartSubparts(part, Value) Then Return False
+		  If Not SetPartName(part, Name) Then Raise New cURLException(Me)
+		  If Not SetPartSubparts(part, Value) Then Raise New cURLException(Me)
 		  If AdditionalHeaders <> Nil Then
-		    If Not SetPartHeaders(part, AdditionalHeaders) Then Return False
+		    If Not SetPartHeaders(part, AdditionalHeaders) Then Raise New cURLException(Me)
 		  End If
-		  Return mLastError = 0
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function AddElement(Name As String, ValueStream As Readable, ValueSize As Integer, Filename As String = "", ContentType As String = "", AdditionalHeaders As libcURL.ListPtr = Nil, Encoding As libcURL.TransferEncoding = libcURL.TransferEncoding.Binary) As Boolean
+		Sub AddElement(Name As String, ValueStream As Readable, ValueSize As Integer, Filename As String = "", ContentType As String = "", AdditionalHeaders As libcURL.ListPtr = Nil, Encoding As libcURL.TransferEncoding = libcURL.TransferEncoding.Binary)
 		  ' Adds an element using the specified name, with contents which will be read from the passed Readable object.
 		  '
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MIMEMessage.AddElement
 		  
 		  Dim part As Ptr = AddPart()
-		  If Not SetPartName(part, Name) Then Return False
+		  If Not SetPartName(part, Name) Then Raise New cURLException(Me)
 		  If Filename <> "" Then
-		    If Not SetPartFileName(part, Filename + Chr(0)) Then Return False
+		    If Not SetPartFileName(part, Filename + Chr(0)) Then Raise New cURLException(Me)
 		  End If
 		  If Filename <> "" And ContentType = "" Then ContentType = MIMEType(SpecialFolder.Temporary.Child(Filename))
 		  If ContentType <> "" Then
-		    If Not SetPartType(part, ContentType) Then Return False
+		    If Not SetPartType(part, ContentType) Then Raise New cURLException(Me)
 		  End If
 		  If AdditionalHeaders <> Nil Then
-		    If Not SetPartHeaders(part, AdditionalHeaders) Then Return False
+		    If Not SetPartHeaders(part, AdditionalHeaders) Then Raise New cURLException(Me)
 		  End If
 		  If Encoding <> TransferEncoding.Binary Then
-		    If Not SetPartEncoding(part, encoding) Then Return False
+		    If Not SetPartEncoding(part, encoding) Then Raise New cURLException(Me)
 		  End If
 		  If PartStreams = Nil Then PartStreams = New Dictionary
 		  PartStreams.Value(part) = ValueStream
 		  If ValueStream IsA BinaryStream Then ' seekable
-		    If Not SetPartCallbacks(part, ValueSize, AddressOf ReadCallback, AddressOf SeekCallback, AddressOf FreeCallback, part) Then Return False
+		    If Not SetPartCallbacks(part, ValueSize, AddressOf ReadCallback, AddressOf SeekCallback, AddressOf FreeCallback, part) Then
+		      Raise New cURLException(Me)
+		    End If
 		  Else
-		    If Not SetPartCallbacks(part, ValueSize, AddressOf ReadCallback, Nil, AddressOf FreeCallback, part) Then Return False
+		    If Not SetPartCallbacks(part, ValueSize, AddressOf ReadCallback, Nil, AddressOf FreeCallback, part) Then
+		      Raise New cURLException(Me)
+		    End If
 		  End If
-		  Return mLastError = 0
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function AddElement(Name As String, Value As String, AdditionalHeaders As libcURL.ListPtr = Nil, Encoding As libcURL.TransferEncoding = libcURL.TransferEncoding.Binary) As Boolean
+		Sub AddElement(Name As String, Value As String, AdditionalHeaders As libcURL.ListPtr = Nil, Encoding As libcURL.TransferEncoding = libcURL.TransferEncoding.Binary)
 		  ' Adds the passed Value to the form using the specified Name.
 		  '
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MIMEMessage.AddElement
 		  
 		  Dim part As Ptr = AddPart()
-		  If Not SetPartName(part, Name) Then Return False
-		  If Not SetPartData(part, Value) Then Return False
+		  If Not SetPartName(part, Name) Then Raise New cURLException(Me)
+		  If Not SetPartData(part, Value) Then Raise New cURLException(Me)
 		  If Encoding <> TransferEncoding.Binary Then
-		    If Not SetPartEncoding(part, encoding) Then Return False
+		    If Not SetPartEncoding(part, encoding) Then Raise New cURLException(Me)
 		  End If
 		  If AdditionalHeaders <> Nil Then
-		    If Not SetPartHeaders(part, AdditionalHeaders) Then Return False
+		    If Not SetPartHeaders(part, AdditionalHeaders) Then Raise New cURLException(Me)
 		  End If
-		  Return mLastError = 0
-		End Function
+		  
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
