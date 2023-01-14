@@ -14,7 +14,7 @@ Protected Class ProxyEngine
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ExcludeHost(Hostname As String) As Boolean
+		Sub ExcludeHost(Hostname As String)
 		  ' Exclude the specified Hostname from proxying. By default, all hosts are proxied.
 		  ' Specify the hostname only; i.e. if the URL is "http://www.example.com" then "www.example.com"
 		  ' is the Hostname.
@@ -29,11 +29,11 @@ Protected Class ProxyEngine
 		  End If
 		  
 		  For i As Integer = 0 To UBound(mExclusions)
-		    If CompareDomains(mExclusions(i), Hostname) Then Return True
+		    If CompareDomains(mExclusions(i), Hostname) Then Return ' already excluded
 		  Next
 		  mExclusions.Append(Hostname)
-		  Return Owner.SetOption(libcURL.Opts.NOPROXY, Join(mExclusions, ","))
-		End Function
+		  If Not Owner.SetOption(libcURL.Opts.NOPROXY, Join(mExclusions, ",")) Then Raise New cURLException(Owner)
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -50,7 +50,7 @@ Protected Class ProxyEngine
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function IncludeHost(Hostname As String) As Boolean
+		Sub IncludeHost(Hostname As String)
 		  ' Removes the specified Hostname from the proxy exclusion list. By default, all hosts are proxied,
 		  ' so you needn't call this method unless you have previously excluded the Hostname. Specify the
 		  ' hostname only; i.e. if the URL is "http://www.example.com" then "www.example.com" is the Hostname.
@@ -67,8 +67,8 @@ Protected Class ProxyEngine
 		  For i As Integer = UBound(mExclusions) DownTo 0
 		    If CompareDomains(mExclusions(i), Hostname) Then mExclusions.Remove(i)
 		  Next
-		  Return Owner.SetOption(libcURL.Opts.NOPROXY, Join(mExclusions, ","))
-		End Function
+		  If Not Owner.SetOption(libcURL.Opts.NOPROXY, Join(mExclusions, ",")) Then Raise New cURLException(Owner)
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -118,7 +118,7 @@ Protected Class ProxyEngine
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function SetHeader(HeaderName As String, HeaderValue As String) As Boolean
+		Sub SetHeader(HeaderName As String, HeaderValue As String)
 		  ' Sets a header to send to the proxy. Not all proxy types support this feature.
 		  ' Subsequent calls to this method will append the header to the previously set headers.
 		  ' Headers will persist from transfer to transfer. Pass an empty value to clear the named
@@ -130,7 +130,7 @@ Protected Class ProxyEngine
 		  
 		  If Not libcURL.Version.IsAtLeast(7, 37, 0) Then
 		    ErrorSetter(Owner).LastError = libcURL.Errors.FEATURE_UNAVAILABLE
-		    Return False
+		    Raise New cURLException(Owner)
 		  End If
 		  
 		  If mHeaders = Nil And HeaderName <> "" Then ' Add first header
@@ -139,7 +139,7 @@ Protected Class ProxyEngine
 		  ElseIf HeaderName <> "" Then ' append another header
 		    Dim s() As String = mHeaders
 		    If Not Owner.SetOption(libcURL.Opts.PROXYHEADER, Nil) Then Raise New cURLException(Owner)
-		    If HeaderName = "" And HeaderValue = "" Then Return True ' deleted headers
+		    If HeaderName = "" And HeaderValue = "" Then Return ' deleted headers
 		    For i As Integer = UBound(s) DownTo 0
 		      If NthField(s(i), ":", 1).Trim = HeaderName Then s.Remove(i)
 		    Next
@@ -152,14 +152,8 @@ Protected Class ProxyEngine
 		  End If
 		  
 		  If Not Owner.SetOption(libcURL.Opts.PROXYHEADER, mHeaders) Then Raise New cURLException(Owner)
-		  Return (mHeaders <> Nil Or HeaderName = "")
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Attributes( deprecated = "libcURL.ProxyEngine.SetHeader" )  Function SetProxyHeader(HeaderName As String, HeaderValue As String) As Boolean
-		  Return Me.SetHeader(HeaderName, HeaderValue)
-		End Function
+		  If Not (mHeaders <> Nil Or HeaderName = "") Then Raise New cURLException(Owner)
+		End Sub
 	#tag EndMethod
 
 
