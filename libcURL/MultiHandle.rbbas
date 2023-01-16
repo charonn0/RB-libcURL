@@ -3,8 +3,10 @@ Protected Class MultiHandle
 Inherits libcURL.cURLHandle
 	#tag Method, Flags = &h0
 		Sub AddTransfer(Transfer As libcURL.EasyHandle)
-		  ' Add a EasyHandle to the multistack. The EasyHandle should have all of its options already set and ready to go.
-		  ' A EasyHandle may belong to only one MultiHandle object at a time. Passing an owned EasyHandle will fail.
+		  ' Add an EasyHandle to the MultiHandle. The EasyHandle should have all of its
+		  ' options already set and ready to go. An EasyHandle may belong to only one
+		  ' MultiHandle object at a time. Passing an owned EasyHandle will raise
+		  ' an exception.
 		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_add_handle.html
@@ -26,7 +28,12 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Sub Close()
-		  ' Removes all EasyHandles from the stack
+		  ' Removes all remaining EasyHandles from the MultiHandle but does not destroy
+		  ' the MultiHandle. You may add more EasyHandles after calling this method to
+		  ' continue using the MultiHandle.
+		  ' 
+		  ' Calling this method does not destroy the individual EasyHandles either. They
+		  ' may be reused as well.
 		  '
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.Close
@@ -41,8 +48,9 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Sub Constructor(GlobalInitFlags As Integer = libcURL.CURL_GLOBAL_DEFAULT)
-		  ' Creates a new multi stack
-		  
+		  ' Creates a new, empty MultiHandle. If libcURL is not available at runtime, a
+		  ' PlatformNotSupportedException will be raised.
+		  ' 
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_init.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.Constructor
@@ -64,6 +72,9 @@ Inherits libcURL.cURLHandle
 	#tag Method, Flags = &h0
 		Function Count() As Integer
 		  ' Returns the number of EasyHandles currently being managed by the MultiHandle.
+		  ' 
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.Count
 		  
 		  Return Instances.Count
 		End Function
@@ -83,19 +94,26 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Attributes( deprecated = "libcURL.MultiHandle.HasTransfer" )  Function HasItem(EasyItem As libcURL.EasyHandle) As Boolean
-		  Return HasTransfer(EasyItem)
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Function HasTransfer(Transfer As libcURL.EasyHandle) As Boolean
+		  ' Returns True if the specified Transfer is currently being managed by the
+		  ' MultiHandle. A Transfer may be managed by only one MultiHandle object at
+		  ' a time.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.HasTransfer
+		  
 		  Return Instances.HasKey(Transfer.Handle)
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function Operator_Compare(OtherMulti As libcURL.MultiHandle) As Integer
+		  ' This method overloads the comparison operator(=), permitting direct
+		  ' comparisons between instances of MultiHandle.
+		  ' 
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.Operator_Compare
+		  
 		  Dim i As Integer = Super.Operator_Compare(OtherMulti)
 		  If i = 0 Then i = Sign(mHandle - OtherMulti.Handle)
 		  Return i
@@ -118,9 +136,10 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Sub Perform()
-		  ' Calling this method will activate a timer which calls PerformOnce on the multistack until the last item is Removed.
-		  ' If the stack is not being processed, begins processing the stack. If the stack is already being processed, updates the PerformTimer
-		  ' period with libcURL's best estimate of an optimum interval.
+		  ' Calling this method will activate a timer which calls PerformOnce() on the
+		  ' MultiHandle until the last item is removed. If the timer is not already running
+		  ' then calling this method starts it, otherwise calling this method will update
+		  ' the timer's period with libcURL's best estimate of an optimum interval.
 		  '
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.Perform
@@ -137,14 +156,15 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Function PerformOnce() As Boolean
-		  ' Calling this method will call curl_multi_perform on the multistack once and read all
-		  ' messages emitted by libcURL during that operation. The TransferComplete event will be
-		  ' raised for any completed easy handles. This method must be called repeatedly until libcURL
-		  ' indicates that all transfers have completed. PerformOnce will return True until all transfers
+		  ' Calling this method will call curl_multi_perform on the MultiHandle once
+		  ' and read all messages emitted by libcURL during that operation. The
+		  ' TransferComplete() event will be raised for any completed easy handles.
+		  ' This method must be called repeatedly until libcURL indicates that all
+		  ' transfers have completed. PerformOnce will return True until all transfers
 		  ' have completed or an error occurs.
 		  '
-		  ' Unlike MultiHandle.Perform, this method will run the transfers and raise events on the calling
-		  ' thread instead of always on the main thread.
+		  ' Unlike MultiHandle.Perform(), this method will run the transfers and raise
+		  ' events on the calling thread instead of always on the main thread.
 		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_perform.html
@@ -181,7 +201,8 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h21
 		Private Sub PerformTimerHandler(Sender As Timer)
-		  ' This method handles the PerformTimer.Action event. It calls PerformOnce on the main thread until PerformOnce returns False.
+		  ' This method handles the PerformTimer.Action event. It calls PerformOnce on
+		  ' the main thread until PerformOnce returns False.
 		  
 		  ' this loop calls PerformOnce 4 times and then updates the Timer's period.
 		  For i As Integer = 0 To 4
@@ -203,8 +224,10 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Function QueryInterval() As Double
-		  ' Returns libcURL's best estimate for an optimum interval, in milliseconds, between calls to PerformOnce. An interval of 1 means
-		  ' that PerformOnce may be called immediately.
+		  ' Returns libcURL's best estimate for an optimum interval, in milliseconds,
+		  ' between calls to PerformOnce(). An interval of 1 means that PerformOnce
+		  ' may be called immediately. An interval that is less-than 0.0 means that
+		  ' libcURL has no estimate at this time.
 		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_timeout.html
@@ -239,7 +262,9 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Sub RemoveTransfer(Transfer As libcURL.EasyHandle)
-		  ' Removes the passed EasyHandle from the multihandle. If there no more EasyHandles then turns off the PerformTimer.
+		  ' Removes the specified EasyHandle from the MultiHandle. If there no more
+		  ' EasyHandles then the PerformTimer is deactivated. This method is called
+		  ' automatically before the TransferComplete event is raised.
 		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_multi_remove_handle.html
@@ -255,10 +280,9 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Function SetOption(OptionNumber As Integer, NewValue As Variant) As Boolean
-		  ' SetOption is the primary interface to the multistack. Call this method with a MultiHandle option number
-		  ' and a value that is acceptable for that option. SetOption does not check that a value is valid for
-		  ' a particular option (except Nil,) however it does enforce type safety of the value and will raise
-		  ' an exception if an unsupported type is passed.
+		  ' Call this method with a MultiHandle option number and a value that is acceptable for that option.
+		  ' This method does not check that a value is valid for a particular option (except Nil,) however it
+		  ' does enforce type safety of the value and will raise an exception if an unsupported type is passed.
 		  
 		  ' NewValue may be a Boolean, Integer, Ptr, String, or MemoryBlock. Passing a Nil object will raise an
 		  ' exception unless the option explicitly accepts NULL.
@@ -351,28 +375,39 @@ Inherits libcURL.cURLHandle
 
 
 	#tag Note, Name = Using this class
-		This class implements the curl_multi interface of libcURL. A MultiHandle instance can manage one or more EasyHandles. 
-		See: http://curl.haxx.se/libcurl/c/libcurl-multi.html
+		This class implements the curl_multi interface of libcURL. A MultiHandle instance
+		can manage one or more EasyHandles. See: http://curl.haxx.se/libcurl/c/libcurl-multi.html
 		
-		Using MultiHandle allows us to use the EasyHandle class asynchronously, either automatically on the main thread or 'manually' 
-		on a RB thread.
+		Using MultiHandle allows us to use the EasyHandle class asynchronously, either
+		automatically on the main thread or 'manually' an a RB/Xojo thread.
 		
-		EasyHandles may be added to the stack at any time. Once added, MultiHandle will maintain a (RB) reference to the EasyHandle.
-		You should not call any methods/set any properties on the EasyHandle until you receive its reference as the parameter to the 
-		TransferComplete event.
+		EasyHandles may be added to the stack at any time. Once added, MultiHandle will maintain
+		a (RB/Xojo) reference to the EasyHandle. You should not call any methods/set any properties
+		on the EasyHandle until you receive its reference as the parameter to the TransferComplete()
+		event.
 		
-		Once all desired EasyHandles have been added, you may call Perform or PerformOnce to begin the transfer(s). 
+		Once all desired EasyHandles have been added, you may call Perform() or PerformOnce() to begin
+		the transfer(s). 
 		
-		Calling PerformOnce executes curl_multi_perform once and processes all completed EasyHandles. All EasyHandle and MultiHandle events will be 
-		raised on the thread which calls PerformOnce. PerformOnce will not return until all event handlers have returned.
+		Calling PerformOnce() executes curl_multi_perform() once and processes all completed EasyHandles.
+		All EasyHandle and MultiHandle events will be raised on the thread which calls PerformOnce().
+		PerformOnce() will not return until all event handlers have returned.
 		
-		Calling Perform will activate a timer which calls PerformOnce on the main thread until there are no more items. Perform returns immediately.
+		Calling Perform() will activate a timer which calls PerformOnce() on the main thread until there
+		are no more EasyHandles remaining. Perform() returns immediately.
 	#tag EndNote
 
 
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Gets whether two (or more) HTTP requests which are added to the same MultiHandle can be
+			  ' multiplexed over the same connection (HTTP/2 required).
+			  '
+			  ' See:
+			  ' https://curl.haxx.se/libcurl/c/CURLMOPT_PIPELINING.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.HTTPMultiplexing
+			  
 			  return mHTTPMultiplexing
 			End Get
 		#tag EndGetter
@@ -404,6 +439,13 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Sets whether two (or more) HTTP requests which are added to the same MultiHandle can be
+			  ' pipelined over the same connection (server support required).
+			  '
+			  ' See:
+			  ' https://curl.haxx.se/libcurl/c/CURLMOPT_PIPELINING.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.HTTPPipelining
+			  
 			  return mHTTPPipelining
 			End Get
 		#tag EndGetter
