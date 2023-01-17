@@ -674,7 +674,7 @@ Protected Class cURLSession
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  ' After a transfer is initiated this method will return False until the transfer
+			  ' After a transfer is initiated this property will be False until the transfer
 			  ' completes (successfully or not.)
 			  '
 			  ' See:
