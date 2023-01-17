@@ -62,9 +62,10 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Sub Constructor(CopyOpts As libcURL.EasyHandle)
-		  ' Creates a new curl_easy handle by cloning the passed handle and all of its options. The clone is independent
-		  ' of the original. If CopyOpts is Nil, its handle is invalid, or its handle cannot be duplicated an exception
-		  ' will be raised.
+		  ' Creates a new curl_easy handle by cloning the passed handle and all of its
+		  ' options. The clone is independent of the original. If CopyOpts is Nil, its
+		  ' handle is invalid, or its handle cannot be duplicated an exception will be
+		  ' raised.
 		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_duphandle.html
@@ -310,9 +311,9 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Function ErrorBuffer() As String
-		  ' Returns a copy of the contents of the error buffer, or an empty string. The contents of this buffer will persist
-		  ' between transfers; it is NOT automatically cleared. To clear the buffer set UseErrorBuffer to True (even if
-		  ' it's already True)
+		  ' Returns a copy of the contents of the error buffer, or an empty string. The
+		  ' contents of this buffer will persist between transfers; it is NOT automatically
+		  ' cleared. To clear the buffer set UseErrorBuffer to True (even if it's already True)
 		  '
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.ErrorBuffer
@@ -338,10 +339,11 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Function GetInfo(InfoType As Integer) As Variant
-		  ' Calls curl_easy_getinfo. Returns a Variant suitable to contain the InfoType requested. If the InfoType is not
-		  ' among the values marshalled below, a TypeMismatchException will be raised.
-		  ' This method returns various data about the most recently completed connection (successful or not.)
-		  ' As such, it is not useful to call this method before the first connection attempt.
+		  ' Calls curl_easy_getinfo. Returns a Variant suitable to contain the InfoType
+		  ' requested. If the InfoType is not among the values marshalled below, a
+		  ' TypeMismatchException will be raised. This method returns various data about
+		  ' the most recently completed connection (successful or not.) As such, it is not
+		  ' useful to call this method before the first connection attempt.
 		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_getinfo.html
@@ -351,9 +353,10 @@ Inherits libcURL.cURLHandle
 		  
 		  Select Case InfoType
 		    ' strings
-		  Case libcURL.Info.EFFECTIVE_URL, libcURL.Info.REDIRECT_URL, libcURL.Info.CONTENT_TYPE, libcURL.Info.PRIVATE_, libcURL.Info.PRIMARY_IP, _
-		    libcURL.Info.LOCAL_IP, libcURL.Info.FTP_ENTRY_PATH, libcURL.Info.RTSP_SESSION_ID, libcURL.Info.SCHEME, libcURL.Info.EFFECTIVE_METHOD, _
-		    libcURL.Info.REFERER
+		  Case libcURL.Info.EFFECTIVE_URL, libcURL.Info.REDIRECT_URL, libcURL.Info.CONTENT_TYPE, _
+		    libcURL.Info.PRIVATE_, libcURL.Info.PRIMARY_IP, libcURL.Info.LOCAL_IP, _
+		    libcURL.Info.FTP_ENTRY_PATH, libcURL.Info.RTSP_SESSION_ID, libcURL.Info.SCHEME, _
+		    libcURL.Info.EFFECTIVE_METHOD, libcURL.Info.REFERER
 		    #If Target32Bit Then
 		      mb = New MemoryBlock(4)
 		    #Else
@@ -365,11 +368,13 @@ Inherits libcURL.cURLHandle
 		    End If
 		    
 		    ' Int32s
-		  Case libcURL.Info.RESPONSE_CODE, libcURL.Info.HTTP_CONNECTCODE, libcURL.Info.REDIRECT_COUNT, libcURL.Info.HEADER_SIZE, _
-		    libcURL.Info.REQUEST_SIZE, libcURL.Info.SSL_VERIFYRESULT, libcURL.Info.OS_ERRNO, _
-		    libcURL.Info.NUM_CONNECTS, libcURL.Info.PRIMARY_PORT, libcURL.Info.LOCAL_PORT, libcURL.Info.LASTSOCKET, libcURL.Info.CONDITION_UNMET, _
-		    libcURL.Info.RTSP_CLIENT_CSEQ, libcURL.Info.RTSP_SERVER_CSEQ, libcURL.Info.RTSP_CSEQ_RECV, libcURL.Info.HTTP_VERSION, libcURL.Info.PROTOCOL, _
-		    libcURL.Info.PROXY_SSL_VERIFYRESULT, libcURL.Info.ACTIVESOCKET
+		  Case libcURL.Info.RESPONSE_CODE, libcURL.Info.HTTP_CONNECTCODE, libcURL.Info.REDIRECT_COUNT, _
+		    libcURL.Info.HEADER_SIZE, libcURL.Info.REQUEST_SIZE, libcURL.Info.SSL_VERIFYRESULT, _
+		    libcURL.Info.OS_ERRNO, libcURL.Info.NUM_CONNECTS, libcURL.Info.PRIMARY_PORT, _
+		    libcURL.Info.LOCAL_PORT, libcURL.Info.LASTSOCKET, libcURL.Info.CONDITION_UNMET, _
+		    libcURL.Info.RTSP_CLIENT_CSEQ, libcURL.Info.RTSP_SERVER_CSEQ, libcURL.Info.RTSP_CSEQ_RECV, _
+		    libcURL.Info.HTTP_VERSION, libcURL.Info.PROTOCOL, libcURL.Info.PROXY_SSL_VERIFYRESULT, _
+		    libcURL.Info.ACTIVESOCKET
 		    mb = New MemoryBlock(4)
 		    If Me.GetInfo(InfoType, mb) Then Return mb.Int32Value(0)
 		    
@@ -398,16 +403,18 @@ Inherits libcURL.cURLHandle
 		    End If
 		    
 		    ' Doubles
-		  Case libcURL.Info.TOTAL_TIME, libcURL.Info.NAMELOOKUP_TIME, libcURL.Info.CONNECT_TIME, libcURL.Info.APPCONNECT_TIME, libcURL.Info.PRETRANSFER_TIME, _
-		    libcURL.Info.STARTTRANSFER_TIME, libcURL.Info.REDIRECT_TIME, libcURL.Info.SIZE_DOWNLOAD, libcURL.Info.SIZE_UPLOAD, libcURL.Info.SPEED_DOWNLOAD, _
+		  Case libcURL.Info.TOTAL_TIME, libcURL.Info.NAMELOOKUP_TIME, libcURL.Info.CONNECT_TIME, _
+		    libcURL.Info.APPCONNECT_TIME, libcURL.Info.PRETRANSFER_TIME, libcURL.Info.STARTTRANSFER_TIME, _
+		    libcURL.Info.REDIRECT_TIME, libcURL.Info.SIZE_DOWNLOAD, libcURL.Info.SIZE_UPLOAD, libcURL.Info.SPEED_DOWNLOAD, _
 		    libcURL.Info.SPEED_UPLOAD, libcURL.Info.CONTENT_LENGTH_UPLOAD, libcURL.Info.CONTENT_LENGTH_DOWNLOAD
 		    mb = New MemoryBlock(8)
 		    If Me.GetInfo(InfoType, mb) Then Return mb.DoubleValue(0)
 		    
 		    ' Int64s
-		  Case libcURL.Info.TOTAL_TIME_T, libcURL.Info.NAMELOOKUP_TIME_T, libcURL.Info.CONNECT_TIME_T, libcURL.Info.APPCONNECT_TIME_T, _
-		    libcURL.Info.PRETRANSFER_TIME_T, libcURL.Info.STARTTRANSFER_TIME_T, libcURL.Info.REDIRECT_TIME_T, libcURL.Info.SIZE_DOWNLOAD_T, _
-		    libcURL.Info.SIZE_UPLOAD_T, libcURL.Info.SPEED_DOWNLOAD_T, libcURL.Info.SPEED_UPLOAD_T, libcURL.Info.CONTENT_LENGTH_UPLOAD_T, _
+		  Case libcURL.Info.TOTAL_TIME_T, libcURL.Info.NAMELOOKUP_TIME_T, libcURL.Info.CONNECT_TIME_T, _
+		    libcURL.Info.APPCONNECT_TIME_T, libcURL.Info.PRETRANSFER_TIME_T, libcURL.Info.STARTTRANSFER_TIME_T, _
+		    libcURL.Info.REDIRECT_TIME_T, libcURL.Info.SIZE_DOWNLOAD_T, libcURL.Info.SIZE_UPLOAD_T, _
+		    libcURL.Info.SPEED_DOWNLOAD_T, libcURL.Info.SPEED_UPLOAD_T, libcURL.Info.CONTENT_LENGTH_UPLOAD_T, _
 		    libcURL.Info.CONTENT_LENGTH_DOWNLOAD_T
 		    mb = New MemoryBlock(8)
 		    If Me.GetInfo(InfoType, mb) Then Return mb.Int64Value(0)
@@ -453,10 +460,12 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Function GetOption(OptionNumber As Integer, DefaultValue As Variant = Nil) As Variant
-		  ' This method complements the SetOption method. You can use this method to retrieve any previously-set
-		  ' option value. If the OptionNumber has not been set then the DefaultValue parameter is returned.
+		  ' This method complements the SetOption method. You can use this method to
+		  ' retrieve any previously-set option value. If the OptionNumber has not been
+		  ' set then the DefaultValue parameter is returned.
 		  '
-		  ' This method cannot retrieve option values which were set using the SetOptionPtr method.
+		  ' This method cannot retrieve option values which were set using the SetOptionPtr
+		  ' method.
 		  '
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.GetOption
@@ -570,6 +579,7 @@ Inherits libcURL.cURLHandle
 	#tag Method, Flags = &h0
 		Function Pause(Mask As Integer = CURLPAUSE_ALL) As Boolean
 		  ' Pauses or unpauses uploads and/or downloads
+		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_pause.html
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Pause
@@ -586,15 +596,16 @@ Inherits libcURL.cURLHandle
 	#tag Method, Flags = &h0
 		Function Perform(URL As String = "", Timeout As Integer = 0) As Boolean
 		  ' THIS IS PROBABLY NOT THE METHOD YOU ARE LOOKING FOR. YOU PROBABLY WANT CURLCLIENT.PERFORM()
-		  ' Tells libcURL to perform the transfer. Pass a URL if you have not specified one already using EasyHandle.URL.
-		  ' Pass an integer representing how long libcURL should wait, in seconds, before giving up the connection
-		  ' attempt. The default is to wait forever.
+		  ' Tells libcURL to perform the transfer. Pass a URL if you have not specified one
+		  ' already using EasyHandle.URL. Pass an integer representing how long libcURL should wait,
+		  ' in seconds, before giving up the connection attempt. The default is to wait forever.
 		  '
-		  ' This method is a blocking function: it will not return (and your application will stop responding) until the
-		  ' transfer completes. For non-blocking transfers use the MultiHandle class to manage the EasyHandle.
+		  ' This method is a blocking function: it will not return (and your application will stop
+		  ' responding) until the transfer completes. For non-blocking transfers use the MultiHandle
+		  ' class to manage the EasyHandle.
 		  '
-		  ' If this method returns true the transfer completed without error. Otherwise, check EasyHandle.LastError for the
-		  ' error code.
+		  ' If this method returns true the transfer completed without error. Otherwise, check
+		  ' EasyHandle.LastError for the error code.
 		  '
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_perform.html
@@ -771,17 +782,19 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Function SetOption(OptionNumber As Integer, NewValue As Variant) As Boolean
-		  ' SetOption is the primary interface to the easy_handle. Call this method with a curl option number
-		  ' and a value that is acceptable for that option. SetOption does not check that a value is valid for
-		  ' a particular option (except Nil,) however it will raise an exception if an unsupported type is passed.
+		  ' SetOption is the primary interface to the easy_handle. Call this method with a
+		  ' curl_easy option number and a value that is acceptable for that option. SetOption
+		  ' does not check that a value is valid for a particular option (except Nil,) however
+		  ' it will raise an exception if an unsupported type is passed.
 		  
-		  ' NewValue may be a Boolean, Integer, Ptr, String, MemoryBlock, FolderItem, libcURL.MultipartForm,
-		  ' libcURL.ListPtr, libcuRL.HTTPAuthMethods; or, a Delegate matching cURLIOCallback, cURLCloseCallback,
-		  ' cURLDebugCallback, cURLOpenCallback, cURLProgressCallback, or cURLInitRequestCallback. Passing Nil
-		  ' will raise an exception unless the option explicitly accepts NULL.
+		  ' NewValue may be a Boolean, Integer, Ptr, String, MemoryBlock, FolderItem,
+		  ' libcURL.MultipartForm, libcURL.ListPtr, libcuRL.HTTPAuthMethods; or, a Delegate
+		  ' matching cURLIOCallback, cURLCloseCallback, cURLDebugCallback, cURLOpenCallback,
+		  ' cURLProgressCallback, or cURLInitRequestCallback. Passing Nil will raise an
+		  ' exception unless the option explicitly accepts NULL.
 		  
-		  ' If the option was set then this method returns True. If it returns False then the option was not set
-		  ' and the curl error number is stored in EasyHandle.LastError.
+		  ' If the option was set then this method returns True. If it returns False then the
+		  ' option was not set and the curl error number is stored in EasyHandle.LastError.
 		  
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_setopt.html
@@ -792,7 +805,8 @@ Inherits libcURL.cURLHandle
 		  Select Case ValueType
 		    
 		  Case Variant.TypeNil ' Sometimes Nil is an error; sometimes not
-		    ' Only some option numbers may accept NULL. Refer to the curl documentation on the individual option numbers for details.
+		    ' Only some option numbers may accept NULL. Refer to the curl documentation on
+		    ' the individual option numbers for details.
 		    Dim opt As libcURL.Opts.OptionInfo = OptionNumber
 		    If opt.IsNullable Then
 		      If mOptions.HasKey(OptionNumber) Then mOptions.Remove(OptionNumber)
@@ -910,11 +924,11 @@ Inherits libcURL.cURLHandle
 
 	#tag Method, Flags = &h0
 		Function SetOptionPtr(OptionNumber As Integer, NewValue As Ptr) As Boolean
-		  ' Call this method with a curl option number and a Ptr to a representation of the new value for that option.
-		  ' The Ptr is passed verbatim to libcURL.
+		  ' Call this method with a curl option number and a Ptr to a representation of the
+		  ' new value for that option. The Ptr is passed verbatim to libcURL.
 		  '
-		  ' If the option was set this method returns True. If it returns False the option was not set and the
-		  ' curl error number is stored in EasyHandle.LastError.
+		  ' If the option was set this method returns True. If it returns False the option
+		  ' was not set and the curl error number is stored in EasyHandle.LastError.
 		  
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_easy_setopt.html
@@ -1891,7 +1905,11 @@ Inherits libcURL.cURLHandle
 			  ' http://curl.haxx.se/libcurl/c/CURLOPT_PASSWORD.html
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Password
 			  
-			  If Not Me.SetOption(libcURL.Opts.PASSWORD, value) Then Raise New cURLException(Me)
+			  If libcURL.Version.IsAtLeast(7, 19, 1) Then
+			    If Not Me.SetOption(libcURL.Opts.PASSWORD, value) Then Raise New cURLException(Me)
+			  Else
+			    If Not Me.SetOption(libcURL.Opts.USERPWD, mUsername + ":" + value) Then Raise New cURLException(Me)
+			  End If
 			  mPassword = value
 			End Set
 		#tag EndSetter
@@ -2387,7 +2405,11 @@ Inherits libcURL.cURLHandle
 			  ' http://curl.haxx.se/libcurl/c/CURLOPT_USERNAME.html
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.UserName
 			  
-			  If Not Me.SetOption(libcURL.Opts.USERNAME, value) Then Raise New cURLException(Me)
+			  If libcURL.Version.IsAtLeast(7, 19, 1) Then
+			    If Not Me.SetOption(libcURL.Opts.USERNAME, value) Then Raise New cURLException(Me)
+			  Else
+			    If Not Me.SetOption(libcURL.Opts.USERPWD, value + ":" + mPassword) Then Raise New cURLException(Me)
+			  End If
 			  mUsername = value
 			End Set
 		#tag EndSetter
@@ -2495,6 +2517,11 @@ Inherits libcURL.cURLHandle
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="BufferSize"
+			Group="Behavior"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="BufferSizeUpload"
 			Group="Behavior"
 			Type="Integer"
 		#tag EndViewProperty
