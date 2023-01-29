@@ -531,6 +531,37 @@ Protected Class cURLSession
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Gets the bearer authentication token for protocols which allow or require it.
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.BearerToken
+			  
+			  Return Me.EasyHandle.GetOption(libcURL.Opts.XOAUTH2_BEARER, "")
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  ' Sets the bearer authentication token for protocols which allow or require it,
+			  ' and enables the "bearer" authentication method.
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.BearerToken
+			  
+			  If value <> "" Then
+			    HTTPAuthenticationMethod = libcURL.CURLAUTH.BEARER
+			    If Not SetOption(libcURL.Opts.XOAUTH2_BEARER, value) Then Raise New cURLException(EasyHandle)
+			  Else
+			    HTTPAuthenticationMethod = 0
+			    If Not SetOption(libcURL.Opts.XOAUTH2_BEARER, Nil) Then Raise New cURLException(EasyHandle)
+			  End If
+			End Set
+		#tag EndSetter
+		BearerToken As String
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
 			  ' Returns a reference to the CookieEngine instance
 			  '
 			  ' See:
