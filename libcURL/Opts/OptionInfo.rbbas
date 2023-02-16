@@ -328,7 +328,7 @@ Protected Class OptionInfo
 		    Return PREQUOTE
 		  Case "PRE_PROXY"
 		    Return PRE_PROXY
-		  Case "PRIVATE_"
+		  Case "PRIVATE_", "PRIVATE"
 		    Return PRIVATE_
 		  Case "PROGRESSDATA"
 		    Return PROGRESSDATA
@@ -2512,9 +2512,9 @@ Protected Class OptionInfo
 		  Case ALTSVC_CTRL
 		    Return OptionType.Number
 		  Case APPEND
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case AUTOREFERER
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case AWS_SIGV4
 		    Return OptionType.String
 		  Case BUFFERSIZE
@@ -2542,7 +2542,7 @@ Protected Class OptionInfo
 		  Case CONNECTTIMEOUT_MS
 		    Return OptionType.Number
 		  Case CONNECT_ONLY
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case CONNECT_TO
 		    Return OptionType.List
 		  Case CONV_FROM_NETWORK_FUNCTION
@@ -2560,7 +2560,7 @@ Protected Class OptionInfo
 		  Case COOKIELIST
 		    Return OptionType.String
 		  Case COOKIESESSION
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case COPYPOSTFIELDS
 		    Return OptionType.Ptr
 		  Case CRLF
@@ -2578,9 +2578,9 @@ Protected Class OptionInfo
 		  Case DEFAULT_PROTOCOL
 		    Return OptionType.String
 		  Case DIRLISTONLY
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case DISALLOW_USERNAME_IN_URL
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case DNS_CACHE_TIMEOUT
 		    Return OptionType.Number
 		  Case DNS_INTERFACE
@@ -2592,9 +2592,9 @@ Protected Class OptionInfo
 		  Case DNS_SERVERS
 		    Return OptionType.String
 		  Case DNS_SHUFFLE_ADDRESSES
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case DNS_USE_GLOBAL_CACHE
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case DOH_SSL_VERIFYHOST
 		    Return OptionType.Number
 		  Case DOH_SSL_VERIFYPEER
@@ -2612,21 +2612,21 @@ Protected Class OptionInfo
 		  Case EXPECT_100_TIMEOUT_MS
 		    Return OptionType.Number
 		  Case FAILONERROR
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case WRITEDATA
 		    Return OptionType.Opaque
 		  Case FILETIME
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case FNMATCH_DATA
 		    Return OptionType.Opaque
 		  Case FNMATCH_FUNCTION
 		    Return OptionType.Subroutine
 		  Case FOLLOWLOCATION
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case FORBID_REUSE
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case FRESH_CONNECT
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case APPEND
 		    Return OptionType.Number
 		  Case DIRLISTONLY
@@ -2640,31 +2640,31 @@ Protected Class OptionInfo
 		  Case FTP_ALTERNATIVE_TO_USER
 		    Return OptionType.String
 		  Case FTP_CREATE_MISSING_DIRS
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case FTP_FILEMETHOD
 		    Return OptionType.Bitmask
 		  Case FTP_RESPONSE_TIMEOUT
 		    Return OptionType.Number
 		  Case FTP_SKIP_PASV_IP
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case USE_SSL
 		    Return OptionType.Bitmask
 		  Case FTP_SSL_CCC
 		    Return OptionType.Number
 		  Case FTP_USE_EPRT
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case FTP_USE_EPSV
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case FTP_USE_PRET
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case GSSAPI_DELEGATION
 		    Return OptionType.Bitmask
 		  Case HAPPY_EYEBALLS_TIMEOUT_MS
 		    Return OptionType.Number
 		  Case HAPROXYPROTOCOL
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case HEADER
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case HEADERDATA
 		    Return OptionType.Opaque
 		  Case HEADERFUNCTION
@@ -2684,27 +2684,27 @@ Protected Class OptionInfo
 		  Case HSTS_CTRL
 		    Return OptionType.Bitmask
 		  Case HTTP09_ALLOWED
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case HTTP200ALIASES
 		    Return OptionType.List
 		  Case HTTPAUTH
 		    Return OptionType.Bitmask
 		  Case HTTPGET
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case HTTPHEADER
 		    Return OptionType.List
 		  Case HTTPPOST
 		    Return OptionType.Ptr
 		  Case HTTPPROXYTUNNEL
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case HTTP_CONTENT_DECODING
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case HTTP_TRANSFER_DECODING
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case HTTP_VERSION
 		    Return OptionType.Bitmask
 		  Case IGNORE_CONTENT_LENGTH
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case READDATA
 		    Return OptionType.Opaque
 		  Case INFILESIZE
@@ -2728,7 +2728,7 @@ Protected Class OptionInfo
 		  Case ISSUERCERT_BLOB
 		    Return OptionType.Blob
 		  Case KEEP_SENDING_ON_ERROR
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case KEYPASSWD
 		    Return OptionType.String
 		  Case KRBLEVEL
@@ -2752,7 +2752,7 @@ Protected Class OptionInfo
 		  Case MAIL_RCPT
 		    Return OptionType.List
 		  Case MAIL_RCPT_ALLLOWFAILS
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case MAXAGE_CONN
 		    Return OptionType.Number
 		  Case MAXCONNECTS
@@ -2782,13 +2782,13 @@ Protected Class OptionInfo
 		  Case NEW_FILE_PERMS
 		    Return OptionType.Number
 		  Case NOBODY
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case NOPROGRESS
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case NOPROXY
 		    Return OptionType.String
 		  Case NOSIGNAL
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case OPENSOCKETDATA
 		    Return OptionType.Opaque
 		  Case OPENSOCKETFUNCTION
@@ -2796,15 +2796,15 @@ Protected Class OptionInfo
 		  Case PASSWORD
 		    Return OptionType.String
 		  Case PATH_AS_IS
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case PINNEDPUBLICKEY
 		    Return OptionType.String
 		  Case PIPEWAIT
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case PORT
 		    Return OptionType.Number
 		  Case POST
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case POSTREDIR
 		    Return OptionType.Bitmask
 		  Case POSTFIELDS
@@ -2900,9 +2900,9 @@ Protected Class OptionInfo
 		  Case PROXY_TLSAUTH_USERNAME
 		    Return OptionType.String
 		  Case PROXY_TRANSFER_MODE
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case PUT
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case QUICK_EXIT
 		    Return OptionType.Boolean
 		  Case QUOTE
@@ -2950,7 +2950,7 @@ Protected Class OptionInfo
 		  Case SASL_AUTHZID
 		    Return OptionType.String
 		  Case SASL_IR
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case SEEKDATA
 		    Return OptionType.Opaque
 		  Case SEEKFUNCTION
@@ -2968,13 +2968,13 @@ Protected Class OptionInfo
 		  Case SOCKS5_AUTH
 		    Return OptionType.Number
 		  Case SOCKS5_GSSAPI_NEC
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case SOCKS5_GSSAPI_SERVICE
 		    Return OptionType.String
 		  Case SSH_AUTH_TYPES
 		    Return OptionType.Bitmask
 		  Case SSH_COMPRESSION
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case SSH_HOST_PUBLIC_KEY_MD5
 		    Return OptionType.String
 		  Case SSH_HOST_PUBLIC_KEY_SHA256
@@ -3004,7 +3004,7 @@ Protected Class OptionInfo
 		  Case SSLENGINE
 		    Return OptionType.String
 		  Case SSLENGINE_DEFAULT
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case SSLKEY
 		    Return OptionType.String
 		  Case KEYPASSWD
@@ -3024,21 +3024,21 @@ Protected Class OptionInfo
 		  Case SSL_EC_CURVES
 		    Return OptionType.String
 		  Case SSL_ENABLE_ALPN
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case SSL_ENABLE_NPN
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case SSL_FALSESTART
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case SSL_OPTIONS
 		    Return OptionType.Bitmask
 		  Case SSL_SESSIONID_CACHE
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case SSL_VERIFYHOST
 		    Return OptionType.Number
 		  Case SSL_VERIFYPEER
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case SSL_VERIFYSTATUS
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case STDERR
 		    Return OptionType.Ptr
 		  Case STREAM_DEPENDS
@@ -3048,23 +3048,23 @@ Protected Class OptionInfo
 		  Case STREAM_WEIGHT
 		    Return OptionType.Number
 		  Case SUPPRESS_CONNECT_HEADERS
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case TCP_FASTOPEN
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case TCP_KEEPALIVE
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case TCP_KEEPIDLE
 		    Return OptionType.Number
 		  Case TCP_KEEPINTVL
 		    Return OptionType.Number
 		  Case TCP_NODELAY
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case TELNETOPTIONS
 		    Return OptionType.List
 		  Case TFTP_BLKSIZE
 		    Return OptionType.Number
 		  Case TFTP_NO_OPTIONS
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case TIMECONDITION
 		    Return OptionType.Bitmask
 		  Case TIMEOUT
@@ -3088,17 +3088,17 @@ Protected Class OptionInfo
 		  Case TRAILERFUNCTION
 		    Return OptionType.Subroutine
 		  Case TRANSFERTEXT
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case TRANSFER_ENCODING
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case UNIX_SOCKET_PATH
 		    Return OptionType.String
 		  Case UNRESTRICTED_AUTH
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case UPKEEP_INTERVAL_MS
 		    Return OptionType.Number
 		  Case UPLOAD
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case UPLOAD_BUFFERSIZE
 		    Return OptionType.Number
 		  Case URL
@@ -3112,9 +3112,9 @@ Protected Class OptionInfo
 		  Case USE_SSL
 		    Return OptionType.Bitmask
 		  Case VERBOSE
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case WILDCARDMATCH
-		    Return OptionType.Number
+		    Return OptionType.Boolean
 		  Case WRITEDATA
 		    Return OptionType.Opaque
 		  Case WRITEFUNCTION
@@ -3215,6 +3215,8 @@ Protected Class OptionInfo
 		  Name = Replace(Name, "CURLOPT_", "")
 		  Name = Replace(Name, "libcURL.Opts.", "")
 		  Name = Name.Uppercase()
+		  If Name = "NETINTERFACE" Then Name = "INTERFACE"
+		  If Name = "PRIVATE_" Then Name = "PRIVATE"
 		  If System.IsFunctionAvailable("curl_easy_option_by_name", cURLLib) Then
 		    Dim opt As Ptr = curl_easy_option_by_name(Name)
 		    If opt <> Nil Then
@@ -3352,6 +3354,7 @@ Protected Class OptionInfo
 			  
 			  Dim nm As String = Me.Name
 			  If nm = "INTERFACE" Then nm = "NETINTERFACE"
+			  If nm = "PRIVATE" Then nm = "PRIVATE_"
 			  If nm <> "" Then nm = "libcURL.Opts." + nm
 			  Return nm
 			End Get
@@ -3385,7 +3388,6 @@ Protected Class OptionInfo
 			  
 			  If Name <> "" And Not IsDeprecated Then
 			    Dim docname As String = LibraryAlias
-			    If docname = "CURLOPT_PRIVATE_" Then docname = "CURLOPT_PRIVATE"
 			    Return "https://curl.haxx.se/libcurl/c/" + docname + ".html"
 			  End If
 			End Get
@@ -3446,6 +3448,8 @@ Protected Class OptionInfo
 			  
 			  Dim nm As String = Me.Name
 			  If nm <> "" Then nm = "CURLOPT_" + nm
+			  If nm = "CURLOPT_PRIVATE_" Then nm = "CURLOPT_PRIVATE"
+			  
 			  Return nm
 			End Get
 		#tag EndGetter

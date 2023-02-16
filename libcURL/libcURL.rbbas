@@ -101,7 +101,7 @@ Protected Module libcURL
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
-		Private Soft Declare Function curl_easy_setopt_long Lib cURLLib Alias "curl_easy_setopt" (EasyHandle As Integer, Option As Integer, Value As Ptr) As Integer
+		Private Soft Declare Function curl_easy_setopt_UInt64 Lib cURLLib Alias "curl_easy_setopt" (EasyHandle As Integer, Option As Integer, Value As UInt64) As Integer
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
@@ -330,7 +330,11 @@ Protected Module libcURL
 		  
 		  Static CA_File As FolderItem
 		  If CA_File = Nil Then
-		    CA_File = GetTemporaryFolderItem()
+		    #If RBVersion > 2019.01 then
+		      CA_File = FolderItem.TemporaryFile()
+		    #Else
+		      CA_File = GetTemporaryFolderItem()
+		    #EndIf
 		    Dim bs As BinaryStream = BinaryStream.Open(CA_File, True)
 		    bs.Write(DEFAULT_CA_INFO_PEM)
 		    bs.Close
@@ -2139,7 +2143,7 @@ Protected Module libcURL
 
 	#tag Note, Name = Copying
 		RB-libcURL (https://github.com/charonn0/RB-libcURL)
-		Copyright (c)2014-22 Andrew Lambert, all rights reserved.
+		Copyright (c)2014-23 Andrew Lambert, all rights reserved.
 		
 		 Permission to use, copy, modify, and distribute this software for any purpose
 		 with or without fee is hereby granted, provided that the above copyright

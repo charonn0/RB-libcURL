@@ -3,7 +3,7 @@ Protected Class MultipartForm
 Inherits libcURL.cURLHandle
 Implements FormStreamGetter
 	#tag Method, Flags = &h0
-		Function AddElement(Name As String, Values() As FolderItem) As Boolean
+		Sub AddElement(Name As String, Values() As FolderItem)
 		  ' Adds the passed file array to the form using the specified name.
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_formadd.html
@@ -18,7 +18,7 @@ Implements FormStreamGetter
 		    Dim file As FolderItem = Values(i)
 		    If Not file.Exists Or file.Directory Then
 		      mLastError = libcURL.Errors.INVALID_LOCAL_FILE
-		      Return False
+		      Raise New cURLException(Me)
 		    End If
 		    
 		    o.Append(CURLFORM_FILE)
@@ -28,12 +28,12 @@ Implements FormStreamGetter
 		    v.Append(MimeType(file))
 		  Next
 		  
-		  Return FormAdd(o, v)
-		End Function
+		  If Not FormAdd(o, v) Then Raise New cURLException(Me)
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function AddElement(Name As String, Value As FolderItem, ContentType As String = "", AdditionalHeaders As libcURL.ListPtr = Nil) As Boolean
+		Sub AddElement(Name As String, Value As FolderItem, ContentType As String = "", AdditionalHeaders As libcURL.ListPtr = Nil)
 		  ' Adds the passed file to the form using the specified name.
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_formadd.html
@@ -41,7 +41,7 @@ Implements FormStreamGetter
 		  
 		  If Not Value.Exists Or Value.Directory Then
 		    mLastError = libcURL.Errors.INVALID_LOCAL_FILE
-		    Return False
+		    Raise New cURLException(Me)
 		  End If
 		  
 		  If ContentType = "" Then ContentType = MimeType(Value)
@@ -51,16 +51,20 @@ Implements FormStreamGetter
 		    If mAdditionalHeaders.IndexOf(AdditionalHeaders) = -1 Then mAdditionalHeaders.Append(AdditionalHeaders)
 		  End If
 		  If ContentType <> "" Then
-		    Return FormAdd(CURLFORM_COPYNAME, Name, CURLFORM_FILE, Value.ShellPath, CURLFORM_FILENAME, Value.Name, CURLFORM_CONTENTTYPE, ContentType, headeropt, AdditionalHeaders)
+		    If Not FormAdd(CURLFORM_COPYNAME, Name, CURLFORM_FILE, Value.ShellPath, CURLFORM_FILENAME, Value.Name, CURLFORM_CONTENTTYPE, ContentType, headeropt, AdditionalHeaders) Then
+		      Raise New cURLException(Me)
+		    End If
 		  Else
-		    Return FormAdd(CURLFORM_COPYNAME, Name, CURLFORM_FILE, Value.ShellPath, CURLFORM_FILENAME, Value.Name, headeropt, AdditionalHeaders)
+		    If Not FormAdd(CURLFORM_COPYNAME, Name, CURLFORM_FILE, Value.ShellPath, CURLFORM_FILENAME, Value.Name, headeropt, AdditionalHeaders) Then
+		      Raise New cURLException(Me)
+		    End If
 		  End If
 		  
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function AddElement(Name As String, ByRef Value As MemoryBlock, Filename As String, ContentType As String = "", AdditionalHeaders As libcURL.ListPtr = Nil) As Boolean
+		Sub AddElement(Name As String, ByRef Value As MemoryBlock, Filename As String, ContentType As String = "", AdditionalHeaders As libcURL.ListPtr = Nil)
 		  ' Adds the passed buffer to the form as a file part using the specified name. The buffer pointed to by Value
 		  ' is used directly (i.e. not copied) so it must continue to exist until after the POST request has completed.
 		  ' This method allows file parts to be added without using an actual file. Specify an empty Filename parameter
@@ -97,12 +101,12 @@ Implements FormStreamGetter
 		    If mAdditionalHeaders.IndexOf(AdditionalHeaders) = -1 Then mAdditionalHeaders.Append(AdditionalHeaders)
 		  End If
 		  
-		  Return FormAdd(o, v)
-		End Function
+		  If Not FormAdd(o, v) Then Raise New cURLException(Me)
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function AddElement(Name As String, ValueStream As Readable, ValueSize As Integer, Filename As String = "", ContentType As String = "", AdditionalHeaders As libcURL.ListPtr = Nil) As Boolean
+		Sub AddElement(Name As String, ValueStream As Readable, ValueSize As Integer, Filename As String = "", ContentType As String = "", AdditionalHeaders As libcURL.ListPtr = Nil)
 		  ' Adds an element using the specified name, with contents which will be read from the passed Readable object.
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_formadd.html
@@ -140,12 +144,12 @@ Implements FormStreamGetter
 		  o.Append(CURLFORM_CONTENTSLENGTH)
 		  v.Append(ValueSize)
 		  
-		  Return FormAdd(o, v)
-		End Function
+		  If Not FormAdd(o, v) Then Raise New cURLException(Me)
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function AddElement(Name As String, Value As String, AdditionalHeaders As libcURL.ListPtr = Nil) As Boolean
+		Sub AddElement(Name As String, Value As String, AdditionalHeaders As libcURL.ListPtr = Nil)
 		  ' Adds the passed Value to the form using the specified name.
 		  ' See:
 		  ' http://curl.haxx.se/libcurl/c/curl_formadd.html
@@ -153,11 +157,15 @@ Implements FormStreamGetter
 		  
 		  If AdditionalHeaders <> Nil Then
 		    If mAdditionalHeaders.IndexOf(AdditionalHeaders) = -1 Then mAdditionalHeaders.Append(AdditionalHeaders)
-		    Return FormAdd(CURLFORM_COPYNAME, Name, CURLFORM_COPYCONTENTS, Value, CURLFORM_CONTENTHEADER, AdditionalHeaders)
+		    If Not FormAdd(CURLFORM_COPYNAME, Name, CURLFORM_COPYCONTENTS, Value, CURLFORM_CONTENTHEADER, AdditionalHeaders) Then
+		      Raise New cURLException(Me)
+		    End If
 		  Else
-		    Return FormAdd(CURLFORM_COPYNAME, Name, CURLFORM_COPYCONTENTS, Value)
+		    If Not FormAdd(CURLFORM_COPYNAME, Name, CURLFORM_COPYCONTENTS, Value) Then
+		      Raise New cURLException(Me)
+		    End If
 		  End If
-		End Function
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -220,7 +228,7 @@ Implements FormStreamGetter
 		    name = ReplaceAll(name, """", "")
 		    If name.Trim = "" Then Continue For i
 		    If CountFields(line, ";") < 3 Then 'form field
-		      If Not form.AddElement(name, NthField(elements(i), EndOfLine.Windows + EndOfLine.Windows, 2)) Then Raise New cURLException(form)
+		      form.AddElement(name, NthField(elements(i), EndOfLine.Windows + EndOfLine.Windows, 2))
 		    Else 'file field
 		      Dim filename As String = NthField(line, ";", 3)
 		      filename = NthField(filename, "=", 2)
@@ -232,7 +240,7 @@ Implements FormStreamGetter
 		      filedata = filedata.StringValue(t, filedata.Size - t - 2)
 		      bs.Write(filedata)
 		      bs.Close
-		      If Not form.AddElement(name, tmp) Then Raise New cURLException(form)
+		      form.AddElement(name, tmp)
 		    End If
 		  Next
 		  
@@ -520,22 +528,22 @@ Implements FormStreamGetter
 		    Dim value As Variant = FromDict.Value(item)
 		    Select Case True
 		    Case VarType(value) = Variant.TypeString
-		      If Not Me.AddElement(item, value.StringValue) Then Raise New cURLException(Me)
+		      Me.AddElement(item, value.StringValue)
 		      
 		    Case value IsA FolderItem
-		      If Not Me.AddElement(item, FolderItem(value)) Then Raise New cURLException(Me)
+		      Me.AddElement(item, FolderItem(value))
 		      
 		    Case value IsA Readable ' rtfm about CURLFORM_STREAM before using this
-		      If Not Me.AddElement(item, Readable(value), 0) Then Raise New cURLException(Me)
+		      Me.AddElement(item, Readable(value), 0)
 		      
 		    Case value IsA MemoryBlock
 		      Dim mb As MemoryBlock = Value
-		      If Not Me.AddElement(item, mb, "") Then Raise New cURLException(Me)
+		      Me.AddElement(item, mb, "")
 		      
 		    Else
 		      If VarType(value) >= Variant.TypeArray Then ' files
 		        Dim f() As FolderItem = value
-		        If Not Me.AddElement(item, f) Then Raise New cURLException(Me)
+		        Me.AddElement(item, f)
 		      Else
 		        Raise New UnsupportedFormatException
 		      End If
