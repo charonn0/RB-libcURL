@@ -512,9 +512,14 @@ Implements FormStreamGetter
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MIMEMessage.FirstPart
 			  
 			  Dim List As Ptr = Ptr(Me.Handle)
-			  If List <> Nil Then 
-			    Dim m As curl_mime = List.curl_mime
-			    Return New MIMEMessagePartCreator(m.FirstPart, Me)
+			  If List <> Nil Then
+			    If libcURL.Version.IsAtLeast(7, 87, 0) Then
+			      Dim m As curl_mime_7_87_0 = List.curl_mime_7_87_0
+			      Return New MIMEMessagePartCreator(m.FirstPart, Me)
+			    Else
+			      Dim m As curl_mime = List.curl_mime
+			      Return New MIMEMessagePartCreator(m.FirstPart, Me)
+			    End If
 			  End If
 			End Get
 		#tag EndGetter
@@ -541,6 +546,14 @@ Implements FormStreamGetter
 	#tag Structure, Name = curl_mime, Flags = &h21
 		Easy As Ptr
 		  Parent As Ptr
+		  FirstPart As Ptr
+		  LastPart As Ptr
+		  Boundary As Ptr
+		State As Integer
+	#tag EndStructure
+
+	#tag Structure, Name = curl_mime_7_87_0, Flags = &h21
+		Parent As Ptr
 		  FirstPart As Ptr
 		  LastPart As Ptr
 		  Boundary As Ptr
