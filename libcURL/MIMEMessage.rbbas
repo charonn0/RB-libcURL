@@ -552,6 +552,14 @@ Implements FormStreamGetter
 		State As Integer
 	#tag EndStructure
 
+	#tag Structure, Name = curl_mime_7_87_0, Flags = &h21
+		Parent As Ptr
+		  FirstPart As Ptr
+		  LastPart As Ptr
+		  Boundary As Ptr
+		State As Integer
+	#tag EndStructure
+
 
 	#tag ViewBehavior
 		#tag ViewProperty
