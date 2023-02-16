@@ -299,15 +299,15 @@ Protected Module LiveTests
 		Private Sub TestMIMEPost()
 		  If Not libcURL.Version.IsAtLeast(7, 56, 0) Then Return
 		  Dim form As New libcURL.MIMEMessage(mSession.EasyHandle)
-		  Assert(form.AddElement("user", "bob"))
-		  Assert(form.AddElement("password", "seekrit"))
+		  form.AddElement("user", "bob")
+		  form.AddElement("password", "seekrit")
 		  Dim tmp As FolderItem = GetTemporaryFolderItem
 		  Dim bs As BinaryStream = BinaryStream.Open(tmp, True)
 		  bs.Write("Hello, world!")
 		  bs.Close
-		  Assert(form.AddElement("upload", tmp))
+		  form.AddElement("upload", tmp)
 		  bs = BinaryStream.Open(tmp)
-		  Assert(form.AddElement("stream", bs, bs.Length, "stream.txt", ""))
+		  form.AddElement("stream", bs, bs.Length, "stream.txt", "")
 		  Assert(mSession.Post("https://nghttp2.org/httpbin/post", form))
 		  Dim js As New JSONItem(mSession.GetDownloadedData)
 		  Dim files As JSONItem = js.Value("files")

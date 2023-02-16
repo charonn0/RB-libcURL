@@ -105,11 +105,11 @@ Protected Module Testing
 		  Dim expiry As Date
 		  Assert(libcURL.ParseDate("Sat, 23 May 2026 05:08:11 GMT", expiry))
 		  
-		  Assert(c.SetCookie("test1", "value1", "www.example.com", Nil, "", True))
-		  Assert(c.SetCookie("test2", "value2", "api.example.com", expiry))
-		  Assert(c.SetCookie("test3", "value3", "example.com", Nil, "/bin"))
-		  Assert(c.SetCookie("test4", "value4", ".example.com"))
-		  Assert(c.SetCookie("test5", "value5", "example.net", expiry))
+		  c.SetCookie("test1", "value1", "www.example.com", Nil, "", True)
+		  c.SetCookie("test2", "value2", "api.example.com", expiry)
+		  c.SetCookie("test3", "value3", "example.com", Nil, "/bin")
+		  c.SetCookie("test4", "value4", ".example.com")
+		  c.SetCookie("test5", "value5", "example.net", expiry)
 		  
 		  Assert(c.Cookies.Count = 5)
 		  
@@ -306,15 +306,15 @@ Protected Module Testing
 		  Dim e As New libcURL.EasyHandle
 		  Dim m As New libcURL.MIMEMessage(e)
 		  Assert(m <> Nil)
-		  Assert(m.AddElement("TestString", "Test Value1"))
-		  Assert(m.AddElement("TestString", "Test Value2"))
-		  Assert(m.AddElement("TestFile1", App.ExecutableFile))
-		  Assert(m.AddElement("TestFile2", App.ExecutableFile, "file.name", "application/sgml"))
+		  m.AddElement("TestString", "Test Value1")
+		  m.AddElement("TestString", "Test Value2")
+		  m.AddElement("TestFile1", App.ExecutableFile)
+		  m.AddElement("TestFile2", App.ExecutableFile, "file.name", "application/sgml")
 		  Dim test As MemoryBlock = "This is a test string!"
 		  Dim bs1 As New BinaryStream(test)
 		  Dim bs2 As New BinaryStream(test)
-		  Assert(m.AddElement("TestStream1", bs1, test.Size, "file1.name", "application/sgml"))
-		  Assert(m.AddElement("TestStream2", bs2, test.Size, "file2.name", "application/xml"))
+		  m.AddElement("TestStream1", bs1, test.Size, "file1.name", "application/sgml")
+		  m.AddElement("TestStream2", bs2, test.Size, "file2.name", "application/xml")
 		  
 		  Assert(m.GetElement(0).Name = "TestString")
 		  Assert(m.GetElement(0).Data = "Test Value1")
@@ -398,15 +398,15 @@ Protected Module Testing
 		Private Sub TestMultiForm()
 		  Dim m As New libcURL.MultipartForm
 		  Assert(m <> Nil)
-		  If Not m.AddElement("TestString", "Test Value1") Then Raise New libcURL.cURLException(m)
-		  If Not m.AddElement("TestString", "Test Value2") Then Raise New libcURL.cURLException(m)
-		  If Not m.AddElement("TestFile1", libcURL.Default_CA_File) Then Raise New libcURL.cURLException(m)
-		  If Not m.AddElement("TestFile2", libcURL.Default_CA_File, "application/sgml") Then Raise New libcURL.cURLException(m)
+		  m.AddElement("TestString", "Test Value1")
+		  m.AddElement("TestString", "Test Value2")
+		  m.AddElement("TestFile1", libcURL.Default_CA_File)
+		  m.AddElement("TestFile2", libcURL.Default_CA_File, "application/sgml")
 		  Dim test As MemoryBlock = "This is a test string!"
 		  Dim bs1 As New BinaryStream(test)
 		  Dim bs2 As New BinaryStream(test)
-		  If Not m.AddElement("TestStream1", bs1, test.Size, "file1.name", "application/sgml") Then Raise New libcURL.cURLException(m)
-		  If Not m.AddElement("TestStream2", bs2, test.Size, "file2.name", "application/xml") Then Raise New libcURL.cURLException(m)
+		  m.AddElement("TestStream1", bs1, test.Size, "file1.name", "application/sgml")
+		  m.AddElement("TestStream2", bs2, test.Size, "file2.name", "application/xml")
 		  Dim tmp1, tmp2 As FolderItem
 		  tmp1 = GetTemporaryFolderItem()
 		  tmp2 = GetTemporaryFolderItem()
@@ -416,7 +416,7 @@ Protected Module Testing
 		  bs = BinaryStream.Open(tmp2, True)
 		  bs.Write("This is test file #2.")
 		  bs.Close
-		  If Not m.AddElement("TestArray", Array(tmp1, tmp2)) Then Raise New libcURL.cURLException(m)
+		  m.AddElement("TestArray", Array(tmp1, tmp2))
 		  
 		  
 		  Dim data As MemoryBlock = m.Serialize()
@@ -473,7 +473,7 @@ Protected Module Testing
 		  Dim data As New MemoryBlock(0)
 		  Dim downstream As New BinaryStream(data)
 		  c.DownloadStream = downstream
-		  If Not m.AddTransfer(c) Then Raise New libcURL.cURLException(m)
+		  m.AddTransfer(c)
 		  Assert(m.HasTransfer(c))
 		  
 		  While m.PerformOnce
@@ -545,7 +545,7 @@ Protected Module Testing
 		  Dim data1 As New MemoryBlock(0)
 		  Dim downstream1 As New BinaryStream(data1)
 		  c1.DownloadStream = downstream1
-		  If Not s.AddTransfer(c1) Then Raise New libcURL.cURLException(s)
+		  s.AddTransfer(c1)
 		  Assert(s.HasTransfer(c1))
 		  
 		  Dim c2 As New libcURL.EasyHandle
@@ -553,11 +553,18 @@ Protected Module Testing
 		  Dim data2 As New MemoryBlock(0)
 		  Dim downstream2 As New BinaryStream(data2)
 		  c2.DownloadStream = downstream2
-		  If Not s.AddTransfer(c2) Then Raise New libcURL.cURLException(s)
+		  s.AddTransfer(c2)
 		  Assert(s.HasTransfer(c2))
 		  
-		  Assert(Not s.AddTransfer(c1)) ' already added
-		  
+		  #pragma BreakOnExceptions Off
+		  Dim failedsuccessfully As Boolean
+		  Try
+		    s.AddTransfer(c1)
+		  Catch err As libcURL.cURLException ' already added
+		    failedsuccessfully = True
+		  End Try
+		  #pragma BreakOnExceptions Default
+		  Assert(failedsuccessfully)
 		End Sub
 	#tag EndMethod
 
