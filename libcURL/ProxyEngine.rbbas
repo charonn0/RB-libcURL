@@ -493,6 +493,15 @@ Protected Class ProxyEngine
 			  ' See:
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.ProxyEngine.Type
 			  
+			  If  (value = ProxyType.HTTPS2 And Not libcURL.Version.IsAtLeast(8, 1, 0)) Or _
+			    (value = ProxyType.HTTP1_0 And Not libcURL.Version.IsAtLeast(7, 19, 4)) Or _
+			    (value = ProxyType.SOCKS4A And Not libcURL.Version.IsAtLeast(7, 18, 0)) Or _
+			    (value = ProxyType.SOCKS5_HOSTNAME And Not libcURL.Version.IsAtLeast(7, 18, 0)) Or _
+			    (value = ProxyType.HTTPS And Not libcURL.Version.IsAtLeast(7, 52, 0)) Then
+			    ErrorSetter(Owner).LastError = libcURL.Errors.FEATURE_UNAVAILABLE
+			    Raise New cURLException(Owner)
+			  End If
+			  
 			  If Not Owner.SetOption(libcURL.Opts.PROXYTYPE, Integer(value)) Then Raise New cURLException(Owner)
 			  mType = value
 			End Set
