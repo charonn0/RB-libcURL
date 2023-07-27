@@ -252,6 +252,8 @@ Protected Class OptionInfo
 		    Return MAIL_RCPT
 		  Case "MAIL_RCPT_ALLLOWFAILS"
 		    Return MAIL_RCPT_ALLLOWFAILS
+		  Case "MAIL_RCPT_ALLOWFAILS"
+		    Return MAIL_RCPT_ALLOWFAILS
 		  Case "MAXAGE_CONN"
 		    Return MAXAGE_CONN
 		  Case "MAXCONNECTS"
@@ -883,7 +885,7 @@ Protected Class OptionInfo
 		    Return Nil
 		  Case MAIL_RCPT
 		    Return Nil
-		  Case MAIL_RCPT_ALLLOWFAILS
+		  Case MAIL_RCPT_ALLLOWFAILS, MAIL_RCPT_ALLOWFAILS
 		    Return 0
 		  Case MAXAGE_CONN
 		    Return 118
@@ -1487,7 +1489,7 @@ Protected Class OptionInfo
 		    tmp = "7.20.0"
 		  Case MAIL_RCPT
 		    tmp = "7.20.0"
-		  Case MAIL_RCPT_ALLLOWFAILS
+		  Case MAIL_RCPT_ALLLOWFAILS, MAIL_RCPT_ALLOWFAILS
 		    tmp = "7.69.0"
 		  Case MAXAGE_CONN
 		    tmp = "7.65.0"
@@ -2114,8 +2116,10 @@ Protected Class OptionInfo
 		    Return "MAIL_FROM"
 		  Case MAIL_RCPT
 		    Return "MAIL_RCPT"
-		  Case MAIL_RCPT_ALLLOWFAILS
+		  Case MAIL_RCPT_ALLOWFAILS
 		    Return "MAIL_RCPT_ALLLOWFAILS"
+		  Case MAIL_RCPT_ALLLOWFAILS
+		    Return "MAIL_RCPT_ALLOWFAILS"
 		  Case MAXAGE_CONN
 		    Return "MAXAGE_CONN"
 		  Case MAXCONNECTS
@@ -2751,7 +2755,7 @@ Protected Class OptionInfo
 		    Return OptionType.String
 		  Case MAIL_RCPT
 		    Return OptionType.List
-		  Case MAIL_RCPT_ALLLOWFAILS
+		  Case MAIL_RCPT_ALLLOWFAILS, MAIL_RCPT_ALLOWFAILS
 		    Return OptionType.Boolean
 		  Case MAXAGE_CONN
 		    Return OptionType.Number

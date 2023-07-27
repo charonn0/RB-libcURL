@@ -437,6 +437,9 @@ Protected Module Opts
 	#tag Constant, Name = MAIL_RCPT_ALLLOWFAILS, Type = Double, Dynamic = False, Default = \"290", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = MAIL_RCPT_ALLOWFAILS, Type = Double, Dynamic = False, Default = \"290", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = MAXAGE_CONN, Type = Double, Dynamic = False, Default = \"288", Scope = Protected
 	#tag EndConstant
 
