@@ -512,6 +512,8 @@ Protected Module libcURL
 		      msg = "The URL contained an invalid number of slashes."
 		    Case URLParser.CURLUE_BAD_USER
 		      msg = "The user part of the URL contained bad or invalid characters."
+		    Case URLParser.CURLUE_LACKS_IDN
+		      msg = "The installed version of libcurl was built without IDN support."
 		    Else
 		      msg = "Unknown error while parsing a URL"
 		    End Select

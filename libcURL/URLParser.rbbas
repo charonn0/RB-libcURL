@@ -150,31 +150,30 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function StringValue() As String
+		Function StringValue(Optional Flags As Integer) As String
 		  ' Returns the full URL string.
 		  '
 		  ' See:
 		  ' https://curl.haxx.se/libcurl/c/curl_url_get.html#CURLUPARTURL
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLParser.StringValue
 		  
-		  Return Me.GetPartContent(URLPart.All, 0)
+		  Return Me.GetPartContent(URLPart.All, Flags)
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub StringValue(Assigns FromString As String)
+		Sub StringValue(Optional Flags As Integer, Assigns FromString As String)
 		  ' Set the full URL from a string.
 		  '
 		  ' See:
 		  ' https://curl.haxx.se/libcurl/c/curl_url_set.html#CURLUPARTURL
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLParser.StringValue
 		  
-		  Dim flag As Integer
 		  If AnyScheme Then
-		    flag = CURLU_NON_SUPPORT_SCHEME
+		    Flags = Flags Or CURLU_NON_SUPPORT_SCHEME
 		    If InStr(FromString, "://") = 0 Then FromString = "http://" + FromString ' assume HTTP
 		  End If
-		  Call Me.SetPartContent(URLPart.All, FromString, flag)
+		  Call Me.SetPartContent(URLPart.All, FromString, Flags)
 		End Sub
 	#tag EndMethod
 
@@ -248,24 +247,34 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  ' Get the hostname or IP address as a string.
+			  ' Get the hostname or IP address as a string. In libcURL 7.88.0 and newer,
+			  ' International Domain Names will be converted into their Punycode equivalents.
+			  ' To retrieve the IDN instead of the Punycode, use the GetPartContent() method.
 			  '
 			  ' See:
 			  ' https://curl.haxx.se/libcurl/c/curl_url_get.html#CURLUPARTHOST
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLParser.Hostname
 			  
-			  Return Me.GetPartContent(URLPart.Host, CURLU_URLDECODE)
+			  Dim flags As Integer = CURLU_URLDECODE
+			  If libcURL.Version.IsAtLeast(7, 88, 0) Then flags = flags Or CURLU_PUNYCODE
+			  Return Me.GetPartContent(URLPart.Host, flags)
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
-			  ' Set the hostname or IP address from a string.
+			  ' Sets the domain name or IP address of the URL, replacing the previous one if any.
+			  ' IPv6 addresses must be enclosed in square brackets. Internation Domain Names are
+			  ' supported beginning in libcURL 8.3.0, and will be converted into their Punycode
+			  ' equivalents for storage. To set an IDN without having it Punycoded, use the
+			  ' SetPartContent() method.
 			  '
 			  ' See:
 			  ' https://curl.haxx.se/libcurl/c/curl_url_set.html#CURLUPARTHOST
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLParser.Hostname
 			  
-			  If Not Me.SetPartContent(URLPart.Host, value, CURLU_URLENCODE) Then Raise New cURLException(Me)
+			  Dim flags As Integer = CURLU_URLENCODE
+			  If libcURL.Version.IsAtLeast(8, 3, 0) Then flags = CURLU_PUNY2IDN
+			  If Not Me.SetPartContent(URLPart.Host, value, flags) Then Raise New cURLException(Me)
 			End Set
 		#tag EndSetter
 		Hostname As String
@@ -451,6 +460,9 @@ Inherits libcURL.cURLHandle
 	#tag Constant, Name = CURLUE_BAD_USER, Type = Double, Dynamic = False, Default = \"29", Scope = Public
 	#tag EndConstant
 
+	#tag Constant, Name = CURLUE_LACKS_IDN, Type = Double, Dynamic = False, Default = \"30", Scope = Public
+	#tag EndConstant
+
 	#tag Constant, Name = CURLUE_MALFORMED_INPUT, Type = Double, Dynamic = False, Default = \"3", Scope = Public
 	#tag EndConstant
 
@@ -533,6 +545,12 @@ Inherits libcURL.cURLHandle
 	#tag EndConstant
 
 	#tag Constant, Name = CURLU_PATH_AS_IS, Type = Double, Dynamic = False, Default = \"16", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = CURLU_PUNY2IDN, Type = Double, Dynamic = False, Default = \"8192", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = CURLU_PUNYCODE, Type = Double, Dynamic = False, Default = \"4096", Scope = Public
 	#tag EndConstant
 
 	#tag Constant, Name = CURLU_URLDECODE, Type = Double, Dynamic = False, Default = \"64", Scope = Public
