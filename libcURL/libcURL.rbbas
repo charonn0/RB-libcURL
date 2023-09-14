@@ -148,6 +148,10 @@ Protected Module libcURL
 		Private Soft Declare Function curl_global_sslset Lib cURLLib (ID As SSLBackEnd, Name As CString, ByRef Avail As Ptr) As Integer
 	#tag EndExternalMethod
 
+	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Function curl_global_trace Lib cURLLib (Options As CString) As Integer
+	#tag EndExternalMethod
+
 	#tag Method, Flags = &h1
 		Protected Function curl_infoname(MessageType As libcURL.curl_infotype) As String
 		  ' Returns the name of the specified curl_infotype
@@ -2075,6 +2079,24 @@ Protected Module libcURL
 		    ex.Message = "Unknown error while setting the SSL backend."
 		  End Select
 		  Raise ex
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub SetTraceOptions(TraceOptions As String)
+		  ' Use this function to increase or decrease the verbosity of different parts of libcurl.
+		  '
+		  ' See:
+		  ' https://curl.se/libcurl/c/curl_global_trace.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.SetTraceOptions
+		  
+		  If Not libcURL.Version.IsAtLeast(8, 3, 0) Then Return
+		  Dim err As Integer = curl_global_trace(TraceOptions)
+		  If err <> 0 Then
+		    Dim e As New cURLException(Nil)
+		    e.ErrorNumber = err
+		    Raise e
+		  End If
 		End Sub
 	#tag EndMethod
 
