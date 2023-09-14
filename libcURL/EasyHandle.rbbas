@@ -48,6 +48,7 @@ Inherits libcURL.cURLHandle
 		    Raise New cURLException(Me)
 		  End If
 		  
+		  If libcURL.Version.IsAtLeast(8, 3, 0) Then mMaxRedirects = 30 ' default changed in this version
 		  mOptions = New Dictionary
 		  If Instances = Nil Then Instances = New Dictionary
 		  Instances.Value(mHandle) = New WeakRef(Me)
