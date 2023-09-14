@@ -22,7 +22,7 @@ Protected Module LiveTests
 		  End Try
 		  
 		  Try
-		    TestCookieSet
+		    TestCookieSet()
 		  Catch
 		    TestResult = 13
 		    Return False
