@@ -380,7 +380,6 @@ Protected Class cURLSession
 		  Else
 		    mEasyHandle.CA_ListFile = libcURL.Default_CA_File
 		  End If
-		  mEasyHandle.FailOnServerError = True
 		  mEasyHandle.FollowRedirects = True
 		  mEasyHandle.AutoReferer = True
 		  mEasyHandle.HTTPCompression = libcURL.Version.LibZ.IsAvailable
