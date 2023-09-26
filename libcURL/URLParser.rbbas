@@ -3,7 +3,7 @@ Protected Class URLParser
 Inherits libcURL.cURLHandle
 	#tag Method, Flags = &h0
 		Sub AppendArgument(Name As String, Value As String)
-		  ' Appends an argument to the list of arguments
+		  ' Appends an argument to the list of arguments.
 		  '
 		  ' See:
 		  ' https://curl.haxx.se/libcurl/c/curl_url_set.html#CURLUPARTQUERY
@@ -73,7 +73,8 @@ Inherits libcURL.cURLHandle
 	#tag Method, Flags = &h0
 		Function GetPartContent(Part As libcURL.URLPart, Flags As Integer) As String
 		  ' Returns the specified URL part. Flags may be zero or more of the following constants:
-		  ' CURLU_DEFAULT_PORT, CURLU_DEFAULT_SCHEME, CURLU_NO_DEFAULT_PORT, CURLU_URLDECODE
+		  ' CURLU_DEFAULT_PORT, CURLU_DEFAULT_SCHEME, CURLU_NO_DEFAULT_PORT, CURLU_URLDECODE,
+		  ' CURLU_URLENCODE, CURLU_PUNYCODE, CURLU_PUNY2IDN
 		  ' Refer to the libcurl documentation linked below for a description of these flags.
 		  '
 		  ' See:
@@ -131,7 +132,8 @@ Inherits libcURL.cURLHandle
 	#tag Method, Flags = &h0
 		Function SetPartContent(Part As libcURL.URLPart, Contents As String, Flags As Integer) As Boolean
 		  ' Sets the specified URL part. Flags may be zero or more of the following constants:
-		  ' CURLU_NON_SUPPORT_SCHEME, CURLU_URLENCODE, CURLU_DEFAULT_SCHEME, CURLU_GUESS_SCHEME
+		  ' CURLU_APPENDQUERY, CURLU_NON_SUPPORT_SCHEME, CURLU_URLENCODE, CURLU_DEFAULT_SCHEME,
+		  ' CURLU_GUESS_SCHEME, CURLU_NO_AUTHORITY, CURLU_PATH_AS_IS, CURLU_ALLOW_SPACE, CURLU_DISALLOW_USER 
 		  ' Refer to the libcurl documentation linked below for a description of these flags.
 		  '
 		  ' See:
