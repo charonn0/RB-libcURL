@@ -91,7 +91,7 @@ Inherits libcURL.cURLHandle
 		      curl_free(contents)
 		    End Try
 		  End If
-		  Return ret
+		  Return DefineEncoding(ret, Encodings.UTF8)
 		End Function
 	#tag EndMethod
 
@@ -211,10 +211,28 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Returns only the filename component of the Path.
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLParser.Filename
+			  
 			  Dim n As String = Me.Path
 			  Return NthField(n, "/", CountFields(n, "/"))
 			End Get
 		#tag EndGetter
+		#tag Setter
+			Set
+			  ' Replaces the filename in the current path.
+			  '
+			  ' See:
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.URLParser.Filename
+			  
+			  Dim n As String = Me.Path
+			  Dim p As String = NthField(n, "/", CountFields(n, "/"))
+			  n = Left(n, n.Len - p.Len)
+			  Me.Path = n + value
+			End Set
+		#tag EndSetter
 		Filename As String
 	#tag EndComputedProperty
 
