@@ -142,6 +142,8 @@ Inherits libcURL.cURLHandle
 		  
 		  
 		  If Contents <> "" Then
+		    If Contents.Encoding = Nil Then Contents = DefineEncoding(Contents, Encodings.UTF8)
+		    If Contents.Encoding <> Encodings.UTF8 Then Contents = ConvertEncoding(Contents, Encodings.UTF8)
 		    Dim data As MemoryBlock = Contents + Chr(0)
 		    mLastError = curl_url_set(mHandle, Part, data, Flags)
 		  Else
