@@ -487,10 +487,6 @@ Inherits libcURL.cURLSession
 		Each instance of cURLClient can process one transfer at a time. Attempting to initiate a new transfer before the 
 		previous transfer completes will raise a cURLException with error number CURLM_ADDED_ALREADY(7).
 		
-		The synchronous versions of the transfer methods will perform the entire transfer on the calling thread, and then return a
-		Boolean indicating success (True) or failure (False). The asynchronous versions will activate a Timer that performs a little
-		bit of the transfer on every run of the event loop. Both versions will raise events, and both versions can ignore the events
-		by using the IsTransferComplete, GetDownloadedData, GetResponseHeaders, and GetStatusCode methods.
 	#tag EndNote
 
 
