@@ -23,7 +23,7 @@ This example performs a synchronous HTTP GET request on the calling thread. [**M
 * SSL/TLS with [certificate validation](https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.Secure), using any one of several SSL libraries†.
 * Transparent support for [RB/Xojo threads](https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.PerformOnce).
 * Full support for HTTP, SOCKS4, SOCKS4A, SOCKS5, and SOCKS5_HOSTNAME [proxy servers](https://github.com/charonn0/RB-libcURL/wiki/libcURL.ProxyEngine).
-* [Stream-oriented](https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.Perform), using Xojo's built-in [Readable](http://docs.xojo.com/index.php/Readable) and [Writeable](http://docs.xojo.com/index.php/Writeable) interfaces. Download or upload directly to or from a file, [MemoryBlock](http://www.boredomsoft.org/string-building-in-realbasic.bs), Xojo socket, or your own custom class.
+* [Stream-oriented](https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLSession.Perform), using Xojo's built-in [Readable](https://documentation.xojo.com/api/language/readable.html) and [Writeable](https://documentation.xojo.com/api/language/writeable.html) interfaces. Download or upload directly to or from a file, [MemoryBlock](http://www.boredomsoft.org/string-building-in-realbasic.bs), Xojo socket, or your own custom class.
 * A [consistent, high-level API](https://github.com/charonn0/RB-libcURL/wiki/libcURL.cURLClient) over [the full range of libcURL's features](https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle).
 * Interact directly with libcurl using idiomatic RB/Xojo objects, methods, and events; no shell or plugins required.
 * International domain name support†.
@@ -76,7 +76,7 @@ To perform one or more transfers in a non-blocking manner use the `MultiHandle` 
 ### Ensure the libcURL shared library is installed
 libcURL is installed by default on most Unix-like operating systems, including OS X and most Linux distributions. 
 
-Windows does not have it installed by default, you will need to ship all the necessary DLLs with your application. You can use pre-built DLLs available [here](https://curl.haxx.se/download.html), or you can [build them yourself from source](https://github.com/blackrosezy/build-libcurl-windows). 
+Windows does not have it installed by default, you will need to ship all the necessary DLLs with your application. You can use pre-built DLLs available [here](https://curl.haxx.se/download.html), or you can [build them yourself from source](https://github.com/blackrosezy/build-libcurl-windows). For 64-bit builds you must rename the `libcurl-x64.dll` file to `libcurl.dll`.
 
 Depending on compile-time options, you may need to include additional DLLs for other libraries like OpenSSL or ZLib. Newly added features like HTTP/2 support may require building the latest version from source with special build flags and additional libraries. Review the libcURL documentation for the feature you're interested in.
 
