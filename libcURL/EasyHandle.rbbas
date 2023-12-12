@@ -862,7 +862,11 @@ Inherits libcURL.cURLHandle
 		    End If
 		    
 		    
+		    #If RBVersion > 2023.03 Then
+		  Case Variant.TypeObject, Variant.TypeDelegate
+		    #Else
 		  Case Variant.TypeObject
+		    #EndIf
 		    ' To add support for a custom object type, add a block to this Select statement
 		    Select Case NewValue
 		    Case IsA MemoryBlock
