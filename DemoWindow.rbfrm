@@ -3225,7 +3225,10 @@ End
 #tag Events UseCookies
 	#tag Event
 		Sub Action()
-		  If Not mLockUI Then Client.Cookies.Enabled = Me.Value
+		  If Not mLockUI Then
+		    Client.Cookies.Enabled = Me.Value
+		    If Not Me.Value Then CookieList.DeleteAllRows()
+		  End If
 		  CookieControl.Enabled = Me.Value
 		End Sub
 	#tag EndEvent
