@@ -395,6 +395,18 @@ Inherits libcURL.cURLHandle
 		      End If
 		    End If
 		    
+		    ' 64-bit dates
+		  Case libcURL.Info.FILETIME_T
+		    mb = New MemoryBlock(8)
+		    If Me.GetInfo(InfoType, mb) Then
+		      Dim t As Int32 = mb.Int64Value(0)
+		      If t >= 0 Then
+		        Dim d As New Date(1970, 1, 1, 0, 0, 0, 0.0) 'UNIX epoch
+		        d.TotalSeconds = d.TotalSeconds + t
+		        Return d
+		      End If
+		    End If
+		    
 		    ' HTTPAuthMethods
 		  Case libcurl.Info.PROXYAUTH_AVAIL, libcURL.Info.HTTPAUTH_AVAIL
 		    mb = New MemoryBlock(4)
@@ -416,7 +428,7 @@ Inherits libcURL.cURLHandle
 		    libcURL.Info.APPCONNECT_TIME_T, libcURL.Info.PRETRANSFER_TIME_T, libcURL.Info.STARTTRANSFER_TIME_T, _
 		    libcURL.Info.REDIRECT_TIME_T, libcURL.Info.SIZE_DOWNLOAD_T, libcURL.Info.SIZE_UPLOAD_T, _
 		    libcURL.Info.SPEED_DOWNLOAD_T, libcURL.Info.SPEED_UPLOAD_T, libcURL.Info.CONTENT_LENGTH_UPLOAD_T, _
-		    libcURL.Info.CONTENT_LENGTH_DOWNLOAD_T
+		    libcURL.Info.CONTENT_LENGTH_DOWNLOAD_T, libcURL.Info.RETRY_AFTER
 		    mb = New MemoryBlock(8)
 		    If Me.GetInfo(InfoType, mb) Then Return mb.Int64Value(0)
 		    
@@ -428,6 +440,35 @@ Inherits libcURL.cURLHandle
 		      mb = New MemoryBlock(8)
 		    #Endif
 		    If Me.GetInfo(InfoType, mb) And mb.Ptr(0) <> Nil Then Return New ListPtr(mb.Ptr(0))
+		    
+		    ' Other kinds of ptrs
+		  Case libcURL.Info.TLS_SESSION, libcURL.Info.TLS_SSL_PTR
+		    #If Target32Bit Then
+		      mb = New MemoryBlock(4)
+		    #Else
+		      mb = New MemoryBlock(8)
+		    #Endif
+		    If Me.GetInfo(InfoType, mb) Then Return mb.Ptr(0)
+		    
+		    ' CERTINFO struct
+		  Case libcURL.Info.CERTINFO
+		    #If Target32Bit Then
+		      mb = New MemoryBlock(CERTINFO.Size)
+		      If Me.GetInfo(InfoType, mb) And mb.Ptr(0) <> Nil Then
+		        Dim p As Ptr = mb.Ptr(0)
+		        Dim cinfo As CERTINFO = p.CERTINFO
+		        If cinfo.NumOfCerts <= 0 Then Return Nil
+		        Return New ListPtr(cinfo.CertList)
+		      End If
+		    #Else
+		      mb = New MemoryBlock(CERTINFO_64.Size)
+		      If Me.GetInfo(InfoType, mb) And mb.Ptr(0) <> Nil Then
+		        Dim p As Ptr = mb.Ptr(0)
+		        Dim cinfo As CERTINFO_64 = p.CERTINFO_64
+		        If cinfo.NumOfCerts <= 0 Then Return Nil
+		        Return New ListPtr(cinfo.CertList)
+		      End If
+		    #Endif
 		    
 		  Else
 		    Dim err As New TypeMismatchException
