@@ -88,6 +88,8 @@ Protected Class InfoType
 		    Return PROXY_ERROR
 		  Case "PROXY_SSL_VERIFYRESULT"
 		    Return PROXY_SSL_VERIFYRESULT
+		  Case "QUEUE_TIME_T"
+		    Return QUEUE_TIME_T
 		  Case "REDIRECT_COUNT"
 		    Return REDIRECT_COUNT
 		  Case "REDIRECT_TIME"
@@ -230,6 +232,8 @@ Protected Class InfoType
 		    tmp = "7.73.0"
 		  Case PROXY_SSL_VERIFYRESULT
 		    tmp = "7.52.0"
+		  Case QUEUE_TIME_T
+		    tmp = "8.6.0"
 		  Case REDIRECT_COUNT
 		    tmp = "7.9.7"
 		  Case REDIRECT_TIME
@@ -394,6 +398,8 @@ Protected Class InfoType
 		    Return "PROXY_ERROR"
 		  Case PROXY_SSL_VERIFYRESULT
 		    Return "PROXY_SSL_VERIFYRESULT"
+		  Case QUEUE_TIME_T
+		    Return "QUEUE_TIME_T"
 		  Case REDIRECT_COUNT
 		    Return "REDIRECT_COUNT"
 		  Case REDIRECT_TIME
@@ -500,7 +506,7 @@ Protected Class InfoType
 		  Case libcURL.Info.TOTAL_TIME_T, libcURL.Info.NAMELOOKUP_TIME_T, libcURL.Info.CONNECT_TIME_T, libcURL.Info.APPCONNECT_TIME_T, _
 		    libcURL.Info.PRETRANSFER_TIME_T, libcURL.Info.STARTTRANSFER_TIME_T, libcURL.Info.REDIRECT_TIME_T, libcURL.Info.SIZE_DOWNLOAD_T, _
 		    libcURL.Info.SIZE_UPLOAD_T, libcURL.Info.SPEED_DOWNLOAD_T, libcURL.Info.SPEED_UPLOAD_T, libcURL.Info.CONTENT_LENGTH_UPLOAD_T, _
-		    libcURL.Info.CONTENT_LENGTH_DOWNLOAD_T
+		    libcURL.Info.CONTENT_LENGTH_DOWNLOAD_T, libcURL.Info.QUEUE_TIME_T
 		    Return Variant.TypeLong
 		    
 		  Case libcURL.Info.SSL_ENGINES, libcURL.Info.COOKIELIST

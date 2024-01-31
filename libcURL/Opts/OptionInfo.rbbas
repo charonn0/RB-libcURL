@@ -458,6 +458,8 @@ Protected Class OptionInfo
 		    Return SEEKDATA
 		  Case "SEEKFUNCTION"
 		    Return SEEKFUNCTION
+		  Case "SERVER_RESPONSE_TIMEOUT_MS"
+		    Return SERVER_RESPONSE_TIMEOUT_MS
 		  Case "SERVICE_NAME"
 		    Return SERVICE_NAME
 		  Case "SHARE"
@@ -1081,6 +1083,8 @@ Protected Class OptionInfo
 		    Return Nil
 		  Case SEEKFUNCTION
 		    Return Nil
+		  Case SERVER_RESPONSE_TIMEOUT_MS
+		    Return 0
 		  Case SERVICE_NAME
 		    Return Nil
 		  Case SHARE
@@ -1689,6 +1693,8 @@ Protected Class OptionInfo
 		    tmp = "7.18.0"
 		  Case SEEKFUNCTION
 		    tmp = "7.18.0"
+		  Case SERVER_RESPONSE_TIMEOUT_MS
+		    tmp = "8.6.0"
 		  Case SERVICE_NAME
 		    tmp = "7.43.0"
 		  Case SHARE
@@ -2324,6 +2330,8 @@ Protected Class OptionInfo
 		    Return "SEEKDATA"
 		  Case SEEKFUNCTION
 		    Return "SEEKFUNCTION"
+		  Case SERVER_RESPONSE_TIMEOUT_MS
+		    Return "SERVER_RESPONSE_TIMEOUT_MS"
 		  Case SERVICE_NAME
 		    Return "SERVICE_NAME"
 		  Case SHARE
@@ -2959,6 +2967,8 @@ Protected Class OptionInfo
 		    Return OptionType.Opaque
 		  Case SEEKFUNCTION
 		    Return OptionType.Subroutine
+		  Case SERVER_RESPONSE_TIMEOUT_MS
+		    Return OptionType.Number
 		  Case FTP_RESPONSE_TIMEOUT
 		    Return OptionType.Number
 		  Case SERVICE_NAME
@@ -3406,8 +3416,7 @@ Protected Class OptionInfo
 			  '
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Opts.OptionInfo.IsAvailable
 			  
-			  If mMinMajor = 0 Then Return True
-			  If mMinMajor = -1 Then Return False
+			  If mMinMajor >= 0 Then Return True
 			  Return libcURL.Version.IsAtLeast(mMinMajor, mMinMinor, mMinPatch)
 			End Get
 		#tag EndGetter
