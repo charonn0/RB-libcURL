@@ -2243,6 +2243,16 @@ Protected Module libcURL
 	#tag EndConstant
 
 
+	#tag Structure, Name = CERTINFO, Flags = &h21
+		NumOfCerts As Integer
+		CertList As Ptr
+	#tag EndStructure
+
+	#tag Structure, Name = CERTINFO_64, Flags = &h21, Attributes = \"StructureAlignment \x3D 8"
+		NumOfCerts As Integer
+		CertList As Ptr
+	#tag EndStructure
+
 	#tag Structure, Name = curl_blob, Flags = &h21
 		Data As Ptr
 		  Length As UInt32
