@@ -470,12 +470,19 @@ Inherits libcURL.cURLHandle
 		      End If
 		    #Endif
 		    
+		    ' Booleans
+		  Case libcURL.Info.USED_PROXY
+		    mb = New MemoryBlock(4)
+		    If Me.GetInfo(InfoType, mb) Then Return mb.Int32Value(0) <> 0
+		    
 		  Else
 		    Dim err As New TypeMismatchException
 		    err.Message = "0x" + Left(Hex(InfoType) + "00000000", 8) + " is not a known InfoType."
 		    err.ErrorNumber = InfoType
 		    Raise err
 		  End Select
+		  
+		  Raise New cURLException(Me)
 		  
 		Exception Err As NilObjectException
 		  If mLastError <> 0 Then Raise New cURLException(Me) Else Raise Err

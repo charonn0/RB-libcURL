@@ -204,6 +204,9 @@ Protected Module Info
 	#tag Constant, Name = TOTAL_TIME_T, Type = Double, Dynamic = False, Default = \"6291506", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = USED_PROXY, Type = Double, Dynamic = False, Default = \"2097218", Scope = Protected
+	#tag EndConstant
+
 
 	#tag ViewBehavior
 		#tag ViewProperty

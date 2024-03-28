@@ -148,6 +148,8 @@ Protected Class InfoType
 		    Return TOTAL_TIME
 		  Case "TOTAL_TIME_T"
 		    Return TOTAL_TIME_T
+		  Case "USED_PROXY"
+		    Return USED_PROXY
 		  End Select
 		End Function
 	#tag EndMethod
@@ -292,6 +294,8 @@ Protected Class InfoType
 		    tmp = "7.4.1"
 		  Case TOTAL_TIME_T
 		    tmp = "7.61.0"
+		  Case USED_PROXY
+		    tmp = "8.7.0"
 		  End Select
 		  If tmp = "" Then Return False
 		  Major = Val(NthField(tmp, ".", 1))
@@ -470,6 +474,8 @@ Protected Class InfoType
 		    Return "TOTAL_TIME_T"
 		  Case TOTAL_TIME_T
 		    Return "TOTAL_TIME_T"
+		  Case USED_PROXY
+		    Return "USED_PROXY"
 		  End Select
 		End Function
 	#tag EndMethod
@@ -511,6 +517,9 @@ Protected Class InfoType
 		    
 		  Case libcURL.Info.SSL_ENGINES, libcURL.Info.COOKIELIST
 		    Return Variant.TypeArray
+		    
+		  Case libcURL.Info.USED_PROXY
+		    Return Variant.TypeBoolean
 		    
 		  Else
 		    Return Variant.TypePtr
