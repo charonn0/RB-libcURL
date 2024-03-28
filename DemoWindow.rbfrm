@@ -2568,6 +2568,10 @@ End
 		      If number < 0 Then number = 0
 		      value = FormatBytes(number)
 		      
+		    Case "USED_PROXY"
+		      Dim useproxy As Boolean = info.Value(Client.EasyHandle).BooleanValue
+		      value = Str(useproxy)
+		      
 		    Else
 		      value = info.StringValue(Client.EasyHandle)
 		    End Select
