@@ -554,6 +554,9 @@ Inherits libcURL.cURLHandle
 	#tag Constant, Name = CURLU_DISALLOW_USER, Type = Double, Dynamic = False, Default = \"32", Scope = Public
 	#tag EndConstant
 
+	#tag Constant, Name = CURLU_GET_EMPTY, Type = Double, Dynamic = False, Default = \"16384", Scope = Public
+	#tag EndConstant
+
 	#tag Constant, Name = CURLU_GUESS_SCHEME, Type = Double, Dynamic = False, Default = \"512", Scope = Public
 	#tag EndConstant
 
