@@ -116,6 +116,8 @@ Protected Class OptionInfo
 		    Return DOH_SSL_VERIFYSTATUS
 		  Case "DOH_URL"
 		    Return DOH_URL
+		  Case "ECH"
+		    Return ECH
 		  Case "EGDSOCKET"
 		    Return EGDSOCKET
 		  Case "ERRORBUFFER"
@@ -743,6 +745,8 @@ Protected Class OptionInfo
 		    Return 0
 		  Case DOH_URL
 		    Return Nil
+		  Case ECH
+		    Return Nil
 		  Case EGDSOCKET
 		    Return Nil
 		  Case ERRORBUFFER
@@ -1359,6 +1363,8 @@ Protected Class OptionInfo
 		    tmp = "7.76.0"
 		  Case DOH_URL
 		    tmp = "7.62.0"
+		  Case ECH
+		    tmp = "8.8.0"
 		  Case EGDSOCKET
 		    tmp = "7.7"
 		  Case ERRORBUFFER
@@ -1988,6 +1994,8 @@ Protected Class OptionInfo
 		    Return "DOH_SSL_VERIFYSTATUS"
 		  Case DOH_URL
 		    Return "DOH_URL"
+		  Case ECH
+		    Return "ECH"
 		  Case EGDSOCKET
 		    Return "EGDSOCKET"
 		  Case ERRORBUFFER
@@ -2614,6 +2622,8 @@ Protected Class OptionInfo
 		  Case DOH_SSL_VERIFYSTATUS
 		    Return OptionType.Number
 		  Case DOH_URL
+		    Return OptionType.String
+		  Case ECH
 		    Return OptionType.String
 		  Case EGDSOCKET
 		    Return OptionType.String

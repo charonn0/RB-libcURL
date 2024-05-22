@@ -233,6 +233,9 @@ Protected Module Opts
 	#tag Constant, Name = DOH_URL, Type = Double, Dynamic = False, Default = \"10279", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = ECH, Type = Double, Dynamic = False, Default = \"10325", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = EGDSOCKET, Type = Double, Dynamic = False, Default = \"10077", Scope = Protected
 	#tag EndConstant
 
