@@ -114,6 +114,9 @@ Protected Module Info
 	#tag Constant, Name = PROXY_SSL_VERIFYRESULT, Type = Double, Dynamic = False, Default = \"2097199", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = QUEUE_TIME_T, Type = Double, Dynamic = False, Default = \"6291521", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = REDIRECT_COUNT, Type = Double, Dynamic = False, Default = \"2097172", Scope = Protected
 	#tag EndConstant
 
@@ -199,6 +202,9 @@ Protected Module Info
 	#tag EndConstant
 
 	#tag Constant, Name = TOTAL_TIME_T, Type = Double, Dynamic = False, Default = \"6291506", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = USED_PROXY, Type = Double, Dynamic = False, Default = \"2097218", Scope = Protected
 	#tag EndConstant
 
 

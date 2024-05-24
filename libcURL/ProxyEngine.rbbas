@@ -187,6 +187,24 @@ Protected Class ProxyEngine
 			  
 			  If Not Owner.SetOption(libcURL.Opts.PROXY, value) Then Raise New cURLException(Owner)
 			  mAddress = value
+			  
+			  If URLParser.IsAvailable Then
+			    Dim u As New URLParser(value)
+			    Select Case u.Scheme
+			    Case "https"
+			      mType = ProxyType.HTTPS
+			    Case "socks4"
+			      mType = ProxyType.SOCKS4
+			    Case "socks4a"
+			      mType = ProxyType.SOCKS4A
+			    Case "socks5"
+			      mType = ProxyType.SOCKS5
+			    Case "socks5h"
+			      mType = ProxyType.SOCKS5_HOSTNAME
+			    End Select
+			    If u.Port <> 0 Then mPort = u.Port
+			  End If
+			  
 			End Set
 		#tag EndSetter
 		Address As String

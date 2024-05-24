@@ -461,20 +461,32 @@ Inherits libcURL.cURLSession
 
 
 	#tag Note, Name = Using this class
-		This class provides synchronous and asynchronous transfers with full support for RB/Xojo threads. Transfers are initiated
-		by calling one of the transfer methods: Get, Head, Post, and Put. The names of these methods are borrowed from HTTP but do 
-		not imply HTTP as the protocol (except Post.) 
+		This class is a general purpose libcURL client derived from the slightly-less user-friendly cURLSession class. 
+		You may use an instance of cURLClient anywhere a cURLSession is expected.
 		
-		There are two versions of each method: synchronous and asynchronous. When dealing with libcURL and REALbasic, a major issue
-		comes up with threading. RB/Xojo threads, being platform-generic abstractions, are not the sort of threads that libcURL understands. 
-		What's more, the sort of threads that libcURL does understand happens to be the only such thread in any RB application: the main
-		thread itself. The practical upshot being that using libcURL on a RB thread wasn't very useful, and using libcURL at all meant
-		that your entire application stopped responding for the duration of the transfer. This class is a solution to this problem.
+		An instance of cURLClient is a self-contained "session". It maintains its own caches, options, connections, 
+		cookies, etc., and can operate on one URL at a time. No previous experience with libcURL is necessary to use this
+		class. Transfers are initiated by calling one of the overloaded request methods:
 		
-		The synchronous versions of the transfer methods will perform the entire transfer on the calling thread, and then return a
-		Boolean indicating success (True) or failure (False). The asynchronous versions will activate a Timer that performs a little
-		bit of the transfer on every run of the event loop. Both versions will raise events, and both versions can ignore the events
-		by using the IsTransferComplete, GetDownloadedData, GetResponseHeaders, and GetStatusCode methods.
+		    Get() for downloading
+		    Put() for uploading
+		    Head() for a headers-only operation
+		    Post() for HTTP forms.
+		
+		The names of these methods are borrowed from HTTP but do not imply HTTP as the protocol (except Post. See also: cURLClient.Perform).
+		That being said, HTTP is assumed unless the URL or other options indicate a different protocol. You should always
+		specify the protocol in the URL to avoid confusion.
+		
+		This class can perform both synchronous and asynchronous transfers, depending on which version of a method is 
+		called: synchronous versions return True on success; asynchronous versions do not return a value.
+		
+		Synchronous requests will be performed on the calling thread and will occasionally explicitly yield to allow other 
+		threads to run. Asynchronous requests will be performed on the main event loop; in console applications this means 
+		you must pump the event loop manually.
+		
+		Each instance of cURLClient can process one transfer at a time. Attempting to initiate a new transfer before the 
+		previous transfer completes will raise a cURLException with error number CURLM_ADDED_ALREADY(7).
+		
 	#tag EndNote
 
 

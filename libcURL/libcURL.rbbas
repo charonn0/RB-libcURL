@@ -512,6 +512,8 @@ Protected Module libcURL
 		      msg = "The URL contained an invalid number of slashes."
 		    Case URLParser.CURLUE_BAD_USER
 		      msg = "The user part of the URL contained bad or invalid characters."
+		    Case URLParser.CURLUE_LACKS_IDN
+		      msg = "The installed version of libcurl was built without IDN support."
 		    Else
 		      msg = "Unknown error while parsing a URL"
 		    End Select
@@ -2198,6 +2200,24 @@ Protected Module libcURL
 		#Tag Instance, Platform = Linux, Language = Default, Definition  = \"libcurl"
 	#tag EndConstant
 
+	#tag Constant, Name = CURLSSH_AUTH_AGENT, Type = Double, Dynamic = False, Default = \"16", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURLSSH_AUTH_ANY, Type = Double, Dynamic = False, Default = \"31", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURLSSH_AUTH_HOST, Type = Double, Dynamic = False, Default = \"4", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURLSSH_AUTH_KEYBOARD, Type = Double, Dynamic = False, Default = \"8", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURLSSH_AUTH_PASSWORD, Type = Double, Dynamic = False, Default = \"2", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURLSSH_AUTH_PUBLICKEY, Type = Double, Dynamic = False, Default = \"1", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = CURLSSLSET_NO_BACKENDS, Type = Double, Dynamic = False, Default = \"3", Scope = Private
 	#tag EndConstant
 
@@ -2240,6 +2260,16 @@ Protected Module libcURL
 	#tag Constant, Name = CURL_WRITEFUNC_PAUSE, Type = Double, Dynamic = False, Default = \"CURL_READFUNC_PAUSE", Scope = Protected
 	#tag EndConstant
 
+
+	#tag Structure, Name = CERTINFO, Flags = &h21
+		NumOfCerts As Integer
+		CertList As Ptr
+	#tag EndStructure
+
+	#tag Structure, Name = CERTINFO_64, Flags = &h21, Attributes = \"StructureAlignment \x3D 8"
+		NumOfCerts As Integer
+		CertList As Ptr
+	#tag EndStructure
 
 	#tag Structure, Name = curl_blob, Flags = &h21
 		Data As Ptr

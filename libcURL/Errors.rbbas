@@ -183,6 +183,8 @@ Protected Module Errors
 		    Return "CURLE_NO_CONNECTION_AVAILABLE"
 		  Case SSL_PINNEDPUBKEYNOTMATCH
 		    Return "CURLE_SSL_PINNEDPUBKEYNOTMATCH"
+		  Case TOO_LARGE
+		    Return "CURLE_TOO_LARGE"
 		  Case Is < -2
 		    Dim s As String = WrapperErrorName(CURLCODE)
 		    If s <> "" Then Return s
@@ -235,6 +237,9 @@ Protected Module Errors
 		    
 		  Case NO_HEADERS
 		    Return "NO_HEADERS"
+		    
+		  Case TOO_LARGE
+		    Return "TOO_LARGE"
 		    
 		  End Select
 		End Function
@@ -560,6 +565,9 @@ Protected Module Errors
 	#tag EndConstant
 
 	#tag Constant, Name = TIMEOUT, Type = Double, Dynamic = False, Default = \"28", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = TOO_LARGE, Type = Double, Dynamic = False, Default = \"100", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = TOO_MANY_REDIRECTS, Type = Double, Dynamic = False, Default = \"47", Scope = Protected

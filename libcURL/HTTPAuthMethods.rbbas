@@ -15,6 +15,11 @@ Protected Class HTTPAuthMethods
 
 	#tag Method, Flags = &h0
 		Function Mask() As Integer
+		  ' Returns a bitmask corresponding to the currently enabled authentication methods.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.HTTPAuthMethods.Mask
+		  
 		  Dim m As Integer
 		  If Basic Then m = Integer(CURLAUTH.BASIC)
 		  If Bearer Then m = m Or Integer(CURLAUTH.BEARER)
@@ -29,18 +34,34 @@ Protected Class HTTPAuthMethods
 
 	#tag Method, Flags = &h0
 		Sub Operator_Convert(FromMask As Integer)
+		  ' Constructs a new instance, or updates an existing instance, with the bitmask specified 
+		  ' as FromMask.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.HTTPAuthMethods.Operator_Convert
+		  
 		  Me.Constructor(FromMask)
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub Operator_Convert(FromEnum As libcURL.CURLAUTH)
+		  ' Constructs a new instance, or updates an existing instance, with the method specified as FromEnum.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.HTTPAuthMethods.Operator_Convert
+		  
 		  SetOnly(FromEnum)
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub SetAll()
+		  ' A convenience method that enables all authentication methods.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.HTTPAuthMethods.SetAll
+		  
 		  SetSafe()
 		  Basic = True
 		  
@@ -49,6 +70,11 @@ Protected Class HTTPAuthMethods
 
 	#tag Method, Flags = &h0
 		Sub SetOnly(AuthMethod As libcURL.CURLAUTH)
+		  ' A convenience method that enables only the specified authentication method; all others are disabled.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.HTTPAuthMethods.SetOnly
+		  
 		  Me.Operator_Convert(0)
 		  Select Case AuthMethod
 		  Case CURLAUTH.BASIC
@@ -82,6 +108,11 @@ Protected Class HTTPAuthMethods
 
 	#tag Method, Flags = &h0
 		Sub SetSafe()
+		  ' A convenience method that enables only "safe" authentication methods (i.e., everything but Basic.)
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.HTTPAuthMethods.SetSafe
+		  
 		  Bearer = True
 		  Digest = True
 		  Digest_IE = True
@@ -90,6 +121,31 @@ Protected Class HTTPAuthMethods
 		  NTLM_WB = True
 		End Sub
 	#tag EndMethod
+
+
+	#tag Note, Name = Using this class
+		This class represents a bitmask of available or permitted HTTP and proxy authentication methods. You can enable and disable
+		individual authentication methods by assigning True or False to the corresponding class property. Enabling or disabling an
+		authentication method sets or clears the corresponding bit in the value returned from the Mask() method.
+		
+		This class cannot be instantiated using the New keyword. You must assign an integer or CURLAUTH value to a reference to create
+		a new instance.
+		
+		Set the authentication method before a request:
+		
+		  Dim curl As New cURLClient
+		  curl.HTTPAuthenticationMethod = libcURL.CURLAUTH.BEARER
+		  curl.HTTPAuthenticationMethod.Digest = True
+		
+		Or, get the available authentication methods after a failed request:
+		
+		  Dim curl As New cURLClient
+		  If Not curl.Get("https://private.example.com/file.txt") Then
+		    Dim availmethods As libcURL.HTTPAuthMethods = curl.HTTPAuthenticationMethod
+		  End If
+		
+		
+	#tag EndNote
 
 
 	#tag Property, Flags = &h0

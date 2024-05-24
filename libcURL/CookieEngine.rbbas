@@ -394,7 +394,10 @@ Protected Class CookieEngine
 			  If value Then
 			    If Not Owner.SetOption(libcURL.Opts.COOKIEFILE, "") Then Raise New cURLException(Owner)
 			    mEnabled = value
-			  ElseIf mEnabled Then
+			  ElseIf libcURL.Version.IsAtLeast(7, 77, 0) Then
+			    If Not Owner.SetOption(libcURL.Opts.COOKIEFILE, Nil) Then Raise New cURLException(Owner)
+			    mEnabled = value
+			  Else
 			    ErrorSetter(Owner).LastError = libcURL.Errors.INVALID_STATE 'once turned on it can't be turned off
 			  End If
 			End Set
