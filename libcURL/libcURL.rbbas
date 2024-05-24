@@ -2200,6 +2200,24 @@ Protected Module libcURL
 		#Tag Instance, Platform = Linux, Language = Default, Definition  = \"libcurl"
 	#tag EndConstant
 
+	#tag Constant, Name = CURLSSH_AUTH_AGENT, Type = Double, Dynamic = False, Default = \"16", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURLSSH_AUTH_ANY, Type = Double, Dynamic = False, Default = \"31", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURLSSH_AUTH_HOST, Type = Double, Dynamic = False, Default = \"4", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURLSSH_AUTH_KEYBOARD, Type = Double, Dynamic = False, Default = \"8", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURLSSH_AUTH_PASSWORD, Type = Double, Dynamic = False, Default = \"2", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CURLSSH_AUTH_PUBLICKEY, Type = Double, Dynamic = False, Default = \"1", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = CURLSSLSET_NO_BACKENDS, Type = Double, Dynamic = False, Default = \"3", Scope = Private
 	#tag EndConstant
 
