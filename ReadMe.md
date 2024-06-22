@@ -34,6 +34,9 @@ This example performs a synchronous HTTP GET request on the calling thread. [**M
 
 †= feature might not be available at run-time due to a build-time decision of the installed version of libcURL
 
+## Become a sponsor
+If you use this code in a commercial project, or just want to show your appreciation, please consider sponsoring me through GitHub. https://github.com/sponsors/charonn0
+
 ## Synopsis
 
 ***
