@@ -560,6 +560,8 @@ Protected Class OptionInfo
 		    Return TCP_FASTOPEN
 		  Case "TCP_KEEPALIVE"
 		    Return TCP_KEEPALIVE
+		  Case "TCP_KEEPCNT"
+		    Return TCP_KEEPCNT
 		  Case "TCP_KEEPIDLE"
 		    Return TCP_KEEPIDLE
 		  Case "TCP_KEEPINTVL"
@@ -1181,6 +1183,8 @@ Protected Class OptionInfo
 		    Return 0
 		  Case TCP_KEEPALIVE
 		    Return 0
+		  Case TCP_KEEPCNT
+		    Return 9
 		  Case TCP_KEEPIDLE
 		    Return 60
 		  Case TCP_KEEPINTVL
@@ -1793,6 +1797,8 @@ Protected Class OptionInfo
 		    tmp = "7.49.0"
 		  Case TCP_KEEPALIVE
 		    tmp = "7.25.0"
+		  Case TCP_KEEPCNT
+		    tmp = "8.9.0"
 		  Case TCP_KEEPIDLE
 		    tmp = "7.25.0"
 		  Case TCP_KEEPINTVL
@@ -2438,6 +2444,8 @@ Protected Class OptionInfo
 		    Return "TCP_FASTOPEN"
 		  Case TCP_KEEPALIVE
 		    Return "TCP_KEEPALIVE"
+		  Case TCP_KEEPCNT
+		    Return "TCP_KEEPCNT"
 		  Case TCP_KEEPIDLE
 		    Return "TCP_KEEPIDLE"
 		  Case TCP_KEEPINTVL
@@ -3077,6 +3085,8 @@ Protected Class OptionInfo
 		    Return OptionType.Boolean
 		  Case TCP_KEEPALIVE
 		    Return OptionType.Boolean
+		  Case TCP_KEEPCNT
+		    Return OptionType.Number
 		  Case TCP_KEEPIDLE
 		    Return OptionType.Number
 		  Case TCP_KEEPINTVL

@@ -569,6 +569,9 @@ Inherits libcURL.cURLHandle
 	#tag Constant, Name = CURLU_NO_DEFAULT_PORT, Type = Double, Dynamic = False, Default = \"2", Scope = Public
 	#tag EndConstant
 
+	#tag Constant, Name = CURLU_NO_GUESS_SCHEME, Type = Double, Dynamic = False, Default = \"32768", Scope = Public
+	#tag EndConstant
+
 	#tag Constant, Name = CURLU_PATH_AS_IS, Type = Double, Dynamic = False, Default = \"16", Scope = Public
 	#tag EndConstant
 

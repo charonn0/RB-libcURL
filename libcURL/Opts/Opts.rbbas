@@ -899,6 +899,9 @@ Protected Module Opts
 	#tag Constant, Name = TCP_KEEPALIVE, Type = Double, Dynamic = False, Default = \"213", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = TCP_KEEPCNT, Type = Double, Dynamic = False, Default = \"326", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = TCP_KEEPIDLE, Type = Double, Dynamic = False, Default = \"214", Scope = Protected
 	#tag EndConstant
 
