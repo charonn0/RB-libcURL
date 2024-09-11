@@ -70,6 +70,8 @@ Protected Class InfoType
 		    Return NUM_CONNECTS
 		  Case "OS_ERRNO"
 		    Return OS_ERRNO
+		  Case "POSTTRANSFER_TIME_T"
+		    Return POSTTRANSFER_TIME_T
 		  Case "PRETRANSFER_TIME"
 		    Return PRETRANSFER_TIME
 		  Case "PRETRANSFER_TIME_T"
@@ -216,6 +218,8 @@ Protected Class InfoType
 		    tmp = "7.12.3"
 		  Case OS_ERRNO
 		    tmp = "7.12.2"
+		  Case POSTTRANSFER_TIME_T
+		    tmp = "8.10.0"
 		  Case PRETRANSFER_TIME
 		    tmp = "7.4.1"
 		  Case PRETRANSFER_TIME_T
@@ -380,6 +384,8 @@ Protected Class InfoType
 		    Return "NUM_CONNECTS"
 		  Case OS_ERRNO
 		    Return "OS_ERRNO"
+		  Case POSTTRANSFER_TIME_T
+		    Return "POSTTRANSFER_TIME_T"
 		  Case PRETRANSFER_TIME
 		    Return "PRETRANSFER_TIME"
 		  Case PRETRANSFER_TIME
@@ -510,9 +516,9 @@ Protected Class InfoType
 		    Return Variant.TypeDouble
 		    
 		  Case libcURL.Info.TOTAL_TIME_T, libcURL.Info.NAMELOOKUP_TIME_T, libcURL.Info.CONNECT_TIME_T, libcURL.Info.APPCONNECT_TIME_T, _
-		    libcURL.Info.PRETRANSFER_TIME_T, libcURL.Info.STARTTRANSFER_TIME_T, libcURL.Info.REDIRECT_TIME_T, libcURL.Info.SIZE_DOWNLOAD_T, _
-		    libcURL.Info.SIZE_UPLOAD_T, libcURL.Info.SPEED_DOWNLOAD_T, libcURL.Info.SPEED_UPLOAD_T, libcURL.Info.CONTENT_LENGTH_UPLOAD_T, _
-		    libcURL.Info.CONTENT_LENGTH_DOWNLOAD_T, libcURL.Info.QUEUE_TIME_T
+		    libcURL.Info.POSTTRANSFER_TIME_T, libcURL.Info.PRETRANSFER_TIME_T, libcURL.Info.STARTTRANSFER_TIME_T, libcURL.Info.REDIRECT_TIME_T, _
+		    libcURL.Info.SIZE_DOWNLOAD_T, libcURL.Info.SIZE_UPLOAD_T, libcURL.Info.SPEED_DOWNLOAD_T, libcURL.Info.SPEED_UPLOAD_T, _
+		    libcURL.Info.CONTENT_LENGTH_UPLOAD_T, libcURL.Info.CONTENT_LENGTH_DOWNLOAD_T, libcURL.Info.QUEUE_TIME_T
 		    Return Variant.TypeLong
 		    
 		  Case libcURL.Info.SSL_ENGINES, libcURL.Info.COOKIELIST

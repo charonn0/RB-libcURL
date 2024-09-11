@@ -87,6 +87,9 @@ Protected Module Info
 	#tag Constant, Name = OS_ERRNO, Type = Double, Dynamic = False, Default = \"2097177", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = POSTTRANSFER_TIME_T, Type = Double, Dynamic = False, Default = \"6291523", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = PRETRANSFER_TIME, Type = Double, Dynamic = False, Default = \"3145734", Scope = Protected
 	#tag EndConstant
 
