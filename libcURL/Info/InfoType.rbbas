@@ -18,10 +18,16 @@ Protected Class InfoType
 		    Return APPCONNECT_TIME
 		  Case "APPCONNECT_TIME_T"
 		    Return APPCONNECT_TIME_T
+		  Case "CAINFO"
+		    Return CAINFO
+		  Case "CAPATH"
+		    Return CAPATH
 		  Case "CERTINFO"
 		    Return CERTINFO
 		  Case "CONDITION_UNMET"
 		    Return CONDITION_UNMET
+		  Case "CONN_ID"
+		    Return CONN_ID
 		  Case "CONNECT_TIME"
 		    Return CONNECT_TIME
 		  Case "CONNECT_TIME_T"
@@ -38,6 +44,8 @@ Protected Class InfoType
 		    Return CONTENT_TYPE
 		  Case "COOKIELIST"
 		    Return COOKIELIST
+		  Case "EARLYDATA_SENT_T"
+		    Return EARLYDATA_SENT_T
 		  Case "EFFECTIVE_METHOD"
 		    Return EFFECTIVE_METHOD
 		  Case "EFFECTIVE_URL"
@@ -152,6 +160,8 @@ Protected Class InfoType
 		    Return TOTAL_TIME_T
 		  Case "USED_PROXY"
 		    Return USED_PROXY
+		  Case "XFER_ID"
+		    Return XFER_ID
 		  End Select
 		End Function
 	#tag EndMethod
@@ -166,10 +176,16 @@ Protected Class InfoType
 		    tmp = "7.19.0"
 		  Case APPCONNECT_TIME_T
 		    tmp = "7.61.0"
+		  Case CAINFO
+		    tmp = "7.84.0"
+		  Case CAPATH
+		    tmp = "7.84.0"
 		  Case CERTINFO
 		    tmp = "7.19.1"
 		  Case CONDITION_UNMET
 		    tmp = "7.19.4"
+		  Case CONN_ID
+		    tmp = "8.2.0"
 		  Case CONNECT_TIME
 		    tmp = "7.4.1"
 		  Case CONNECT_TIME_T
@@ -186,6 +202,8 @@ Protected Class InfoType
 		    tmp = "7.9.4"
 		  Case COOKIELIST
 		    tmp = "7.14.1"
+		  Case EARLYDATA_SENT_T
+		    tmp = "8.11.0"
 		  Case EFFECTIVE_METHOD
 		    tmp = "7.72.0"
 		  Case EFFECTIVE_URL
@@ -300,6 +318,8 @@ Protected Class InfoType
 		    tmp = "7.61.0"
 		  Case USED_PROXY
 		    tmp = "8.7.0"
+		  Case XFER_ID
+		    tmp = "8.2.0"
 		  End Select
 		  If tmp = "" Then Return False
 		  Major = Val(NthField(tmp, ".", 1))
@@ -324,10 +344,16 @@ Protected Class InfoType
 		    Return "APPCONNECT_TIME_T"
 		  Case APPCONNECT_TIME_T
 		    Return "APPCONNECT_TIME_T"
+		  Case CAINFO
+		    Return "CAINFO"
+		  Case CAPATH
+		    Return "CAPATH"
 		  Case CERTINFO
 		    Return "CERTINFO"
 		  Case CONDITION_UNMET
 		    Return "CONDITION_UNMET"
+		  Case CONN_ID
+		    Return "CONN_ID"
 		  Case CONNECT_TIME
 		    Return "CONNECT_TIME"
 		  Case CONNECT_TIME
@@ -348,6 +374,8 @@ Protected Class InfoType
 		    Return "CONTENT_TYPE"
 		  Case COOKIELIST
 		    Return "COOKIELIST"
+		  Case EARLYDATA_SENT_T
+		    Return "EARLYDATA_SENT_T"
 		  Case EFFECTIVE_METHOD
 		    Return "EFFECTIVE_METHOD"
 		  Case EFFECTIVE_URL
@@ -482,6 +510,8 @@ Protected Class InfoType
 		    Return "TOTAL_TIME_T"
 		  Case USED_PROXY
 		    Return "USED_PROXY"
+		  Case XFER_ID
+		    Return "XFER_ID"
 		  End Select
 		End Function
 	#tag EndMethod
@@ -491,7 +521,7 @@ Protected Class InfoType
 		  Select Case InfoNumber
 		  Case libcURL.Info.EFFECTIVE_URL, libcURL.Info.REDIRECT_URL, libcURL.Info.CONTENT_TYPE, libcURL.Info.PRIVATE_, libcURL.Info.PRIMARY_IP, _
 		    libcURL.Info.LOCAL_IP, libcURL.Info.FTP_ENTRY_PATH, libcURL.Info.RTSP_SESSION_ID, libcURL.Info.SCHEME, libcURL.Info.EFFECTIVE_METHOD, _
-		    libcURL.Info.REFERER
+		    libcURL.Info.REFERER, libcURL.Info.CAINFO, libcURL.Info.CAPATH
 		    Return Variant.TypeString
 		    
 		  Case libcURL.Info.RESPONSE_CODE, libcURL.Info.HTTP_CONNECTCODE, libcURL.Info.REDIRECT_COUNT, libcURL.Info.HEADER_SIZE, _
@@ -518,7 +548,8 @@ Protected Class InfoType
 		  Case libcURL.Info.TOTAL_TIME_T, libcURL.Info.NAMELOOKUP_TIME_T, libcURL.Info.CONNECT_TIME_T, libcURL.Info.APPCONNECT_TIME_T, _
 		    libcURL.Info.POSTTRANSFER_TIME_T, libcURL.Info.PRETRANSFER_TIME_T, libcURL.Info.STARTTRANSFER_TIME_T, libcURL.Info.REDIRECT_TIME_T, _
 		    libcURL.Info.SIZE_DOWNLOAD_T, libcURL.Info.SIZE_UPLOAD_T, libcURL.Info.SPEED_DOWNLOAD_T, libcURL.Info.SPEED_UPLOAD_T, _
-		    libcURL.Info.CONTENT_LENGTH_UPLOAD_T, libcURL.Info.CONTENT_LENGTH_DOWNLOAD_T, libcURL.Info.QUEUE_TIME_T
+		    libcURL.Info.CONTENT_LENGTH_UPLOAD_T, libcURL.Info.CONTENT_LENGTH_DOWNLOAD_T, libcURL.Info.QUEUE_TIME_T, libcURL.Info.XFER_ID, libcURL.Info.CONN_ID, _
+		    libcURL.Info.EARLYDATA_SENT_T
 		    Return Variant.TypeLong
 		    
 		  Case libcURL.Info.SSL_ENGINES, libcURL.Info.COOKIELIST
