@@ -9,6 +9,12 @@ Protected Module Info
 	#tag Constant, Name = APPCONNECT_TIME_T, Type = Double, Dynamic = False, Default = \"6291512", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = CAINFO, Type = Double, Dynamic = False, Default = \"1048637", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CAPATH, Type = Double, Dynamic = False, Default = \"1048638", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = CERTINFO, Type = Double, Dynamic = False, Default = \"4194338", Scope = Protected
 	#tag EndConstant
 
@@ -19,6 +25,9 @@ Protected Module Info
 	#tag EndConstant
 
 	#tag Constant, Name = CONNECT_TIME_T, Type = Double, Dynamic = False, Default = \"6291508", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = CONN_ID, Type = Double, Dynamic = False, Default = \"6291520", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = CONTENT_LENGTH_DOWNLOAD, Type = Double, Dynamic = False, Default = \"3145743", Scope = Protected
@@ -37,6 +46,9 @@ Protected Module Info
 	#tag EndConstant
 
 	#tag Constant, Name = COOKIELIST, Type = Double, Dynamic = False, Default = \"4194332", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = EARLYDATA_SENT_T, Type = Double, Dynamic = False, Default = \"6291524", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = EFFECTIVE_METHOD, Type = Double, Dynamic = False, Default = \"1048634", Scope = Protected
@@ -208,6 +220,9 @@ Protected Module Info
 	#tag EndConstant
 
 	#tag Constant, Name = USED_PROXY, Type = Double, Dynamic = False, Default = \"2097218", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = XFER_ID, Type = Double, Dynamic = False, Default = \"6291519", Scope = Protected
 	#tag EndConstant
 
 
