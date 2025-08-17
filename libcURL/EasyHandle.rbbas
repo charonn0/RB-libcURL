@@ -1654,7 +1654,9 @@ Inherits libcURL.cURLHandle
 			  
 			  If (value = libcURL.HTTPVersion.HTTP2 And Not libcURL.Version.IsAtLeast(7, 33, 0)) _
 			    Or (value = libcURL.HTTPVersion.HTTP2TLS And Not libcURL.Version.IsAtLeast(7, 47, 0)) _
-			    Or (value = libcURL.HTTPVersion.HTTP2PriorKnowledge And Not libcURL.Version.IsAtLeast(7, 49, 0)) Then
+			    Or (value = libcURL.HTTPVersion.HTTP2PriorKnowledge And Not libcURL.Version.IsAtLeast(7, 49, 0)) _
+			    Or (value = libcURL.HTTPVersion.HTTP3 And Not libcURL.Version.IsAtLeast(7, 66, 0)) _
+			    Or (value = libcURL.HTTPVersion.HTTP3_Only And Not libcURL.Version.IsAtLeast(7, 88, 0)) Then
 			    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
 			    Raise New cURLException(Me)
 			  End If

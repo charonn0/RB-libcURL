@@ -2378,7 +2378,9 @@ Protected Module libcURL
 		  HTTP1_1=2
 		  HTTP2=3
 		  HTTP2TLS=4
-		HTTP2PriorKnowledge=5
+		  HTTP2PriorKnowledge=5
+		  HTTP3=6
+		HTTP3_Only=7
 	#tag EndEnum
 
 	#tag Enum, Name = IPVersion, Type = Integer, Flags = &h1
