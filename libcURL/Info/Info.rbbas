@@ -72,6 +72,9 @@ Protected Module Info
 	#tag Constant, Name = HTTPAUTH_AVAIL, Type = Double, Dynamic = False, Default = \"2097175", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = HTTPAUTH_USED, Type = Double, Dynamic = False, Default = \"2097221", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = HTTP_CONNECTCODE, Type = Double, Dynamic = False, Default = \"2097174", Scope = Protected
 	#tag EndConstant
 
@@ -121,6 +124,9 @@ Protected Module Info
 	#tag EndConstant
 
 	#tag Constant, Name = PROXYAUTH_AVAIL, Type = Double, Dynamic = False, Default = \"2097176", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = PROXYAUTH_USED, Type = Double, Dynamic = False, Default = \"2097222", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = PROXY_ERROR, Type = Double, Dynamic = False, Default = \"2097211", Scope = Protected
