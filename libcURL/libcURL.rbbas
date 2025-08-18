@@ -2356,7 +2356,8 @@ Protected Module libcURL
 	#tag EndEnum
 
 	#tag Enum, Name = FollowMode, Type = Integer, Flags = &h1
-		All=1
+		NoFollow=0
+		  All=1
 		  ObeyCode=2
 		FirstOnly=3
 	#tag EndEnum
