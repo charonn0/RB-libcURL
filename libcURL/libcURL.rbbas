@@ -2355,6 +2355,12 @@ Protected Module libcURL
 		Auth_TLS_SRP=16384
 	#tag EndEnum
 
+	#tag Enum, Name = FollowMode, Type = Integer, Flags = &h1
+		All=1
+		  ObeyCode=2
+		FirstOnly=3
+	#tag EndEnum
+
 	#tag Enum, Name = FormElementType, Flags = &h1
 		MemoryBlock
 		  Stream
