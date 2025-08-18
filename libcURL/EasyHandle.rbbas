@@ -2528,6 +2528,21 @@ Inherits libcURL.cURLHandle
 	#tag Constant, Name = CURLSSLOPT_REVOKE_BEST_EFFORT, Type = Double, Dynamic = False, Default = \"8", Scope = Public
 	#tag EndConstant
 
+	#tag Constant, Name = CURLULFLAG_ANSWERED, Type = Double, Dynamic = False, Default = \"1", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = CURLULFLAG_DELETED, Type = Double, Dynamic = False, Default = \"2", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = CURLULFLAG_DRAFT, Type = Double, Dynamic = False, Default = \"4", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = CURLULFLAG_FLAGGED, Type = Double, Dynamic = False, Default = \"8", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = CURLULFLAG_SEEN, Type = Double, Dynamic = False, Default = \"16", Scope = Public
+	#tag EndConstant
+
 	#tag Constant, Name = CURL_DEFAULT_READ_SIZE, Type = Double, Dynamic = False, Default = \"16384", Scope = Public
 	#tag EndConstant
 

@@ -610,6 +610,8 @@ Protected Class OptionInfo
 		    Return UPLOAD
 		  Case "UPLOAD_BUFFERSIZE"
 		    Return UPLOAD_BUFFERSIZE
+		  Case "UPLOAD_FLAGS"
+		    Return UPLOAD_FLAGS
 		  Case "URL"
 		    Return URL
 		  Case "USERAGENT"
@@ -1233,6 +1235,8 @@ Protected Class OptionInfo
 		    Return 0
 		  Case UPLOAD_BUFFERSIZE
 		    Return 65535
+		  Case UPLOAD_FLAGS
+		    Return 16
 		  Case URL
 		    Return Nil
 		  Case USERAGENT
@@ -1847,6 +1851,8 @@ Protected Class OptionInfo
 		    tmp = "7.1"
 		  Case UPLOAD_BUFFERSIZE
 		    tmp = "7.62.0"
+		  Case UPLOAD_FLAGS
+		    tmp = "8.13.0"
 		  Case URL
 		    tmp = "7.1"
 		  Case USERAGENT
@@ -2494,6 +2500,8 @@ Protected Class OptionInfo
 		    Return "UPLOAD"
 		  Case UPLOAD_BUFFERSIZE
 		    Return "UPLOAD_BUFFERSIZE"
+		  Case UPLOAD_FLAGS
+		    Return "UPLOAD_FLAGS"
 		  Case URL
 		    Return "URL"
 		  Case USERAGENT
@@ -3135,6 +3143,8 @@ Protected Class OptionInfo
 		    Return OptionType.Boolean
 		  Case UPLOAD_BUFFERSIZE
 		    Return OptionType.Number
+		  Case UPLOAD_FLAGS
+		    Return OptionType.Bitmask
 		  Case URL
 		    Return OptionType.String
 		  Case USERAGENT
