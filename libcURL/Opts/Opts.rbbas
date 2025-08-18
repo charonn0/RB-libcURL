@@ -869,6 +869,9 @@ Protected Module Opts
 	#tag Constant, Name = SSL_SESSIONID_CACHE, Type = Double, Dynamic = False, Default = \"150", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = SSL_SIGNATURE_ALGORITHMS, Type = Double, Dynamic = False, Default = \"10328", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = SSL_VERIFYHOST, Type = Double, Dynamic = False, Default = \"81", Scope = Protected
 	#tag EndConstant
 

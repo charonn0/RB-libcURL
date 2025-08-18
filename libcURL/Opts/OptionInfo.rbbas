@@ -520,6 +520,8 @@ Protected Class OptionInfo
 		    Return SSLKEYTYPE
 		  Case "SSLKEY_BLOB"
 		    Return SSLKEY_BLOB
+		  Case "SSL_SIGNATURE_ALGORITHMS"
+		    Return SSL_SIGNATURE_ALGORITHMS
 		  Case "SSLVERSION"
 		    Return SSLVERSION
 		  Case "SSL_CIPHER_LIST"
@@ -1165,6 +1167,8 @@ Protected Class OptionInfo
 		    Return 0
 		  Case SSL_SESSIONID_CACHE
 		    Return 1
+		  Case SSL_SIGNATURE_ALGORITHMS
+		    Return Nil
 		  Case SSL_VERIFYHOST
 		    Return 2
 		  Case SSL_VERIFYPEER
@@ -1781,6 +1785,8 @@ Protected Class OptionInfo
 		    tmp = "7.25.0"
 		  Case SSL_SESSIONID_CACHE
 		    tmp = "7.16.0"
+		  Case SSL_SIGNATURE_ALGORITHMS
+		    tmp = "8.14.0"
 		  Case SSL_VERIFYHOST
 		    tmp = "7.8.1"
 		  Case SSL_VERIFYPEER
@@ -2430,6 +2436,8 @@ Protected Class OptionInfo
 		    Return "SSL_OPTIONS"
 		  Case SSL_SESSIONID_CACHE
 		    Return "SSL_SESSIONID_CACHE"
+		  Case SSL_SIGNATURE_ALGORITHMS
+		    Return "SSL_SIGNATURE_ALGORITHMS"
 		  Case SSL_VERIFYHOST
 		    Return "SSL_VERIFYHOST"
 		  Case SSL_VERIFYPEER
@@ -3073,6 +3081,8 @@ Protected Class OptionInfo
 		    Return OptionType.Bitmask
 		  Case SSL_SESSIONID_CACHE
 		    Return OptionType.Boolean
+		  Case SSL_SIGNATURE_ALGORITHMS
+		    Return OptionType.String
 		  Case SSL_VERIFYHOST
 		    Return OptionType.Number
 		  Case SSL_VERIFYPEER
