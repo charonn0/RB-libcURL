@@ -98,7 +98,7 @@ Inherits libcURL.cURLHandle
 		  Me.CookieEngine.Enabled = CopyOpts.CookieEngine.Enabled
 		  Me.UseErrorBuffer = CopyOpts.UseErrorBuffer
 		  mFailOnServerError = CopyOpts.FailOnServerError
-		  mFollowRedirects = CopyOpts.FollowRedirects
+		  mFollowMode = CopyOpts.FollowMode
 		  mHTTPCompression = CopyOpts.HTTPCompression
 		  mHTTPPreserveMethod = CopyOpts.HTTPPreserveMethod
 		  mHTTPVersion = CopyOpts.HTTPVersion
@@ -716,7 +716,7 @@ Inherits libcURL.cURLHandle
 		  mConnectionType = libcURL.ConnectionType.NoSSL
 		  mErrorBuffer = Nil
 		  mFailOnServerError = False
-		  mFollowRedirects = False
+		  mFollowMode = libcURL.FollowMode.NoFollow
 		  mForm = Nil
 		  mHTTPCompression = False
 		  mHTTPVersion = libcURL.HTTPVersion.None
@@ -1505,6 +1505,33 @@ Inherits libcURL.cURLHandle
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  ' Sets whether and how libcURL will follow HTTP redirection. 
+			  '
+			  ' See:
+			  ' http://curl.haxx.se/libcurl/c/CURLOPT_FOLLOWLOCATION.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.FollowMode
+			  
+			  Return mFollowMode
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  ' Sets whether and how libcURL will follow HTTP redirection. 
+			  '
+			  ' See:
+			  ' http://curl.haxx.se/libcurl/c/CURLOPT_FOLLOWLOCATION.html
+			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.FollowMode
+			  
+			  If Not Me.SetOption(libcURL.Opts.FOLLOWLOCATION, value) Then Raise New cURLException(Me)
+			  mFollowMode = value
+			End Set
+		#tag EndSetter
+		FollowMode As libcURL.FollowMode
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
 			  ' Sets whether libcURL will follow HTTP redirection. If set to True then libcURL
 			  ' will automatically follow the Location: header, if present, in HTTP 3xx
 			  ' responses. If set to False (default) then redirects are not followed but the
@@ -1514,7 +1541,7 @@ Inherits libcURL.cURLHandle
 			  ' http://curl.haxx.se/libcurl/c/CURLOPT_FOLLOWLOCATION.html
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.FollowRedirects
 			  
-			  Return mFollowRedirects
+			  Return (CType(mFollowMode, Integer) > 0)
 			End Get
 		#tag EndGetter
 		#tag Setter
@@ -1529,7 +1556,11 @@ Inherits libcURL.cURLHandle
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.FollowRedirects
 			  
 			  If Not Me.SetOption(libcURL.Opts.FOLLOWLOCATION, value) Then Raise New cURLException(Me)
-			  mFollowRedirects = value
+			  If value Then
+			    mFollowMode = libcURL.FollowMode.All
+			  Else
+			    mFollowMode = libcURL.FollowMode.NoFollow
+			  End If
 			End Set
 		#tag EndSetter
 		FollowRedirects As Boolean
@@ -1807,7 +1838,7 @@ Inherits libcURL.cURLHandle
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private mFollowRedirects As Boolean
+		Private mFollowMode As libcURL.FollowMode
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
