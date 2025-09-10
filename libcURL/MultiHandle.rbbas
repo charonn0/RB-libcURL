@@ -94,6 +94,27 @@ Inherits libcURL.cURLHandle
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function GetInfo(InfoType As Integer) As Integer
+		  ' Calls curl_multi_get_offt. If the operation succeeded then this method returns the
+		  ' requested information. If an error occurs then this method will return 0. Check the
+		  ' LastError property to determine whether an error occured.
+		  ' This method is only available in libcurl 8.16.0 and newer.
+		  '
+		  ' See:
+		  ' https://curl.se/libcurl/c/curl_multi_get_offt.html
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.MultiHandle.GetInfo
+		  
+		  Dim value As Integer
+		  If libcURL.Version.IsAtLeast(8, 16, 0) Then
+		    mLastError = curl_multi_get_offt(mHandle, InfoType, value)
+		  Else
+		    mLastError = libcURL.Errors.FEATURE_UNAVAILABLE
+		  End If
+		  Return value
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function HasTransfer(Transfer As libcURL.EasyHandle) As Boolean
 		  ' Returns True if the specified Transfer is currently being managed by the
 		  ' MultiHandle. A Transfer may be managed by only one MultiHandle object at
@@ -494,6 +515,21 @@ Inherits libcURL.cURLHandle
 		Private StackLocked As Boolean
 	#tag EndProperty
 
+
+	#tag Constant, Name = CURLMINFO_XFERS_ADDED, Type = Double, Dynamic = False, Default = \"5", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = CURLMINFO_XFERS_CURRENT, Type = Double, Dynamic = False, Default = \"1", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = CURLMINFO_XFERS_DONE, Type = Double, Dynamic = False, Default = \"4", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = CURLMINFO_XFERS_PENDING, Type = Double, Dynamic = False, Default = \"3", Scope = Public
+	#tag EndConstant
+
+	#tag Constant, Name = CURLMINFO_XFERS_RUNNING, Type = Double, Dynamic = False, Default = \"2", Scope = Public
+	#tag EndConstant
 
 	#tag Constant, Name = CURLM_CALL_MULTI_PERFORM, Type = Double, Dynamic = False, Default = \"-1", Scope = Private
 	#tag EndConstant

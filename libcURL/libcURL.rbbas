@@ -237,6 +237,10 @@ Protected Module libcURL
 	#tag EndExternalMethod
 
 	#tag ExternalMethod, Flags = &h21
+		Private Soft Declare Function curl_multi_get_offt Lib cURLLib (MultiHandle As Integer, InfoCode As Integer, ByRef Value As Integer) As Integer
+	#tag EndExternalMethod
+
+	#tag ExternalMethod, Flags = &h21
 		Private Soft Declare Function curl_multi_info_read Lib cURLLib (MultiHandle As Integer, ByRef MsgCount As Integer) As Ptr
 	#tag EndExternalMethod
 
