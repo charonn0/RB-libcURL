@@ -21,6 +21,9 @@ Protected Module Multi
 	#tag Constant, Name = MAX_TOTAL_CONNECTIONS, Type = Double, Dynamic = False, Default = \"13", Scope = Protected
 	#tag EndConstant
 
+	#tag Constant, Name = NETWORK_CHANGED, Type = Double, Dynamic = False, Default = \"17", Scope = Protected
+	#tag EndConstant
+
 	#tag Constant, Name = PIPELINING, Type = Double, Dynamic = False, Default = \"3", Scope = Protected
 	#tag EndConstant
 
