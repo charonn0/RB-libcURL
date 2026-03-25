@@ -5,7 +5,7 @@ Protected Module Version
 		  ' Returns an array of available features.
 		  '
 		  ' See:
-		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Version.Features
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Version.FeatureList
 		  
 		  Dim feats() As String
 		  #If Target32Bit Then
