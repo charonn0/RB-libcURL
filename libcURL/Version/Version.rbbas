@@ -1,6 +1,40 @@
 #tag Module
 Protected Module Version
 	#tag Method, Flags = &h1
+		Protected Function FeatureList() As String()
+		  ' Returns an array of available features.
+		  '
+		  ' See:
+		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.Version.Features
+		  
+		  Dim feats() As String
+		  #If Target32Bit Then
+		    Dim lst As Ptr = Struct.FeatureNames
+		  #Else
+		    Dim lst As Ptr = Struct64.FeatureNames
+		  #EndIf
+		  
+		  If lst = Nil Then Return feats
+		  
+		  Dim i As Integer
+		  Dim item As Ptr = lst.Ptr(0)
+		  Do Until item = Nil
+		    Dim mb As MemoryBlock = item
+		    feats.Append(mb.CString(0))
+		    i = i + 1
+		    #If Target32Bit Then
+		      item = lst.Ptr(i * 4)
+		    #Else
+		      item = lst.Ptr(i * 8)
+		    #EndIf
+		    
+		  Loop
+		  
+		  Return feats
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
 		Protected Function IsAtLeast(Major As Integer, Minor As Integer, Patch As Integer) As Boolean
 		  ' Returns True if libcURL is available and at least the version specified.
 		  '
@@ -77,39 +111,20 @@ Protected Module Version
 	#tag EndMethod
 
 
-	#tag ComputedProperty, Flags = &h1
-		#tag Getter
-			Get
-			  ' See: https://curl.haxx.se/libcurl/c/curl_version_info.html#CURLVERSIONASYNCHDNS
-			  
-			  Return BitAnd(Features, FEATURE_ASYNCHDNS) = FEATURE_ASYNCHDNS  // asynchronous dns resolves
-			End Get
-		#tag EndGetter
-		Attributes( deprecated = "libcURL.IsFeatureAvailable" ) Protected ASYNCHDNS As Boolean
-	#tag EndComputedProperty
-
-	#tag ComputedProperty, Flags = &h1
-		#tag Getter
-			Get
-			  Return BitAnd(Features, FEATURE_CONV) = FEATURE_CONV // character conversions are supported
-			End Get
-		#tag EndGetter
-		Attributes( deprecated = "libcURL.IsFeatureAvailable" ) Protected CONV As Boolean
-	#tag EndComputedProperty
-
-	#tag ComputedProperty, Flags = &h1
-		#tag Getter
-			Get
-			  Return BitAnd(Features, FEATURE_CURLDEBUG) = FEATURE_CURLDEBUG // built with memory tracking debug capabilities
-			End Get
-		#tag EndGetter
-		Attributes( deprecated = "libcURL.IsFeatureAvailable" ) Protected CURLDEBUG As Boolean
-	#tag EndComputedProperty
-
 	#tag ComputedProperty, Flags = &h21
 		#tag Getter
 			Get
 			  Select Case True
+			  Case IsAtLeast(8, 8, 0)
+			    Return CURLVERSION_TWELFTH
+			  Case IsAtLeast(7, 87, 0)
+			    Return CURLVERSION_ELEVENTH
+			  Case IsAtLeast(7, 77, 0)
+			    Return CURLVERSION_TENTH
+			  Case IsAtLeast(7, 75, 0)
+			    Return CURLVERSION_NINTH
+			  Case IsAtLeast(7, 71, 0)
+			    Return CURLVERSION_EIGHTH
 			  Case IsAtLeast(7, 70, 0)
 			    Return CURLVERSION_SEVENTH
 			  Case IsAtLeast(7, 66, 1)
@@ -130,15 +145,6 @@ Protected Module Version
 	#tag ComputedProperty, Flags = &h1
 		#tag Getter
 			Get
-			  Return BitAnd(Features, FEATURE_DEBUG) = FEATURE_DEBUG // built with debug capabilities
-			End Get
-		#tag EndGetter
-		Attributes( deprecated = "libcURL.IsFeatureAvailable" ) Protected DEBUG As Boolean
-	#tag EndComputedProperty
-
-	#tag ComputedProperty, Flags = &h1
-		#tag Getter
-			Get
 			  #If Target32Bit Then
 			    Return Struct.Features
 			  #Else
@@ -153,78 +159,6 @@ Protected Module Version
 	#tag ComputedProperty, Flags = &h1
 		#tag Getter
 			Get
-			  Return BitAnd(Features, FEATURE_GSSNEGOTIATE) = FEATURE_GSSNEGOTIATE // Negotiate auth support
-			End Get
-		#tag EndGetter
-		Attributes( deprecated = "libcURL.IsFeatureAvailable" ) Protected GSSNEGOTIATE As Boolean
-	#tag EndComputedProperty
-
-	#tag ComputedProperty, Flags = &h1
-		#tag Getter
-			Get
-			  Return BitAnd(Features, FEATURE_HTTP2) = FEATURE_HTTP2 // HTTP2.0 support
-			End Get
-		#tag EndGetter
-		Attributes( deprecated = "libcURL.IsFeatureAvailable" ) Protected HTTP2 As Boolean
-	#tag EndComputedProperty
-
-	#tag ComputedProperty, Flags = &h1
-		#tag Getter
-			Get
-			  Return BitAnd(Features, FEATURE_IDN) = FEATURE_IDN // International Domain Names support
-			End Get
-		#tag EndGetter
-		Attributes( deprecated = "libcURL.IsFeatureAvailable" ) Protected IDN As Boolean
-	#tag EndComputedProperty
-
-	#tag ComputedProperty, Flags = &h1
-		#tag Getter
-			Get
-			  Return BitAnd(Features, FEATURE_IPV6) = FEATURE_IPV6 // IPv6-enabled
-			End Get
-		#tag EndGetter
-		Attributes( deprecated = "libcURL.IsFeatureAvailable" ) Protected IPV6 As Boolean
-	#tag EndComputedProperty
-
-	#tag ComputedProperty, Flags = &h1
-		#tag Getter
-			Get
-			  Return BitAnd(Features, FEATURE_KERBEROS4) = FEATURE_KERBEROS4 // kerberos 4 auth is supported
-			End Get
-		#tag EndGetter
-		Attributes( deprecated = "libcURL.IsFeatureAvailable" ) Protected KERBEROS4 As Boolean
-	#tag EndComputedProperty
-
-	#tag ComputedProperty, Flags = &h1
-		#tag Getter
-			Get
-			  Return BitAnd(Features, FEATURE_KERBEROS5) = FEATURE_KERBEROS5 // kerberos 5 auth is supported
-			End Get
-		#tag EndGetter
-		Attributes( deprecated = "libcURL.IsFeatureAvailable" ) Protected KERBEROS5 As Boolean
-	#tag EndComputedProperty
-
-	#tag ComputedProperty, Flags = &h1
-		#tag Getter
-			Get
-			  Return BitAnd(Features, FEATURE_LARGEFILE) = FEATURE_LARGEFILE // supports files bigger than 2GB
-			End Get
-		#tag EndGetter
-		Attributes( deprecated = "libcURL.IsFeatureAvailable" ) Protected LARGEFILE As Boolean
-	#tag EndComputedProperty
-
-	#tag ComputedProperty, Flags = &h1
-		#tag Getter
-			Get
-			  Return BitAnd(Features, FEATURE_NTLM) = FEATURE_NTLM // NTLM auth is supported
-			End Get
-		#tag EndGetter
-		Attributes( deprecated = "libcURL.IsFeatureAvailable" ) Protected NTLM As Boolean
-	#tag EndComputedProperty
-
-	#tag ComputedProperty, Flags = &h1
-		#tag Getter
-			Get
 			  #If Target32Bit Then
 			    Dim data As MemoryBlock = Struct.HostString
 			  #Else
@@ -234,15 +168,6 @@ Protected Module Version
 			End Get
 		#tag EndGetter
 		Protected Platform As String
-	#tag EndComputedProperty
-
-	#tag ComputedProperty, Flags = &h1
-		#tag Getter
-			Get
-			  Return BitAnd(Features, FEATURE_SPNEGO) = FEATURE_SPNEGO // SPNEGO auth
-			End Get
-		#tag EndGetter
-		Attributes( deprecated = "libcURL.IsFeatureAvailable" ) Protected SPNEGO As Boolean
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h1
@@ -263,15 +188,6 @@ Protected Module Version
 	#tag ComputedProperty, Flags = &h1
 		#tag Getter
 			Get
-			  Return BitAnd(Features, FEATURE_SSL) = FEATURE_SSL // SSL options are present
-			End Get
-		#tag EndGetter
-		Attributes( deprecated = "libcURL.IsFeatureAvailable" ) Protected SSL As Boolean
-	#tag EndComputedProperty
-
-	#tag ComputedProperty, Flags = &h1
-		#tag Getter
-			Get
 			  #If Target32Bit Then
 			    Dim data As MemoryBlock = Struct.SSLVersionString
 			  #Else
@@ -282,16 +198,6 @@ Protected Module Version
 			End Get
 		#tag EndGetter
 		Protected SSLProviderName As String
-	#tag EndComputedProperty
-
-	#tag ComputedProperty, Flags = &h1
-		#tag Getter
-			Get
-			  Dim kSSPI As Integer = ShiftLeft(1, 11)
-			  Return BitAnd(Features, kSSPI) = kSSPI // SSPI is supported
-			End Get
-		#tag EndGetter
-		Attributes( deprecated = "libcURL.IsFeatureAvailable" ) Protected SSPI As Boolean
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h21
@@ -359,15 +265,6 @@ Protected Module Version
 	#tag ComputedProperty, Flags = &h1
 		#tag Getter
 			Get
-			  Return BitAnd(Features, FEATURE_TLSAUTH_SRP) = FEATURE_TLSAUTH_SRP // TLS-SRP support
-			End Get
-		#tag EndGetter
-		Attributes( deprecated = "libcURL.IsFeatureAvailable" ) Protected TLS_SRP As Boolean
-	#tag EndComputedProperty
-
-	#tag ComputedProperty, Flags = &h1
-		#tag Getter
-			Get
 			  If Not System.IsFunctionAvailable("curl_version", cURLLib) Then Return ""
 			  Static p As MemoryBlock
 			  If p = Nil Then
@@ -380,10 +277,19 @@ Protected Module Version
 	#tag EndComputedProperty
 
 
+	#tag Constant, Name = CURLVERSION_EIGHTH, Type = Double, Dynamic = False, Default = \"7", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = CURLVERSION_ELEVENTH, Type = Double, Dynamic = False, Default = \"10", Scope = Private
+	#tag EndConstant
+
 	#tag Constant, Name = CURLVERSION_FIFTH, Type = Double, Dynamic = False, Default = \"4", Scope = Private
 	#tag EndConstant
 
 	#tag Constant, Name = CURLVERSION_FOURTH, Type = Double, Dynamic = False, Default = \"3", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = CURLVERSION_NINTH, Type = Double, Dynamic = False, Default = \"8", Scope = Private
 	#tag EndConstant
 
 	#tag Constant, Name = CURLVERSION_SEVENTH, Type = Double, Dynamic = False, Default = \"6", Scope = Private
@@ -392,7 +298,13 @@ Protected Module Version
 	#tag Constant, Name = CURLVERSION_SIXTH, Type = Double, Dynamic = False, Default = \"5", Scope = Private
 	#tag EndConstant
 
+	#tag Constant, Name = CURLVERSION_TENTH, Type = Double, Dynamic = False, Default = \"9", Scope = Private
+	#tag EndConstant
+
 	#tag Constant, Name = CURLVERSION_THIRD, Type = Double, Dynamic = False, Default = \"2", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = CURLVERSION_TWELFTH, Type = Double, Dynamic = False, Default = \"11", Scope = Private
 	#tag EndConstant
 
 	#tag Constant, Name = FEATURE_ASYNCHDNS, Type = Double, Dynamic = False, Default = \"128", Scope = Private
@@ -440,6 +352,9 @@ Protected Module Version
 	#tag Constant, Name = FEATURE_TLSAUTH_SRP, Type = Double, Dynamic = False, Default = \"16384", Scope = Private
 	#tag EndConstant
 
+	#tag Constant, Name = FEATURE_UNICODE, Type = Double, Dynamic = False, Default = \"134217728", Scope = Private
+	#tag EndConstant
+
 
 	#tag Structure, Name = CURLVersion, Flags = &h21
 		Age As Integer
@@ -462,7 +377,13 @@ Protected Module Version
 		  nghttp2_version As Ptr
 		  quic_version As Ptr
 		  cainfo As Ptr
-		capath As Ptr
+		  capath As Ptr
+		  zstdVersionNum As UInt32
+		  zstdVersion As Ptr
+		  hyperVersion As Ptr
+		  gsaslVersion As Ptr
+		  FeatureNames As Ptr
+		rtmpVersion As Ptr
 	#tag EndStructure
 
 	#tag Structure, Name = CURLVersion64, Flags = &h21, Attributes = \"StructureAlignment \x3D 8"
@@ -486,7 +407,13 @@ Protected Module Version
 		  nghttp2_version As Ptr
 		  quic_version As Ptr
 		  cainfo As Ptr
-		capath As Ptr
+		  capath As Ptr
+		  zstdVersionNum As UInt32
+		  zstdVersion As Ptr
+		  hyperVersion As Ptr
+		  gsaslVersion As Ptr
+		  FeatureNames As Ptr
+		rtmpVersion As Ptr
 	#tag EndStructure
 
 

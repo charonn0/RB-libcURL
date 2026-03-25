@@ -389,6 +389,77 @@ Protected Module libcURL
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h21
+		Private Function FeatureName(Feature As libcURL.FeatureType) As String
+		  Select Case Feature
+		  Case FeatureType.AppleSecTrust
+		    Return "AppleSecTrust"
+		  Case FeatureType.AsyncDNS
+		    Return "AsyncDNS"
+		  Case FeatureType.AsynRR
+		    Return "asyn-rr"
+		  Case FeatureType.Auth_GSS
+		    Return "Auth_GSS"
+		  Case FeatureType.Auth_Kerberos4
+		    Return "" ' deprecated, use Version.Features
+		  Case FeatureType.Auth_Kerberos5
+		    Return "Kerberos"
+		  Case FeatureType.Auth_NTLM
+		    Return "NTLM"
+		  Case FeatureType.Auth_SPNEGO
+		    Return "SPNEGO"
+		  Case FeatureType.Auth_SSPI
+		    Return "SSPI"
+		  Case FeatureType.Auth_TLS_SRP
+		    Return "Auth_TLS_SRP"
+		  Case FeatureType.CharsetConversion
+		    Return "CharsetConversion"
+		  Case FeatureType.DebugSymbols
+		    Return "DebugSymbols"
+		  Case FeatureType.HTTP2
+		    Return "HTTP2"
+		  Case FeatureType.InternationalDomainNames
+		    Return "IDN"
+		  Case FeatureType.IPv6
+		    Return "IPv6"
+		  Case FeatureType.LargeFiles
+		    Return "Largefile"
+		  Case FeatureType.SSL
+		    Return "SSL"
+		  Case FeatureType.AltSvc
+		    Return "alt-svc"
+		  Case FeatureType.Brotli
+		    Return "brotli"
+		  Case FeatureType.GSASL
+		    Return "gsasl"
+		  Case FeatureType.GSSAPI
+		    Return "GSS-API"
+		  Case FeatureType.HSTS
+		    Return "HSTS"
+		  Case FeatureType.HTTP3
+		    Return "HTTP3"
+		  Case FeatureType.HTTPSProxy
+		    Return "HTTPS-proxy"
+		  Case FeatureType.LibZ
+		    Return "libz"
+		  Case FeatureType.MultiSSL
+		    Return "MultiSSL"
+		  Case FeatureType.PSL
+		    Return "PSL"
+		  Case FeatureType.SSLSEXPORT
+		    Return "SSLS-EXPORT"
+		  Case FeatureType.ThreadSafe
+		    Return "threadsafe"
+		  Case FeatureType.Unicode
+		    Return "Unicode"
+		  Case FeatureType.UnixSockets
+		    Return "UnixSockets"
+		  Case FeatureType.Zstd
+		    Return "zstd"
+		  End Select
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h1
 		Protected Function FormatError(cURLError As Integer, Encoding As TextEncoding = Nil) As String
 		  ' Translates libcurl error numbers to messages
@@ -552,7 +623,16 @@ Protected Module libcURL
 		  ' See:
 		  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.IsFeatureAvailable
 		  
-		  Return IsAvailable() And BitAnd(libcURL.Version.Features, CType(Feature, Integer)) = CType(Feature, Integer)
+		  If Feature <> FeatureType.Auth_Kerberos4 And libcURL.Version.IsAtLeast(7, 87, 0) Then
+		    Dim features() As String = libcURL.Version.FeatureList()
+		    Dim query As String = FeatureName(Feature)
+		    If query = "" Then Return False
+		    Return features.IndexOf(query) > -1
+		    
+		  ElseIf libcURL.IsAvailable() Then
+		    Return BitAnd(libcURL.Version.Features, CType(Feature, Integer)) = CType(Feature, Integer)
+		    
+		  End If
 		End Function
 	#tag EndMethod
 
@@ -2342,21 +2422,39 @@ Protected Module libcURL
 	#tag EndEnum
 
 	#tag Enum, Name = FeatureType, Flags = &h1
-		AsyncDNS=128
-		  CharsetConversion=4096
-		  DebugSymbols=8192
-		  HTTP2=65536
-		  InternationalDomainNames=1024
-		  IPv6=1
-		  LargeFiles=512
-		  SSL=4
+		AltSvc
+		  AppleSecTrust
+		  AsyncDNS=128
+		  AsynRR
+		  Auth_GSS=32
 		  Auth_Kerberos4=2
 		  Auth_Kerberos5
 		  Auth_NTLM=16
-		  Auth_GSS=32
 		  Auth_SPNEGO=256
 		  Auth_SSPI=2048
-		Auth_TLS_SRP=16384
+		  Auth_TLS_SRP=16384
+		  Brotli
+		  CharsetConversion=4096
+		  DebugSymbols=8192
+		  ECH
+		  GSASL=536870912
+		  GSSAPI=131072
+		  HTTP2=65536
+		  HTTP3
+		  HTTPSProxy
+		  HSTS
+		  InternationalDomainNames=1024
+		  IPv6=1
+		  MultiSSL=4194304
+		  LargeFiles=512
+		  LibZ
+		  PSL
+		  SSL=4
+		  SSLSEXPORT
+		  ThreadSafe
+		  Unicode=134217728
+		  UnixSockets
+		Zstd
 	#tag EndEnum
 
 	#tag Enum, Name = FollowMode, Type = Integer, Flags = &h1
