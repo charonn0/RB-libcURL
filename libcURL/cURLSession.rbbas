@@ -382,7 +382,7 @@ Protected Class cURLSession
 		  End If
 		  mEasyHandle.FollowRedirects = True
 		  mEasyHandle.AutoReferer = True
-		  mEasyHandle.HTTPCompression = libcURL.Version.LibZ.IsAvailable
+		  mEasyHandle.HTTPCompression = IsFeatureAvailable(FeatureType.LibZ) Or IsFeatureAvailable(FeatureType.Zstd) Or IsFeatureAvailable(FeatureType.Brotli)
 		  mEasyHandle.UseErrorBuffer = True
 		  Me.Yield = True
 		End Sub

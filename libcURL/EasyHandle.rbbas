@@ -1590,7 +1590,7 @@ Inherits libcURL.cURLHandle
 			  ' https://curl.se/libcurl/c/CURLOPT_ACCEPT_ENCODING.html
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.HTTPCompression
 			  
-			  If libcURL.Version.LibZ.IsAvailable Then
+			  If IsFeatureAvailable(FeatureType.LibZ) Or IsFeatureAvailable(FeatureType.Zstd) Or IsFeatureAvailable(FeatureType.Brotli) Then
 			    If value Then
 			      If Not Me.SetOption(libcURL.Opts.ACCEPT_ENCODING, "") Then Raise New cURLException(Me)
 			    Else
