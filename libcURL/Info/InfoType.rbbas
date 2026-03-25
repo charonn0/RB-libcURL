@@ -519,43 +519,38 @@ Protected Class InfoType
 	#tag Method, Flags = &h1
 		Protected Shared Function GetInfoType(InfoNumber As Integer) As Integer
 		  Select Case InfoNumber
-		  Case libcURL.Info.EFFECTIVE_URL, libcURL.Info.REDIRECT_URL, libcURL.Info.CONTENT_TYPE, libcURL.Info.PRIVATE_, libcURL.Info.PRIMARY_IP, _
-		    libcURL.Info.LOCAL_IP, libcURL.Info.FTP_ENTRY_PATH, libcURL.Info.RTSP_SESSION_ID, libcURL.Info.SCHEME, libcURL.Info.EFFECTIVE_METHOD, _
-		    libcURL.Info.REFERER, libcURL.Info.CAINFO, libcURL.Info.CAPATH
+		  Case EFFECTIVE_URL, REDIRECT_URL, CONTENT_TYPE, PRIVATE_, PRIMARY_IP, LOCAL_IP, FTP_ENTRY_PATH, _
+		    RTSP_SESSION_ID, SCHEME, EFFECTIVE_METHOD, REFERER, CAINFO, CAPATH
 		    Return Variant.TypeString
 		    
-		  Case libcURL.Info.RESPONSE_CODE, libcURL.Info.HTTP_CONNECTCODE, libcURL.Info.REDIRECT_COUNT, libcURL.Info.HEADER_SIZE, _
-		    libcURL.Info.REQUEST_SIZE, libcURL.Info.SSL_VERIFYRESULT, libcURL.Info.OS_ERRNO, _
-		    libcURL.Info.NUM_CONNECTS, libcURL.Info.PRIMARY_PORT, libcURL.Info.LOCAL_PORT, libcURL.Info.LASTSOCKET, libcURL.Info.CONDITION_UNMET, _
-		    libcURL.Info.RTSP_CLIENT_CSEQ, libcURL.Info.RTSP_SERVER_CSEQ, libcURL.Info.RTSP_CSEQ_RECV, libcURL.Info.HTTP_VERSION, libcURL.Info.PROTOCOL, _
-		    libcURL.Info.PROXY_SSL_VERIFYRESULT, libcURL.Info.ACTIVESOCKET
+		  Case RESPONSE_CODE, HTTP_CONNECTCODE, REDIRECT_COUNT, HEADER_SIZE, REQUEST_SIZE, SSL_VERIFYRESULT, _
+		    OS_ERRNO, NUM_CONNECTS, PRIMARY_PORT, LOCAL_PORT, LASTSOCKET, CONDITION_UNMET, RTSP_CLIENT_CSEQ, _
+		    RTSP_SERVER_CSEQ, RTSP_CSEQ_RECV, HTTP_VERSION, PROTOCOL, PROXY_SSL_VERIFYRESULT, ACTIVESOCKET
 		    Return Variant.TypeInteger
 		    
-		  Case libcURL.Info.PROXY_ERROR, libcURL.Info.RETRY_AFTER
+		  Case PROXY_ERROR, RETRY_AFTER
 		    Return Variant.TypeInteger
 		    
-		  Case libcURL.Info.FILETIME, libcURL.Info.FILETIME_T
+		  Case FILETIME, FILETIME_T
 		    Return Variant.TypeDate
 		    
-		  Case libcurl.Info.PROXYAUTH_AVAIL, libcURL.Info.HTTPAUTH_AVAIL
+		  Case PROXYAUTH_AVAIL, HTTPAUTH_AVAIL
 		    Return Variant.TypeInteger
 		    
-		  Case libcURL.Info.TOTAL_TIME, libcURL.Info.NAMELOOKUP_TIME, libcURL.Info.CONNECT_TIME, libcURL.Info.APPCONNECT_TIME, libcURL.Info.PRETRANSFER_TIME, _
-		    libcURL.Info.STARTTRANSFER_TIME, libcURL.Info.REDIRECT_TIME, libcURL.Info.SIZE_DOWNLOAD, libcURL.Info.SIZE_UPLOAD, libcURL.Info.SPEED_DOWNLOAD, _
-		    libcURL.Info.SPEED_UPLOAD, libcURL.Info.CONTENT_LENGTH_UPLOAD, libcURL.Info.CONTENT_LENGTH_DOWNLOAD
+		  Case TOTAL_TIME, NAMELOOKUP_TIME, CONNECT_TIME, APPCONNECT_TIME, PRETRANSFER_TIME, STARTTRANSFER_TIME, _
+		    REDIRECT_TIME, SIZE_DOWNLOAD, SIZE_UPLOAD, SPEED_DOWNLOAD, SPEED_UPLOAD, CONTENT_LENGTH_UPLOAD, _
+		    CONTENT_LENGTH_DOWNLOAD
 		    Return Variant.TypeDouble
 		    
-		  Case libcURL.Info.TOTAL_TIME_T, libcURL.Info.NAMELOOKUP_TIME_T, libcURL.Info.CONNECT_TIME_T, libcURL.Info.APPCONNECT_TIME_T, _
-		    libcURL.Info.POSTTRANSFER_TIME_T, libcURL.Info.PRETRANSFER_TIME_T, libcURL.Info.STARTTRANSFER_TIME_T, libcURL.Info.REDIRECT_TIME_T, _
-		    libcURL.Info.SIZE_DOWNLOAD_T, libcURL.Info.SIZE_UPLOAD_T, libcURL.Info.SPEED_DOWNLOAD_T, libcURL.Info.SPEED_UPLOAD_T, _
-		    libcURL.Info.CONTENT_LENGTH_UPLOAD_T, libcURL.Info.CONTENT_LENGTH_DOWNLOAD_T, libcURL.Info.QUEUE_TIME_T, libcURL.Info.XFER_ID, libcURL.Info.CONN_ID, _
-		    libcURL.Info.EARLYDATA_SENT_T
+		  Case TOTAL_TIME_T, NAMELOOKUP_TIME_T, CONNECT_TIME_T, APPCONNECT_TIME_T, POSTTRANSFER_TIME_T, PRETRANSFER_TIME_T, _
+		    STARTTRANSFER_TIME_T, REDIRECT_TIME_T, SIZE_DOWNLOAD_T, SIZE_UPLOAD_T, SPEED_DOWNLOAD_T, SPEED_UPLOAD_T, _
+		    CONTENT_LENGTH_UPLOAD_T, CONTENT_LENGTH_DOWNLOAD_T, QUEUE_TIME_T, XFER_ID, CONN_ID, EARLYDATA_SENT_T
 		    Return Variant.TypeLong
 		    
-		  Case libcURL.Info.SSL_ENGINES, libcURL.Info.COOKIELIST
+		  Case SSL_ENGINES, COOKIELIST
 		    Return Variant.TypeArray
 		    
-		  Case libcURL.Info.USED_PROXY
+		  Case USED_PROXY
 		    Return Variant.TypeBoolean
 		    
 		  Else
@@ -628,9 +623,8 @@ Protected Class InfoType
 		  
 		  Select Case Number
 		    ' strings
-		  Case libcURL.Info.EFFECTIVE_URL, libcURL.Info.REDIRECT_URL, libcURL.Info.CONTENT_TYPE, libcURL.Info.PRIVATE_, libcURL.Info.PRIMARY_IP, _
-		    libcURL.Info.LOCAL_IP, libcURL.Info.FTP_ENTRY_PATH, libcURL.Info.RTSP_SESSION_ID, libcURL.Info.SCHEME, libcURL.Info.EFFECTIVE_METHOD, _
-		    libcURL.Info.REFERER
+		  Case EFFECTIVE_URL, REDIRECT_URL, CONTENT_TYPE, PRIVATE_, PRIMARY_IP, LOCAL_IP, FTP_ENTRY_PATH, _
+		    RTSP_SESSION_ID, SCHEME, EFFECTIVE_METHOD, REFERER
 		    #If Target32Bit Then
 		      mb = New MemoryBlock(4)
 		    #Else
@@ -642,20 +636,18 @@ Protected Class InfoType
 		    End If
 		    
 		    ' Int32s
-		  Case libcURL.Info.RESPONSE_CODE, libcURL.Info.HTTP_CONNECTCODE, libcURL.Info.REDIRECT_COUNT, libcURL.Info.HEADER_SIZE, _
-		    libcURL.Info.REQUEST_SIZE, libcURL.Info.SSL_VERIFYRESULT, libcURL.Info.OS_ERRNO, _
-		    libcURL.Info.NUM_CONNECTS, libcURL.Info.PRIMARY_PORT, libcURL.Info.LOCAL_PORT, libcURL.Info.LASTSOCKET, libcURL.Info.CONDITION_UNMET, _
-		    libcURL.Info.RTSP_CLIENT_CSEQ, libcURL.Info.RTSP_SERVER_CSEQ, libcURL.Info.RTSP_CSEQ_RECV, libcURL.Info.HTTP_VERSION, libcURL.Info.PROTOCOL, _
-		    libcURL.Info.PROXY_SSL_VERIFYRESULT, libcURL.Info.ACTIVESOCKET
+		  Case RESPONSE_CODE, HTTP_CONNECTCODE, REDIRECT_COUNT, HEADER_SIZE, REQUEST_SIZE, SSL_VERIFYRESULT, _
+		    OS_ERRNO, NUM_CONNECTS, PRIMARY_PORT, LOCAL_PORT, LASTSOCKET, CONDITION_UNMET, RTSP_CLIENT_CSEQ, _
+		    RTSP_SERVER_CSEQ, RTSP_CSEQ_RECV, HTTP_VERSION, PROTOCOL, PROXY_SSL_VERIFYRESULT, ACTIVESOCKET
 		    mb = New MemoryBlock(4)
 		    If Session.GetInfo(Number, mb) Then Return Str(mb.Int32Value(0))
 		    
-		  Case libcURL.Info.PROXY_ERROR
+		  Case PROXY_ERROR
 		    mb = New MemoryBlock(4)
 		    If Session.GetInfo(Number, mb) Then Return Str(mb.Int32Value(0))
 		    
 		    ' dates
-		  Case libcURL.Info.FILETIME
+		  Case FILETIME
 		    mb = New MemoryBlock(4)
 		    If Session.GetInfo(Number, mb) Then
 		      Dim t As Int32 = mb.Int32Value(0)
@@ -667,7 +659,7 @@ Protected Class InfoType
 		    End If
 		    
 		    ' HTTPAuthMethods
-		  Case libcurl.Info.PROXYAUTH_AVAIL, libcURL.Info.HTTPAUTH_AVAIL
+		  Case PROXYAUTH_AVAIL, HTTPAUTH_AVAIL
 		    mb = New MemoryBlock(4)
 		    If Session.GetInfo(Number, mb) Then
 		      Dim h As libcURL.HTTPAuthMethods = mb.Int32Value(0)
@@ -676,22 +668,22 @@ Protected Class InfoType
 		    End If
 		    
 		    ' Doubles
-		  Case libcURL.Info.TOTAL_TIME, libcURL.Info.NAMELOOKUP_TIME, libcURL.Info.CONNECT_TIME, libcURL.Info.APPCONNECT_TIME, libcURL.Info.PRETRANSFER_TIME, _
-		    libcURL.Info.STARTTRANSFER_TIME, libcURL.Info.REDIRECT_TIME, libcURL.Info.SIZE_DOWNLOAD, libcURL.Info.SIZE_UPLOAD, libcURL.Info.SPEED_DOWNLOAD, _
-		    libcURL.Info.SPEED_UPLOAD, libcURL.Info.CONTENT_LENGTH_UPLOAD, libcURL.Info.CONTENT_LENGTH_DOWNLOAD
+		  Case TOTAL_TIME, NAMELOOKUP_TIME, CONNECT_TIME, APPCONNECT_TIME, PRETRANSFER_TIME, STARTTRANSFER_TIME, _
+		    REDIRECT_TIME, SIZE_DOWNLOAD, SIZE_UPLOAD, SPEED_DOWNLOAD, SPEED_UPLOAD, CONTENT_LENGTH_UPLOAD, _
+		    CONTENT_LENGTH_DOWNLOAD
 		    mb = New MemoryBlock(8)
 		    If Session.GetInfo(Number, mb) Then Return Format(mb.DoubleValue(0), "-###,###,##0.0#####")
 		    
 		    ' Int64s
-		  Case libcURL.Info.TOTAL_TIME_T, libcURL.Info.NAMELOOKUP_TIME_T, libcURL.Info.CONNECT_TIME_T, libcURL.Info.APPCONNECT_TIME_T, _
-		    libcURL.Info.PRETRANSFER_TIME_T, libcURL.Info.STARTTRANSFER_TIME_T, libcURL.Info.REDIRECT_TIME_T, libcURL.Info.SIZE_DOWNLOAD_T, _
-		    libcURL.Info.SIZE_UPLOAD_T, libcURL.Info.SPEED_DOWNLOAD_T, libcURL.Info.SPEED_UPLOAD_T, libcURL.Info.CONTENT_LENGTH_UPLOAD_T, _
-		    libcURL.Info.CONTENT_LENGTH_DOWNLOAD_T
+		  Case TOTAL_TIME_T, NAMELOOKUP_TIME_T, CONNECT_TIME_T, APPCONNECT_TIME_T, _
+		    PRETRANSFER_TIME_T, STARTTRANSFER_TIME_T, REDIRECT_TIME_T, SIZE_DOWNLOAD_T, _
+		    SIZE_UPLOAD_T, SPEED_DOWNLOAD_T, SPEED_UPLOAD_T, CONTENT_LENGTH_UPLOAD_T, _
+		    CONTENT_LENGTH_DOWNLOAD_T
 		    mb = New MemoryBlock(8)
 		    If Session.GetInfo(Number, mb) Then Return Str(mb.Int64Value(0))
 		    
 		    ' ListPtrs
-		  Case libcURL.Info.SSL_ENGINES, libcURL.Info.COOKIELIST
+		  Case SSL_ENGINES, COOKIELIST
 		    #If Target32Bit Then
 		      mb = New MemoryBlock(4)
 		    #Else
