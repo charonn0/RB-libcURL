@@ -399,7 +399,7 @@ Inherits libcURL.cURLHandle
 		  Case libcURL.Info.FILETIME_T
 		    mb = New MemoryBlock(8)
 		    If Me.GetInfo(InfoType, mb) Then
-		      Dim t As Int32 = mb.Int64Value(0)
+		      Dim t As Int64 = mb.Int64Value(0)
 		      If t >= 0 Then
 		        Dim d As New Date(1970, 1, 1, 0, 0, 0, 0.0) 'UNIX epoch
 		        d.TotalSeconds = d.TotalSeconds + t
@@ -428,7 +428,7 @@ Inherits libcURL.cURLHandle
 		    libcURL.Info.APPCONNECT_TIME_T, libcURL.Info.PRETRANSFER_TIME_T, libcURL.Info.STARTTRANSFER_TIME_T, _
 		    libcURL.Info.REDIRECT_TIME_T, libcURL.Info.SIZE_DOWNLOAD_T, libcURL.Info.SIZE_UPLOAD_T, _
 		    libcURL.Info.SPEED_DOWNLOAD_T, libcURL.Info.SPEED_UPLOAD_T, libcURL.Info.CONTENT_LENGTH_UPLOAD_T, _
-		    libcURL.Info.CONTENT_LENGTH_DOWNLOAD_T, libcURL.Info.RETRY_AFTER
+		    libcURL.Info.CONTENT_LENGTH_DOWNLOAD_T, libcURL.Info.RETRY_AFTER, libcURL.Info.XFER_ID
 		    mb = New MemoryBlock(8)
 		    If Me.GetInfo(InfoType, mb) Then Return mb.Int64Value(0)
 		    
@@ -454,21 +454,19 @@ Inherits libcURL.cURLHandle
 		  Case libcURL.Info.CERTINFO
 		    #If Target32Bit Then
 		      mb = New MemoryBlock(CERTINFO.Size)
-		      If Me.GetInfo(InfoType, mb) And mb.Ptr(0) <> Nil Then
-		        Dim p As Ptr = mb.Ptr(0)
-		        Dim cinfo As CERTINFO = p.CERTINFO
-		        If cinfo.NumOfCerts <= 0 Then Return Nil
-		        Return New ListPtr(cinfo.CertList)
-		      End If
 		    #Else
 		      mb = New MemoryBlock(CERTINFO_64.Size)
-		      If Me.GetInfo(InfoType, mb) And mb.Ptr(0) <> Nil Then
-		        Dim p As Ptr = mb.Ptr(0)
+		    #EndIf
+		    If Me.GetInfo(InfoType, mb) And mb.Ptr(0) <> Nil Then
+		      Dim p As Ptr = mb.Ptr(0)
+		      #If Target32Bit Then
+		        Dim cinfo As CERTINFO = p.CERTINFO
+		      #Else
 		        Dim cinfo As CERTINFO_64 = p.CERTINFO_64
-		        If cinfo.NumOfCerts <= 0 Then Return Nil
-		        Return New ListPtr(cinfo.CertList)
-		      End If
-		    #Endif
+		      #EndIf
+		      If cinfo.NumOfCerts <= 0 Then Return Nil
+		      Return New ListPtr(cinfo.CertList)
+		    End If
 		    
 		    ' Booleans
 		  Case libcURL.Info.USED_PROXY
