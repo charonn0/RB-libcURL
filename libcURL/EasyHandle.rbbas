@@ -355,9 +355,9 @@ Inherits libcURL.cURLHandle
 		  Select Case InfoType
 		    ' strings
 		  Case libcURL.Info.EFFECTIVE_URL, libcURL.Info.REDIRECT_URL, libcURL.Info.CONTENT_TYPE, _
-		    libcURL.Info.PRIVATE_, libcURL.Info.PRIMARY_IP, libcURL.Info.LOCAL_IP, _
-		    libcURL.Info.FTP_ENTRY_PATH, libcURL.Info.RTSP_SESSION_ID, libcURL.Info.SCHEME, _
-		    libcURL.Info.EFFECTIVE_METHOD, libcURL.Info.REFERER
+		    libcURL.Info.PRIMARY_IP, libcURL.Info.LOCAL_IP, libcURL.Info.FTP_ENTRY_PATH, _
+		    libcURL.Info.RTSP_SESSION_ID, libcURL.Info.SCHEME, libcURL.Info.EFFECTIVE_METHOD, _
+		    libcURL.Info.REFERER
 		    #If Target32Bit Then
 		      mb = New MemoryBlock(4)
 		    #Else
@@ -440,6 +440,15 @@ Inherits libcURL.cURLHandle
 		      mb = New MemoryBlock(8)
 		    #Endif
 		    If Me.GetInfo(InfoType, mb) And mb.Ptr(0) <> Nil Then Return New ListPtr(mb.Ptr(0))
+		    
+		    ' Opaque ptrs
+		  Case libcURL.Info.PRIVATE_
+		    #If Target32Bit Then
+		      mb = New MemoryBlock(4)
+		    #Else
+		      mb = New MemoryBlock(8)
+		    #Endif
+		    If Me.GetInfo(InfoType, mb) Then Return mb
 		    
 		    ' Other kinds of ptrs
 		  Case libcURL.Info.TLS_SESSION, libcURL.Info.TLS_SSL_PTR
