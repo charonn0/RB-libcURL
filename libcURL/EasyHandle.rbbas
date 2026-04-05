@@ -1265,8 +1265,7 @@ Inherits libcURL.cURLHandle
 			    Raise New cURLException(Me)
 			  End If
 			  
-			  Select Case True
-			  Case value = Nil
+			  If value = Nil Then
 			    If Not Me.SetOption(libcURL.Opts.CAINFO_BLOB, Nil) Then Raise New cURLException(Me)
 			    mCA_List = Nil
 			    
@@ -1278,7 +1277,7 @@ Inherits libcURL.cURLHandle
 			    If Not Me.SetOption(libcURL.Opts.CAINFO_BLOB, blob) Then Raise New cURLException(Me)
 			    mCA_List = value
 			    
-			  End Select
+			  End If
 			End Set
 		#tag EndSetter
 		CA_List As MemoryBlock
