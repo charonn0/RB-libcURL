@@ -1935,7 +1935,7 @@ Inherits libcURL.cURLHandle
 			  ' See:
 			  ' http://curl.haxx.se/libcurl/c/curl_easy_getinfo.html#CURLINFOLOCALIP
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.NetworkInterface
-			  ' https://documentation.xojo.com/api/networking/networkinterface.html#networkinterface
+			  ' https://documentation.xojo.com/api/networking/networkinterface.html
 			  
 			  
 			  Dim ip As String = Me.GetInfo(libcURL.Info.LOCAL_IP)
@@ -1955,7 +1955,7 @@ Inherits libcURL.cURLHandle
 			  ' See:
 			  ' http://curl.haxx.se/libcurl/c/CURLOPT_INTERFACE.html
 			  ' https://github.com/charonn0/RB-libcURL/wiki/libcURL.EasyHandle.NetworkInterface
-			  ' http://docs.xojo.com/index.php/NetworkInterface
+			  ' https://documentation.xojo.com/api/networking/networkinterface.html
 			  
 			  If value <> Nil Then
 			    If Not Me.SetOption(libcURL.Opts.NETINTERFACE, value.IPAddress) Then Raise New cURLException(Me)
